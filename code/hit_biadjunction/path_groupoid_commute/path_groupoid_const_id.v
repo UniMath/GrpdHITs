@@ -8,20 +8,20 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat.
+Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Base.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map1Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map2Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Identitor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Compositor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
-Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Identity.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Composition.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.PseudoTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Identity.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Composition.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 Require Import signature.hit_signature.
 Require Import prelude.all.

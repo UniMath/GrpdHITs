@@ -10,31 +10,31 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Univalence.
 Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat. Import Bicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Invertible_2cells.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Adjunctions.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Univalence.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Unitors.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.BicategoryLaws.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
+Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
+Require Import UniMath.Bicategories.Core.Invertible_2cells.
+Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Core.Univalence.
+Require Import UniMath.Bicategories.Core.Unitors.
+Require Import UniMath.Bicategories.Core.BicategoryLaws.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
 Import PseudoFunctor.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Biadjunction.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Identity.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Composition.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.PseudoTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.Examples.Whiskering.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.Examples.Unitality.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.Examples.Associativity.
-Require Import UniMath.CategoryTheory.Bicategories.Modifications.Modification.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.Biadjunction.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Identity.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Composition.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
+Require Import UniMath.Bicategories.Transformations.Examples.Whiskering.
+Require Import UniMath.Bicategories.Transformations.Examples.Unitality.
+Require Import UniMath.Bicategories.Transformations.Examples.Associativity.
+Require Import UniMath.Bicategories.Modifications.Modification.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Import DispBicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.Examples.Algebras.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispPseudofunctor.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispModification.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispBuilders.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispBiadjunction.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
+Require Import UniMath.Bicategories.DisplayedBicats.DispPseudofunctor.
+Require Import UniMath.Bicategories.DisplayedBicats.DispTransformation.
+Require Import UniMath.Bicategories.DisplayedBicats.DispModification.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBuilders.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBiadjunction.
 
 Require Import biadjunctions.disp_algebra.algebra_pseudofunctor.
 

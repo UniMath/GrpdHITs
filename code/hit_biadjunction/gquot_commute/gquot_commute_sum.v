@@ -8,20 +8,20 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat.
+Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Base.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map1Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map2Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Identitor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Compositor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
-Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Identity.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Composition.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.PseudoTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Identity.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Composition.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 Require Import signature.hit_signature.
 Require Import prelude.all.
@@ -73,7 +73,7 @@ Section GQuotSum.
                     (ps_comp (⟦ P₂ ⟧) gquot_psfunctor)
                     (ps_comp gquot_psfunctor ⦃ P₂ ⦄)).
 
-  Definition gquot_sum_data_comp
+  Definition sum_gquot_data_comp
              (X : grpd_bicat)
     : (ps_comp (⟦ P₁ + P₂ ⟧) gquot_psfunctor) X
       -->
@@ -119,13 +119,13 @@ Section GQuotSum.
       exact (gtrunc _ _ _).
   Defined.
 
-  Definition gquot_sum_data_nat_inl
+  Definition sum_gquot_data_nat_inl
              {X Y : grpd_bicat}
              (f : X --> Y)
              (z : ⟦ P₁ ⟧ (gquot_psfunctor X) : one_type)
     : # (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inl_grpd (IHP₁ X z))
       =
-      gquot_sum_data_comp Y (inl (# (⟦ P₁ ⟧) (gquot_functor_map f) z)).
+      sum_gquot_data_comp Y (inl (# (⟦ P₁ ⟧) (gquot_functor_map f) z)).
   Proof.
     refine (_ @ maponpaths gquot_inl_grpd (pr1 (psnaturality_of IHP₁ f) z)).
     exact (gquot_inl_grpd_gquot_functor f (IHP₁ X z)).
@@ -165,35 +165,35 @@ Section GQuotSum.
       exact (gtrunc _ _ _).
   Defined.
 
-  Definition gquot_sum_data_nat_inr
+  Definition sum_gquot_data_nat_inr
              {X Y : grpd_bicat}
              (f : X --> Y)
              (z : ⟦ P₂ ⟧ (gquot_psfunctor X) : one_type)
     : # (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inr_grpd (IHP₂ X z))
       =
-      gquot_sum_data_comp Y (inr (# (⟦ P₂ ⟧) (gquot_functor_map f) z)).
+      sum_gquot_data_comp Y (inr (# (⟦ P₂ ⟧) (gquot_functor_map f) z)).
   Proof.
     refine (_ @ maponpaths gquot_inr_grpd (pr1 (psnaturality_of IHP₂ f) z)).
     exact (gquot_inr_grpd_gquot_functor f (IHP₂ X z)).
   Defined.
 
-  Definition gquot_sum_data
+  Definition sum_gquot_data
     : pstrans_data
         (ps_comp (⟦ P₁ + P₂ ⟧) gquot_psfunctor)
         (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄).
   Proof.
     use make_pstrans_data.
-    - exact gquot_sum_data_comp.
+    - exact sum_gquot_data_comp.
     - intros X Y f.
       use make_invertible_2cell.
       + intro z.
         induction z as [z | z].
-        * exact (gquot_sum_data_nat_inl f z).
-        * exact (gquot_sum_data_nat_inr f z).
+        * exact (sum_gquot_data_nat_inl f z).
+        * exact (sum_gquot_data_nat_inr f z).
       + apply one_type_2cell_iso.
   Defined.
   
-  Definition gquot_sum_naturality_help_inl
+  Definition sum_gquot_naturality_help_inl
              {X Y : grpd_bicat}
              {f g : grpd_bicat ⟦ X, Y ⟧}
              (p : f ==> g)
@@ -218,7 +218,7 @@ Section GQuotSum.
       exact (gtrunc _ _ _ _ _).
   Qed.
   
-  Definition gquot_sum_naturality_help_inr
+  Definition sum_gquot_naturality_help_inr
              {X Y : grpd_bicat}
              {f g : grpd_bicat ⟦ X, Y ⟧}
              (p : f ==> g)
@@ -242,7 +242,7 @@ Section GQuotSum.
       exact (gtrunc _ _ _ _ _).
   Qed.
 
-  Definition gquot_sum_id_help_inl
+  Definition sum_gquot_id_help_inl
              {X : grpd_bicat}
     : ∏ z,
       maponpaths
@@ -263,7 +263,7 @@ Section GQuotSum.
       exact (gtrunc _ _ _ _ _).
   Qed.
 
-  Definition gquot_sum_id_help_inr
+  Definition sum_gquot_id_help_inr
              {X : grpd_bicat}
     : ∏ z,
       maponpaths
@@ -284,7 +284,7 @@ Section GQuotSum.
       exact (gtrunc _ _ _ _ _).
   Qed.
   
-  Definition gquot_sum_pstrans_comp_inl_help
+  Definition sum_gquot_pstrans_comp_inl_help
              {X Y Z : grpd_bicat}
              (f : X --> Y) (g : Y --> Z)
              {x y : gquot (⦃ P₁ ⦄ Y)}
@@ -307,7 +307,7 @@ Section GQuotSum.
     apply pathscomp0rid.
   Qed.
   
-  Definition gquot_sum_pstrans_comp_inl_help_two
+  Definition sum_gquot_pstrans_comp_inl_help_two
              {X Y Z : grpd_bicat}
              (f : X --> Y) (g : Y --> Z)
     : ∏ (z : gquot (⦃ P₁ ⦄ X)),
@@ -348,7 +348,7 @@ Section GQuotSum.
       exact (gtrunc _ _ _ _ _).
   Qed.
 
-  Definition gquot_sum_pstrans_comp_inr_help
+  Definition sum_gquot_pstrans_comp_inr_help
              {X Y Z : grpd_bicat}
              (f : X --> Y) (g : Y --> Z)
              {x y : gquot (⦃ P₂ ⦄ Y)}
@@ -371,7 +371,7 @@ Section GQuotSum.
     apply pathscomp0rid.
   Qed.
 
-  Definition gquot_sum_pstrans_comp_inr_help_two
+  Definition sum_gquot_pstrans_comp_inr_help_two
              {X Y Z : grpd_bicat}
              (f : X --> Y) (g : Y --> Z)
     : ∏ (z : gquot (⦃ P₂ ⦄ X)),
@@ -412,8 +412,8 @@ Section GQuotSum.
       exact (gtrunc _ _ _ _ _).
   Qed.
 
-  Definition gquot_sum_is_pstrans
-    : is_pstrans gquot_sum_data.
+  Definition sum_gquot_is_pstrans
+    : is_pstrans sum_gquot_data.
   Proof.
     repeat split.
     - intros X Y f g p.
@@ -426,7 +426,7 @@ Section GQuotSum.
           etrans.
           {
             refine (maponpaths (λ z, _ @ z) _).
-            refine (maponpathscomp inl (gquot_sum_data_comp Y) _  @ _).
+            refine (maponpathscomp inl (sum_gquot_data_comp Y) _  @ _).
             exact (!(maponpathscomp (IHP₁ Y) gquot_inl_grpd _)).
           }
           refine (!(path_assoc _ _ _) @ _).
@@ -439,14 +439,14 @@ Section GQuotSum.
         }
         refine (path_assoc _ _ _ @ _ @ !(path_assoc _ _ _)).
         refine (maponpaths (λ z, z @ _) _).
-        exact (gquot_sum_naturality_help_inl p (IHP₁ X z)).
+        exact (sum_gquot_naturality_help_inl p (IHP₁ X z)).
       + refine (!_).
         etrans.
         {
           etrans.
           {
             refine (maponpaths (λ z, _ @ z) _).
-            refine (maponpathscomp inr (gquot_sum_data_comp Y) _  @ _).
+            refine (maponpathscomp inr (sum_gquot_data_comp Y) _  @ _).
             exact (!(maponpathscomp (IHP₂ Y) gquot_inr_grpd _)).
           }
           refine (!(path_assoc _ _ _) @ _).
@@ -459,7 +459,7 @@ Section GQuotSum.
         }
         refine (path_assoc _ _ _ @ _ @ !(path_assoc _ _ _)).
         refine (maponpaths (λ z, z @ _) _).
-        exact (gquot_sum_naturality_help_inr p (IHP₂ X z)).
+        exact (sum_gquot_naturality_help_inr p (IHP₂ X z)).
     - intros X.
       use funextsec.
       intro z.
@@ -467,17 +467,17 @@ Section GQuotSum.
       + refine (!_).
         etrans.
         {
-          refine (maponpathscomp0 (gquot_sum_data_comp X) _ _ @ _).
+          refine (maponpathscomp0 (sum_gquot_data_comp X) _ _ @ _).
           etrans.
           {
             refine (maponpaths (λ z, z @ _) _).
-            refine (maponpathscomp inl (gquot_sum_data_comp X) _  @ _).
+            refine (maponpathscomp inl (sum_gquot_data_comp X) _  @ _).
             exact (!(maponpathscomp (IHP₁ X) gquot_inl_grpd _)).
           }
           etrans.
           {
             refine (maponpaths (λ z, _ @ z) _).
-            refine (maponpathscomp inl (gquot_sum_data_comp X) _  @ _).
+            refine (maponpathscomp inl (sum_gquot_data_comp X) _  @ _).
             exact (!(maponpathscomp (IHP₁ X) gquot_inl_grpd _)).
           }
           refine (!(maponpathscomp0 gquot_inl_grpd _ _) @ _).
@@ -488,21 +488,21 @@ Section GQuotSum.
         refine (maponpathscomp0 gquot_inl_grpd _ _ @ _).
         refine (_ @ !(path_assoc _ _ _)).
         apply maponpaths_2.
-        apply gquot_sum_id_help_inl.
+        apply sum_gquot_id_help_inl.
       + refine (!_).
         etrans.
         {
-          refine (maponpathscomp0 (gquot_sum_data_comp X) _ _ @ _).
+          refine (maponpathscomp0 (sum_gquot_data_comp X) _ _ @ _).
           etrans.
           {
             refine (maponpaths (λ z, z @ _) _).
-            refine (maponpathscomp inr (gquot_sum_data_comp X) _  @ _).
+            refine (maponpathscomp inr (sum_gquot_data_comp X) _  @ _).
             exact (!(maponpathscomp (IHP₂ X) gquot_inr_grpd _)).
           }
           etrans.
           {
             refine (maponpaths (λ z, _ @ z) _).
-            refine (maponpathscomp inr (gquot_sum_data_comp X) _  @ _).
+            refine (maponpathscomp inr (sum_gquot_data_comp X) _  @ _).
             exact (!(maponpathscomp (IHP₂ X) gquot_inr_grpd _)).
           }
           refine (!(maponpathscomp0 gquot_inr_grpd _ _) @ _).
@@ -513,7 +513,7 @@ Section GQuotSum.
         refine (maponpathscomp0 gquot_inr_grpd _ _ @ _).
         refine (_ @ !(path_assoc _ _ _)).
         apply maponpaths_2.
-        apply gquot_sum_id_help_inr.
+        apply sum_gquot_id_help_inr.
     - intros X Y Z f g.
       use funextsec.
       intro z.
@@ -529,11 +529,11 @@ Section GQuotSum.
         etrans.
         {
           refine (maponpaths (λ z, _ @ z) _).
-          refine (maponpathscomp0 (gquot_sum_data_comp Z) _ _ @ _).
+          refine (maponpathscomp0 (sum_gquot_data_comp Z) _ _ @ _).
           etrans.
           {
             refine (maponpaths (λ z, z @ _) _).
-            refine (maponpathscomp inl (gquot_sum_data_comp Z) _  @ _).
+            refine (maponpathscomp inl (sum_gquot_data_comp Z) _  @ _).
             exact (!(maponpathscomp (IHP₁ Z) gquot_inl_grpd _)).
           }
           etrans.
@@ -546,7 +546,7 @@ Section GQuotSum.
                                      _
                                   )
                                   @ z) _).
-            refine (maponpathscomp inl (gquot_sum_data_comp Z) _  @ _).
+            refine (maponpathscomp inl (sum_gquot_data_comp Z) _  @ _).
             exact (!(maponpathscomp (IHP₁ Z) gquot_inl_grpd _)).
           }
           refine (!(maponpathscomp0 gquot_inl_grpd _ _) @ _).
@@ -571,7 +571,7 @@ Section GQuotSum.
           }
           refine (path_assoc _ _ _ @ _).
           refine (maponpaths (λ z, z @ _) _).
-          exact (gquot_sum_pstrans_comp_inl_help f g ((pr1 (psnaturality_of IHP₁ f)) z)).
+          exact (sum_gquot_pstrans_comp_inl_help f g ((pr1 (psnaturality_of IHP₁ f)) z)).
         }
         etrans.
         {
@@ -599,7 +599,7 @@ Section GQuotSum.
         refine (_ @ !(path_assoc _ _ _)).
         apply maponpaths_2.
         refine (!(path_assoc _ _ _) @ _).
-        exact (gquot_sum_pstrans_comp_inl_help_two f g (IHP₁ X z)).
+        exact (sum_gquot_pstrans_comp_inl_help_two f g (IHP₁ X z)).
       + refine (!_).
         etrans.
         {
@@ -611,11 +611,11 @@ Section GQuotSum.
         etrans.
         {
           refine (maponpaths (λ z, _ @ z) _).
-          refine (maponpathscomp0 (gquot_sum_data_comp Z) _ _ @ _).
+          refine (maponpathscomp0 (sum_gquot_data_comp Z) _ _ @ _).
           etrans.
           {
             refine (maponpaths (λ z, z @ _) _).
-            refine (maponpathscomp inr (gquot_sum_data_comp Z) _  @ _).
+            refine (maponpathscomp inr (sum_gquot_data_comp Z) _  @ _).
             exact (!(maponpathscomp (IHP₂ Z) gquot_inr_grpd _)).
           }
           etrans.
@@ -628,7 +628,7 @@ Section GQuotSum.
                                      _
                                   )
                                   @ z) _).
-            refine (maponpathscomp inr (gquot_sum_data_comp Z) _  @ _).
+            refine (maponpathscomp inr (sum_gquot_data_comp Z) _  @ _).
             exact (!(maponpathscomp (IHP₂ Z) gquot_inr_grpd _)).
           }
           refine (!(maponpathscomp0 gquot_inr_grpd _ _) @ _).
@@ -653,7 +653,7 @@ Section GQuotSum.
           }
           refine (path_assoc _ _ _ @ _).
           refine (maponpaths (λ z, z @ _) _).
-          exact (gquot_sum_pstrans_comp_inr_help f g ((pr1 (psnaturality_of IHP₂ f)) z)).
+          exact (sum_gquot_pstrans_comp_inr_help f g ((pr1 (psnaturality_of IHP₂ f)) z)).
         }
         etrans.
         {
@@ -681,16 +681,16 @@ Section GQuotSum.
         refine (_ @ !(path_assoc _ _ _)).
         apply maponpaths_2.
         refine (!(path_assoc _ _ _) @ _).
-        exact (gquot_sum_pstrans_comp_inr_help_two f g (IHP₂ X z)).
+        exact (sum_gquot_pstrans_comp_inr_help_two f g (IHP₂ X z)).
   Qed.
 
-  Definition gquot_sum
+  Definition sum_gquot
     : pstrans
         (ps_comp (⟦ P₁ + P₂ ⟧) gquot_psfunctor)
         (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄).
   Proof.
     use make_pstrans.
-    - exact gquot_sum_data.
-    - exact gquot_sum_is_pstrans.
+    - exact sum_gquot_data.
+    - exact sum_gquot_is_pstrans.
   Defined.
 End GQuotSum.

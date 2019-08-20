@@ -7,36 +7,36 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
 
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat. Import Bicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Invertible_2cells.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Adjunctions.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Univalence.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.BicategoryLaws.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Base.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map1Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map2Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Identitor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Compositor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
+Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
+Require Import UniMath.Bicategories.Core.Invertible_2cells.
+Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Core.Univalence.
+Require Import UniMath.Bicategories.Core.BicategoryLaws.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
 Import PseudoFunctor.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Biadjunction.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Identity.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Composition.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.PseudoTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.Examples.Whiskering.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.Examples.Unitality.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.Examples.Associativity.
-Require Import UniMath.CategoryTheory.Bicategories.Modifications.Modification.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispBicat.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.Examples.Add2Cell.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.Examples.Algebras.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispPseudofunctor.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispModification.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispBuilders.
-Require Import UniMath.CategoryTheory.Bicategories.DisplayedBicats.DispBiadjunction.
+Require Import UniMath.Bicategories.PseudoFunctors.Biadjunction.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Identity.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Composition.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
+Require Import UniMath.Bicategories.Transformations.Examples.Whiskering.
+Require Import UniMath.Bicategories.Transformations.Examples.Unitality.
+Require Import UniMath.Bicategories.Transformations.Examples.Associativity.
+Require Import UniMath.Bicategories.Modifications.Modification.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
+Require Import UniMath.Bicategories.DisplayedBicats.DispPseudofunctor.
+Require Import UniMath.Bicategories.DisplayedBicats.DispTransformation.
+Require Import UniMath.Bicategories.DisplayedBicats.DispModification.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBuilders.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBiadjunction.
 
 Require Import signature.hit_signature.
 Require Import prelude.all.
@@ -66,7 +66,7 @@ Proof.
     + exact (maponpaths gquot_inl_grpd (IHP₁ x)).
     + exact (maponpaths gquot_inr_grpd (IHP₂ x)).
   - exact (maponpaths
-             (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+             (λ z, prod_gquot_comp (pr1 z) (pr2 z))
              (pathsdirprod (IHP₁ (pr1 x))
                            (IHP₂ (pr2 x)))).
 Defined.
@@ -106,7 +106,7 @@ Proof.
           apply maponpaths.
           refine (maponpathscomp
                     inl
-                    (gquot_sum_data_comp (poly_gquot P₁) (poly_gquot P₂) G) _
+                    (sum_gquot_data_comp (poly_gquot P₁) (poly_gquot P₂) G) _
                     @ _).
           exact (!(maponpathscomp
                      (poly_gquot P₁ G)
@@ -132,7 +132,7 @@ Proof.
           apply maponpaths.
           refine (maponpathscomp
                     inr
-                    (gquot_sum_data_comp (poly_gquot P₁) (poly_gquot P₂) G) _
+                    (sum_gquot_data_comp (poly_gquot P₁) (poly_gquot P₂) G) _
                     @ _).
           exact (!(maponpathscomp
                      (poly_gquot P₂ G)
@@ -154,13 +154,13 @@ Proof.
         simpl.
         cbn.
         apply (maponpaths_pathsdirprod_precompose
-                 gquot_prod_comp
+                 prod_gquot_comp
                  (λ z, poly_gquot P₁ G z)
                  (λ z, poly_gquot P₂ G z)
               ).
       }
       refine (!(maponpathscomp0
-                  (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+                  (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                   (pathsdirprod
                      (ηη_comp P₁ (pr1 x))
                      (ηη_comp P₂ (pr2 x)))
@@ -182,13 +182,13 @@ Proof.
         }
         exact (!(pathsdirprod_concat _ _ _ _)).
       }
-      exact (maponpathscomp0 (λ z, gquot_prod_comp (pr1 z) (pr2 z)) _ _).
+      exact (maponpathscomp0 (λ z, prod_gquot_comp (pr1 z) (pr2 z)) _ _).
     }
     refine (maponpaths (λ z, z @ _) _).
     etrans.
     {
       exact (uncurry_ap
-               gquot_prod_comp
+               prod_gquot_comp
                (gcleq (poly_act_groupoid P₁ G) (pr1 f))
                (gcleq (poly_act_groupoid P₂ G) (pr2 f))).
     }
@@ -368,7 +368,7 @@ Definition gquot_counit_map_gquot_pair
       ((⟦ P₁ * P₂ ⟧) X)
       (gquot_functor_map
          ((poly_path_groupoid (P₁ * P₂)) X)
-         (gquot_prod_comp z₁ z₂))
+         (prod_gquot_comp z₁ z₂))
     =
     make_dirprod
       (gquot_counit_map
@@ -395,7 +395,7 @@ Proof.
                    (λ z,
                     gquot_functor_map
                       ((poly_path_groupoid (P₁ * P₂)) X)
-                      (gquot_prod_comp
+                      (prod_gquot_comp
                          (gcl (poly_act_groupoid P₁ (path_groupoid X)) a) z))
                    (gquot_counit_map ((⟦ P₁ * P₂ ⟧) X))
                    (gcleq (poly_act_groupoid P₂ (path_groupoid X)) g))
@@ -466,7 +466,7 @@ Proof.
                    (λ z,
                     gquot_functor_map
                       ((poly_path_groupoid (P₁ * P₂)) X)
-                      (gquot_prod_comp
+                      (prod_gquot_comp
                          z
                          (gcl (poly_act_groupoid P₂ (path_groupoid X)) b)))
                    (gquot_counit_map ((⟦ P₁ * P₂ ⟧) X))
@@ -475,7 +475,7 @@ Proof.
        refine (maponpaths
                  (maponpaths (gquot_counit_map _))
                  (!(maponpathscomp
-                      (λ z, gquot_prod_comp
+                      (λ z, prod_gquot_comp
                               z
                               (gcl (poly_act_groupoid P₂ (path_groupoid X)) b))
                       (gquot_functor_map ((poly_path_groupoid (P₁ * P₂)) X))

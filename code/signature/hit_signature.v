@@ -2,7 +2,7 @@
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 (**
 Data type of polynomials.
@@ -69,3 +69,230 @@ Arguments pair {A} {P} {Q} {R} _ _.
 Arguments c {_} P {_} _.
 Arguments fmap {_} {X Y} f.
 Arguments constr {_}.
+
+(**
+Homotopy endpoints
+Here:
+- `A` is arguments of point constructor
+- `J` is index for path constructors
+- `S` is arguments for path constructors
+- `l` and `r` are the left and right endpoint of the path constructors
+- `Q` is the point argument
+ *)
+Inductive homot_endpoint
+          (A : poly_code)
+          (J : UU)
+          (S : J → poly_code)
+          (l : ∏ (j : J), endpoint A (S j) I)
+          (r : ∏ (j : J), endpoint A (S j) I)
+          (Q : poly_code)
+          (TR : poly_code)
+          (al ar : endpoint A Q TR)
+  : ∏ (T : poly_code),
+    endpoint A Q T → endpoint A Q T → UU
+  :=
+  | refl_e : ∏ (T : poly_code)
+               (e : endpoint A Q T),
+             homot_endpoint A J S l r Q TR al ar T e e
+  | inv_e : ∏ (T : poly_code)
+              (e₁ e₂ : endpoint A Q T),
+            homot_endpoint A J S l r Q TR al ar T e₁ e₂
+            →
+            homot_endpoint A J S l r Q TR al ar T e₂ e₁
+  | trans_e : ∏ (T : poly_code)
+                (e₁ e₂ e₃ : endpoint A Q T),
+              homot_endpoint A J S l r Q TR al ar T e₁ e₂
+              →
+              homot_endpoint A J S l r Q TR al ar T e₂ e₃
+              →
+              homot_endpoint A J S l r Q TR al ar T e₁ e₃
+  | path_pr1 : ∏ (T₁ T₂ : poly_code)
+                 (e₁ e₂ : endpoint A Q T₁)
+                 (e₃ e₄ : endpoint A Q T₂),
+               homot_endpoint
+                 A J S l r Q TR al ar (T₁ * T₂)
+                 (pair e₁ e₃) (pair e₂ e₄)
+               →
+               homot_endpoint A J S l r Q TR al ar T₁ e₁ e₂
+  | path_pr2 : ∏ (T₁ T₂ : poly_code)
+                 (e₁ e₂ : endpoint A Q T₁)
+                 (e₃ e₄ : endpoint A Q T₂),
+               homot_endpoint
+                 A J S l r Q TR al ar (T₁ * T₂)
+                 (pair e₁ e₃) (pair e₂ e₄)
+               →
+               homot_endpoint A J S l r Q TR al ar T₂ e₃ e₄
+  | path_pair : ∏ (T₁ T₂ : poly_code)
+                  (e₁ e₂ : endpoint A Q T₁)
+                  (e₃ e₄ : endpoint A Q T₂),
+                homot_endpoint A J S l r Q TR al ar T₁ e₁ e₂
+                →
+                homot_endpoint A J S l r Q TR al ar T₂ e₃ e₄
+                →
+                homot_endpoint
+                  A J S l r Q TR al ar (T₁ * T₂)
+                  (pair e₁ e₃) (pair e₂ e₄)
+  | path_inl : ∏ (T₁ T₂ : poly_code)
+                 (e₁ e₂ : endpoint A Q T₁),
+               homot_endpoint A J S l r Q TR al ar T₁ e₁ e₂
+               →
+               homot_endpoint
+                 A J S l r Q TR al ar (T₁ + T₂)
+                 (comp e₁ (ι₁ _ _))
+                 (comp e₂ (ι₁ _ _))
+  | path_inr : ∏ (T₁ T₂ : poly_code)
+                 (e₁ e₂ : endpoint A Q T₂),
+               homot_endpoint A J S l r Q TR al ar T₂ e₁ e₂
+               →
+               homot_endpoint
+                 A J S l r Q TR al ar (T₁ + T₂)
+                 (comp e₁ (ι₂ _ _))
+                 (comp e₂ (ι₂ _ _))
+  | path_constr : ∏ (j : J)
+                    (e : endpoint A Q (S j)),
+                  homot_endpoint
+                    A J S l r Q TR al ar I
+                    (comp e (l j))
+                    (comp e (r j))
+  | ap_constr : ∏ (el er : endpoint A Q A),
+                homot_endpoint A J S l r Q TR al ar A el er
+                →
+                homot_endpoint
+                  A J S l r Q TR al ar I
+                  (comp el constr)
+                  (comp er constr)
+  | path_arg : homot_endpoint
+                 A J S l r Q
+                 TR al ar
+                 TR al ar.
+
+(**
+The definition of a HIT signature
+The shape is:
+HIT H :=
+| c : A H → H
+| p : ∏ (j : J₁) (x : S₁ j H), l j x = r j x
+| s : ∏ (j : J₂) (x : Q j H) (p : sl j = sr j), s₁ j p x = s₂ j p x
+where we have    s₁ j p x, s₂ j p x : sl j x = sr j x
+ *)
+Definition hit_signature
+  : UU
+  := ∑ (A : poly_code),
+     ∑ (J₁ : Type),
+     ∑ (S : J₁ → poly_code),
+     ∑ (l r : ∏ (j : J₁), endpoint A (S j) I),
+     ∑ (J₂ : Type),
+     ∑ (Q : J₂ → poly_code),
+     ∑ (TR : J₂ → poly_code),
+     ∑ (sl sr : ∏ (j : J₂), endpoint A (Q j) (TR j)),
+     ∑ (psl psr : ∏ (j : J₂), endpoint A (Q j) I),
+     (∏ (j : J₂),
+      homot_endpoint
+        A J₁ S l r (Q j)
+        (TR j) (sl j) (sr j)
+        I (psl j) (psr j))
+     ×
+     (∏ (j : J₂),
+      homot_endpoint
+        A J₁ S l r (Q j)
+        (TR j) (sl j) (sr j)
+        I (psl j) (psr j)).
+
+(** Projections of HIT signature *)
+Section Projections.
+  Variable (Σ : hit_signature).
+  
+  Definition point_constr
+    : poly_code
+    := pr1 Σ.
+
+  Definition path_label
+    : Type
+    := pr12 Σ.
+
+  Definition path_source
+    : path_label → poly_code
+    := pr122 Σ.
+
+  Definition path_left
+    : ∏ (j : path_label), endpoint point_constr (path_source j) I
+    := pr1 (pr222 Σ).
+
+  Definition path_right
+    : ∏ (j : path_label), endpoint point_constr (path_source j) I
+    := pr12 (pr222 Σ).
+
+  Definition homot_label
+    : Type
+    := pr122 (pr222 Σ).
+
+  Definition homot_point_arg
+    : homot_label → poly_code
+    := pr1 (pr222 (pr222 Σ)).
+
+  Definition homot_path_arg_target
+    : homot_label → poly_code
+    := pr12 (pr222 (pr222 Σ)).
+
+  Definition homot_path_arg_left
+    : ∏ (j : homot_label),
+      endpoint
+        point_constr
+        (homot_point_arg j)
+        (homot_path_arg_target j)
+    := pr122 (pr222 (pr222 Σ)).
+
+  Definition homot_path_arg_right
+    : ∏ (j : homot_label),
+      endpoint
+        point_constr
+        (homot_point_arg j)
+        (homot_path_arg_target j)
+    := pr1 (pr222 (pr222 (pr222 Σ))).
+
+  Definition homot_left_endpoint
+    : ∏ (j : homot_label),
+      endpoint
+        point_constr
+        (homot_point_arg j)
+        I
+    := pr12 (pr222 (pr222 (pr222 Σ))).
+
+  Definition homot_right_endpoint
+    : ∏ (j : homot_label),
+      endpoint
+        point_constr
+        (homot_point_arg j)
+        I
+    := pr122 (pr222 (pr222 (pr222 Σ))).
+
+  Definition homot_left_path
+    : ∏ (j : homot_label),
+      homot_endpoint
+        point_constr
+        path_label path_source
+        path_left path_right
+        (homot_point_arg j)
+        (homot_path_arg_target j)
+        (homot_path_arg_left j)
+        (homot_path_arg_right j)
+        I
+        (homot_left_endpoint j)
+        (homot_right_endpoint j)
+    := pr1 (pr222 (pr222 (pr222 (pr222 Σ)))).
+
+  Definition homot_right_path
+    : ∏ (j : homot_label),
+      homot_endpoint
+        point_constr
+        path_label path_source
+        path_left path_right
+        (homot_point_arg j)
+        (homot_path_arg_target j)
+        (homot_path_arg_left j)
+        (homot_path_arg_right j)
+        I
+        (homot_left_endpoint j)
+        (homot_right_endpoint j)
+    := pr2 (pr222 (pr222 (pr222 (pr222 Σ)))).
+End Projections.

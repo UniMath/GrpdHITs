@@ -8,20 +8,20 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat.
+Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Base.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map1Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map2Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Identitor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Compositor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
-Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Identity.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Composition.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.PseudoTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Identity.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Composition.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 Require Import signature.hit_signature.
 Require Import prelude.all.
@@ -32,53 +32,11 @@ Local Open Scope cat.
 
 Opaque ps_comp.
 
-Definition gquot_path_groupoid
-           (A : one_type)
-           (X : groupoid)
-  : gquot (poly_act_groupoid (C A) X) → A.
-Proof.
-  use gquot_rec.
-  - exact (λ z, z).
-  - exact (λ _ _ z, z).
-  - exact (λ _, idpath _).
-  - exact (λ _ _ _ _ _, idpath _).
-  - apply A.
-Defined.
-
-Definition gquot_path_groupoid_identity
-           (A : one_type)
-           (X Y : groupoid)
-           (f : X ⟶ Y)
-  : ∏ (z : gquot (poly_act_groupoid (C A) X)),
-    gquot_path_groupoid A X z
-    =
-    gquot_path_groupoid A Y (gquot_functor_map (poly_act_functor (C A) X Y f) z).
-Proof.
-  use gquot_ind_set.
-  - exact idpath.
-  - abstract
-      (intros a₁ a₂ g ; cbn ;
-       apply map_PathOver ;
-       refine (whisker_square
-                 (idpath _)
-                 (!(gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _))
-                 (!((!(maponpathscomp _ (gquot_path_groupoid A Y) (gcleq _ g)))
-                      @ maponpaths
-                      (maponpaths (gquot_path_groupoid A Y))
-                      (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
-                      @ gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _))
-                 (idpath _)
-                 _) ;
-       apply vrefl).
-  - intro.
-    exact (one_type_isofhlevel A _ _).
-Defined.
-
 (** Commutation of groupoid quotient with constant *)
 Section GQuotConstant.
   Variable (A : one_types).
   
-  Definition gquot_const_data
+  Definition const_gquot_data
     : pstrans_data
         (ps_comp (⟦ C A ⟧) gquot_psfunctor)
         (ps_comp gquot_psfunctor ⦃ C A ⦄).
@@ -91,8 +49,8 @@ Section GQuotConstant.
       + apply one_type_2cell_iso.
   Defined.
 
-  Definition gquot_const_is_pstrans
-    : is_pstrans gquot_const_data.
+  Definition const_gquot_is_pstrans
+    : is_pstrans const_gquot_data.
   Proof.
     repeat split.
     - intros X Y f g p.
@@ -109,19 +67,19 @@ Section GQuotConstant.
       exact (pathscomp0rid _ @ ge (poly_act_groupoid (C A) Z) z).
   Qed.
 
-  Definition gquot_const
+  Definition const_gquot
     : pstrans
         (ps_comp (⟦ C A ⟧) gquot_psfunctor)
         (ps_comp gquot_psfunctor ⦃ C A ⦄).
   Proof.
     use make_pstrans.
-    - exact gquot_const_data.
-    - exact gquot_const_is_pstrans.
+    - exact const_gquot_data.
+    - exact const_gquot_is_pstrans.
   Defined.
 End GQuotConstant.
 
 (** Commutation of path groupoid with identity *)
-Definition gquot_poly_act_I
+Definition id_gquot_comp
            (G : groupoid)
   : gquot G → gquot (poly_act_groupoid I G).
 Proof.
@@ -133,13 +91,13 @@ Proof.
   - exact (gtrunc (poly_act_groupoid I G)).
 Defined.
 
-Definition gquot_poly_act_I_nat
+Definition id_gquot_nat
            (G₁ G₂ : groupoid)
            (F : G₁ ⟶ G₂)
   : ∏ (x : gquot G₁),
-    gquot_functor_map (poly_act_functor I G₁ G₂ F) (gquot_poly_act_I G₁ x)
+    gquot_functor_map (poly_act_functor I G₁ G₂ F) (id_gquot_comp G₁ x)
     =
-    gquot_poly_act_I G₂ (gquot_functor_map F x).
+    id_gquot_comp G₂ (gquot_functor_map F x).
 Proof.
   use gquot_ind_set.
   - exact (λ _, idpath _).
@@ -159,7 +117,7 @@ Proof.
       exact (gquot_rec_beta_gcleq (poly_act_groupoid I G₁) _ _ _ _ _ _ _ _ _)
       | refine (!(!(maponpathscomp _ _ _)
                      @ maponpaths
-                         (maponpaths (gquot_poly_act_I G₂))
+                         (maponpaths (id_gquot_comp G₂))
                          (gquot_rec_beta_gcleq G₁ _ _ _ _ _ _ _ _ g)
                      @ _)) ;
       exact (gquot_rec_beta_gcleq G₂ _ _ _ _ _ _ _ _ (#F g))
@@ -173,10 +131,10 @@ Definition id_gquot_data
       (ps_comp gquot_psfunctor ⦃ I ⦄).
 Proof.
   use make_pstrans_data.
-  - exact gquot_poly_act_I.
+  - exact id_gquot_comp.
   - intros G₁ G₂ F.
     use make_invertible_2cell.
-    + exact (gquot_poly_act_I_nat G₁ G₂ F).
+    + exact (id_gquot_nat G₁ G₂ F).
     + apply one_type_2cell_iso.
 Defined.
 

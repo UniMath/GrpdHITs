@@ -8,12 +8,12 @@ Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.whiskering.
 Require Import UniMath.CategoryTheory.Groupoids.
 
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat.
+Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 Require Import prelude.cubical_methods.
 Require Import prelude.grpd_bicat.

@@ -10,21 +10,21 @@ Require Import UniMath.CategoryTheory.Groupoids.
 
 Require Import UniMath.CategoryTheory.DisplayedCats.Auxiliary.
 
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat.
+Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Invertible_2cells.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Unitors.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Base.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map1Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map2Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Identitor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Compositor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
-Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
+Require Import UniMath.Bicategories.Core.Invertible_2cells.
+Require Import UniMath.Bicategories.Core.Unitors.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
 
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Identity.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Identity.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.

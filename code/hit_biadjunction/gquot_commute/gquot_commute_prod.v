@@ -8,20 +8,20 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Bicat.
+Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Base.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map1Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Map2Cells.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Identitor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.Compositor.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.
-Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Identity.
-Require Import UniMath.CategoryTheory.Bicategories.PseudoFunctors.Examples.Composition.
-Require Import UniMath.CategoryTheory.Bicategories.Transformations.PseudoTransformation.
-Require Import UniMath.CategoryTheory.Bicategories.Bicategories.Examples.OneTypes.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.Notations.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Identity.
+Require Import UniMath.Bicategories.PseudoFunctors.Examples.Composition.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 Require Import signature.hit_signature.
 Require Import prelude.all.
@@ -32,7 +32,7 @@ Local Open Scope cat.
 
 Opaque ps_comp.
 
-Definition gquot_prod_comp
+Definition prod_gquot_comp
            {P₁ P₂ : poly_code}
            {G : groupoid}
   : gquot (poly_act_groupoid P₁ G)
@@ -77,22 +77,22 @@ Section GQuotProd.
                     (ps_comp (⟦ P₂ ⟧) gquot_psfunctor)
                     (ps_comp gquot_psfunctor ⦃ P₂ ⦄)).
   
-  Definition gquot_prod_data_comp
+  Definition prod_gquot_data_comp
              (G : groupoid)
     : poly_act P₁ (gquot G) × poly_act P₂ (gquot G)
       →
       gquot (poly_act_groupoid (P₁ * P₂) G)
-    := uncurry (λ x y, gquot_prod_comp (IHP₁ G x) (IHP₂ G y)).
+    := uncurry (λ x y, prod_gquot_comp (IHP₁ G x) (IHP₂ G y)).
 
-  Definition gquot_prod_data_comp_nat_help
+  Definition prod_gquot_data_comp_nat_help
              (G₁ G₂ : groupoid)
              (F : G₁ ⟶ G₂)
     : ∏ (x₁ : gquot (poly_act_groupoid P₁ G₁))
         (x₂ : gquot (poly_act_groupoid P₂ G₁)),
       gquot_functor_map
         (poly_act_functor (P₁ * P₂) G₁ G₂ F)
-        (gquot_prod_comp x₁ x₂) =
-      gquot_prod_comp
+        (prod_gquot_comp x₁ x₂) =
+      prod_gquot_comp
         (gquot_functor_map (poly_act_functor P₁ G₁ G₂ F) x₁)
         (gquot_functor_map (poly_act_functor P₂ G₁ G₂ F) x₂).
   Proof.
@@ -124,7 +124,7 @@ Section GQuotProd.
       | refine (!(maponpathscomp _ _ _) @ _) ;
         refine (maponpaths
                   (maponpaths
-                     (gquot_prod_comp
+                     (prod_gquot_comp
                         (gquot_functor_map
                            (poly_act_functor P₁ G₁ G₂ F)
                            (gcl (poly_act_groupoid P₁ G₁) a))))
@@ -151,7 +151,7 @@ Section GQuotProd.
                 (idpath _)
                 _) ;
       [ refine (!(maponpathscomp
-                    (λ z, gquot_prod_comp z (gcl (poly_act_groupoid P₂ G₁) b))
+                    (λ z, prod_gquot_comp z (gcl (poly_act_groupoid P₂ G₁) b))
                     (gquot_functor_map (poly_act_functor (P₁ * P₂) G₁ G₂ F)) _) @ _);
         refine (maponpaths
                   (maponpaths (gquot_functor_map (poly_act_functor (P₁ * P₂) G₁ G₂ F)))
@@ -165,12 +165,12 @@ Section GQuotProd.
                  _ _ _ _ _ _ _ _ _)
       | refine (!(maponpathscomp
                     (gquot_functor_map (poly_act_functor P₁ G₁ G₂ F))
-                    (λ z, gquot_prod_comp z _)
+                    (λ z, prod_gquot_comp z _)
                     _) @ _);
         refine (maponpaths
                   (maponpaths
                      (λ z,
-                      gquot_prod_comp
+                      prod_gquot_comp
                         z
                         (gquot_functor_map
                            (poly_act_functor P₂ G₁ G₂ F)
@@ -238,14 +238,14 @@ Section GQuotProd.
     exact (eqtohomot (psnaturality_natural IHP₂ _ _ _ _ p) x).
   Qed.
   
-  Definition gquot_prod_data_comp_nat
+  Definition prod_gquot_data_comp_nat
              (G₁ G₂ : groupoid)
              (F : G₁ ⟶ G₂)
     : (λ x, gquot_functor_map
               (poly_act_functor (P₁ * P₂) G₁ G₂ F)
-              (gquot_prod_data_comp G₁ x))
+              (prod_gquot_data_comp G₁ x))
        ~
-       λ x, gquot_prod_data_comp
+       λ x, prod_gquot_data_comp
               G₂
               (dirprodf
                  (poly_map P₁ (gquot_functor_map F))
@@ -253,46 +253,46 @@ Section GQuotProd.
                  x).
   Proof.
     intro x.
-    refine (gquot_prod_data_comp_nat_help
+    refine (prod_gquot_data_comp_nat_help
               G₁ G₂ F
               (IHP₁ G₁ (pr1 x)) (IHP₂ G₁ (pr2 x)) @ _).
     refine (maponpaths
-             (λ z, gquot_prod_comp z _)
+             (λ z, prod_gquot_comp z _)
              (IHP₁_help F (pr1 x))
              @ _).
     exact (maponpaths
-             (gquot_prod_comp _)
+             (prod_gquot_comp _)
              (IHP₂_help F (pr2 x))).
   Defined.
 
-  Definition gquot_prod_data
+  Definition prod_gquot_data
     : pstrans_data
         (ps_comp (⟦ P₁ * P₂ ⟧) gquot_psfunctor)
         (ps_comp gquot_psfunctor ⦃ P₁ * P₂ ⦄).
   Proof.
     use make_pstrans_data.
-    - exact gquot_prod_data_comp.
+    - exact prod_gquot_data_comp.
     - intros G₁ G₂ F.
       use make_invertible_2cell.
-      + exact (gquot_prod_data_comp_nat G₁ G₂ F).
+      + exact (prod_gquot_data_comp_nat G₁ G₂ F).
       + apply one_type_2cell_iso.
   Defined.
 
   (** To show it is a pseudonatural trasfomation, we use the following lemmata *)
 
   (** For: naturality 2-cell is natural *)
-  Definition maponpaths_gquot_prod_data_comp
+  Definition maponpaths_prod_gquot_data_comp
              {G : groupoid}
              {x₁ x₂ : poly_act P₁ (gquot G) × poly_act P₂ (gquot G)}
              (p : x₁ = x₂)
     : maponpaths
-        (gquot_prod_data_comp G)
+        (prod_gquot_data_comp G)
         p
       =
       maponpaths
         (λ (x : gquot (poly_act_groupoid P₁ G)
                       × gquot (poly_act_groupoid P₂ G)),
-         gquot_prod_comp (pr1 x) (pr2 x))
+         prod_gquot_comp (pr1 x) (pr2 x))
         (pathsdirprod
            (maponpaths (λ z, IHP₁ G z) (maponpaths pr1 p))
            (maponpaths (λ z, IHP₂ G z) (maponpaths dirprod_pr2 p))).
@@ -302,15 +302,15 @@ Section GQuotProd.
   Defined.
 
   (** First condition *)  
-  Definition gquot_prod_is_pstrans_nat_lem
+  Definition prod_gquot_is_pstrans_nat_lem
              {X Y : grpd_bicat}
              {f g : grpd_bicat ⟦ X, Y ⟧}
              (p : f ==> g)
     : ∏ (z₁ : gquot (poly_act_groupoid P₁ X)) (z₂ : gquot (poly_act_groupoid P₂ X)),
-      gquot_prod_data_comp_nat_help X Y f z₁ z₂
+      prod_gquot_data_comp_nat_help X Y f z₁ z₂
     @ maponpaths
         (λ z : gquot (poly_act_groupoid P₁ Y) × gquot (poly_act_groupoid P₂ Y),
-               gquot_prod_comp (pr1 z) (pr2 z))
+               prod_gquot_comp (pr1 z) (pr2 z))
         (pathsdirprod
            (gquot_functor_cell
               (poly_act_nat_trans P₁ X Y f g p) z₁)
@@ -319,8 +319,8 @@ Section GQuotProd.
     =
     gquot_functor_cell
       (poly_act_nat_trans (P₁ * P₂) X Y f g p)
-      (gquot_prod_comp z₁ z₂)
-    @ gquot_prod_data_comp_nat_help X Y g z₁ z₂.
+      (prod_gquot_comp z₁ z₂)
+    @ prod_gquot_data_comp_nat_help X Y g z₁ z₂.
   Proof.
     use gquot_double_ind_prop.
     - intros a b.
@@ -338,7 +338,7 @@ Section GQuotProd.
         refine (uncurry_ap
                 (λ (x : gquot (poly_act_groupoid P₁ Y))
                    (y : gquot (poly_act_groupoid P₂ Y)),
-                 gquot_prod_comp x y)
+                 prod_gquot_comp x y)
                 (gcleq
                    (poly_act_groupoid P₁ Y)
                    (poly_act_nat_trans_data P₁ X Y f g p a))
@@ -370,22 +370,22 @@ Section GQuotProd.
       + apply poly_act_id_left.
   Qed.
   
-  Definition gquot_prod_is_pstrans_lem₁
+  Definition prod_gquot_is_pstrans_lem₁
              (X Y : grpd_bicat)
              (f g : grpd_bicat ⟦ X, Y ⟧)
              (p : f ==> g)
              (x : poly_act P₁ (gquot X) × poly_act P₂ (gquot X))
-    : (gquot_prod_data_comp_nat X Y f x)
+    : (prod_gquot_data_comp_nat X Y f x)
         @ maponpaths
-            (gquot_prod_data_comp Y)
+            (prod_gquot_data_comp Y)
             (## (⟦ P₁ * P₂ ⟧) (## gquot_psfunctor p) x)
       =
       gquot_functor_cell
-        (poly_act_nat_trans (P₁ * P₂) X Y f g p) (gquot_prod_data_comp X x)
-      @ gquot_prod_data_comp_nat X Y g x.
+        (poly_act_nat_trans (P₁ * P₂) X Y f g p) (prod_gquot_data_comp X x)
+      @ prod_gquot_data_comp_nat X Y g x.
   Proof.
-    unfold gquot_prod_data_comp_nat.
-    unfold gquot_prod_data_comp_nat_help.
+    unfold prod_gquot_data_comp_nat.
+    unfold prod_gquot_data_comp_nat_help.
     etrans.
     {
       refine (!(path_assoc _ _ _) @ _).
@@ -397,7 +397,7 @@ Section GQuotProd.
         pose (uncurry_ap
                 (λ (x : gquot (poly_act_groupoid P₁ Y))
                    (y : gquot (poly_act_groupoid P₂ Y)),
-                 gquot_prod_comp x y)
+                 prod_gquot_comp x y)
                 (IHP₁_help f (pr1 x))
                 (IHP₂_help f (pr2 x))) as r.
         unfold uncurry in r.
@@ -406,14 +406,14 @@ Section GQuotProd.
       etrans.
       {
         apply maponpaths.
-        exact (maponpaths_gquot_prod_data_comp (## (⟦ P₁ * P₂ ⟧) (## gquot_psfunctor p) x)).
+        exact (maponpaths_prod_gquot_data_comp (## (⟦ P₁ * P₂ ⟧) (## gquot_psfunctor p) x)).
       }
       etrans.
       {
         refine (!_).
         exact (maponpathscomp0
                  (λ z : gquot (poly_act_groupoid P₁ Y) × gquot (poly_act_groupoid P₂ Y),
-                        gquot_prod_comp (pr1 z) (pr2 z))
+                        prod_gquot_comp (pr1 z) (pr2 z))
                  (pathsdirprod
                     (IHP₁_help f (pr1 x))
                     (IHP₂_help f (pr2 x)))
@@ -462,7 +462,7 @@ Section GQuotProd.
       apply maponpaths.
       refine (maponpathscomp0
                (λ z : gquot (poly_act_groupoid P₁ Y) × gquot (poly_act_groupoid P₂ Y),
-                      gquot_prod_comp (pr1 z) (pr2 z))
+                      prod_gquot_comp (pr1 z) (pr2 z))
                (pathsdirprod
                   (gquot_functor_cell
                      (poly_act_nat_trans P₁ X Y f g p) (IHP₁ X (pr1 x)))
@@ -476,7 +476,7 @@ Section GQuotProd.
       pose (uncurry_ap
               (λ (x : gquot (poly_act_groupoid P₁ Y))
                  (y : gquot (poly_act_groupoid P₂ Y)),
-               gquot_prod_comp x y)
+               prod_gquot_comp x y)
               (IHP₁_help g (pr1 x))
               (IHP₂_help g (pr2 x))) as r.
         unfold uncurry in r.
@@ -485,24 +485,24 @@ Section GQuotProd.
     refine (path_assoc _ _ _ @ _).
     refine (_ @ !(path_assoc _ _ _)).
     apply maponpaths_2.
-    exact (gquot_prod_is_pstrans_nat_lem p (IHP₁ X (pr1 x)) (IHP₂ X (pr2 x))).
+    exact (prod_gquot_is_pstrans_nat_lem p (IHP₁ X (pr1 x)) (IHP₂ X (pr2 x))).
   Qed.
 
   (** Second condition *)
-  Definition gquot_prod_is_pstrans_lem₂_help
+  Definition prod_gquot_is_pstrans_lem₂_help
              (G : grpd_bicat)
     : ∏ (z₁ : gquot (poly_act_groupoid P₁ G))
         (z₂ : gquot (poly_act_groupoid P₂ G)),
       gquot_functor_identity
-        (poly_act_groupoid (P₁ * P₂) G) (gquot_prod_comp z₁ z₂)
+        (poly_act_groupoid (P₁ * P₂) G) (prod_gquot_comp z₁ z₂)
     @ gquot_functor_cell
         (poly_act_functor_identity (P₁ * P₂) G)
-        (gquot_prod_comp z₁ z₂)
-    @ gquot_prod_data_comp_nat_help
+        (prod_gquot_comp z₁ z₂)
+    @ prod_gquot_data_comp_nat_help
         G G (functor_identity _) z₁ z₂
     =
     maponpaths
-      (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+      (λ z, prod_gquot_comp (pr1 z) (pr2 z))
       (pathsdirprod
          ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ ⦄))) G z₁)
          ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₂ ⦄))) G z₂)).
@@ -524,7 +524,7 @@ Section GQuotProd.
       etrans.
       {
         pose (uncurry_ap
-                gquot_prod_comp
+                prod_gquot_comp
                 (gcleq (poly_act_groupoid P₁ G) (poly_act_functor_identity_data P₁ G a))
                 (gcleq (poly_act_groupoid P₂ G) (poly_act_functor_identity_data P₂ G b)))
           as r.
@@ -554,19 +554,19 @@ Section GQuotProd.
       + apply poly_act_id_left.
   Qed.
 
-  Definition gquot_prod_is_pstrans_lem₂
+  Definition prod_gquot_is_pstrans_lem₂
              {G : grpd_bicat}
              (x : poly_act P₁ (gquot G) × poly_act P₂ (gquot G))
     : (gquot_functor_identity
          (poly_act_groupoid (P₁ * P₂) G)
-         (gquot_prod_data_comp G x)
+         (prod_gquot_data_comp G x)
      @ gquot_functor_cell
         (poly_act_functor_identity (P₁ * P₂) G)
-        (gquot_prod_data_comp G x))
-    @ gquot_prod_data_comp_nat G G (functor_identity _) x
+        (prod_gquot_data_comp G x))
+    @ prod_gquot_data_comp_nat G G (functor_identity _) x
      =
      maponpaths
-       (gquot_prod_data_comp G)
+       (prod_gquot_data_comp G)
        (dirprodf_path
           (poly_id P₁ (gquot G)) (poly_id P₂ (gquot G)) x
             @ poly_homot (P₁ * P₂)
@@ -577,7 +577,7 @@ Section GQuotProd.
     {
       etrans.
       {
-        apply maponpaths_gquot_prod_data_comp.
+        apply maponpaths_prod_gquot_data_comp.
       }
       apply maponpaths.
       etrans.
@@ -627,11 +627,11 @@ Section GQuotProd.
       refine (!_).
       apply pathsdirprod_concat.
     }      
-    unfold gquot_prod_data_comp_nat.
+    unfold prod_gquot_data_comp_nat.
     etrans.
     {
       apply (maponpathscomp0
-                 (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+                 (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                  (pathsdirprod
                     ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ ⦄))) G (IHP₁ G (pr1 x)))
                     ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₂ ⦄))) G (IHP₂ G (pr2 x))))
@@ -647,7 +647,7 @@ Section GQuotProd.
       pose (uncurry_ap
               (λ (x : gquot (poly_act_groupoid P₁ _))
                  (y : gquot (poly_act_groupoid P₂ _)),
-               gquot_prod_comp x y)
+               prod_gquot_comp x y)
               (IHP₁_help (functor_identity _) (pr1 x))
               (IHP₂_help (functor_identity _) (pr2 x))) as r.
       unfold uncurry in r.
@@ -656,11 +656,11 @@ Section GQuotProd.
     refine ((path_assoc _ _ _) @ _).
     refine (maponpaths (λ z, z @ _) _).
     refine (!(path_assoc _ _ _) @ _).
-    exact (gquot_prod_is_pstrans_lem₂_help G (IHP₁ G (pr1 x)) (IHP₂ G (pr2 x))).
+    exact (prod_gquot_is_pstrans_lem₂_help G (IHP₁ G (pr1 x)) (IHP₂ G (pr2 x))).
   Qed.
 
   (** Third condition *)
-  Definition gquot_prod_is_pstrans_lem₃_help₁
+  Definition prod_gquot_is_pstrans_lem₃_help₁
              {Y Z : grpd_bicat}
              (g : grpd_bicat ⟦ Y, Z ⟧)
              {z₁ z₁' : gquot (poly_act_groupoid P₁ Y)}
@@ -671,14 +671,14 @@ Section GQuotProd.
         (gquot_functor_map (poly_act_functor (P₁ * P₂) Y Z g))
         (maponpaths
            (λ z,
-            gquot_prod_comp (pr1 z) (pr2 z))
+            prod_gquot_comp (pr1 z) (pr2 z))
            (pathsdirprod p q))
-    @ gquot_prod_data_comp_nat_help Y Z g z₁' z₂'
+    @ prod_gquot_data_comp_nat_help Y Z g z₁' z₂'
     =
-    gquot_prod_data_comp_nat_help
+    prod_gquot_data_comp_nat_help
       Y Z g z₁ z₂
     @ maponpaths
-        (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+        (λ z, prod_gquot_comp (pr1 z) (pr2 z))
         (pathsdirprod
            (maponpaths (gquot_functor_map (poly_act_functor P₁ Y Z g)) p)
            (maponpaths (gquot_functor_map (poly_act_functor P₂ Y Z g)) q)).
@@ -744,7 +744,7 @@ Section GQuotProd.
     apply idpath.
   Qed.
   
-  Definition gquot_prod_is_pstrans_lem₃_help₂
+  Definition prod_gquot_is_pstrans_lem₃_help₂
              {X Y Z : grpd_bicat}
              (f : grpd_bicat ⟦ X, Y ⟧)
              (g : grpd_bicat ⟦ Y, Z ⟧)
@@ -752,14 +752,14 @@ Section GQuotProd.
         (z₂ : gquot (poly_act_groupoid P₂ X)),
     (maponpaths
          (gquot_functor_map (poly_act_functor (P₁ * P₂) Y Z g))
-         (gquot_prod_data_comp_nat_help X Y f z₁ z₂)
-    @ gquot_prod_data_comp_nat_help
+         (prod_gquot_data_comp_nat_help X Y f z₁ z₂)
+    @ prod_gquot_data_comp_nat_help
         Y Z g
         (gquot_functor_map (poly_act_functor P₁ X Y f) z₁)
         (gquot_functor_map (poly_act_functor P₂ X Y f) z₂))
     @ maponpaths
         (λ z : gquot (poly_act_groupoid P₁ Z) × gquot (poly_act_groupoid P₂ Z),
-               gquot_prod_comp (pr1 z) (pr2 z))
+               prod_gquot_comp (pr1 z) (pr2 z))
         (pathsdirprod
            (gquot_functor_composition
               (poly_act_functor P₁ X Y f) (poly_act_functor P₁ Y Z g)
@@ -774,11 +774,11 @@ Section GQuotProd.
      =
      (gquot_functor_composition
         (poly_act_functor (P₁ * P₂) X Y f)
-        (poly_act_functor (P₁ * P₂) Y Z g) (gquot_prod_comp z₁ z₂)
+        (poly_act_functor (P₁ * P₂) Y Z g) (prod_gquot_comp z₁ z₂)
      @ gquot_functor_cell
          (poly_act_functor_composition (P₁ * P₂) X Y Z f g)
-         (gquot_prod_comp z₁ z₂))
-     @ gquot_prod_data_comp_nat_help
+         (prod_gquot_comp z₁ z₂))
+     @ prod_gquot_data_comp_nat_help
          X Z (f ∙ g) z₁ z₂.
   Proof.
     use gquot_double_ind_prop.
@@ -807,7 +807,7 @@ Section GQuotProd.
       etrans.
       {
         pose (uncurry_ap
-                 gquot_prod_comp
+                 prod_gquot_comp
                  (gcleq
                     (poly_act_groupoid P₁ Z)
                     ((poly_act_functor_composition P₁ X Y Z f g) a))
@@ -841,23 +841,23 @@ Section GQuotProd.
       + apply poly_act_id_left.
   Qed.
   
-  Definition gquot_prod_is_pstrans_lem₃
+  Definition prod_gquot_is_pstrans_lem₃
              {X Y Z : grpd_bicat}
              (f : grpd_bicat ⟦ X, Y ⟧)
              (g : grpd_bicat ⟦ Y, Z ⟧)
              (x : poly_act P₁ (gquot X) × poly_act P₂ (gquot X))
     : (((maponpaths
             (gquot_functor_map (poly_act_functor (P₁ * P₂) Y Z g))
-            (gquot_prod_data_comp_nat X Y f x)
+            (prod_gquot_data_comp_nat X Y f x)
         @ idpath _)
-        @ gquot_prod_data_comp_nat
+        @ prod_gquot_data_comp_nat
             Y Z g
             (dirprodf
                (poly_map P₁ (gquot_functor_map f))
                (poly_map P₂ (gquot_functor_map f)) x))
         @ idpath _)
         @ maponpaths
-            (gquot_prod_data_comp Z)
+            (prod_gquot_data_comp Z)
             (dirprodf_path
                (poly_comp P₁ (gquot_functor_map f) (gquot_functor_map g))
                (poly_comp P₂ (gquot_functor_map f) (gquot_functor_map g))
@@ -866,11 +866,11 @@ Section GQuotProd.
         = (gquot_functor_composition
             (poly_act_functor (P₁ * P₂) X Y f)
             (poly_act_functor (P₁ * P₂) Y Z g)
-            (gquot_prod_data_comp X x)
+            (prod_gquot_data_comp X x)
         @ gquot_functor_cell
             (poly_act_functor_composition (P₁ * P₂) X Y Z f g)
-            (gquot_prod_data_comp X x))
-        @ gquot_prod_data_comp_nat X Z (f ∙ g) x.
+            (prod_gquot_data_comp X x))
+        @ prod_gquot_data_comp_nat X Z (f ∙ g) x.
   Proof.
     refine (maponpaths
               (λ z, z @ _)
@@ -888,14 +888,14 @@ Section GQuotProd.
     etrans.
     {
       refine (maponpaths (λ z, _ @ z) _).
-      apply maponpaths_gquot_prod_data_comp.
+      apply maponpaths_prod_gquot_data_comp.
     }
     etrans.
     {
       refine (maponpaths (λ z, (_ @ z) @ _) _).
       refine (maponpaths (λ z, _ @ z) _).
       pose (uncurry_ap
-              gquot_prod_comp
+              prod_gquot_comp
               (IHP₁_help g (poly_map P₁ (gquot_functor_map f) (pr1 x)))
               (IHP₂_help g (poly_map P₂ (gquot_functor_map f) (pr2 x))))
         as r.
@@ -909,7 +909,7 @@ Section GQuotProd.
       refine (!(path_assoc _ _ _) @ _).
       refine (maponpaths (λ z, _ @ z) _).
       exact (!(maponpathscomp0
-                 (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+                 (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                  (pathsdirprod _ _)
                  (pathsdirprod _ _)
             )).
@@ -938,11 +938,11 @@ Section GQuotProd.
     etrans.
     {
       apply maponpaths_2.
-      unfold gquot_prod_data_comp_nat.
+      unfold prod_gquot_data_comp_nat.
       refine (maponpathscomp0 _ _ _ @ _).
       do 2 apply maponpaths.
       pose (uncurry_ap
-               gquot_prod_comp
+               prod_gquot_comp
                (IHP₁_help f (pr1 x))
                (IHP₂_help f (pr2 x)))
         as r.
@@ -955,7 +955,7 @@ Section GQuotProd.
       apply maponpaths_2.
       refine (!(path_assoc _ _ _) @ _).
       apply maponpaths.
-      exact (gquot_prod_is_pstrans_lem₃_help₁
+      exact (prod_gquot_is_pstrans_lem₃_help₁
                g
                (IHP₁_help f (pr1 x)) (IHP₂_help f (pr2 x))).
     }
@@ -968,7 +968,7 @@ Section GQuotProd.
       etrans.
       {
         exact (!(maponpathscomp0
-                   (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+                   (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                    (pathsdirprod _ _)
                    (pathsdirprod _ _)
               )).
@@ -1000,7 +1000,7 @@ Section GQuotProd.
       }
       exact (maponpathscomp0
                (λ z : gquot (poly_act_groupoid P₁ Z) × gquot (poly_act_groupoid P₂ Z),
-                      gquot_prod_comp (pr1 z) (pr2 z))
+                      prod_gquot_comp (pr1 z) (pr2 z))
                (pathsdirprod _ _)
                (pathsdirprod _ _)).
     }    
@@ -1008,10 +1008,10 @@ Section GQuotProd.
     etrans.
     {
       apply maponpaths.
-      unfold gquot_prod_data_comp_nat.
+      unfold prod_gquot_data_comp_nat.
       apply maponpaths.
       pose (uncurry_ap
-              gquot_prod_comp
+              prod_gquot_comp
               (IHP₁_help (f ∙ g) (pr1 x))
               (IHP₂_help (f ∙ g) (pr2 x)))
         as r.
@@ -1022,33 +1022,33 @@ Section GQuotProd.
     refine (_ @ !(path_assoc _ _ _)).
     refine (_ @ !(path_assoc _ _ _)).
     apply maponpaths_2.
-    exact (!(gquot_prod_is_pstrans_lem₃_help₂ f g (IHP₁ X (pr1 x)) (IHP₂ X (pr2 x)))).
+    exact (!(prod_gquot_is_pstrans_lem₃_help₂ f g (IHP₁ X (pr1 x)) (IHP₂ X (pr2 x)))).
   Qed.
   
-  Definition gquot_prod_is_pstrans
-    : is_pstrans gquot_prod_data.
+  Definition prod_gquot_is_pstrans
+    : is_pstrans prod_gquot_data.
   Proof.
     repeat split.
     - intros X Y f g p.
       use funextsec.
       intro x.
-      exact (!(gquot_prod_is_pstrans_lem₁ X Y f g p x)).
+      exact (!(prod_gquot_is_pstrans_lem₁ X Y f g p x)).
     - intros X.
       use funextsec.
-      exact gquot_prod_is_pstrans_lem₂.
+      exact prod_gquot_is_pstrans_lem₂.
     - intros X Y Z f g.
       use funextsec.
       intro x.
-      exact (!(gquot_prod_is_pstrans_lem₃ f g x)).
+      exact (!(prod_gquot_is_pstrans_lem₃ f g x)).
   Qed.
   
-  Definition gquot_prod
+  Definition prod_gquot
     : pstrans
         (ps_comp (⟦ P₁ * P₂ ⟧) gquot_psfunctor)
         (ps_comp gquot_psfunctor ⦃ P₁ * P₂ ⦄).
   Proof.
     use make_pstrans.
-    - exact gquot_prod_data.
-    - exact gquot_prod_is_pstrans.
+    - exact prod_gquot_data.
+    - exact prod_gquot_is_pstrans.
   Defined.
 End GQuotProd.
