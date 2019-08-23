@@ -536,7 +536,7 @@ Proof.
 Defined.
   
 (* Lift of the counit *)
-Definition algebra_biadjunction_lift_counit_type_path
+Definition εε_comp
            (P : poly_code)
            {X : one_type}
            (z : poly_act P (gquot (one_type_to_groupoid X)))
@@ -583,6 +583,6 @@ Definition εε
 Proof.
   intro X.
   use make_invertible_2cell.
-  + exact (algebra_biadjunction_lift_counit_type_path P).
+  + exact (εε_comp P).
   + apply one_type_2cell_iso.
 Defined.

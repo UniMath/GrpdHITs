@@ -1,3 +1,4 @@
+(** The naturality condition for the unit pseudotransformation *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
@@ -49,10 +50,6 @@ Require Import hit_biadjunction.hit_prealgebra_biadj.biadj_data.
 
 Local Open Scope cat.
 
-(** The naturality condition for the pseudotransformations *)
-Local Definition TODO {A : UU} : A.
-Admitted.
-
 (** Lemmata *)
 Section LiftUnitHelp.
   Local Arguments idpath {_ _}.
@@ -66,14 +63,14 @@ Section LiftUnitHelp.
   Local Notation "'PA₂'" := poly_act_nat_trans_data.
   Local Notation "'PAC'" := poly_act_functor_composition_data.
   
-  Definition lift_unit_pstrans
-             (P : poly_code)
-             (x y : groupoid)
-             (f : x ⟶ y)
-             (z : poly_act P (pr1 x))
-  : PA₁ P (GQ₁ f) (pr1 ((poly_path_groupoid P) (GQ₀ x)) (PA₁ P (gcl x) z))
+  Lemma lift_unit_pstrans
+        (P : poly_code)
+        (x y : groupoid)
+        (f : x ⟶ y)
+        (z : poly_act P (pr1 x))
+    : PA₁ P (GQ₁ f) (pr1 (poly_path_groupoid P (GQ₀ x)) (PA₁ P (gcl x) z))
     =
-    pr1 ((poly_path_groupoid P) (GQ₀ y)) (PA₁ P (gcl y) (PA₁ P f z)).
+    pr1 (poly_path_groupoid P (GQ₀ y)) (PA₁ P (gcl y) (PA₁ P f z)).
   Proof.
     induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
     - exact idpath.
@@ -85,12 +82,12 @@ Section LiftUnitHelp.
       + exact (IHP₁ (pr1 z)).
       + exact (IHP₂ (pr2 z)).
   Defined.    
-
-  Definition lift_unit_pstrans_eq
-             {P : poly_code}
-             {x y : groupoid}
-             (f : x ⟶ y)
-             (z : poly_act P (pr1 x))
+  
+  Lemma lift_unit_pstrans_eq
+        {P : poly_code}
+        {x y : groupoid}
+        (f : x ⟶ y)
+        (z : poly_act P (pr1 x))
     : pr11
         (psnaturality_of (poly_path_groupoid P) (GQ₁ f))
         (PA₁ P (gcl x) z)
@@ -138,7 +135,7 @@ Section LiftUnitHelp.
       exact (maponpaths (pathsdirprod _) (IHP₂ (pr2 z))).
   Qed.
 
-  Local Definition lift_unit_help₁
+  Lemma lift_unit_help₁
         (P : poly_code)
         {x y : groupoid}
         (f : x ⟶ y)
@@ -157,7 +154,7 @@ Section LiftUnitHelp.
     apply idpath.
   Qed.
 
-  Local Definition lift_unit_help₂
+  Lemma lift_unit_help₂
         (P : poly_code)
         {x y : groupoid}
         {f : x ⟶ y}
@@ -174,7 +171,7 @@ Section LiftUnitHelp.
     exact (!(pathscomp0rid _)).
   Qed.
   
-  Local Definition lift_unit_help₃
+  Lemma lift_unit_help₃
         (P : poly_code)
         {x y : groupoid}
         {f : x ⟶ y}
@@ -211,19 +208,34 @@ Section LiftUnitHelp.
       (poly_gquot P) G₂ (PA₁ P (GQ₁ F) z)
     := pr1 (psnaturality_of (poly_gquot P) F) z.
 
-  Definition maponpaths_homot
-             {A B : UU}
-             {f g : A → B}
-             (e : f ~ g)
-             {a₁ a₂ : A}
-             (p : a₁ = a₂)
-    : ap f p = e a₁ @ ap g p @ !(e a₂).
+  Definition lift_unit_help₄
+             (P₁ P₂ : poly_code)
+             {x y : groupoid}
+             (f : x ⟶ y)
+             (z : poly_act (P₁ * P₂) (pr1 x))
+             {pr₁ pr₂}
+             (p₁ : gcl (poly_act_groupoid P₁ x) (pr1 z) = pr₁)
+             (p₂ : gcl (poly_act_groupoid P₂ x) (pr2 z) = pr₂)
+    : ap (GQ₁ (poly_act_functor (P₁ * P₂) x y f))
+         (ap
+            (λ z0, prod_gquot_comp (pr1 z0) (pr2 z0))
+            (pathsdirprod p₁ p₂))
+    @ prod_gquot_data_comp_nat_help
+        x y f
+        pr₁
+        pr₂
+    =
+    ap
+      (λ z0, prod_gquot_comp (pr1 z0) (pr2 z0))
+      (pathsdirprod
+         (ap (GQ₁ (poly_act_functor P₁ x y f)) p₁)
+         (ap (GQ₁ (poly_act_functor P₂ x y f)) p₂)).
   Proof.
-    induction p.
-    exact (!(pathsinv0r _)).
+    induction p₁, p₂.
+    apply idpath.
   Qed.
 
-  Local Definition lift_unit_help₄
+  Local Definition lift_unit_help₅
         (P : poly_code)
         {x y : groupoid}
         (f : x ⟶ y)
@@ -236,12 +248,11 @@ Section LiftUnitHelp.
     =
     ηη_comp P (PA₁ P f z).
   Proof.
-    (*
     induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
     - exact (@idpath _ (@idpath _ ((gcl (poly_act_groupoid (C A) y) z)))).
     - apply idpath.
     - induction z as [z | z].
-      + refine (_ @ ap (ap gquot_inl_grpd) (IHP₁ z)).
+      + refine (_ @ ap (ap gquot_inl_grpd) (IHP₁ z)).          
         refine (!_).
         etrans.
         {
@@ -253,7 +264,7 @@ Section LiftUnitHelp.
         etrans.
         {
           do 2 apply maponpaths.
-          refine (maponpathscomp inl (gquot_sum (poly_gquot P₁) (poly_gquot P₂) y) _ @ _).
+          refine (maponpathscomp inl (sum_gquot (poly_gquot P₁) (poly_gquot P₂) y) _ @ _).
           exact (!(maponpathscomp (poly_gquot P₁ y)
                                (@gquot_inl_grpd P₁ P₂ _)
                                (lift_unit_pstrans P₁ x y f z))).
@@ -277,7 +288,6 @@ Section LiftUnitHelp.
                          _))
                   @ _).
         apply maponpaths_2.
-        simpl.
         etrans.
         {
           refine (maponpaths (λ z, z @ _) _).
@@ -290,18 +300,19 @@ Section LiftUnitHelp.
         {
           apply maponpaths_2.
           exact (maponpaths_homot (gquot_inl_grpd_gquot_functor f) (ηη_comp P₁ z)).
-        }
-        simpl.
+        }        
         etrans.
         {
-          do 2 apply maponpaths_2.
+          refine (ap (λ q, (_ @ (q @ _)) @ _) _).
           exact (!(maponpathscomp
                      (λ z0, GQ₁ (poly_act_functor P₁ x y f) z0)
                      gquot_inl_grpd
                      (ηη_comp P₁ z))).
         }
-        refine (_ @ pathscomp0rid _).
         refine (!(path_assoc _ _ _) @ _).
+        refine (pathscomp0lid _ @ _).
+        refine (!(path_assoc _ _ _) @ _).
+        refine (_ @ pathscomp0rid _).
         apply maponpaths.
         apply pathsinv0l.
       + refine (_ @ ap (ap gquot_inr_grpd) (IHP₂ z)).
@@ -316,7 +327,7 @@ Section LiftUnitHelp.
         etrans.
         {
           do 2 apply maponpaths.
-          refine (maponpathscomp inr (gquot_sum (poly_gquot P₁) (poly_gquot P₂) y) _ @ _).
+          refine (maponpathscomp inr (sum_gquot (poly_gquot P₁) (poly_gquot P₂) y) _ @ _).
           exact (!(maponpathscomp (poly_gquot P₂ y)
                                   (@gquot_inr_grpd P₁ P₂ _)
                                   (lift_unit_pstrans P₂ x y f z))).
@@ -340,7 +351,6 @@ Section LiftUnitHelp.
                          _))
                   @ _).
         apply maponpaths_2.
-        simpl.
         etrans.
         {
           refine (maponpaths (λ z, z @ _) _).
@@ -354,23 +364,48 @@ Section LiftUnitHelp.
           apply maponpaths_2.
           exact (maponpaths_homot (gquot_inr_grpd_gquot_functor f) (ηη_comp P₂ z)).
         }
-        simpl.
         etrans.
         {
-          do 2 apply maponpaths_2.
+          refine (ap (λ q, (_ @ (q @ _)) @ _) _).
           exact (!(maponpathscomp
                      (λ z0, GQ₁ (poly_act_functor P₂ x y f) z0)
                      gquot_inr_grpd
                      (ηη_comp P₂ z))).
         }
-        refine (_ @ pathscomp0rid _).
         refine (!(path_assoc _ _ _) @ _).
+        refine (pathscomp0lid _ @ _).
+        refine (!(path_assoc _ _ _) @ _).
+        refine (_ @ pathscomp0rid _).
         apply maponpaths.
         apply pathsinv0l.
-    - refine (!_).
+    - pose (uncurry_ap
+              prod_gquot_comp
+              (psnaturality_PGQ_help
+                 P₁ f
+                 ((pr1 (poly_path_groupoid P₁ (GQ₀ x)))
+                    (PA₁ P₁ (gcl x) (pr1 z))))
+              (psnaturality_PGQ_help
+                 P₂ f
+                 ((pr1 (poly_path_groupoid P₂ (GQ₀ x)))
+                    (PA₁ P₂ (gcl x) (pr2 z)))))
+        as q.
+      unfold uncurry in q.      
       etrans.
       {
-        exact (ap (λ l, ap (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+        apply maponpaths.
+        apply maponpaths_2.
+        exact (ap (λ z, (prod_gquot_data_comp_nat_help
+                           x y f
+                           (poly_gquot P₁ x _)
+                           (poly_gquot P₂ x _))
+                          @ z)
+                  (!q)).
+      }
+      clear q.
+      refine (!_).
+      etrans.
+      {
+        exact (ap (λ l, ap (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                            (pathsdirprod
                               l
                               (ηη_comp P₂ (PA₁ P₂ f (pr2 z)))))
@@ -378,26 +413,94 @@ Section LiftUnitHelp.
       }
       etrans.
       {
-        exact (ap (λ r, ap (λ z, gquot_prod_comp (pr1 z) (pr2 z))
+        exact (ap (λ r, ap (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                            (pathsdirprod
-                              (ap (GQ₁ (poly_act_functor P₁ x y f)) (ηη_comp P₁ (pr1 z)) @
-                                  psnaturality_PGQ_help P₁ f
-                                  ((pr1 ((poly_path_groupoid P₁) (GQ₀ x))) (PA₁ P₁ (gcl x) (pr1 z))) @
-                                  ap ((poly_gquot P₁) y) (lift_unit_pstrans P₁ x y f (pr1 z)))
+                              (ap (GQ₁ (poly_act_functor P₁ x y f)) (ηη_comp P₁ (pr1 z))
+                      @ psnaturality_PGQ_help
+                          P₁ f
+                          ((pr1 (poly_path_groupoid P₁ (GQ₀ x)))
+                             (PA₁ P₁ (gcl x) (pr1 z)))
+                      @ ap (poly_gquot P₁ y) (lift_unit_pstrans P₁ x y f (pr1 z)))
                               r))
                   (!(IHP₂ (pr2 z)))).
-      }*)
-      apply TODO.
+      }
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          refine (!(pathsdirprod_concat _ _ _ _)).
+        }
+        exact (maponpathscomp0
+                 (λ z, prod_gquot_comp (pr1 z) (pr2 z))
+                 (pathsdirprod
+                    (ap (GQ₁ (poly_act_functor P₁ x y f)) (ηη_comp P₁ (pr1 z)))
+                    (ap (GQ₁ (poly_act_functor P₂ x y f)) (ηη_comp P₂ (pr2 z))))
+                 (pathsdirprod _ _)).
+      }
+      refine (!_).
+      etrans.
+      {
+        do 2 apply maponpaths.
+        etrans.
+        {
+          exact (!(maponpathscomp
+                     (dirprodf
+                        (poly_gquot P₁ y)
+                        (poly_gquot P₂ y))
+                     (λ z, prod_gquot_comp (pr1 z) (pr2 z))
+                     (pathsdirprod
+                        (lift_unit_pstrans P₁ x y f (pr1 z))
+                        (lift_unit_pstrans P₂ x y f (pr2 z)))
+                )).
+        }
+        apply maponpaths.
+        exact (!(maponpaths_pathsdirprod
+                   (poly_gquot P₁ y)
+                   (poly_gquot P₂ y)
+                   (lift_unit_pstrans P₁ x y f (pr1 z))
+                   (lift_unit_pstrans P₂ x y f (pr2 z))
+              )).
+      }
+      etrans.
+      {
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          exact (!(maponpathscomp0
+                     (λ q, prod_gquot_comp (pr1 q) (pr2 q))
+                     (pathsdirprod
+                        (psnaturality_PGQ_help
+                           P₁ f
+                           ((pr1 (poly_path_groupoid P₁ (GQ₀ x)))
+                              (PA₁ P₁ (gcl x) (pr1 z))))
+                        (psnaturality_PGQ_help
+                           P₂ f
+                           ((pr1 (poly_path_groupoid P₂ (GQ₀ x)))
+                              (PA₁ P₂ (gcl x) (pr2 z)))))
+                     (pathsdirprod
+                        _
+                        _)
+                )).
+        }
+        apply maponpaths.
+        apply pathsdirprod_concat.
+      }
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      apply lift_unit_help₄.
   Qed.
-             
-  Definition algebra_biadjunction_lift_unit_pstrans_nat_lem
-             (P : poly_code)
-             {x y : groupoid}
-             {f : x ⟶ y}
-             {xx : (⦃ P ⦄ x : groupoid) ⟶ x}
-             {yy : (⦃ P ⦄ y : groupoid) ⟶ y}
-             (ff : xx ∙ f ⟹ # ⦃ P ⦄ f ∙ yy)
-             (z : poly_act P (pr1 x))
+
+  Lemma algebra_biadjunction_lift_unit_pstrans_nat_lem
+        (P : poly_code)
+        {x y : groupoid}
+        {f : x ⟶ y}
+        {xx : (⦃ P ⦄ x : groupoid) ⟶ x}
+        {yy : (⦃ P ⦄ y : groupoid) ⟶ y}
+        (ff : xx ∙ f ⟹ # ⦃ P ⦄ f ∙ yy)
+        (z : poly_act P (pr1 x))
     : (gcleq y (pr1 ff z)
     @ ap (GQ₁ yy) (ηη_comp P (PA₁ P f z)))
     @ ap (λ x0, GQ₁ yy ((poly_gquot P) y x0))
@@ -504,10 +607,10 @@ Section LiftUnitHelp.
                  _)).
     }
     apply maponpaths.
-    exact (lift_unit_help₄ P f z).
+    exact (lift_unit_help₅ P f z).
   Qed.
 
-  Definition algebra_biadjunction_lift_unit_pstrans_nat
+  Lemma algebra_biadjunction_lift_unit_pstrans_nat
              (P : poly_code)
     : algebra_lift_pstrans_nat
         (unit_of_lifted_biadj
@@ -518,13 +621,43 @@ Section LiftUnitHelp.
     use nat_trans_eq.
     { apply homset_property. }
     intro z.
-    (*Transparent ps_comp.
-    simpl.
-    cbn.
-    unfold homotcomp, funhomotsec, invhomot, homotfun.
-    cbn.
-    rewrite !pathscomp0rid.
-    exact (algebra_biadjunction_lift_unit_pstrans_nat_lem P (pr1 ff) z).*)
-    apply TODO.
+    etrans.
+    {
+      refine (maponpaths (λ z, z @ ap (λ q, GQ₁ yy (poly_gquot P y q)) _) _).
+      refine (pathscomp0rid _ @ _).
+      etrans.
+      {
+        exact (maponpaths (λ z, _ @ z) (pathscomp0rid _)).
+      }
+      refine (maponpaths (λ z, z @ _) _).
+      apply pathscomp0rid.
+    }
+    refine (algebra_biadjunction_lift_unit_pstrans_nat_lem P (pr1 ff) z @ _).
+    do 2 refine (maponpaths (λ z, z @ _) _).
+    refine (!(pathscomp0rid _) @ _).
+    refine (maponpaths (λ z, z @ _) _).
+    etrans.
+    {
+      refine (maponpaths (λ z, z @ _) _).
+      refine (!(pathscomp0rid _) @ _).
+      refine (maponpaths (λ z, ap _ z @ _) _).
+      exact (!(pathscomp0rid _)).
+    }
+    etrans.
+    {
+      apply maponpaths.
+      refine (!(pathscomp0rid _) @ _).
+      refine (maponpaths (λ z, z @ _) _).
+      apply idpath.
+    }    
+    etrans.
+    {
+      apply maponpaths.
+      refine (maponpaths (λ z, (z @ _) @ _) _).
+      do 3 refine (!(pathscomp0rid _) @ _).
+      refine (maponpaths (λ z, (((z @ _) @ _) @ _) @ _) _).
+      refine (!(pathscomp0rid _)).
+    }
+    exact (@idpath _ _).
   Qed.
 End LiftUnitHelp.
