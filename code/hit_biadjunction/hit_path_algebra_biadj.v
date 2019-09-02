@@ -48,16 +48,204 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.groupoid_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.groupoid_endpoints.
+Require Import algebra.one_types_homotopies.
+Require Import algebra.groupoid_homotopies.
 Require Import biadjunctions.all.
 Require Import hit_biadjunction.path_groupoid_commute.
 Require Import hit_biadjunction.gquot_commute.
 Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_prealgebra_biadj.
+Require Export hit_path_algebra_biadj.lift_gquot.
+Require Export hit_path_algebra_biadj.lift_path_groupoid.
+Require Import hit_path_algebra_biadj.unit.
+Require Import hit_path_algebra_biadj.counit.
 
 Local Definition TODO {A : UU} : A.
 Admitted.
 
 Local Open Scope cat.
+
+Section LiftAdd2CellBiadj.
+  Context {A S : poly_code}
+          (l r : endpoint A S I).
+
+  Local Notation "'D1'" := (add_cell_disp_cat
+                              (disp_alg_bicat (⦃ A ⦄))
+                              (⦃ S ⦄)
+                              (⦃ I ⦄)
+                              (sem_endpoint_grpd l)
+                              (sem_endpoint_grpd r)).
+
+  Local Notation "'D2'" := (add_cell_disp_cat
+                              (disp_alg_bicat (⟦ A ⟧))
+                              (⟦ S ⟧)
+                              (⟦ I ⟧)
+                              (sem_endpoint_one_types l)
+                              (sem_endpoint_one_types r)).
+  
+  Definition add2cell_disp_biadjunction
+    : disp_left_biadj_data
+        D1 D2
+        (prealg_biadjunction A)
+        (lift_gquot_add2cell l r).
+  Proof.
+    use disp_cell_unit_biadjunction.
+    - exact (@path_alg_path_groupoid_ob _ _ l r).
+    - exact (@path_alg_path_groupoid_mor _ _ l r).
+    - exact (add2cell_lift_unit l r).
+    - exact (add2cell_lift_counit l r).
+  Defined.
+End LiftAdd2CellBiadj.
+
+Definition hit_path_algebra_gquot
+           (Σ : hit_signature)
+  : psfunctor (hit_path_algebra_grpd Σ) (hit_path_algebra_one_types Σ).
+Proof.
+  use total_psfunctor.
+  - exact (total_psfunctor
+             _ _
+             gquot_psfunctor
+             (prealg_gquot (point_constr Σ))).
+  - use disp_depprod_psfunctor.
+    + intro i.
+      exact (lift_gquot_add2cell (path_left Σ i) (path_right Σ i)).
+    + intro i.
+      apply disp_2cells_isaprop_add_cell.
+    + intro i.
+      apply disp_locally_groupoid_add_cell.
+Defined.
+
+Definition hit_path_algebra_biadjunction
+           (Σ : hit_signature)
+  := total_left_biadj_data
+       _
+       _
+       (disp_depprod_biadjunction
+          (total_left_biadj_data _ _ (prealg_disp_biadjunction (point_constr Σ)))
+          (λ (i : path_label Σ), lift_gquot_add2cell (path_left Σ i) (path_right Σ i))
+          (λ i, add2cell_disp_biadjunction (path_left Σ i) (path_right Σ i))
+          (λ i, disp_2cells_isaprop_add_cell _ _ _ _ _)
+          (λ i, disp_locally_groupoid_add_cell _ _ _ _ _)
+          (λ i, disp_2cells_isaprop_add_cell _ _ _ _ _)
+          (λ i, disp_locally_groupoid_add_cell _ _ _ _ _)).
+(*
+Section LiftPseudofunctors.
+  Context {A S : poly_code}
+          (l r : endpoint A S I).
+
+  Local Notation "'D1'" := (add_cell_disp_cat
+                              (disp_alg_bicat (⦃ A ⦄))
+                              (⦃ S ⦄)
+                              (⦃ I ⦄)
+                              (sem_endpoint_grpd l)
+                              (sem_endpoint_grpd r)).
+
+  Local Notation "'D2'" := (add_cell_disp_cat
+                              (disp_alg_bicat (⟦ A ⟧))
+                              (⟦ S ⟧)
+                              (⟦ I ⟧)
+                              (sem_endpoint_one_types l)
+                              (sem_endpoint_one_types r)).
+
+  Definition lift_gquot_add2cell_obj
+             (G : total_bicat (disp_alg_bicat ⦃ A ⦄))
+             (p : pr1 (sem_endpoint_grpd l G) ⟹ pr1 (sem_endpoint_grpd r G))
+             (z : poly_act S (gquot (pr1 G)))
+    : sem_endpoint_one_types
+        l
+        (total_psfunctor
+           _ _ _
+           (disp_alg_psfunctor gquot_psfunctor (poly_gquot A))
+           G)
+        z
+      =
+      sem_endpoint_one_types
+        r
+        (total_psfunctor
+           _ _ _
+           (disp_alg_psfunctor gquot_psfunctor (poly_gquot A))
+           G)
+        z.
+  Admitted.
+
+  Definition lift_gquot_add2cell_mor
+             {G₁ G₂ : total_bicat (disp_alg_bicat ⦃ A ⦄)}
+             {F : G₁ --> G₂}
+             {hG₁ : pr1 ((sem_endpoint_grpd l) G₁) ⟹ pr1 ((sem_endpoint_grpd r) G₁)}
+             {hG₂ : pr1 ((sem_endpoint_grpd l) G₂) ⟹ pr1 ((sem_endpoint_grpd r) G₂)}
+             (ff : @mor_disp _ D1 _ _ hG₁ hG₂ F)
+             (z : poly_act S (gquot (pr1 G₁)))
+    : UU.
+  Proof.
+    (*
+    refine (maponpaths (gquot_functor_map (pr1 F)) (lift_gquot_add2cell_obj G₁ hG₁ z)
+            @ _ 
+            =
+            _
+            @ lift_gquot_add2cell_obj G₂ hG₂ (poly_map S (gquot_functor_map (pr1 F)) z)).
+    pose (@psnaturality_of _ _ _ _ (sem_endpoint_one_types r)) as p.
+    simpl in p.
+    specialize (p _ _ (gquot_functor_map (pr1 F),, prealg_gquot_inv_cell A (pr2 F))).
+
+    (psnaturality_of (sem_endpoint_one_types r)
+     (gquot_functor_map (pr1 F),, prealg_gquot_inv_cell A (pr2 F))) z
+     *)
+  Admitted.
+
+  Definition lift_gquot_add2cell
+    : disp_psfunctor
+        D1 D2
+        (total_psfunctor
+           _ _
+           gquot_psfunctor
+           (prealg_gquot A)).
+  Proof.
+    use disp_cell_unit_psfunctor.
+    - exact lift_gquot_add2cell_obj.
+    - apply TODO.
+      (*abstract
+        (intros G₁ G₂ F hG₁ hG₂ hF ;
+         use funextsec ;
+         intro z ;
+      (*simpl.
+      cbn.
+      unfold homotcomp, homotfun, funhomotsec.
+      cbn.*)
+         apply TODO).*)
+  Defined.
+
+
+  Definition add2cell_biadjunction
+    : disp_left_biadj_data
+        D1 D2
+        (total_left_biadj_data _ _ (algebra_disp_biadjunction A))
+        lift_gquot_add2cell.
+  Proof.
+    use disp_cell_unit_biadjunction.
+    - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Definition PathOver_to_square
            {X Y : UU}
@@ -232,7 +420,7 @@ Proof.
     exact (poly_path_groupoid_is_id_is_nat f).
 Qed.
 
-(** For groupoid quotient *)      
+(** For groupoid quotient *)
 Definition test
            {A S T : poly_code}
            (e : endpoint A S T)
@@ -336,14 +524,14 @@ Section LiftPseudofunctors.
                 (sem_endpoint_one_types r)
                 (# (total_psfunctor
                       _ _ gquot_psfunctor
-                      (disp_alg_psfunctor gquot_psfunctor (poly_gquot A))) F))
+                      (prealg_gquot A)) F))
            z)
       =
       (pr1(psnaturality_of
          (sem_endpoint_one_types l)
          (# (total_psfunctor
                _ _ gquot_psfunctor
-               (disp_alg_psfunctor gquot_psfunctor (poly_gquot A))) F)))
+               (prealg_gquot A)) F)))
         z
         @ lift_gquot_add2cell_obj _ yy (poly_map S (gquot_functor_map (pr1 F)) z).
   Proof.
@@ -356,12 +544,18 @@ Section LiftPseudofunctors.
         (total_psfunctor
            _ _
            gquot_psfunctor
-           (disp_alg_psfunctor gquot_psfunctor (poly_gquot A))).
+           (prealg_gquot A)).
   Proof.
     use disp_cell_unit_psfunctor.
     - exact lift_gquot_add2cell_obj.
     - intros x y f xx yy ff.
       use funextsec.
+      intro z.
+      simpl.
+      cbn.
+      unfold homotcomp, homotfun, funhomotsec.
+      simpl.
+      cbn.
       exact (lift_gquot_add2cell_mor ff).
   Defined.
 
@@ -456,7 +650,7 @@ Section LiftPseudofunctors.
   Definition add2cell_biadjunction
     : disp_left_biadj_data
         D1 D2
-        (total_left_biadj_data _ _ (algebra_biadjunction A))
+        (total_left_biadj_data _ _ (algebra_disp_biadjunction A))
         lift_gquot_add2cell.
   Proof.
     use disp_cell_unit_biadjunction.
@@ -476,3 +670,4 @@ Section LiftPseudofunctors.
     - apply TODO.
   Defined.
 End LiftPseudofunctors.
+*)

@@ -22,8 +22,6 @@ hit_biadjunction/gquot_natural.v
 biadjunctions/disp_cat_biadjunction.v
 biadjunctions/disp_depprod_biadjunction.v
 biadjunctions/fullsub_biadjunction.v
-biadjunctions/disp_algebra/algebra_pseudofunctor.v
-biadjunctions/disp_algebra/algebra_biadjunction.v
 biadjunctions/all.v
 
 algebra/one_types_polynomials.v
@@ -34,6 +32,8 @@ algebra/groupoid_endpoints.v
 algebra/groupoid_homotopies.v
 
 signature/hit.v
+
+displayed_algebras/displayed_algebra.v
 
 existence/initial_algebra.v
 existence/initial_groupoid_algebra.v
@@ -48,11 +48,30 @@ hit_biadjunction/gquot_commute/gquot_commute_sum.v
 hit_biadjunction/gquot_commute/gquot_commute_prod.v
 hit_biadjunction/gquot_commute.v
 
-hit_biadjunction/hit_prealgebra_biadj/biadj_data.v
+hit_biadjunction/hit_prealgebra_biadj/lift_path_groupoid.v
+hit_biadjunction/hit_prealgebra_biadj/lift_gquot.v
 hit_biadjunction/hit_prealgebra_biadj/unit.v
 hit_biadjunction/hit_prealgebra_biadj/counit.v
+
+hit_biadjunction/hit_prealgebra_biadj_unit_counit.v
+
+hit_biadjunction/hit_prealgebra_biadj/left_triangle.v
+hit_biadjunction/hit_prealgebra_biadj/right_triangle.v
+
 hit_biadjunction/hit_prealgebra_biadj.v
+
+hit_biadjunction/hit_path_algebra_biadj/lift_gquot.v
+hit_biadjunction/hit_path_algebra_biadj/lift_path_groupoid.v
+hit_biadjunction/hit_path_algebra_biadj/unit.v
+hit_biadjunction/hit_path_algebra_biadj/counit.v
 hit_biadjunction/hit_path_algebra_biadj.v
+
+hit_biadjunction/hit_algebra_biadj/lift_path_groupoid.v
+hit_biadjunction/hit_algebra_biadj/lift_gquot.v
 hit_biadjunction/hit_algebra_biadj.v
 
 existence/hit_existence.v
+
+examples/circle.v
+examples/torus.v
+examples/set_trunc.v

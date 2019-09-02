@@ -14,6 +14,9 @@ Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
 Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.FullSub.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -95,61 +98,329 @@ Proof.
   - exact c.
 Defined.
 
-(*
+(** Needed for lifting homotopies *)
+Definition PathOver_pr1
+           {P₁ P₂ : poly_code}
+           {X : one_type}
+           {Y : X → one_type}
+           {x₁ x₂ : poly_act P₁ X × poly_act P₂ X}
+           {p : x₁ = x₂}
+           {y₁ : poly_dact_UU P₁ Y (pr1 x₁) × poly_dact_UU P₂ Y (pr2 x₁)}
+           {y₂ : poly_dact_UU P₁ Y (pr1 x₂) × poly_dact_UU P₂ Y (pr2 x₂)}
+  : @PathOver
+      _ _ _
+      (poly_dact (P₁ * P₂) Y)
+      y₁ y₂
+      p
+    →
+    @PathOver
+      _ _ _
+      (poly_dact P₁ Y)
+      (pr1 y₁) (pr1 y₂)
+      (maponpaths pr1 p).
+Proof.
+  induction p.
+  exact (λ p, maponpaths pr1 p).
+Defined.
+
+Definition PathOver_pr2
+           {P₁ P₂ : poly_code}
+           {X : one_type}
+           {Y : X → one_type}
+           {x₁ x₂ : poly_act P₁ X × poly_act P₂ X}
+           {p : x₁ = x₂}
+           {y₁ : poly_dact_UU P₁ Y (pr1 x₁) × poly_dact_UU P₂ Y (pr2 x₁)}
+           {y₂ : poly_dact_UU P₁ Y (pr1 x₂) × poly_dact_UU P₂ Y (pr2 x₂)}
+  : @PathOver
+      _ _ _
+      (poly_dact (P₁ * P₂) Y)
+      y₁ y₂
+      p
+    →
+    @PathOver
+      _ _ _
+      (poly_dact P₂ Y)
+      (pr2 y₁) (pr2 y₂)
+      (maponpaths dirprod_pr2 p).
+Proof.
+  induction p.
+  exact (λ p, maponpaths dirprod_pr2 p).
+Defined.
+
+Definition PathOver_pair
+           {P₁ P₂ : poly_code}
+           {X : one_type}
+           {Y : X → one_type}
+           {x₁ y₁ : poly_act P₁ X} {x₂ y₂ : poly_act P₂ X}
+           {p₁ : x₁ = y₁}
+           {p₂ : x₂ = y₂}
+           {a₁ : poly_dact_UU P₁ Y x₁} {a₂ : poly_dact_UU P₂ Y x₂}
+           {b₁ : poly_dact_UU P₁ Y y₁} {b₂ : poly_dact_UU P₂ Y y₂}
+  : @PathOver
+      _ x₁ y₁
+      (poly_dact P₁ Y)
+      a₁ b₁
+      p₁
+    → @PathOver
+        _ x₂ y₂
+        (poly_dact P₂ Y)
+        a₂ b₂
+        p₂
+    →
+    @PathOver
+      _ (x₁ ,, x₂) (y₁ ,, y₂)
+      (poly_dact (P₁ * P₂) Y)
+      (a₁ ,, a₂) (b₁ ,, b₂)
+      (pathsdirprod p₁ p₂).
+Proof.
+  induction p₁ ; induction p₂.
+  exact pathsdirprod.
+Defined.
+
+Definition PathOver_inl
+           {P₁ P₂ : poly_code}
+           {X : one_type}
+           {Y : X → one_type}
+           {x₁ x₂ : poly_act P₁ X}
+           {p : x₁ = x₂}
+           {y₁ : poly_dact_UU P₁ Y x₁}
+           {y₂ : poly_dact_UU P₁ Y x₂}
+  : @PathOver
+      _ _ _
+      (poly_dact P₁ Y)
+      y₁ y₂
+      p
+    →
+    @PathOver
+      _ (inl x₁) (inl x₂)
+      (poly_dact (P₁ + P₂) Y)
+      y₁ y₂
+      (maponpaths inl p).
+Proof.
+  induction p.
+  exact (λ q, q).
+Defined.
+
+Definition PathOver_inr
+           {P₁ P₂ : poly_code}
+           {X : one_type}
+           {Y : X → one_type}
+           {x₁ x₂ : poly_act P₂ X}
+           {p : x₁ = x₂}
+           {y₁ : poly_dact_UU P₂ Y x₁}
+           {y₂ : poly_dact_UU P₂ Y x₂}
+  : @PathOver
+      _ _ _
+      (poly_dact P₂ Y)
+      y₁ y₂
+      p
+    →
+    @PathOver
+      _ (inr x₁) (inr x₂)
+      (poly_dact (P₁ + P₂) Y)
+      y₁ y₂
+      (maponpaths inr p).
+Proof.
+  induction p.
+  exact (λ q, q).
+Defined.
+
+Definition apd_2
+           {A B : UU}
+           {Y₁ : A → UU}
+           {Y₂ : B → UU}
+           {c : A → B}
+           (cc : ∏ (a : A), Y₁ a → Y₂ (c a))
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+           {y₁ : Y₁ a₁} {y₂ : Y₁ a₂}
+           (q : PathOver y₁ y₂ p)
+  : PathOver
+      (cc a₁ y₁)
+      (cc a₂ y₂)
+      (maponpaths c p).
+Proof.
+  induction p.
+  exact (maponpaths (cc a₁) q).
+Defined.
+
+Definition homot_endpoint_dact
+           {A : poly_code}
+           {J : UU}
+           {S : J → poly_code}
+           {l : ∏ (j : J), endpoint A (S j) I}
+           {r : ∏ (j : J), endpoint A (S j) I}
+           {X : total_bicat
+                  (disp_depprod_bicat
+                     J
+                     (λ j, add_cell_disp_cat
+                             _ _ _
+                             (sem_endpoint_one_types (l j))
+                             (sem_endpoint_one_types (r j))))}
+           {Y : (pr11 X : one_type) → one_type}
+           {Q : poly_code}
+           {TR : poly_code}
+           {al ar : endpoint A Q TR}
+           {T : poly_code}
+           {sl sr : endpoint A Q T}
+           (p : homot_endpoint l r al ar sl sr)
+           (c : ∏ (x : ⟦ A ⟧ (pr11 X) : one_type),
+                poly_dact A Y x → Y (pr21 X x))
+           (pp : ∏ (j : J)
+                   (x : poly_act (S j) (pr11 X : one_type))
+                   (y : poly_dact (S j) Y x),
+                 @PathOver
+                   _ _ _
+                   Y
+                   (endpoint_dact _ Y (l j) c y)
+                   (endpoint_dact _ Y (r j) c y)
+                   (pr2 X j x))
+           {z : poly_act Q (pr11 X : one_type)}
+           (zz : poly_dact_UU Q (λ x, Y x) z)
+           {p_arg : sem_endpoint_one_types al _ z = sem_endpoint_one_types ar _ z}
+           (pp_arg : @PathOver
+                       _ _ _
+                       (poly_dact TR Y)
+                       (endpoint_dact (pr1 X) Y al c zz)
+                       (endpoint_dact (pr1 X) Y ar c zz)
+                       (sem_homot_endpoint_one_types path_arg (pr1 X) (pr2 X) z p_arg))
+  : @PathOver
+      _ _ _
+      (poly_dact T Y)
+      (endpoint_dact (pr1 X) Y sl c zz)
+      (endpoint_dact (pr1 X) Y sr c zz)
+      (sem_homot_endpoint_one_types p (pr1 X) (pr2 X) _ p_arg).
+Proof.
+  induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+                  | R₁ R₂ T e₁ e₂ e₃ | T e | T e
+                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
+                  | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
+                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
+                  | j e | el er | ].
+  - apply identityPathOver.
+  - exact (inversePathOver IHp).
+  - exact (composePathOver IHP₁ IHP₂).
+  - apply identityPathOver.
+  - apply identityPathOver.
+  - apply identityPathOver.
+  - exact (PathOver_pr1 IHp).
+  - exact (PathOver_pr2 IHp).
+  - exact (PathOver_pair IHp₁ IHp₂).
+  - exact (PathOver_inl IHp).
+  - exact (PathOver_inr IHp).
+  - apply (pp j).    
+  - exact (@apd_2
+             _ _ _
+             Y _
+             c
+             _ _
+             ((sem_homot_endpoint_one_types p (pr1 X) (pr2 X) z p_arg))
+             _ _
+             IHp
+          ).
+  - exact pp_arg.
+Defined.
+
 (**
 Definition of a displayed algebra
  *)
 Definition disp_algebra
            {Σ : hit_signature}
-           (X : set_algebra Σ)
+           (X : hit_algebra_one_types Σ)
   : UU
-  :=
-    ∑ (Y : alg_carrier X → hSet)
-      (c : ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier X)),
-           poly_dact (point_arg Σ) Y x → Y (alg_operation X x)),
-    ∏ (j : path_index Σ)
-      (x : ⦃ path_arg Σ j ⦄ (alg_carrier X))
-      (y : poly_dact (path_arg Σ j) Y x),
-    transportf
-      (poly_dact I Y)
-      (alg_paths X j x)
-      (endpoint_dact (alg_to_prealg X) (path_lhs Σ j) c y)
-    =
-    endpoint_dact (alg_to_prealg X) (path_rhs Σ j) c y.
+  := ∑ (Y : alg_carrier X → one_type)
+       (c : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
+            poly_dact (point_constr Σ) Y x → Y (alg_constr X x))
+       (pp : ∏ (j : path_label Σ)
+               (x : poly_act (path_source Σ j) (alg_carrier X))
+               (y : poly_dact (path_source Σ j) Y x),
+             @PathOver
+               _ _ _
+               Y
+               (endpoint_dact (pr11 X) Y (path_left Σ j) c y)
+               (endpoint_dact (pr11 X) Y (path_right Σ j) c y)
+               (alg_path X j x)),
+     ∏ (j : homot_label Σ)
+       (z : poly_act (homot_point_arg Σ j) (alg_carrier X))
+       (zz : poly_dact_UU (homot_point_arg Σ j) Y z)
+       (p_arg : sem_endpoint_one_types (homot_path_arg_left Σ j) _ z
+                =
+                sem_endpoint_one_types (homot_path_arg_right Σ j) _ z)
+       (pp_arg : @PathOver
+                   _ _ _
+                   (poly_dact _ Y)
+                   (endpoint_dact (pr11 X) Y (homot_path_arg_left Σ j) c zz)
+                   (endpoint_dact (pr11 X) Y (homot_path_arg_right Σ j) c zz)
+                   (sem_homot_endpoint_one_types path_arg (pr11 X) (pr21 X) z p_arg)),
+     globe_over
+       Y
+       (pr2 X j z p_arg)
+       (homot_endpoint_dact (homot_left_path Σ j) c pp zz pp_arg)
+       (homot_endpoint_dact (homot_right_path Σ j) c pp zz pp_arg).
 
 (**
 Projections
  *)
 Definition disp_algebra_type_family
            {Σ : hit_signature}
-           {X : set_algebra Σ}
+           {X : hit_algebra_one_types Σ}
            (Y : disp_algebra X)
-  : alg_carrier X → hSet
+  : alg_carrier X → UU
   := pr1 Y.
 
 Coercion disp_algebra_type_family : disp_algebra >-> Funclass.
 
 Section DispAlgebraProjections.
   Context {Σ : hit_signature}
-          {X : set_algebra Σ}.
+          {X : hit_algebra_one_types Σ}.
   Variable (Y : disp_algebra X).
 
-  Definition disp_alg_operation
-    : ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier X)),
-      poly_dact (point_arg Σ) Y x → Y (alg_operation X x)
+  Definition disp_alg_constr
+    : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
+      poly_dact (point_constr Σ) (pr1 Y) x
+      →
+      pr1 Y (alg_constr X x)
     := pr12 Y.
 
-  Definition disp_alg_paths
-    : ∏ (j : path_index Σ)
-        (x : ⦃ path_arg Σ j ⦄ (alg_carrier X))
-        (y : poly_dact (path_arg Σ j) Y x),
-      transportf
-        (poly_dact I Y)
-        (alg_paths X j x)
-        (endpoint_dact (alg_to_prealg X) (path_lhs Σ j) disp_alg_operation y)
-      =
-      endpoint_dact (alg_to_prealg X) (path_rhs Σ j) disp_alg_operation y
-  := pr22 Y.
+  Definition disp_alg_path
+    : ∏ (j : path_label Σ)
+        (x : poly_act (path_source Σ j) (alg_carrier X))
+        (y : poly_dact (path_source Σ j) (pr1 Y) x),
+      @PathOver
+        _ _ _
+        Y
+        (endpoint_dact (pr11 X) (pr1 Y) (path_left Σ j) (pr12 Y) y)
+        (endpoint_dact (pr11 X) (pr1 Y) (path_right Σ j) (pr12 Y) y) 
+        (alg_path X j x)
+    := pr122 Y.
+
+  Definition disp_alg_homot
+    :  ∏ (j : homot_label Σ)
+         (z : poly_act (homot_point_arg Σ j) (alg_carrier X))
+         (zz : poly_dact_UU (homot_point_arg Σ j) Y z)
+         (p_arg : (sem_endpoint_one_types (homot_path_arg_left Σ j)) (pr11 X) z
+                  =
+                  (sem_endpoint_one_types (homot_path_arg_right Σ j)) (pr11 X) z)
+         (pp_arg : @PathOver
+                     _ _ _
+                     (poly_dact _ (pr1 Y))
+                     (endpoint_dact
+                        (pr11 X) (pr1 Y)
+                        (homot_path_arg_left Σ j) (pr12 Y) zz)
+                     (endpoint_dact
+                        (pr11 X) (pr1 Y)
+                        (homot_path_arg_right Σ j) (pr12 Y) zz)
+                     (sem_homot_endpoint_one_types path_arg (pr11 X) (pr21 X) z p_arg)),
+       globe_over
+         Y
+         (pr2 X j z p_arg)
+         (homot_endpoint_dact
+            (homot_left_path Σ j) 
+            (pr12 Y) (pr122 Y) zz pp_arg)
+         (homot_endpoint_dact
+            (homot_right_path Σ j) 
+            (pr12 Y) (pr122 Y) zz pp_arg)
+    := pr222 Y.
 End DispAlgebraProjections.
 
 (**
@@ -157,31 +428,61 @@ Builder
  *)
 Definition make_disp_algebra
            {Σ : hit_signature}
-           {X : set_algebra Σ}
-           (Y : alg_carrier X → hSet)
-           (c : ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier X)),
-                poly_dact (point_arg Σ) Y x → Y (alg_operation X x))
-           (p : ∏ (j : path_index Σ)
-                  (x : ⦃ path_arg Σ j ⦄ (alg_carrier X))
-                  (y : poly_dact (path_arg Σ j) Y x),
-                transportf
-                  (poly_dact I Y)
-                  (alg_paths X j x)
-                  (endpoint_dact (alg_to_prealg X) (path_lhs Σ j) c y)
-                =
-                endpoint_dact (alg_to_prealg X) (path_rhs Σ j) c y)
+           {X : hit_algebra_one_types Σ}
+           (Y : alg_carrier X → one_type)
+           (c : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
+                poly_dact (point_constr Σ) Y x
+                →
+                Y (alg_constr X x))
+           (p : ∏ (j : path_label Σ)
+                  (x : poly_act (path_source Σ j) (alg_carrier X))
+                  (y : poly_dact (path_source Σ j) Y x),
+                @PathOver
+                  _ _ _
+                  Y
+                  (endpoint_dact (pr11 X) Y (path_left Σ j) c y)
+                  (endpoint_dact (pr11 X) Y (path_right Σ j) c y) 
+                  (alg_path X j x))
+           (h : ∏ (j : homot_label Σ)
+                  (z : poly_act (homot_point_arg Σ j) (alg_carrier X))
+                  (zz : poly_dact_UU (homot_point_arg Σ j) Y z)
+                  (p_arg : (sem_endpoint_one_types
+                              (homot_path_arg_left Σ j)) (pr11 X) z
+                           =
+                           (sem_endpoint_one_types
+                              (homot_path_arg_right Σ j)) (pr11 X) z)
+                  (pp_arg : @PathOver
+                              _ _ _
+                              (poly_dact _ Y)
+                              (endpoint_dact
+                                 (pr11 X) Y
+                                 (homot_path_arg_left Σ j) c zz)
+                              (endpoint_dact
+                                 (pr11 X) Y
+                                 (homot_path_arg_right Σ j) c zz)
+                              (sem_homot_endpoint_one_types
+                                 path_arg (pr11 X) (pr21 X) z p_arg)),
+                globe_over
+                  Y
+                  (pr2 X j z p_arg)
+                  (homot_endpoint_dact
+                     (homot_left_path Σ j) 
+                     c p zz pp_arg)
+                  (homot_endpoint_dact
+                     (homot_right_path Σ j) 
+                     c p zz pp_arg))
   : disp_algebra X
-  := (Y ,, (c ,, p)).
+  := (Y ,, (c ,, (p ,, h))).
 
 (**
 Operation necessary to define sections
  *)
 Definition poly_dmap
            (P : poly_code)
-           {X : hSet}
-           (Y : X → hSet)
+           {X : one_type}
+           (Y : X → one_type)
            (f : ∏ (x : X), Y x)
-  : ∏ (x : ⦃ P ⦄ X), poly_dact P Y x.
+  : ∏ (x : poly_act P X), poly_dact P Y x.
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (idfun T).
@@ -196,14 +497,72 @@ Defined.
 (**
 Maps to a displayed algebra (sections of the display map)
  *)
+Definition endpoint_dact_natural
+           {A P Q : poly_code}
+           (e : endpoint A P Q)
+           {X : total_bicat (disp_alg_bicat (⟦ A ⟧))}
+           {Y : (pr1 X : one_type) → one_type}
+           {f : ∏ (x : pr1 X : one_type), Y x}
+           {c : ∏ (x : poly_act A (pr1 X : one_type)),
+                poly_dact A Y x
+                →
+                Y (pr2 X x)}
+           (cf : ∏ (x : poly_act A (pr1 X : one_type)),
+                 f (pr2 X x)
+                 =
+                 c x (poly_dmap A Y f x))
+           (x : poly_act P (pr1 X : one_type))
+  : poly_dmap Q Y f ((sem_endpoint_one_types e) X x)
+    =
+    endpoint_dact
+      X Y e c
+      (poly_dmap P Y f x).
+Proof.
+  induction e as [ | P Q R e₁ IHe₁ e₂ IHe₂ | | | |
+                   | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ g | ].
+  - apply idpath.
+  - exact (IHe₂ _ @ maponpaths _ (IHe₁ x)).
+  - apply idpath.
+  - apply idpath.
+  - apply idpath.
+  - apply idpath.
+  - exact (pathsdirprod (IHe₁ x) (IHe₂ x)).
+  - apply idpath.
+  - apply idpath.
+  - exact (cf x).
+Defined.
+
+Definition PathOver_square
+           {A : UU}
+           {Y : A → UU}
+           {a₁ a₂ : A}
+           {p : a₁ = a₂}
+           {y₁ z₁ : Y a₁}
+           {y₂ z₂ : Y a₂}
+           (q₁ : PathOver y₁ y₂ p)
+           (q₂ : PathOver z₁ z₂ p)
+           (s₁ : y₁ = z₁)
+           (s₂ : y₂ = z₂)
+  : UU.
+Proof.
+  induction s₁ ; induction s₂.
+  exact (q₁ = q₂).
+Defined.
+
 Definition disp_algebra_map
            {Σ : hit_signature}
-           {X : set_algebra Σ}
+           {X : hit_algebra_one_types Σ}
            (Y : disp_algebra X)
   : UU
-  := ∑ (f : ∏ (x : alg_carrier X), Y x),
-     ∏ (x : ⦃ point_arg Σ ⦄ (alg_carrier X)),
-     f (alg_operation X x)
-     =
-     disp_alg_operation Y x (poly_dmap (point_arg Σ) Y f x).
-*)
+  := ∑ (f : ∏ (x : alg_carrier X), Y x)
+       (cf : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
+             f (alg_constr X x)
+             =
+             disp_alg_constr Y x (poly_dmap (point_constr Σ) (pr1 Y) f x)),
+     ∏ (j : path_label Σ)
+       (x : poly_act (path_source Σ j) (alg_carrier X)),
+     PathOver_square
+       (apd f (alg_path X j x))
+       (disp_alg_path Y j x (poly_dmap (path_source Σ j) (pr1 Y) f x))
+       (endpoint_dact_natural (path_left Σ j) cf x)
+       (endpoint_dact_natural (path_right Σ j) cf x).

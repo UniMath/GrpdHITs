@@ -80,91 +80,126 @@ Here:
 - `Q` is the point argument
  *)
 Inductive homot_endpoint
-          (A : poly_code)
-          (J : UU)
-          (S : J → poly_code)
+          {A : poly_code}
+          {J : UU}
+          {S : J → poly_code}
           (l : ∏ (j : J), endpoint A (S j) I)
           (r : ∏ (j : J), endpoint A (S j) I)
-          (Q : poly_code)
-          (TR : poly_code)
+          {Q : poly_code}
+          {TR : poly_code}
           (al ar : endpoint A Q TR)
-  : ∏ (T : poly_code),
+  : ∏ {T : poly_code},
     endpoint A Q T → endpoint A Q T → UU
   :=
   | refl_e : ∏ (T : poly_code)
                (e : endpoint A Q T),
-             homot_endpoint A J S l r Q TR al ar T e e
+             homot_endpoint l r al ar e e
   | inv_e : ∏ (T : poly_code)
               (e₁ e₂ : endpoint A Q T),
-            homot_endpoint A J S l r Q TR al ar T e₁ e₂
+            homot_endpoint l r al ar e₁ e₂
             →
-            homot_endpoint A J S l r Q TR al ar T e₂ e₁
+            homot_endpoint l r al ar e₂ e₁
   | trans_e : ∏ (T : poly_code)
                 (e₁ e₂ e₃ : endpoint A Q T),
-              homot_endpoint A J S l r Q TR al ar T e₁ e₂
+              homot_endpoint l r al ar e₁ e₂
               →
-              homot_endpoint A J S l r Q TR al ar T e₂ e₃
+              homot_endpoint l r al ar e₂ e₃
               →
-              homot_endpoint A J S l r Q TR al ar T e₁ e₃
+              homot_endpoint l r al ar e₁ e₃
+  | comp_assoc : ∏ (R₁ R₂ T : poly_code)
+                   (e₁ : endpoint A Q R₁)
+                   (e₂ : endpoint A R₁ R₂)
+                   (e₃ : endpoint A R₂ T),
+                 homot_endpoint
+                   l r al ar
+                   (comp e₁ (comp e₂ e₃))
+                   (comp (comp e₁ e₂) e₃)
+  | comp_id_l : ∏ (T : poly_code)
+                  (e : endpoint A Q T),
+                homot_endpoint
+                  l r al ar
+                  (comp (id_e _ _) e)
+                  e
+  | comp_id_r : ∏ (T : poly_code)
+                  (e : endpoint A Q T),
+                homot_endpoint
+                  l r al ar
+                  (comp e (id_e _ _))
+                  e
   | path_pr1 : ∏ (T₁ T₂ : poly_code)
                  (e₁ e₂ : endpoint A Q T₁)
                  (e₃ e₄ : endpoint A Q T₂),
                homot_endpoint
-                 A J S l r Q TR al ar (T₁ * T₂)
+                 l r al ar
                  (pair e₁ e₃) (pair e₂ e₄)
                →
-               homot_endpoint A J S l r Q TR al ar T₁ e₁ e₂
+               homot_endpoint l r al ar e₁ e₂
   | path_pr2 : ∏ (T₁ T₂ : poly_code)
                  (e₁ e₂ : endpoint A Q T₁)
                  (e₃ e₄ : endpoint A Q T₂),
                homot_endpoint
-                 A J S l r Q TR al ar (T₁ * T₂)
+                 l r al ar
                  (pair e₁ e₃) (pair e₂ e₄)
                →
-               homot_endpoint A J S l r Q TR al ar T₂ e₃ e₄
+               homot_endpoint l r al ar e₃ e₄
   | path_pair : ∏ (T₁ T₂ : poly_code)
                   (e₁ e₂ : endpoint A Q T₁)
                   (e₃ e₄ : endpoint A Q T₂),
-                homot_endpoint A J S l r Q TR al ar T₁ e₁ e₂
+                homot_endpoint l r al ar e₁ e₂
                 →
-                homot_endpoint A J S l r Q TR al ar T₂ e₃ e₄
+                homot_endpoint l r al ar e₃ e₄
                 →
                 homot_endpoint
-                  A J S l r Q TR al ar (T₁ * T₂)
+                  l r al ar
                   (pair e₁ e₃) (pair e₂ e₄)
   | path_inl : ∏ (T₁ T₂ : poly_code)
                  (e₁ e₂ : endpoint A Q T₁),
-               homot_endpoint A J S l r Q TR al ar T₁ e₁ e₂
+               homot_endpoint l r al ar e₁ e₂
                →
                homot_endpoint
-                 A J S l r Q TR al ar (T₁ + T₂)
+                 l r al ar
                  (comp e₁ (ι₁ _ _))
-                 (comp e₂ (ι₁ _ _))
+                 (comp e₂ (ι₁ _ T₂))
   | path_inr : ∏ (T₁ T₂ : poly_code)
                  (e₁ e₂ : endpoint A Q T₂),
-               homot_endpoint A J S l r Q TR al ar T₂ e₁ e₂
+               homot_endpoint l r al ar e₁ e₂
                →
                homot_endpoint
-                 A J S l r Q TR al ar (T₁ + T₂)
+                 l r al ar
                  (comp e₁ (ι₂ _ _))
-                 (comp e₂ (ι₂ _ _))
+                 (comp e₂ (ι₂ T₁ _))
   | path_constr : ∏ (j : J)
                     (e : endpoint A Q (S j)),
                   homot_endpoint
-                    A J S l r Q TR al ar I
+                    l r al ar
                     (comp e (l j))
                     (comp e (r j))
   | ap_constr : ∏ (el er : endpoint A Q A),
-                homot_endpoint A J S l r Q TR al ar A el er
+                homot_endpoint l r al ar el er
                 →
                 homot_endpoint
-                  A J S l r Q TR al ar I
+                  l r al ar
                   (comp el constr)
                   (comp er constr)
   | path_arg : homot_endpoint
-                 A J S l r Q
-                 TR al ar
-                 TR al ar.
+                 l r
+                 al ar
+                 al ar.
+
+Arguments refl_e {_ _ _ _ _ _ _ _ _ _}.
+Arguments inv_e {_ _ _ _ _ _ _ _ _ _ _ _} _.
+Arguments trans_e {_ _ _ _ _ _ _ _ _ _ _ _ _} _ _.
+Arguments comp_assoc {_ _ _ _ _ _ _ _ _ _ _ _} _ _ _.
+Arguments comp_id_l {_ _ _ _ _ _ _ _ _ _} _.
+Arguments comp_id_r {_ _ _ _ _ _ _ _ _ _} _.
+Arguments path_pr1 {_ _ _ _ _ _ _ _ _ _ _ _ _ _ _} _.
+Arguments path_pr2 {_ _ _ _ _ _ _ _ _ _ _ _ _ _ _} _.
+Arguments path_pair {_ _ _ _ _ _ _ _ _ _ _ _ _ _ _} _ _.
+Arguments path_inl {_ _ _ _ _ _ _ _ _ _} _ {_ _} _.
+Arguments path_inr {_ _ _ _ _ _ _ _ _} _ {_ _ _} _.
+Arguments path_constr {_ _ _ _ _ _ _ _ _} _ _.
+Arguments ap_constr {_ _ _ _ _ _ _ _ _ _ _} _.
+Arguments path_arg {_ _ _ _ _ _ _ _ _}.
 
 (**
 The definition of a HIT signature
@@ -188,15 +223,15 @@ Definition hit_signature
      ∑ (psl psr : ∏ (j : J₂), endpoint A (Q j) I),
      (∏ (j : J₂),
       homot_endpoint
-        A J₁ S l r (Q j)
-        (TR j) (sl j) (sr j)
-        I (psl j) (psr j))
+        l r
+        (sl j) (sr j)
+        (psl j) (psr j))
      ×
      (∏ (j : J₂),
       homot_endpoint
-        A J₁ S l r (Q j)
-        (TR j) (sl j) (sr j)
-        I (psl j) (psr j)).
+        l r
+        (sl j) (sr j)
+        (psl j) (psr j)).
 
 (** Projections of HIT signature *)
 Section Projections.
@@ -269,14 +304,9 @@ Section Projections.
   Definition homot_left_path
     : ∏ (j : homot_label),
       homot_endpoint
-        point_constr
-        path_label path_source
         path_left path_right
-        (homot_point_arg j)
-        (homot_path_arg_target j)
         (homot_path_arg_left j)
         (homot_path_arg_right j)
-        I
         (homot_left_endpoint j)
         (homot_right_endpoint j)
     := pr1 (pr222 (pr222 (pr222 (pr222 Σ)))).
@@ -284,14 +314,9 @@ Section Projections.
   Definition homot_right_path
     : ∏ (j : homot_label),
       homot_endpoint
-        point_constr
-        path_label path_source
         path_left path_right
-        (homot_point_arg j)
-        (homot_path_arg_target j)
         (homot_path_arg_left j)
         (homot_path_arg_right j)
-        I
         (homot_left_endpoint j)
         (homot_right_endpoint j)
     := pr2 (pr222 (pr222 (pr222 (pr222 Σ)))).

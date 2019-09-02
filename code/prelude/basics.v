@@ -2,7 +2,41 @@
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
+Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+
+Definition empty_one_type
+  : one_type
+  := make_one_type ∅ (hlevelntosn _ _ (hlevelntosn _ _ isapropempty)).
+
+Definition unit_one_type
+  : one_type
+  := make_one_type unit (hlevelntosn _ _ (hlevelntosn _ _ isapropunit)).
+
 (** General lemmata involving paths *)
+Definition homotsec_natural
+           {A B : UU}
+           {f g : A → B}
+           (e : f ~ g)
+           {a₁ a₂ : A}
+           (p : a₂ = a₁)
+  : e a₁ = maponpaths f (!p) @ e a₂ @ maponpaths g p.
+Proof.
+  induction p.
+  exact (!(pathscomp0rid _)).
+Defined.
+
+Definition homotsec_natural'
+           {A B : UU}
+           {f g : A → B}
+           (e : f ~ g)
+           {a₁ a₂ : A}
+           (p : a₂ = a₁)
+  : maponpaths f p @ e a₁ = e a₂ @ maponpaths g p.
+Proof.
+  induction p.
+  exact (!(pathscomp0rid _)).
+Defined.
+
 Definition pathscomp0lid
            {A : UU}
            {a₁ a₂ : A}
@@ -80,6 +114,16 @@ Definition maponpaths_make_dirprod_right
 Proof.
   induction p.
   apply idpath.  
+Defined.
+
+Definition pathsdirprod_inv
+           {A B : UU}
+           {a₁ a₂ : A} {b₁ b₂ : B}
+           (p : a₁ = a₂) (q : b₁ = b₂)
+  : ! pathsdirprod p q = pathsdirprod (!p) (!q).
+Proof.
+  induction p ; induction q.
+  apply idpath.
 Defined.
 
 (** The diagonal of a function with two arguments. *)

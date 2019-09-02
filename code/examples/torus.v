@@ -1,14 +1,20 @@
-(** Here we define signatures for HITs *)
+(** Here we define the signature for the torus *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
+Require Import UniMath.CategoryTheory.Core.Categories.
+Require Import UniMath.Bicategories.Core.Bicat.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
+Require Import prelude.all.
 Require Import signature.hit_signature.
+Require Import signature.hit.
+Require Import algebra.one_types_polynomials.
+Require Import algebra.one_types_endpoints.
+Require Import algebra.one_types_homotopies.
+Require Import displayed_algebras.displayed_algebra.
 
-Definition unit_one_type
-  : one_type
-  := make_one_type unit (hlevelntosn _ _ (hlevelntosn _ _ isapropunit)).
+Local Open Scope cat.
 
 Definition torus_point_constr
   : poly_code
@@ -41,13 +47,11 @@ Proof.
   - exact (λ _, comp (id_e torus_point_constr (C unit_one_type)) constr).
   - refine (λ _, _).
     exact (trans_e
-             _ _ _ _ _ _ _ _ _ _ _ _ _
              (path_constr
-                _ _ _ _ _ _ _ _ _
                 p_left
                 _
              )
-             (path_constr
+             (@path_constr
                 _ _
                 (λ _, C unit_one_type)
                 (λ _, constr)
@@ -57,13 +61,11 @@ Proof.
           )).
   - refine (λ _, _).
     exact (trans_e
-             _ _ _ _ _ _ _ _ _ _ _ _ _
              (path_constr
-                _ _ _ _ _ _ _ _ _
                 p_right
                 _
              )
-             (path_constr
+             (@path_constr
                 _ _
                 (λ _, C unit_one_type)
                 (λ _, constr)
@@ -72,12 +74,6 @@ Proof.
                 _
           )).
 Defined.
-
-Require Import UniMath.CategoryTheory.Core.Categories.
-Require Import UniMath.Bicategories.Core.Bicat.
-Require Import algebra.one_types_homotopies.
-
-Local Open Scope cat.
 
 Section TorusAlgebraProjections.
   Variable (X : hit_algebra_one_types torus_signature).
@@ -104,3 +100,70 @@ Section TorusAlgebraProjections.
       torus_path_right @ torus_path_left
     := pr2 X com tt (idpath tt).
 End TorusAlgebraProjections.
+
+Section TorusInduction.
+  Context {X : hit_algebra_one_types torus_signature}
+          (Y : alg_carrier X → one_type)
+          (Ybase : Y (torus_base X))
+          (Yleft : @PathOver _ _ _ Y Ybase Ybase (torus_path_left X))
+          (Yright : @PathOver _ _ _ Y Ybase Ybase (torus_path_right X))
+          (Ysurface : globe_over
+                        Y
+                        (torus_surface X)
+                        (composePathOver Yleft Yright)
+                        (composePathOver Yright Yleft)).
+
+  Definition make_torus_disp_algebra
+    : disp_algebra X.
+  Proof.
+    use make_disp_algebra.
+    - exact Y.
+    - intros x xx.
+      induction x.
+      exact Ybase.
+    - intros j x y.
+      induction j.
+      + induction x.
+        exact Yleft.
+      + induction x.
+        exact Yright.
+    - abstract
+        (intros j z zz p pp ;
+         induction j ; induction z ; induction zz ;
+         assert (p = idpath tt) as PS ; try apply isapropunit ;
+         unfold torus_surface in Ysurface ;
+         rewrite <- PS in Ysurface ;
+         exact Ysurface).
+  Defined.
+
+  Variable (HX : is_HIT torus_signature X).
+
+  (** Induction principle *)
+  Definition torus_ind_disp_algebra_map
+    : disp_algebra_map make_torus_disp_algebra
+    := HX make_torus_disp_algebra.
+
+  Definition torus_ind
+    : ∏ (x : alg_carrier X), Y x
+    := pr1 torus_ind_disp_algebra_map.
+
+  Definition torus_ind_base
+    : torus_ind (torus_base X) = Ybase
+    := pr12 torus_ind_disp_algebra_map tt.
+
+  Definition torus_ind_path_left
+    : PathOver_square
+        (apd (pr1 torus_ind_disp_algebra_map) (torus_path_left X))
+        Yleft
+        torus_ind_base
+        torus_ind_base
+    := pr22 torus_ind_disp_algebra_map p_left tt.
+
+  Definition torus_ind_path_right
+    : PathOver_square
+        (apd (pr1 torus_ind_disp_algebra_map) (torus_path_right X))
+        Yright
+        torus_ind_base
+        torus_ind_base
+    := pr22 torus_ind_disp_algebra_map p_right tt.
+End TorusInduction.

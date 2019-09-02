@@ -45,26 +45,50 @@ Require Import hit_biadjunction.gquot_commute.
 Require Import algebra.one_types_polynomials.
 Require Import algebra.groupoid_polynomials.
 Require Import biadjunctions.all.
-Require Export hit_biadjunction.hit_prealgebra_biadj.biadj_data.
-Require Import hit_biadjunction.hit_prealgebra_biadj.unit.
-Require Import hit_biadjunction.hit_prealgebra_biadj.counit.
+Require Export hit_biadjunction.hit_prealgebra_biadj_unit_counit.
+Require Import hit_biadjunction.hit_prealgebra_biadj.left_triangle.
+Require Import hit_biadjunction.hit_prealgebra_biadj.right_triangle.
 
 Local Open Scope cat.
 
-Definition algebra_biadjunction
+Definition prealg_disp_biadjunction
            (P : poly_code)
   : disp_left_biadj_data
       (disp_alg_bicat ⦃ P ⦄)
       (disp_alg_bicat (⟦ P ⟧))
       gquot_biadj_data
-      (disp_alg_psfunctor _ (poly_gquot P)).
+      (prealg_gquot P).
 Proof.
-  use lift_algebra_biadjunction.
-  - exact (poly_path_groupoid P).
-  - exact (ηη P).
-  - exact (algebra_biadjunction_lift_unit_pstrans_nat P).
-  - exact (εε P).
-  - exact (algebra_biadjunction_lift_counit_pstrans_nat P).
-  - apply TODO.
-  - apply TODO.
+  use tpair.
+  - exact (algebra_disp_biadjunction_unit_counit P).
+  - split.
+    + exact (algebra_disp_biadjunction_left_triangle P).
+    + exact (algebra_disp_biadjunction_right_triangle P).
 Defined.
+
+Definition total_prealg_gquot
+           (P : poly_code)
+  : psfunctor
+      (total_bicat (disp_alg_bicat ⦃ P ⦄))
+      (total_bicat (disp_alg_bicat (⟦ P ⟧)))
+  := total_psfunctor
+       (disp_alg_bicat ⦃ P ⦄)
+       (disp_alg_bicat (⟦ P ⟧))
+       gquot_psfunctor
+       (prealg_gquot P).
+
+Definition total_prealg_path_groupoid
+           (P : poly_code)
+  : psfunctor
+      (total_bicat (disp_alg_bicat (⟦ P ⟧)))
+      (total_bicat (disp_alg_bicat ⦃ P ⦄))
+  := total_psfunctor
+       (disp_alg_bicat (⟦ P ⟧))
+       (disp_alg_bicat ⦃ P ⦄)
+       path_groupoid
+       (prealg_path_groupoid P).
+
+Definition prealg_biadjunction
+           (P : poly_code)
+  : left_biadj_data (total_prealg_gquot P)
+  := total_left_biadj_data _ _ (prealg_disp_biadjunction P).

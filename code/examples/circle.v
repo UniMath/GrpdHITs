@@ -1,14 +1,18 @@
-(** Here we define signatures for HITs *)
+(** Here we define the signature for the circle *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
+Require Import UniMath.CategoryTheory.Core.Categories.
+Require Import UniMath.Bicategories.Core.Bicat.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
+Require Import prelude.all.
 Require Import signature.hit_signature.
-
-Definition unit_one_type
-  : one_type
-  := make_one_type unit (hlevelntosn _ _ (hlevelntosn _ _ isapropunit)).
+Require Import signature.hit.
+Require Import algebra.one_types_polynomials.
+Require Import algebra.one_types_endpoints.
+Require Import algebra.one_types_homotopies.
+Require Import displayed_algebras.displayed_algebra.
 
 Definition circle_point_constr
   : poly_code
@@ -38,3 +42,60 @@ Proof.
   - intro x ; induction x.
   - intro x ; induction x.
 Defined.
+
+(** Projections of circle algebra *)
+Definition circle_base
+           (X : hit_algebra_one_types circle_signature)
+  : alg_carrier X
+  := alg_constr X tt.
+
+Definition circle_loop
+           (X : hit_algebra_one_types circle_signature)
+  : circle_base X = circle_base X
+  := alg_path X loop tt.
+
+Section CircleInduction.
+  Context {X : hit_algebra_one_types circle_signature}
+          (Y : alg_carrier X → one_type)
+          (Ybase : Y (circle_base X))
+          (Yloop : @PathOver _ _ _ Y Ybase Ybase (circle_loop X)).
+  
+  Definition make_circle_disp_algebra
+    : disp_algebra X.
+  Proof.
+    use make_disp_algebra.
+    - exact Y.
+    - intros x xx.
+      induction x.
+      exact Ybase.
+    - intros j x y.
+      induction j.
+      induction x.
+      exact Yloop.
+    - intro j.
+      induction j.
+  Defined.
+
+  Variable (HX : is_HIT circle_signature X).
+
+  (** Induction principle *)
+  Definition circle_ind_disp_algebra_map
+    : disp_algebra_map make_circle_disp_algebra
+    := HX make_circle_disp_algebra.
+
+  Definition circle_ind
+    : ∏ (x : alg_carrier X), Y x
+    := pr1 circle_ind_disp_algebra_map.
+
+  Definition circle_ind_base
+    : circle_ind (circle_base X) = Ybase
+    := pr12 circle_ind_disp_algebra_map tt.
+
+  Definition circle_ind_loop
+    : PathOver_square
+        (apd (pr1 circle_ind_disp_algebra_map) (circle_loop X))
+        Yloop
+        circle_ind_base
+        circle_ind_base
+    := pr22 circle_ind_disp_algebra_map loop tt.
+End CircleInduction.

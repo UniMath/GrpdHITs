@@ -37,11 +37,6 @@ Local Open Scope cat.
 
 Opaque ps_comp.
 
-(*
-Local Definition TODO {A : UU} : A.
-Admitted.
- *)
-
 Definition maponpaths_homot
            {A B : UU}
            {f g : A → B}
@@ -72,246 +67,6 @@ Proof.
   - exact (prod_gquot IHP₁ IHP₂).
 Defined.
 
-(** `poly_gquot` and `gquot_poly` compose to the identity *)
-(*
-Definition const_gquot_gquot_const
-           (A : one_type)
-           {X : groupoid}
-  : ∏ (z : gquot (poly_act_groupoid (C A) X)),
-    (const_gquot A) X (gquot_const A X z) = z.
-Proof.
-  use gquot_ind_set.
-  - exact (λ _, idpath _).
-  - abstract
-      (intros a₁ a₂ g ;
-       induction g ;
-       apply map_PathOver ;
-       refine (pathscomp0rid _ @ _ @ !(maponpathsidfun _)) ;
-       refine (!(maponpathscomp
-                   (gquot_const A X)
-                   (const_gquot A X)
-                   (gcleq (poly_act_groupoid (C A) X) _))
-                @ _) ;
-       refine (maponpaths (maponpaths _) (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _) @ _) ;
-       exact (!(ge _ _))).
-  - intro ; exact (gtrunc _ _ _).
-Defined.
-
-Definition id_gquot_gquot_id
-           {X : groupoid}
-  : ∏ (z : gquot (poly_act_groupoid I X)), id_gquot X (gquot_id X z) = z.
-Proof.
-  use gquot_ind_set.
-  - exact (λ _, idpath _).
-  - abstract
-      (intros a₁ a₂ g ;
-       use map_PathOver ;
-       refine (pathscomp0rid _ @ _ @ !(maponpathsidfun _));
-       refine (!(maponpathscomp
-                   (gquot_id X)
-                   (id_gquot X)
-                   (gcleq (poly_act_groupoid I X) _))
-                @ _);
-       refine (maponpaths (maponpaths _) (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _) @ _);
-       apply gquot_rec_beta_gcleq).
-  - intro ; exact (gtrunc _ _ _).
-Defined.
-
-Definition sum_gquot_gquot_sum_comp
-           {P₁ P₂ : poly_code}
-           {X : groupoid}
-           (IHP₁ : ∏ (z : gquot (poly_act_groupoid P₁ X)),
-                   (poly_gquot P₁) X (gquot_poly z) = z)
-           (IHP₂ : ∏ (z : gquot (poly_act_groupoid P₂ X)),
-                   (poly_gquot P₂) X (gquot_poly z) = z)
-  : ∏ (z : poly_act_groupoid (P₁ + P₂) X),
-    sum_gquot
-      (poly_gquot P₁) (poly_gquot P₂) X
-      (gquot_sum gquot_poly gquot_poly (gcl _ z))
-    =
-    gcl _ z.
-Proof.
-  intros z.
-  induction z as [z | z].
-  - exact (maponpaths gquot_inl_grpd (IHP₁ (gcl (poly_act_groupoid P₁ X) z))).
-  - exact (maponpaths gquot_inr_grpd (IHP₂ (gcl (poly_act_groupoid P₂ X) z))).
-Defined.
-
-Definition sum_gquot_gquot_sum_po
-           {P₁ P₂ : poly_code}
-           {X : groupoid}
-           (IHP₁ : ∏ (z : gquot (poly_act_groupoid P₁ X)),
-                   (poly_gquot P₁) X (gquot_poly z) = z)
-           (IHP₂ : ∏ (z : gquot (poly_act_groupoid P₂ X)),
-                   (poly_gquot P₂) X (gquot_poly z) = z)
-           (a₁ a₂ : poly_act_groupoid (P₁ + P₂) X)
-           (g : poly_act_groupoid (P₁ + P₂) X ⟦ a₁, a₂ ⟧)
-  : @PathOver
-      _ _ _
-      (λ _, _)
-      (sum_gquot_gquot_sum_comp IHP₁ IHP₂ a₁)
-      (sum_gquot_gquot_sum_comp IHP₁ IHP₂ a₂)
-      (gcleq (poly_act_groupoid (P₁ + P₂) X) g).
-Proof.
-  induction a₁ as [a₁ | a₁], a₂ as [a₂ | a₂].
-  - apply map_PathOver.
-    refine (whisker_square
-              (idpath _)                
-              _
-              (!(maponpathsidfun _))
-              (idpath _)
-              _).
-    {
-      refine (!_ @ (maponpathscomp
-                      (gquot_sum gquot_poly gquot_poly)
-                      (sum_gquot (poly_gquot P₁) (poly_gquot P₂) X)
-                      (gcleq (poly_act_groupoid (P₁ + P₂) X) g))
-             ).
-      etrans.
-      {
-        apply maponpaths.
-        refine (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _ @ _).
-        exact (!(maponpathscomp
-                   gquot_poly
-                   inl
-                   (gcleq (poly_act_groupoid P₁ X) g))).
-      }
-      refine (maponpathscomp
-                inl
-                _
-                _
-                @ _).
-      refine (!(maponpathscomp
-                  (poly_gquot P₁ X)
-                  gquot_inl_grpd
-                  (maponpaths gquot_poly (gcleq (poly_act_groupoid P₁ X) g)))
-               @ _).
-      etrans.
-      {
-        apply maponpaths.
-        refine (maponpathscomp _ _ _ @ _).
-        refine (maponpaths_homot IHP₁ _ @ _).
-        apply maponpaths ; apply maponpaths_2.
-        apply maponpathsidfun.
-      }
-      refine (maponpathscomp0 _ _ _ @ _).
-      apply maponpaths.
-      refine (maponpathscomp0 _ _ _ @ _).
-      apply maponpaths_2.
-      apply gquot_rec_beta_gcleq.
-    }
-    unfold square.
-    refine (!(path_assoc _ _ _)
-             @ maponpaths
-             (λ z, _ @ z)
-             (!(path_assoc _ _ _)
-               @ maponpaths (λ z, _ @ z) _
-               @ pathscomp0rid _)).
-    refine (!(maponpathscomp0
-                gquot_inl_grpd
-                (! IHP₁ (gcl (poly_act_groupoid P₁ X) a₂))
-                (IHP₁ (gcl (poly_act_groupoid P₁ X) a₂)))
-             @ _).
-    exact (maponpaths
-             (maponpaths gquot_inl_grpd)
-             (pathsinv0l (IHP₁ (gcl (poly_act_groupoid P₁ X) a₂)))).
-  - exact (fromempty g).
-  - exact (fromempty g).
-  - apply map_PathOver.
-    refine (whisker_square
-              (idpath _)                
-              _
-              (!(maponpathsidfun _))
-              (idpath _)
-              _).
-    {
-      refine (!_ @ (maponpathscomp
-                      (gquot_sum gquot_poly gquot_poly)
-                      (sum_gquot (poly_gquot P₁) (poly_gquot P₂) X)
-                      (gcleq (poly_act_groupoid (P₁ + P₂) X) g))
-             ).
-      etrans.
-      {
-        apply maponpaths.
-        refine (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _ @ _).
-        exact (!(maponpathscomp
-                   gquot_poly
-                   inr
-                   (gcleq (poly_act_groupoid P₂ X) g))).
-      }
-      refine (maponpathscomp
-                inr
-                _
-                _
-                @ _).
-      refine (!(maponpathscomp
-                  (poly_gquot P₂ X)
-                  gquot_inr_grpd
-                  (maponpaths gquot_poly (gcleq (poly_act_groupoid P₂ X) g)))
-               @ _).
-      etrans.
-      {
-        apply maponpaths.
-        refine (maponpathscomp _ _ _ @ _).
-        refine (maponpaths_homot IHP₂ _ @ _).
-        apply maponpaths ; apply maponpaths_2.
-        apply maponpathsidfun.
-      }
-      refine (maponpathscomp0 _ _ _ @ _).
-      apply maponpaths.
-      refine (maponpathscomp0 _ _ _ @ _).
-      apply maponpaths_2.
-      apply gquot_rec_beta_gcleq.
-    }
-    unfold square.
-    refine (!(path_assoc _ _ _)
-             @ maponpaths
-             (λ z, _ @ z)
-             (!(path_assoc _ _ _)
-               @ maponpaths (λ z, _ @ z) _
-               @ pathscomp0rid _)).
-    refine (!(maponpathscomp0
-                gquot_inr_grpd
-                (! IHP₂ (gcl (poly_act_groupoid P₂ X) a₂))
-                (IHP₂ (gcl (poly_act_groupoid P₂ X) a₂)))
-             @ _).
-    exact (maponpaths
-             (maponpaths gquot_inr_grpd)
-             (pathsinv0l (IHP₂ (gcl (poly_act_groupoid P₂ X) a₂)))).
-Qed.
-
-Definition sum_gquot_gquot_sum
-           {P₁ P₂ : poly_code}
-           {X : groupoid}
-           (IHP₁ : ∏ (z : gquot (poly_act_groupoid P₁ X)),
-                   (poly_gquot P₁) X (gquot_poly z) = z)
-           (IHP₂ : ∏ (z : gquot (poly_act_groupoid P₂ X)),
-                   (poly_gquot P₂) X (gquot_poly z) = z)
-  : ∏ (z : gquot (poly_act_groupoid (P₁ + P₂) X)),
-    sum_gquot
-      (poly_gquot P₁) (poly_gquot P₂) X
-      (gquot_sum gquot_poly gquot_poly z)
-    =
-    z.
-Proof.
-  use gquot_ind_set.
-  - exact (sum_gquot_gquot_sum_comp IHP₁ IHP₂).
-  - exact (sum_gquot_gquot_sum_po IHP₁ IHP₂).
-  - intro ; exact (gtrunc _ _ _).
-Defined.
-
-Definition poly_gquot_gquot_poly
-           (P : poly_code)
-           {X : groupoid}
-  : ∏ (z : gquot (poly_act_groupoid P X)), poly_gquot P X (gquot_poly z) = z.
-Proof.
-  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
-  - exact (const_gquot_gquot_const A).
-  - exact id_gquot_gquot_id.
-  - exact (sum_gquot_gquot_sum IHP₁ IHP₂).
-  - apply TODO.
-Defined.
-*)
 (** Other direction *)
 Definition gquot_id_id_gquot
            {X : groupoid}
@@ -580,4 +335,65 @@ Proof.
              P₁ P₂
              (poly_gquot P₁ X (pr1 z))
              (poly_gquot P₂ X (pr2 z))).
+Defined.
+
+Definition poly_gquot_gquot_poly_comp
+           (P : poly_code)
+           {X : groupoid}
+           (a : poly_act_groupoid P X)
+  : poly_gquot
+      P X
+      (gquot_poly (gcl (poly_act_groupoid P X) a))
+    =
+    gcl (poly_act_groupoid P X) a.
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - apply idpath.
+  - induction a as [a | a].
+    + exact (maponpaths gquot_inl_grpd (IHP₁ a)).
+    + exact (maponpaths gquot_inr_grpd (IHP₂ a)).
+  - exact (maponpaths
+              (λ z, prod_gquot_comp z _) (IHP₁ (pr1 a))
+            @ maponpaths
+                (prod_gquot_comp _) (IHP₂ (pr2 a))).
+Defined.
+
+Definition poly_gquot_gquot_poly_po
+           (P : poly_code)
+           {X : groupoid}
+           (a₁ a₂ : poly_act_groupoid P X)
+           (g : poly_act_groupoid P X ⟦ a₁, a₂ ⟧)
+  : @PathOver
+      _ _ _
+      (λ a, _)
+      (poly_gquot_gquot_poly_comp P a₁)
+      (poly_gquot_gquot_poly_comp P a₂)
+      (gcleq (poly_act_groupoid P X) g).
+Proof.
+  use map_PathOver.
+  refine (whisker_square
+            (idpath _)
+            (maponpathscomp _ (poly_gquot P X) _)
+            (!(maponpathsidfun _))
+            (idpath _)
+            _).
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - induction g.
+    rewrite ge.
+    apply idpath.
+  - admit.
+  - admit.
+  - admit.
+Admitted.
+
+Definition poly_gquot_gquot_poly
+           (P : poly_code)
+           {X : groupoid}
+  : ∏ (z : gquot (poly_act_groupoid P X)), poly_gquot P X (gquot_poly z) = z.
+Proof.
+  use gquot_ind_set.
+  - exact (poly_gquot_gquot_poly_comp P).
+  - exact (poly_gquot_gquot_poly_po P).
+  - exact (λ _, gtrunc _ _ _).
 Defined.

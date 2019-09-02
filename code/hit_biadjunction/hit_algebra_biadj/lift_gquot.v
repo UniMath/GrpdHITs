@@ -58,19 +58,40 @@ Require Import hit_biadjunction.gquot_commute.
 Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_prealgebra_biadj.
 Require Import hit_biadjunction.hit_path_algebra_biadj.
-Require Import hit_biadjunction.hit_algebra_biadj.lift_gquot.
-Require Import hit_biadjunction.hit_algebra_biadj.lift_path_groupoid.
+
+Local Definition TODO {A : UU} : A.
+Admitted.
 
 Local Open Scope cat.
 
-Definition hit_algebra_biadjunction
+Definition test
+           {P Q : poly_code}
+           {Σ : hit_signature}
+           {X : hit_path_algebra_grpd Σ}
+           {l r : endpoint (point_constr Σ) P Q}
+           {z : poly_act P (gquot (pr11 X))}
+           (pX : sem_endpoint_one_types
+                   l
+                   (pr1 ((hit_path_algebra_gquot Σ) X))
+                   z
+                 =
+                 sem_endpoint_one_types
+                   r
+                   (pr1 ((hit_path_algebra_gquot Σ) X))
+                   z)
+  : pr1 ((sem_endpoint_grpd l) (pr1 X))
+    ⟹
+    pr1 ((sem_endpoint_grpd r) (pr1 X)).
+Admitted.
+
+Definition gquot_is_hit_algebra
            (Σ : hit_signature)
-  := total_left_biadj_data
-       _
-       _
-       (disp_fullsub_biadjunction
-          (hit_path_algebra_biadjunction Σ)
-          (is_hit_algebra_grpd Σ)
-          (is_hit_algebra_one_types Σ)
-          (gquot_is_hit_algebra Σ)
-          (path_groupoid_is_hit_algebra Σ)).
+           (X : hit_path_algebra_grpd Σ)
+  : is_hit_algebra_grpd Σ X
+    →
+    is_hit_algebra_one_types Σ (hit_path_algebra_gquot Σ X).
+Proof.
+  intros HX i z p.
+  specialize (HX i).
+  apply TODO.
+Qed.

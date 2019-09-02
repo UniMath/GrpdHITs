@@ -333,43 +333,16 @@ Proof.
 Defined.  
 
 Definition PathOver_to_square
-           {A : UU}
-           {lt rt ld rd : A}
-           {t : lt = rt}
-           {l : ld = lt} {r : rd = rt}
-           {d : ld = rd}
-           (q : @PathOver
-                  (A × A) (ld ,, lt) (rd ,, rt)
-                  (λ (x : A × A), pr1 x = pr2 x)
-                  l r
-                  (pathsdirprod d t))
-  : square t l r d.
+           {X Y : UU}
+           {f g : X → Y}
+           {x₁ x₂ : X}
+           {p : x₁ = x₂}
+           {q₁ : f x₁ = g x₁} {q₂ : f x₂ = g x₂}
+           (s : @PathOver _ _ _ (λ z, f z = g z) q₁ q₂ p)
+  : square q₂ (maponpaths f p) (maponpaths g p) q₁.
 Proof.
-  induction d.
-  induction t.
-  exact (pathscomp0rid l @ q).
-Defined.
-
-Definition square_to_PathOver_isweq
-       {A : UU}
-       {lt rt ld rd : A}
-       {t : lt = rt}
-       {l : ld = lt} {r : rd = rt}
-       {d : ld = rd}
-  : isweq (@square_to_PathOver A lt rt ld rd t l r d).
-Proof.
-  use gradth.
-  - exact PathOver_to_square.
-  - intros q.
-    induction d.
-    induction t.
-    cbn.
-    exact (path_assoc _ _ _ @ maponpaths (λ z, z @ q) (pathsinv0r _)).
-  - intros q.
-    induction d.
-    induction t.
-    cbn.
-    exact (path_assoc _ _ _ @ maponpaths (λ z, z @ q) (pathsinv0l _)).
+  induction p, s.
+  exact (!(pathscomp0rid _)).
 Defined.
 
 Section operations.

@@ -7,6 +7,7 @@ Require Import UniMath.MoreFoundations.All.
 Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
+Require Import UniMath.CategoryTheory.Core.Univalence.
 Require Import UniMath.CategoryTheory.Groupoids.
 
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
@@ -36,8 +37,6 @@ Require Import UniMath.Bicategories.Modifications.Modification.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
-Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
-Require Import UniMath.Bicategories.DisplayedBicats.Examples.FullSub.
 Require Import UniMath.Bicategories.DisplayedBicats.DispPseudofunctor.
 Require Import UniMath.Bicategories.DisplayedBicats.DispTransformation.
 Require Import UniMath.Bicategories.DisplayedBicats.DispModification.
@@ -50,27 +49,30 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.groupoid_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.groupoid_endpoints.
-Require Import algebra.one_types_homotopies.
-Require Import algebra.groupoid_homotopies.
 Require Import biadjunctions.all.
 Require Import hit_biadjunction.path_groupoid_commute.
 Require Import hit_biadjunction.gquot_commute.
 Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_prealgebra_biadj.
-Require Import hit_biadjunction.hit_path_algebra_biadj.
-Require Import hit_biadjunction.hit_algebra_biadj.lift_gquot.
-Require Import hit_biadjunction.hit_algebra_biadj.lift_path_groupoid.
+Require Import hit_path_algebra_biadj.lift_gquot.
+Require Import hit_path_algebra_biadj.lift_path_groupoid.
 
-Local Open Scope cat.
+Local Definition TODO {A : UU} : A.
+Admitted.
 
-Definition hit_algebra_biadjunction
-           (Σ : hit_signature)
-  := total_left_biadj_data
-       _
-       _
-       (disp_fullsub_biadjunction
-          (hit_path_algebra_biadjunction Σ)
-          (is_hit_algebra_grpd Σ)
-          (is_hit_algebra_one_types Σ)
-          (gquot_is_hit_algebra Σ)
-          (path_groupoid_is_hit_algebra Σ)).
+Section LiftAdd2CellUnit.
+  Context {A S : poly_code}
+          (l r : endpoint A S I).
+
+  Definition add2cell_lift_counit
+    : lift_counit_law
+        (prealg_biadjunction A)
+        (lift_gquot_add2cell l r)
+        (@path_alg_path_groupoid_ob A S l r).
+  Proof.
+    intros X pX.
+    use funextsec.
+    intro z.
+    apply TODO.
+  Qed.
+End LiftAdd2CellUnit.
