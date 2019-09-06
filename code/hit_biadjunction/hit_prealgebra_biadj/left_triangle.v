@@ -64,5 +64,14 @@ Proof.
   use make_disp_invmodification.
   - apply disp_2cells_isaprop_alg.
   - apply disp_locally_groupoid_alg.
-  - apply TODO.
+  - intros G hG.
+    use funextsec.
+    intro z.
+    simpl.
+    unfold alg_disp_cat_2cell.
+    cbn.
+    unfold homotcomp, homotfun, funhomotsec.
+    cbn.
+    rewrite !pathscomp0rid.
+    apply TODO.
 Qed.

@@ -300,7 +300,6 @@ Definition gquot_biadj_triangle_l_data_cell
            (G : groupoid)
   : biadj_triangle_l_lhs gquot_biadj_unit_counit G ==> id_trans gquot_psfunctor G.
 Proof.
-  intros x ; revert x.
   use gquot_ind_set.
   - exact (λ _, idpath _).
   - exact (gquot_biadj_triangle_l_data_po G).
@@ -324,7 +323,6 @@ Definition gquot_biadj_triangle_l_is_modification
 Proof.
   intros G₁ G₂ F.
   use funextsec.
-  intro x ; revert x.
   use gquot_ind_prop.
   - intro a.
     cbn.

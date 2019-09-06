@@ -37,6 +37,42 @@ Proof.
   exact (!(pathscomp0rid _)).
 Defined.
 
+Definition homotsec2_natural
+           {A B C : UU}
+           {f g : A → B → C}
+           (e : ∏ (a : A) (b : B), f a b = g a b)
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+           {b₁ b₂ : B}
+           (q : b₁ = b₂)
+  : e a₁ b₁
+    @ maponpaths (λ z, g (pr1 z) (pr2 z)) (pathsdirprod p q)
+    =
+    maponpaths (λ z, f (pr1 z) (pr2 z)) (pathsdirprod p q)
+    @ e a₂ b₂.
+Proof.
+  induction p ; induction q.
+  apply pathscomp0rid.
+Defined.
+
+Definition homotsec2_natural_inv
+           {A B C : UU}
+           {f g : A → B → C}
+           (e : ∏ (a : A) (b : B), f a b = g a b)
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+           {b₁ b₂ : B}
+           (q : b₁ = b₂)
+  : maponpaths (λ z, g (pr1 z) (pr2 z)) (pathsdirprod p q)
+    @ ! e a₂ b₂
+    =
+    ! e a₁ b₁
+    @ maponpaths (λ z, f (pr1 z) (pr2 z)) (pathsdirprod p q).
+Proof.
+  induction p ; induction q.
+  exact (!(pathscomp0rid _)).
+Defined.
+
 Definition pathscomp0lid
            {A : UU}
            {a₁ a₂ : A}

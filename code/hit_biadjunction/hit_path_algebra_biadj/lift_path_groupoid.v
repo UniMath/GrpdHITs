@@ -351,8 +351,27 @@ Proof.
                 (poly_map P (pr1 f) z))             
           ).
   - (* Composition *)
-    specialize (IHe₁ z).
+    (*specialize (IHe₁ z).
     specialize (IHe₂ (sem_endpoint_one_types e₁ X z)).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        exact (pathscomp0rid
+                ((pr1 (psnaturality_of
+                        (sem_endpoint_one_types e₂)
+                        f)
+                     (sem_endpoint_one_types e₁ X z)
+                   @ idpath _)
+                   @ maponpaths
+                       (sem_endpoint_one_types e₂ Y)
+                       (pr1 (psnaturality_of (sem_endpoint_one_types e₁) f) z))).
+      }
+      apply maponpaths_2.
+      apply pathscomp0rid.
+    }*)
     apply TODO.
   - (* Left inclusion *)
     refine (pathscomp0rid _ @ _).

@@ -543,14 +543,16 @@ Section LiftPseudofunctor.
     - apply disp_locally_groupoid_alg.
     - exact prealg_path_groupoid_map.
     - exact @prealg_mor_inv.
-    - intros X Y f g p hX hY hf hg hp.
-      use nat_trans_eq.
-      { apply homset_property. }
-      exact (prealg_path_groupoid_cell hp).
-    - intros X XX.
-      use nat_trans_eq.
-      { apply homset_property. }
-      exact (prealg_path_groupoid_identitor XX).
+    - abstract
+        (intros X Y f g p hX hY hf hg hp ;
+         use nat_trans_eq ;
+         [ apply homset_property
+         | exact (prealg_path_groupoid_cell hp) ]).
+    - abstract
+        (intros X XX ;
+         use nat_trans_eq ;
+         [ apply homset_property
+         | exact (prealg_path_groupoid_identitor XX)]).
     - exact @prealg_path_groupoid_compositor.
   Defined.
 End LiftPseudofunctor.

@@ -60,6 +60,132 @@ Local Definition TODO {A : UU} : A.
 Admitted.
 
 (** General lemmata *)
+Definition poly_gquot_poly_map
+           {P : poly_code}
+           {G₁ G₂ : groupoid}
+           (F : G₁ ⟶ G₂)
+           (z : poly_act P (gquot G₁))
+  : poly_gquot P G₂ (poly_map P (gquot_functor_map F) z)
+    =
+    gquot_functor_map (poly_act_functor P G₁ G₂ F) (poly_gquot P G₁ z).
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - revert z.
+    use gquot_ind_set.
+    + exact (λ _, idpath _).
+    + abstract
+        (intros a₁ a₂ g ;
+         use map_PathOver ;
+         refine (whisker_square
+                   (idpath _)
+                   (!(maponpaths
+                        (maponpaths _)
+                        (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+                      @ _)
+                     @ maponpathscomp (gquot_functor_map F) (id_gquot G₂) (gcleq G₁ g))
+                   (!(maponpaths
+                        (maponpaths _)
+                        (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+                      @ _)
+                     @ maponpathscomp (id_gquot G₁) _ (gcleq G₁ g))
+                   (idpath _)
+                   _) ;
+           [ exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+           | exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+           | exact (pathscomp0rid _ @ !(pathscomp0lid _)) ] ;
+         exact (pathscomp0rid _ @ !(pathscomp0lid _))).
+    + exact (λ _, gtrunc _ _ _).
+  - induction z as [z | z].
+    + exact (maponpaths gquot_inl_grpd (IHP₁ z)
+             @ !(gquot_inl_grpd_gquot_functor F (poly_gquot P₁ G₁ z))).
+    + exact (maponpaths gquot_inr_grpd (IHP₂ z)
+             @ !(gquot_inr_grpd_gquot_functor F (poly_gquot P₂ G₁ z))).
+  - refine (maponpaths (λ q, prod_gquot_comp q _) (IHP₁ (pr1 z))
+            @ maponpaths (prod_gquot_comp _) (IHP₂ (pr2 z))
+            @ _).
+    apply TODO.                                                              
+Defined.
+
+Definition test
+           {A P : poly_code}
+           (e : endpoint A P I)
+           {G₁ G₂ : total_bicat (disp_alg_bicat ⦃ A ⦄)}
+           (F : G₁ --> G₂)
+  : ∏ (z : gquot (poly_act_groupoid P (pr1 G₁))),
+    gquot_functor_map
+      (pr1 F)
+      (gquot_poly
+         (gquot_functor_map
+            ((sem_endpoint_grpd e) _)
+            z))
+    =
+    gquot_poly
+      (gquot_functor_map
+         ((sem_endpoint_grpd e) _)
+         (gquot_functor_map
+            (poly_act_functor P _ _ (pr1 F))
+            z)).
+Proof.
+  use gquot_ind_set.
+  - intro a.
+    apply gcleq.
+    exact (pr11 (psnaturality_of (sem_endpoint_grpd e) F) a).
+  - apply TODO.
+    (*intros a₁ a₂ g.
+    use map_PathOver.
+    refine (whisker_square
+              (idpath _)
+              _
+              _
+              (idpath _)
+              _).
+    + refine (_ @ maponpaths
+                    (maponpaths _)
+                    (maponpathscomp
+                       _
+                       (gquot_id (pr1 G₁))
+                       _)
+                @ maponpathscomp
+                    _
+                    (gquot_functor_map (pr1 F))
+                    (gcleq (poly_act_groupoid P (pr1 G₁)) g)).
+      refine (!_).
+      refine (maponpaths
+                (maponpaths _)
+                (maponpaths
+                   _
+                   (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+                 @ gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+              @ _).
+      exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+    + refine (_ @ maponpathscomp
+                    _
+                    (gquot_id (pr1 G₂))
+                    (gcleq (poly_act_groupoid P (pr1 G₁)) g)).
+      refine (_ @ maponpaths
+                    (maponpaths _)
+                    (maponpathscomp
+                       _
+                       _
+                       _)).
+      refine (!_).
+      refine (maponpaths
+                (maponpaths _)
+                (maponpaths
+                   _
+                   (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+                 @ gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+              @ _).
+      exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+    + refine (!(gconcat _ _ _) @ _ @ gconcat _ _ _).
+      apply maponpaths.
+      apply TODO.*)
+  - exact (λ _, gtrunc _ _ _).
+Defined.
+      
+    
+
 Definition gquot_functor_map_inl_grpd
            {P Q : poly_code}
            {G : groupoid}
@@ -182,8 +308,56 @@ Proof.
   use gquot_double_ind_set.
   - exact (λ _ _, gtrunc _ _ _).
   - exact (λ _ _, idpath _).
-  - apply TODO.
-  - apply TODO.
+  - abstract
+      (intros a b₁ b₂ g ;
+       apply map_PathOver ;
+       refine (whisker_square
+                 (idpath _)
+                 (!(maponpathsidfun _))
+                 _
+                 (idpath _)
+                 _) ;
+       [ refine (_ @ maponpathscomp
+                       _
+                       (gquot_functor_map (pr2_grpd_transformation_data_comp P Q G))
+                       _) ;
+         refine (!_) ;
+         refine (maponpaths
+                   _
+                   (gquot_double_rec'_beta_r_gcleq
+                      (poly_act_groupoid P G)
+                      (poly_act_groupoid Q G)
+                      _ _ _ _ _ _ _ _ _ _ _ _)
+                 @ _) ;
+         exact (gquot_rec_beta_gcleq
+                  (poly_act_groupoid (P * Q) G)
+                  _ _ _ _ _ _ _ _ _)
+       | exact (pathscomp0rid _ @ !(pathscomp0lid _))]).
+  - abstract
+      (intros a₁ a₂ b g ;
+       apply map_PathOver ;
+       refine (whisker_square
+                 (idpath _)
+                 (!(maponpaths_for_constant_function _ _))
+                 _
+                 (idpath _)
+                 _) ;
+       [ refine (_ @ maponpathscomp
+                       (λ z, prod_gquot_comp z (gcl (poly_act_groupoid Q G) b))
+                       (gquot_functor_map (pr2_grpd_transformation_data_comp P Q G))
+                       (gcleq (poly_act_groupoid P G) g)) ;
+         refine (!_) ;
+         refine (maponpaths
+                   _
+                   (gquot_double_rec'_beta_l_gcleq
+                      (poly_act_groupoid P G)
+                      (poly_act_groupoid Q G)
+                      _ _ _ _ _ _ _ _ _ _ _ _)
+                 @ _) ;
+         exact (gquot_rec_beta_gcleq
+                  (poly_act_groupoid (P * Q) G)
+                  _ _ _ _ _ _ _ _ _)
+       | exact (!(ge _ _))]).
 Defined.
 
 Definition gquot_functor_map_const
@@ -346,8 +520,28 @@ Proof.
     exact (maponpaths
              (gquot_functor_map _)
              (poly_gquot_gquot_poly _ _)).
-  - intros a₁ a₂ g ; simpl.
-    apply TODO.
+  - (*intros a₁ a₂ g ; simpl.
+    apply map_PathOver.
+    refine (whisker_square
+              (idpath _)
+              _
+              (!(gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _))
+              (idpath _)
+              _).
+    +  refine (_ @ maponpathscomp
+                     (gquot_functor_map ((sem_endpoint_grpd e₁) G))
+                     (λ z,
+                      gquot_functor_map
+                        ((sem_endpoint_grpd e₂) G)
+                        (poly_gquot
+                           Q (pr1 G)
+                           (gquot_poly z)))
+                     _).
+       refine (!_).
+       apply maponpaths.
+       apply gquot_rec_beta_gcleq.
+    + unfold square.*)
+      apply TODO.
   - intro x.
     exact (gtrunc _ _ _).
 Defined.
@@ -474,6 +668,227 @@ Section LiftGquot.
     @ lift_gquot_add2cell_obj G₂ hG₂ (poly_map S (gquot_functor_map (pr1 F)) z).
   Proof.
     apply TODO.
+    (*
+    unfold lift_gquot_add2cell_obj.
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      apply maponpaths.
+      apply maponpathscomp0.
+    }
+    etrans.
+    {
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      exact (!(path_assoc _ _ _)).
+    }
+    refine (!_).
+    assert (gquot_functor_cell
+              hG₂
+              ((poly_gquot S) (pr1 G₂) (poly_map S (gquot_functor_map (pr1 F)) z))
+            =
+            maponpaths
+              (gquot_functor_map ((sem_endpoint_grpd l) G₂))
+              (poly_gquot_poly_map (pr1 F) z)
+            @ gquot_functor_cell
+                hG₂
+                (gquot_functor_map
+                   (poly_act_functor S _ _ (pr1 F))
+                   (poly_gquot S _ z))
+            @ maponpaths
+                (gquot_functor_map ((sem_endpoint_grpd r) G₂))
+                (!(poly_gquot_poly_map (pr1 F) z)))
+      as H.
+    {
+      refine (homotsec_natural
+                (λ z, gquot_functor_cell
+                        hG₂
+                        z)
+                (!(poly_gquot_poly_map (pr1 F) z))
+                @ _).
+      apply maponpaths_2.
+      apply maponpaths.
+      apply pathsinv0inv0.
+    }
+    etrans.
+    {
+      do 2 apply maponpaths.
+      apply maponpaths_2.
+      apply maponpaths.
+      exact H.
+    }
+    clear H.
+    assert (∏ (e : endpoint A S I),
+            maponpaths (gquot_functor_map (pr1 F)) (gquot_endpoint e z)
+            @ test e F ((poly_gquot S) (pr1 G₁) z)
+            =
+            pr1 (psnaturality_of
+                   (sem_endpoint_one_types e)
+                   (# (total_prealg_gquot A) F)) z
+            @ gquot_endpoint e (poly_map S (gquot_functor_map (pr1 F)) z)
+            @ maponpaths
+                gquot_poly
+                (maponpaths
+                   (gquot_functor_map (sem_endpoint_grpd e G₂))
+                   (poly_gquot_poly_map (pr1 F) z)))
+      as X1.
+    {
+      (*
+      intro e.
+      assert UU.
+      {
+        refine (maponpaths (gquot_functor_map (pr1 F)) (gquot_endpoint e z)
+                @ _
+                =
+                pr1 (psnaturality_of
+                   (sem_endpoint_one_types e)
+                   (# (total_prealg_gquot A) F)) z
+                @ gquot_endpoint e (poly_map S (gquot_functor_map (pr1 F)) z)
+               ).
+        simpl.
+        pose (pr1 (psnaturality_of (sem_endpoint_one_types e) (# (total_prealg_gquot A) F)) z).
+        simpl in p.
+        cbn in p.
+       *)
+      apply TODO.
+    }
+    etrans.
+    {
+      do 2 apply maponpaths.
+      apply maponpaths_2.
+      apply maponpathscomp0.
+    }
+    do 2 refine (path_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths_2.
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      refine (!(path_assoc _ _ _) @ _).
+      exact (!(X1 l)).
+    }
+    do 2 refine (!(path_assoc _ _ _) @ _).
+    apply maponpaths.
+
+    assert (∏ (e : endpoint A S I),
+            maponpaths
+                gquot_poly
+                (maponpaths
+                   (gquot_functor_map (sem_endpoint_grpd e G₂))
+                   (! poly_gquot_poly_map (pr1 F) z))
+            @ ! gquot_endpoint e (poly_map S (gquot_functor_map (pr1 F)) z)
+            =
+            ! test e F ((poly_gquot S) (pr1 G₁) z)
+            @ maponpaths (gquot_functor_map (pr1 F)) (! gquot_endpoint e z)
+            @ pr1 (psnaturality_of
+                   (sem_endpoint_one_types e)
+                   (# (total_prealg_gquot A) F)) z)
+      as X2.
+    {
+      intro e.
+      refine (!_).
+      use pathsinv0_to_right.
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (maponpathsinv0 _ _).
+      }
+      use pathsinv0_to_right.
+      refine (!_).
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (X1 e).
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          refine (!(path_assoc _ _ _) @ _).
+          apply maponpaths.
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          refine (!(maponpathscomp0 _ _ _) @ _).
+          apply maponpaths.
+          refine (!(maponpathscomp0 _ _ _) @ _).
+          apply maponpaths.
+          apply pathsinv0r.
+        }
+        apply pathsinv0r.
+      }
+      apply pathscomp0rid.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpathscomp0.
+      }
+      refine (! (path_assoc _ _ _) @ _).
+      apply maponpaths.
+      exact (X2 r).
+    }
+    do 2 refine (path_assoc _ _ _ @ _).
+    apply maponpaths_2.
+    refine (!_).
+    pose (nat_trans_eq_pointwise hF) as p.
+    simpl in p.
+    cbn in p.
+    assert (∏ w,
+            maponpaths
+              (gquot_functor_map (pr1 F))
+              (maponpaths gquot_poly (gquot_functor_cell hG₁ w))
+            =
+            (test l F w @
+                  maponpaths gquot_poly
+                  (gquot_functor_cell
+                     hG₂
+                     (gquot_functor_map (poly_act_functor S (pr1 G₁) (pr1 G₂) (pr1 F))
+                                        w))) @ ! test r F w).
+    {
+      use gquot_ind_prop.
+      - intro a.
+        pose (p a) as q.
+        simpl in q.
+        simpl.
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths.
+            apply gquot_rec_beta_gcleq.
+          }
+          exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+        }
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths.
+          exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (!(gconcat _ _ _)).
+        }
+        use path_inv_rotate_lr.
+        refine (_ @ gconcat _ _ _).
+        apply maponpaths.
+        exact (!q).
+      - exact (λ _, gtrunc _ _ _ _ _).
+    }
+    apply X.
+    *)
   Qed.
 
   Definition lift_gquot_add2cell
@@ -486,8 +901,9 @@ Section LiftGquot.
   Proof.
     use disp_cell_unit_psfunctor.
     - exact lift_gquot_add2cell_obj.
-    - intros G₁ G₂ F hG₁ hG₂ hF.
-      use funextsec.
-      exact (lift_gquot_add2cell_mor hF).
+    - abstract
+        (intros G₁ G₂ F hG₁ hG₂ hF ;
+         use funextsec ;
+         exact (lift_gquot_add2cell_mor hF)).
   Defined.
 End LiftGquot.
