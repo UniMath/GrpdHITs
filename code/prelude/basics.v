@@ -13,6 +13,41 @@ Definition unit_one_type
   := make_one_type unit (hlevelntosn _ _ (hlevelntosn _ _ isapropunit)).
 
 (** General lemmata involving paths *)
+Definition paths_pathsdirprod
+           {A B : UU}
+           {a₁ a₂ : A} {b₁ b₂ : B}
+           {p₁ p₂ : a₁ = a₂} {q₁ q₂ : b₁ = b₂}
+           (s₁ : p₁ = p₂) (s₂ : q₁ = q₂)
+  : pathsdirprod p₁ q₁ = pathsdirprod p₂ q₂.
+Proof.
+  induction s₁, s₂.
+  apply idpath.
+Defined.
+
+Definition maponpaths_paths
+           {A B : UU}
+           {f g : A → B}
+           (h : ∏ (x : A), f x = g x)
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+  : maponpaths f (!p) @ h a₁ @ maponpaths g p = h a₂.
+Proof.
+  induction p.
+  apply pathscomp0rid.
+Defined.
+
+Definition maponpaths_paths'
+           {A B : UU}
+           {f g : A → B}
+           (h : ∏ (x : A), f x = g x)
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+  : h a₁ @ maponpaths g p = maponpaths f p @ h a₂.
+Proof.
+  induction p.
+  apply pathscomp0rid.
+Defined.
+
 Definition homotsec_natural
            {A B : UU}
            {f g : A → B}

@@ -174,17 +174,18 @@ Section gquot_double_rec.
         * exact (fp a₁ a₂ b₁ b₂ g₁ g₂).
       + intro.
         exact (truncY _ _).
-    - intros a.
-      simple refine (gquot_ind_prop (λ z, _) _ _ y).
-      + exact (λ b, fle a b).
-      + intro.
-        exact (truncY _ _ _ _).
-    - intros a₁ a₂ a₃ g.
-      simple refine (gquot_ind_prop (λ z, _) _ _ y).
-      + exact (λ b, flc a₁ a₂ a₃ b g).
-      + intro.
-        use impred ; intro.
-        exact (truncY _ _ _ _).
+    - abstract
+        (intros a ;
+         simple refine (gquot_ind_prop (λ z, _) _ _ y) ;
+         [ exact (λ b, fle a b)
+         | exact (λ _, truncY _ _ _ _)]).
+    - abstract
+        (intros a₁ a₂ a₃ g ;
+         simple refine (gquot_ind_prop (λ z, _) _ _ y) ;
+         [ exact (λ b, flc a₁ a₂ a₃ b g)
+         | intro ;
+           use impred ; intro ;
+           exact (truncY _ _ _ _)]).
     - exact truncY.
   Defined.
 
@@ -285,14 +286,15 @@ Section gquot_double_ind_set.
       + exact (f a).
       + exact (fr a).
       + intro ; apply Yisaset.
-    - intros a₁ a₂ g.
-      revert b.
-      use gquot_ind_prop.
-      + exact (λ b, fl a₁ a₂ b g).
-      + intro.
-        apply PathOver_hprop.
-        intro.
-        apply Yisaset.
+    - abstract
+        (intros a₁ a₂ g ;
+         revert b ;
+         use gquot_ind_prop ;
+         [ exact (λ b, fl a₁ a₂ b g)
+         | intro ;
+           apply PathOver_hprop ;
+           intro ;
+           apply Yisaset]).
     - intro x.
       apply Yisaset.
   Defined.

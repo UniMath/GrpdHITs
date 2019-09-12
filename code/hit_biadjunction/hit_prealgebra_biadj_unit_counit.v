@@ -66,3 +66,42 @@ Proof.
     + exact (prealg_unit P).
     + exact (prealg_counit P).
 Defined.
+
+(** Useful lemmata *)
+Definition maponpaths_sum_gquot_inl
+           {P₁ P₂ : poly_code}
+           {G : groupoid}
+           {a b : poly_act P₁ (gquot G)}
+           (p : a = b)
+  : maponpaths
+      ((sum_gquot (poly_gquot P₁) (poly_gquot P₂)) G)
+      (maponpaths inl p)
+    =
+    maponpaths
+      gquot_inl_grpd
+      (maponpaths
+         (poly_gquot P₁ G)
+         p).
+Proof.
+  induction p.
+  apply idpath.
+Qed.
+
+Definition maponpaths_sum_gquot_inr
+           {P₁ P₂ : poly_code}
+           {G : groupoid}
+           {a b : poly_act P₂ (gquot G)}
+           (p : a = b)
+  : maponpaths
+      ((sum_gquot (poly_gquot P₁) (poly_gquot P₂)) G)
+      (maponpaths inr p)
+    =
+    maponpaths
+      gquot_inr_grpd
+      (maponpaths
+         (poly_gquot P₂ G)
+         p).
+Proof.
+  induction p.
+  apply idpath.
+Qed.

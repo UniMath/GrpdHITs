@@ -317,7 +317,7 @@ Proof.
                       (gquot_poly_poly_act_identity P₂ _))).
 Defined.
 
-Definition gquot_poly_poly_gquot
+Definition gquot_poly_poly_gquot_eq
            (P : poly_code)
            {X : groupoid}
   : ∏ (z : poly_act P (gquot X)), gquot_poly (poly_gquot P X z) = z.
@@ -378,16 +378,214 @@ Proof.
             (!(maponpathsidfun _))
             (idpath _)
             _).
+  unfold square.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
   - induction g.
     rewrite ge.
     apply idpath.
-  - admit.
-  - admit.
-  - admit.
-Admitted.
+  - refine (pathscomp0rid _ @ _).
+    etrans.
+    {
+      apply maponpaths.
+      apply gquot_rec_beta_gcleq.
+    }
+    apply gquot_rec_beta_gcleq.
+  - induction a₁ as [a₁ | a₁], a₂ as [a₂ | a₂].
+    + specialize (IHP₁ a₁ a₂ g) ; clear IHP₂.
+      refine (_ @ maponpaths (maponpaths gquot_inl_grpd) IHP₁ @ _).
+      * refine (!_).
+        etrans.
+        {
+          apply maponpathscomp0.
+        }
+        apply maponpaths_2.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          exact (gquot_rec_beta_gcleq (poly_act_groupoid (P₁ + P₂) X) _ _ _ _ _ _ _ _ g).
+        }
+        etrans.
+        {
+          apply (maponpathscomp
+                   (λ z, inl (gquot_poly z))
+                   ((sum_gquot (poly_gquot P₁) (poly_gquot P₂)) X)).
+        }
+        refine (!_).
+        etrans.
+        {
+          apply maponpathscomp.
+        }
+        apply (maponpathscomp
+                 gquot_poly
+                 (λ x, gquot_inl_grpd (poly_gquot P₁ X x))).
+      * etrans.
+        {
+          apply maponpathscomp0.
+        }
+        apply maponpaths.
+        apply gquot_rec_beta_gcleq.
+    + exact (fromempty g).
+    + exact (fromempty g).
+    + specialize (IHP₂ a₁ a₂ g) ; clear IHP₁.
+      refine (_ @ maponpaths (maponpaths gquot_inr_grpd) IHP₂ @ _).
+      * refine (!_).
+        etrans.
+        {
+          apply maponpathscomp0.
+        }
+        apply maponpaths_2.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          exact (gquot_rec_beta_gcleq (poly_act_groupoid (P₁ + P₂) X) _ _ _ _ _ _ _ _ g).
+        }
+        etrans.
+        {
+          apply (maponpathscomp
+                   (λ z, inr (gquot_poly z))
+                   ((sum_gquot (poly_gquot P₁) (poly_gquot P₂)) X)).
+        }
+        refine (!_).
+        etrans.
+        {
+          apply maponpathscomp.
+        }
+        apply (maponpathscomp
+                 gquot_poly
+                 (λ x, gquot_inr_grpd (poly_gquot P₂ X x))).
+      * etrans.
+        {
+          apply maponpathscomp0.
+        }
+        apply maponpaths.
+        apply gquot_rec_beta_gcleq.
+  - specialize (IHP₁ _ _ (pr1 g)).
+    specialize (IHP₂ _ _ (pr2 g)).
+    etrans.
+    {
+      etrans.
+      {
+        apply maponpaths.
+        pose (uncurry_ap
+                prod_gquot_comp
+                (poly_gquot_gquot_poly_comp P₁ (pr1 a₂))
+                (poly_gquot_gquot_poly_comp P₂ (pr2 a₂)))
+          as h.
+        unfold uncurry in h.
+        exact (!h).
+      }
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (!(maponpathscomp
+                   (dirprodf (poly_gquot P₁ X) (poly_gquot P₂ X))
+                   (λ z, prod_gquot_comp (pr1 z) (pr2 z))
+                   (maponpaths
+                      (gquot_prod gquot_poly gquot_poly)
+                      (gcleq (poly_act_groupoid (P₁ * P₂) X) g)))).
+      }
+      etrans.
+      {
+        apply maponpaths_2.
+        do 2 apply maponpaths.
+        apply gquot_rec_beta_gcleq.
+      }
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths.
+        exact (!(maponpaths_pathsdirprod _ _ _ _)).
+      }      
+      exact (!(maponpathscomp0
+                 (λ z, prod_gquot_comp (pr1 z) (pr2 z))
+                 (pathsdirprod
+                    (maponpaths
+                       ((poly_gquot P₁) X)
+                       (maponpaths
+                          gquot_poly
+                          (gcleq (poly_act_groupoid P₁ X) (pr1 g))))
+                    (maponpaths
+                       ((poly_gquot P₂) X)
+                       (maponpaths
+                          gquot_poly
+                          (gcleq (poly_act_groupoid P₂ X) (pr2 g)))))
+                 (pathsdirprod
+                    (poly_gquot_gquot_poly_comp P₁ (pr1 a₂))
+                    (poly_gquot_gquot_poly_comp P₂ (pr2 a₂))))).
+    }
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply pathsdirprod_concat.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        exact IHP₂.
+      }
+      apply maponpaths_2.
+      exact IHP₁.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      exact (!(pathsdirprod_concat _ _ _ _)).
+    }
+    etrans.
+    {
+      exact (maponpathscomp0
+               (λ z, prod_gquot_comp (pr1 z) (pr2 z))
+               (pathsdirprod
+                  (poly_gquot_gquot_poly_comp P₁ (pr1 a₁))
+                  (poly_gquot_gquot_poly_comp P₂ (pr2 a₁)))
+               (pathsdirprod
+                  (gcleq (poly_act_groupoid P₁ X) (pr1 g))
+                  (gcleq (poly_act_groupoid P₂ X) (pr2 g)))).
+    }
+    etrans.
+    {
+      apply maponpaths_2.
+      pose (uncurry_ap
+              prod_gquot_comp
+              (poly_gquot_gquot_poly_comp P₁ (pr1 a₁))
+              (poly_gquot_gquot_poly_comp P₂ (pr2 a₁)))
+        as h.
+      unfold uncurry in h.
+      exact h.
+    }
+    apply maponpaths.
+    etrans.
+    {
+      pose (uncurry_ap
+              prod_gquot_comp
+              (gcleq (poly_act_groupoid P₁ X) (pr1 g))
+              (gcleq (poly_act_groupoid P₂ X) (pr2 g)))
+        as h.
+      unfold uncurry in h.
+      exact h.
+    }
+    etrans.
+    {
+      apply maponpaths_2.
+      exact (gquot_double_rec'_beta_l_gcleq _ _ _ _ _ _ _ _ _ _ _ _ _ _).
+    }
+    etrans.
+    {
+      apply maponpaths.
+      exact (gquot_double_rec'_beta_r_gcleq _ _ _ _ _ _ _ _ _ _ _ _ _ _).
+    }
+    refine (!(gconcat _ _ _) @ _).
+    apply maponpaths.
+    exact (pathsdirprod
+             (poly_act_id_right _ _ _ _ _)
+             (poly_act_id_left _ _ _ _ _)).
+Qed.
 
-Definition poly_gquot_gquot_poly
+Definition poly_gquot_gquot_poly_eq
            (P : poly_code)
            {X : groupoid}
   : ∏ (z : gquot (poly_act_groupoid P X)), poly_gquot P X (gquot_poly z) = z.
@@ -397,3 +595,41 @@ Proof.
   - exact (poly_gquot_gquot_poly_po P).
   - exact (λ _, gtrunc _ _ _).
 Defined.
+
+Definition poly_gquot_isweq
+           (P : poly_code)
+           (X : groupoid)
+  : isweq (poly_gquot P X).
+Proof.
+  use gradth.
+  - exact (@gquot_poly P X).
+  - exact (gquot_poly_poly_gquot_eq P).
+  - exact (poly_gquot_gquot_poly_eq P).
+Defined.
+
+Definition poly_gquot_weq
+           (P : poly_code)
+           (X : groupoid)
+  : poly_act P (gquot X) ≃ gquot (poly_act_groupoid P X)
+  := make_weq _ (poly_gquot_isweq P X).
+
+Definition gquot_poly_poly_gquot
+           {P : poly_code}
+           {X : groupoid}
+  : ∏ (z : poly_act P (gquot X)), gquot_poly (poly_gquot P X z) = z
+  := homotinvweqweq (poly_gquot_weq P X).
+
+Definition poly_gquot_gquot_poly
+           {P : poly_code}
+           {X : groupoid}
+  : ∏ (z : gquot (poly_act_groupoid P X)), poly_gquot P X (gquot_poly z) = z
+  := homotweqinvweq (poly_gquot_weq P X).
+
+Definition maponpaths_gquot_poly_poly_gquot
+           (P : poly_code)
+           {X : groupoid}
+           (z : poly_act P (gquot X))
+  : maponpaths (poly_gquot P X) (gquot_poly_poly_gquot z)
+    =
+    poly_gquot_gquot_poly (poly_gquot P X z)
+  := homotweqinvweqweq (poly_gquot_weq P X) z.
