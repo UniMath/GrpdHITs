@@ -50,6 +50,7 @@ hit_biadjunction/gquot_commute.v
 
 hit_biadjunction/hit_prealgebra_biadj/lift_path_groupoid.v
 hit_biadjunction/hit_prealgebra_biadj/lift_gquot.v
+
 hit_biadjunction/hit_prealgebra_biadj/unit.v
 hit_biadjunction/hit_prealgebra_biadj/counit.v
 
