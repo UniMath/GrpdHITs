@@ -8,6 +8,7 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.whiskering.
+Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
@@ -40,111 +41,132 @@ Require Import algebra.groupoid_endpoints.
 
 Local Open Scope cat.
 
-(** Needed natural transformations *)
-Definition pr1_pair_functor_comp
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : pair_functor_data F₁ F₂
-                ⟹
-                pair_functor_data G₁ G₂)
-  : nat_trans_data F₁ G₁
-  := λ x, pr1 (α x).
-
-Definition pr1_pair_functor_is_nat_trans
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : pair_functor_data F₁ F₂
-                ⟹
-                pair_functor_data G₁ G₂)
-  : is_nat_trans _ _ (pr1_pair_functor_comp α).
-Proof.
-  exact (λ x y f, maponpaths pr1 (pr2 α x y f)).
-Qed.
-
-Definition pr1_pair_functor
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : pair_functor_data F₁ F₂
-                ⟹
-                pair_functor_data G₁ G₂)
-  : F₁ ⟹ G₁.
+(** Required natural transformations *)
+Definition sem_endpoint_grpd_assoc
+           {A Q R₁ R₂ T : poly_code}
+           (e₁ : endpoint A Q R₁)
+           (e₂ : endpoint A R₁ R₂)
+           (e₃ : endpoint A R₂ T)
+           (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
+  : pr1 (sem_endpoint_grpd (comp e₁ (comp e₂ e₃)) X)
+    ⟹
+    pr1 (sem_endpoint_grpd (comp (comp e₁ e₂) e₃) X).
 Proof.
   use make_nat_trans.
-  - exact (pr1_pair_functor_comp α).
-  - exact (pr1_pair_functor_is_nat_trans α).
+  - exact (λ _, poly_act_identity _).
+  - abstract
+      (intros x y f ;
+       exact (poly_act_id_right _ @ !(poly_act_id_left _))).
 Defined.
 
-Definition pr2_pair_functor_comp
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : pair_functor_data F₁ F₂
-                ⟹
-                pair_functor_data G₁ G₂)
-  : nat_trans_data F₂ G₂
-  := λ x, pr2 (α x).
-
-Definition pr2_pair_functor_is_nat_trans
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : pair_functor_data F₁ F₂
-                ⟹
-                pair_functor_data G₁ G₂)
-  : is_nat_trans _ _ (pr2_pair_functor_comp α).
-Proof.
-  exact (λ x y f, maponpaths dirprod_pr2 (pr2 α x y f)).
-Qed.
-
-Definition pr2_pair_functor
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : pair_functor_data F₁ F₂
-                ⟹
-                pair_functor_data G₁ G₂)
-  : F₂ ⟹ G₂.
+Definition sem_endpoint_grpd_id_left
+           {A Q T : poly_code}
+           (e : endpoint A Q T)
+           (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
+  : pr1 (sem_endpoint_grpd (comp (id_e A Q) e) X)
+    ⟹
+    pr1 (sem_endpoint_grpd e X).
 Proof.
   use make_nat_trans.
-  - exact (pr2_pair_functor_comp α).
-  - exact (pr2_pair_functor_is_nat_trans α).
+  - exact (λ _, poly_act_identity _).
+  - abstract
+      (intros x y f ;
+       exact (poly_act_id_right _ @ !(poly_act_id_left _))).
 Defined.
 
-Definition pair_nat_trans_data
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : F₁ ⟹ G₁)
-           (β : F₂ ⟹ G₂)
-  : nat_trans_data (pair_functor F₁ F₂) (pair_functor G₁ G₂)
-  := λ x, α x ,, β x.
-
-Definition pair_nat_trans_is_nat_trans
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : F₁ ⟹ G₁)
-           (β : F₂ ⟹ G₂)
-  : is_nat_trans _ _ (pair_nat_trans_data α β).
-Proof.
-  intros x y f.
-  exact (pathsdirprod (pr2 α x y f) (pr2 β x y f)).
-Qed.  
-
-Definition pair_nat_trans
-           {C D₁ D₂ : category}
-           {F₁ G₁ : C ⟶ D₁}
-           {F₂ G₂ : C ⟶ D₂}
-           (α : F₁ ⟹ G₁)
-           (β : F₂ ⟹ G₂)
-  : pair_functor F₁ F₂ ⟹ pair_functor G₁ G₂.
+Definition sem_endpoint_grpd_id_right
+           {A Q T : poly_code}
+           (e : endpoint A Q T)
+           (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
+  : pr1 (sem_endpoint_grpd (comp e (id_e A T)) X)
+    ⟹
+    pr1 (sem_endpoint_grpd e X).
 Proof.
   use make_nat_trans.
-  - exact (pair_nat_trans_data α β).
-  - exact (pair_nat_trans_is_nat_trans α β).
+  - exact (λ _, poly_act_identity _).
+  - abstract
+      (intros x y f ;
+       exact (poly_act_id_right _ @ !(poly_act_id_left _))).
+Defined.
+
+Definition sem_endpoint_grpd_pr1
+           {A Q T₁ T₂ : poly_code}
+           (e₁ e₂ : endpoint A Q T₁)
+           (e₃ e₄ : endpoint A Q T₂)
+           (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
+           (IHp : pr1 (sem_endpoint_grpd (pair e₁ e₃) X)
+                  ⟹
+                  pr1 (sem_endpoint_grpd (pair e₂ e₄) X))
+  : pr1 (sem_endpoint_grpd e₁ X) ⟹ pr1 (sem_endpoint_grpd e₂ X).
+Proof.
+  use make_nat_trans.
+  - exact (λ x, pr1 (IHp x)).
+  - abstract
+      (intros x y f ;
+       exact (maponpaths pr1 (nat_trans_ax IHp _ _ f))).
+Defined.
+
+Definition sem_endpoint_grpd_pr2
+           {A Q T₁ T₂ : poly_code}
+           (e₁ e₂ : endpoint A Q T₁)
+           (e₃ e₄ : endpoint A Q T₂)
+           (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
+           (IHp : pr1 (sem_endpoint_grpd (pair e₁ e₃) X)
+                  ⟹
+                  pr1 (sem_endpoint_grpd (pair e₂ e₄) X))
+  : pr1 (sem_endpoint_grpd e₃ X) ⟹ pr1 (sem_endpoint_grpd e₄ X).
+Proof.
+  use make_nat_trans.
+  - exact (λ x, pr2 (IHp x)).
+  - abstract
+      (intros x y f ;
+       exact (maponpaths dirprod_pr2 (nat_trans_ax IHp _ _ f))).
+Defined.
+
+Definition sem_endpoint_grpd_pair
+           {A Q T₁ T₂ : poly_code}
+           (e₁ e₂ : endpoint A Q T₁)
+           (e₃ e₄ : endpoint A Q T₂)
+           (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
+           (IHp₁ : pr1 (sem_endpoint_grpd e₁ X)
+                   ⟹
+                   pr1 (sem_endpoint_grpd e₂ X))
+           (IHp₂ : pr1 (sem_endpoint_grpd e₃ X)
+                   ⟹
+                   pr1 (sem_endpoint_grpd e₄ X))
+  : pr1 (sem_endpoint_grpd (pair e₁ e₃) X)
+    ⟹
+    pr1 (sem_endpoint_grpd (pair e₂ e₄) X).
+Proof.
+  use make_nat_trans.
+  - exact (λ x, IHp₁ x ,, IHp₂ x).
+  - abstract
+      (intros x y f ;
+       exact (pathsdirprod (nat_trans_ax IHp₁ _ _ f) (nat_trans_ax IHp₂ _ _ f))).
+Defined.
+
+Definition sem_endpoint_path_constr
+           {A : poly_code}
+           {J : UU}
+           {S : J → poly_code}
+           {l r : ∏ j : J, endpoint A (S j) I}
+           {Q : poly_code}
+           {j : J}
+           (e : endpoint A Q (S j))
+           (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
+           (pX : ∏ (j : J),
+                 pr1 ((pr111 (sem_endpoint_grpd (l j))) X)
+                 ⟹
+                 pr1 ((pr111 (sem_endpoint_grpd (r j))) X))
+  : sem_endpoint_grpd_data_functor_data (comp e (l j)) X
+    ⟹
+    sem_endpoint_grpd_data_functor_data (comp e (r j)) X.
+Proof.
+  use make_nat_trans.
+  - exact (λ x, pX j (sem_endpoint_UU e (λ z, pr12 X z) x)).
+  - abstract
+      (intros x y f ;
+       apply (nat_trans_ax (pX j))).
 Defined.
 
 (** Now we combine it *)
@@ -176,20 +198,34 @@ Proof.
                   | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
                   | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
                   | j e | el er | ].
-  - exact (nat_trans_id (pr1 ((sem_endpoint_grpd e) X))).
-  - exact (@inv_cell grpd_bicat _ _ _ _ IHp (grpd_bicat_is_invertible_2cell _)).
-  - exact (nat_trans_comp _ _ _ IHP₁ IHP₂).
-  - apply nat_trans_functor_assoc.
-  - apply nat_trans_functor_id_left.
-  - apply nat_trans_functor_id_right.
-  - exact (pr1_pair_functor IHp).
-  - exact (pr2_pair_functor IHp).
-  - exact (pair_nat_trans IHp₁ IHp₂).
-  - exact (post_whisker IHp (inl_grpd_transformation T₁ T₂ (pr1 X))).
-  - exact (post_whisker IHp (inr_grpd_transformation T₁ T₂ (pr1 X))).
-  - exact (pre_whisker (pr1 (pr111 (sem_endpoint_grpd e) X)) (pX j)).
-  - exact (post_whisker IHp (pr2 X)).
-  - exact p_arg.
+  - (* reflexivity *)
+    exact (nat_trans_id (pr1 ((sem_endpoint_grpd e) X))).
+  - (* symmetry *)
+    exact (@inv_cell grpd_bicat _ _ _ _ IHp (grpd_bicat_is_invertible_2cell _)).
+  - (* transitivity *)
+    exact (nat_trans_comp _ _ _ IHP₁ IHP₂).
+  - (* associativity *)
+    exact (sem_endpoint_grpd_assoc e₁ e₂ e₃ X).
+  - (* left identity *)
+    exact (sem_endpoint_grpd_id_left e X).
+  - (* right identity *)
+    exact (sem_endpoint_grpd_id_right e X).
+  - (* first projection *)
+    exact (sem_endpoint_grpd_pr1 e₁ e₂ e₃ e₄ X IHp).
+  - (* second projection *)
+    exact (sem_endpoint_grpd_pr2 e₁ e₂ e₃ e₄ X IHp).
+  - (* pair of endpoints *)
+    exact (sem_endpoint_grpd_pair e₁ e₂ e₃ e₄ X IHp₁ IHp₂).
+  - (* left inclusion *)
+    exact IHp.
+  - (* right inclusion *)
+    exact IHp.
+  - (* path constructor *)
+    exact (sem_endpoint_path_constr e X pX).
+  - (* point constructor *)
+    exact (post_whisker IHp (pr2 X : _ ⟶ _)).
+  - (* path argument *)
+    exact p_arg.
 Defined.
 
 (** Bicategory of algebras *)
@@ -312,7 +348,7 @@ Section HITPathAlgebraMorProjections.
       ⟹
       # ⦃ point_constr Σ ⦄ path_alg_map_carrier_grpd ∙ prealg_constr_grpd (pr1 G₂)
     := prealg_map_commute_grpd (pr1 F).
-
+  
   Definition path_alg_map_path_grpd
              (j : path_label Σ)
              (x : poly_act (path_source Σ j) (pr111 G₁))
@@ -320,8 +356,10 @@ Section HITPathAlgebraMorProjections.
     · pr11 (psnaturality_of (sem_endpoint_grpd (path_right Σ j)) (pr1 F)) x
     =
     pr11 (psnaturality_of (sem_endpoint_grpd (path_left Σ j)) (pr1 F)) x
-         · pr1 (pr2 G₂ j) (poly_map (path_source Σ j) (pr111 F) x)
-    := nat_trans_eq_pointwise (pr2 F j) x.
+         · pr1 (pr2 G₂ j) (poly_map (path_source Σ j) (pr111 F) x).
+  Proof.
+    exact (nat_trans_eq_pointwise (pr2 F j) x).
+  Qed.
 End HITPathAlgebraMorProjections.
 
 Definition make_hit_path_alg_map_grpd

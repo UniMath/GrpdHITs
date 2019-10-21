@@ -58,7 +58,7 @@ Definition prealg_gquot_help
   : ∏ (z : gquot (poly_act_groupoid P G₁)),
     gquot_functor_map F (gquot_functor_map hG₁ z)
     =
-    gquot_functor_map hG₂ (gquot_functor_map (poly_act_functor P G₁ G₂ F) z).
+    gquot_functor_map hG₂ (gquot_functor_map (poly_act_functor P F) z).
 Proof.
   use gquot_ind_set.
   - exact (λ a, gcleq _ (pr11 hF a)).
@@ -85,7 +85,7 @@ Proof.
                        (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
                        @ _)
                     @ maponpathscomp
-                    (gquot_functor_map (poly_act_functor P G₁ G₂ F))
+                    (gquot_functor_map (poly_act_functor P F))
                     (gquot_functor_map hG₂)
                     (gcleq (poly_act_groupoid P G₁) g)) ;
            exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
@@ -148,7 +148,7 @@ Definition prealg_gquot_on_cell_help
     prealg_gquot_help P f hf z
     @ maponpaths
         (gquot_functor_map hY)
-        (gquot_functor_cell (poly_act_nat_trans P X Y f g p) z)
+        (gquot_functor_cell (poly_act_nat_trans P p) z)
     =
     gquot_functor_cell p (gquot_functor_map hX z)
     @ prealg_gquot_help P g hg z.
@@ -217,7 +217,7 @@ Definition prealg_gquot_identitor_help
     z
     =
     gquot_functor_map
-      (poly_act_functor P _ _ (functor_identity G))
+      (poly_act_functor P (functor_identity G))
       z.
 Proof.
   intro z.
@@ -305,7 +305,7 @@ Local Definition psnaturality_pg
       (f : grpd_bicat ⟦ X, Y ⟧)
       (z : poly_act P (gquot X))
   : gquot_functor_map
-      (poly_act_functor P X Y f)
+      (poly_act_functor P f)
       (poly_gquot P X z)
     =
     (poly_gquot P) Y (poly_map P (gquot_functor_map f) z)
@@ -383,18 +383,18 @@ Definition gquot_functor_map_poly_act_poly_gquot_help
            (g : grpd_bicat ⟦ Y, Z ⟧)
   : ∏ (z : gquot (poly_act_groupoid P X)),
     gquot_functor_map
-      (poly_act_functor P Y Z g)
+      (poly_act_functor P g)
       (gquot_functor_map
-         (poly_act_functor P X Y f)
+         (poly_act_functor P f)
          z)
     =
     gquot_functor_map
-      (poly_act_functor P X Z (f ∙ g))
+      (poly_act_functor P (f ∙ g))
       z
   := λ z, gquot_functor_composition
-            (poly_act_functor P X Y f) (poly_act_functor P Y Z g)
+            (poly_act_functor P f) (poly_act_functor P g)
             z
-         @ gquot_functor_cell (poly_act_functor_composition P X Y Z f g) z.
+         @ gquot_functor_cell (poly_act_functor_composition P f g) z.
 
 Definition gquot_functor_map_poly_act_poly_gquot
            {P : poly_code}
@@ -403,15 +403,15 @@ Definition gquot_functor_map_poly_act_poly_gquot
            (g : grpd_bicat ⟦ Y, Z ⟧)
            (z : poly_act P (gquot X))
   : gquot_functor_map
-      (poly_act_functor P Y Z g)
+      (poly_act_functor P g)
       (poly_gquot P Y (poly_map P (gquot_functor_map f) z))
     =
     gquot_functor_map
-      (poly_act_functor P X Z (f ∙ g))
+      (poly_act_functor P (f ∙ g))
       (poly_gquot P X z)
   := maponpaths
        (gquot_functor_map
-          (poly_act_functor P Y Z g))
+          (poly_act_functor P g))
        (!pr1 (psnaturality_of (poly_gquot P) f) z)
      @ gquot_functor_map_poly_act_poly_gquot_help f g (poly_gquot P X z).
 
@@ -426,7 +426,7 @@ Definition prealg_gquot_compositor_lem₁
            (hf : hX -->[ f] hY)
            (hg : hY -->[ g] hZ)
            (z : poly_act P (gquot X))
-           (q : hX ∙ (f ∙ g) ⟹ poly_act_functor P X Z (f ∙ g) ∙ hZ)
+           (q : hX ∙ (f ∙ g) ⟹ poly_act_functor P (f ∙ g) ∙ hZ)
            (Hq : @is_invertible_2cell grpd_bicat _ _ _ _ q)
            (qa : ∏ (a : poly_act P (X : groupoid)),
                  # (g : _ ⟶ _) ((pr11 hf) a)
@@ -531,16 +531,16 @@ Local Definition pstrans_comp_pg
       (g : grpd_bicat ⟦ Y, Z ⟧)
       (z : poly_act P (gquot X))
   : (gquot_functor_composition
-       (poly_act_functor P X Y f)
-       (poly_act_functor P Y Z g)
+       (poly_act_functor P f)
+       (poly_act_functor P g)
        (poly_gquot P X z)
   @ gquot_functor_cell
-      (poly_act_functor_composition P X Y Z f g)
+      (poly_act_functor_composition P f g)
       ((poly_gquot P) X z))
   @ psnaturality_pg (f ∙ g) z
   =
   (((maponpaths
-       (gquot_functor_map (poly_act_functor P Y Z g))
+       (gquot_functor_map (poly_act_functor P g))
        (psnaturality_pg f z)
   @ idpath _)
   @ (psnaturality_pg g (poly_map P (gquot_functor_map f) z)))
@@ -602,7 +602,7 @@ Definition prealg_gquot_compositor
            (hf : hX -->[ f] hY)
            (hg : hY -->[ g] hZ)
            (z : poly_act P (gquot X))
-           (q : hX ∙ (f ∙ g) ⟹ poly_act_functor P X Z (f ∙ g) ∙ hZ)
+           (q : hX ∙ (f ∙ g) ⟹ poly_act_functor P (f ∙ g) ∙ hZ)
            (Hq : @is_invertible_2cell grpd_bicat _ _ _ _ q)
            (qa : ∏ (a : poly_act P (X : groupoid)),
                  # (g : _ ⟶ _) ((pr11 hf) a)

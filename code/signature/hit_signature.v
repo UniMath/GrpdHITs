@@ -1,7 +1,6 @@
 (** Here we define signatures for HITs *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
-
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 (**
@@ -69,6 +68,42 @@ Arguments pair {A} {P} {Q} {R} _ _.
 Arguments c {_} P {_} _.
 Arguments fmap {_} {X Y} f.
 Arguments constr {_}.
+
+(**
+Endpoints induce functions
+ *)
+Definition sem_endpoint_UU
+           {A P Q : poly_code}
+           (e : endpoint A P Q)
+           {X : UU}
+           (c : poly_act A X → X)
+  : poly_act P X → poly_act Q X.
+Proof.
+  induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P Q | P Q | P Q | P Q
+                  | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P T t | C₁ C₂ f | ].
+  - (* Identity *)
+    exact (λ x, x).
+  - (* Composition *)
+    exact (λ x, IHe₂ (IHe₁ x)).
+  - (* Left inclusion *)
+    exact inl.
+  - (* Right inclusion *)
+    exact inr.
+  - (* Left projection *)
+    exact pr1.
+  - (* Right projection *)
+    exact pr2.
+  - (* Pairing *)
+    exact (λ x, IHe₁ x ,, IHe₂ x).
+  - (* Constant *)
+    exact (λ _, t).
+  - (* Constant map *)
+    exact f.
+  - (* Constructor *)
+    exact c.
+Defined.
 
 (**
 Homotopy endpoints

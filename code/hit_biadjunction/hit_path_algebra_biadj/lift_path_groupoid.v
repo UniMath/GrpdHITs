@@ -1,5 +1,5 @@
 (**
-Biadjunction when adding a 2-cell to the algebra structure
+Lift of path groupoid when adding a 2-cell to the algebra structure
  *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
@@ -13,7 +13,7 @@ Require Import UniMath.CategoryTheory.whiskering.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Core.Adjunctions. 
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -54,9 +54,6 @@ Require Import hit_biadjunction.path_groupoid_commute.
 Require Import hit_biadjunction.gquot_commute.
 Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_prealgebra_biadj.
-
-Local Definition TODO {A : UU} : A.
-Admitted.
 
 Local Open Scope cat.
 
@@ -101,21 +98,20 @@ Definition path_groupoid_endpoint
            (e : endpoint A S T)
            {X : total_bicat (disp_alg_bicat (⟦ A ⟧))}
            (z : poly_act S (pr1 X : one_type))
-  : pr1
-      ((sem_endpoint_grpd e)
-         (one_type_to_groupoid
-            (pr1 X),,
-            (poly_path_groupoid A) (pr1 X) ∙ function_to_functor (pr2 X))) z
+  : sem_endpoint_UU e (λ z0, pr2 X (pr1 ((poly_path_groupoid A) (pr1 X)) z0)) z
     =
-    (sem_endpoint_one_types e) X z.
+    sem_endpoint_UU e (pr2 X) z.
 Proof.
   induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
                   | P Q | P Q | P Q | P Q
-                  | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ].
+                  | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ g | ].
   - (* Identity *)
-    exact (idpath z).
+    exact (idpath _).
   - (* Composition *)
-    exact (maponpaths (λ z, pr1 (sem_endpoint_grpd e₂ _) z) (IHe₁ z) @ IHe₂ _).
+    exact (IHe₂ (sem_endpoint_UU e₁ _ z)
+           @ maponpaths
+               (sem_endpoint_UU e₂ (pr2 X))
+               (IHe₁ z)).
   - (* Left inclusion *)
     exact (idpath _).
   - (* Right inclusion *)
@@ -131,7 +127,9 @@ Proof.
   - (* Constant map *)
     exact (idpath _).
   - (* Constructor *)
-    exact (maponpaths (pr2 X) (poly_path_groupoid_is_id z)).
+    exact (maponpaths
+             (pr2 X)
+             (poly_path_groupoid_is_id z)).
 Defined.
 
 Definition poly_path_groupoid_is_id_is_nat
@@ -214,7 +212,7 @@ Proof.
     refine (!_).
     etrans.
     {
-      apply maponpaths_pair.
+      apply maponpaths_prod_path.
     }
     refine (!_).
     refine (maponpaths (λ z, pathsdirprod z _) (IHe₁ _ _ f) @ _).
@@ -253,9 +251,9 @@ Definition poly_act_morphism_path_groupoid_poly_act_identity
            (f : X → Y)
            (z : poly_act P X)
   : poly_act_morphism_path_groupoid
-       (poly_act_identity P (one_type_to_groupoid Y) (poly_map P f z))
-     =
-     idpath _.
+      (@poly_act_identity P (one_type_to_groupoid Y) (poly_map P f z))
+    =
+    idpath _.
 Proof.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - apply idpath.
@@ -269,6 +267,33 @@ Proof.
            @ maponpaths
                (pathsdirprod _)
                (IHP₂ (pr2 z))).
+Qed.
+
+Definition poly_act_morphism_path_groupoid_compose
+           {P : poly_code}
+           {X : one_type}
+           {x y z : poly_act P X}
+           (f : poly_act_morphism P (one_type_to_groupoid X) x y)
+           (g : poly_act_morphism P (one_type_to_groupoid X) y z)
+  : poly_act_morphism_path_groupoid (poly_act_compose f g)
+    =
+    poly_act_morphism_path_groupoid f @ poly_act_morphism_path_groupoid g.
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  - apply idpath.
+  - apply idpath.
+  - induction x as [x | x] ; induction y as [y | y]
+    ; try (apply (fromempty f))
+    ; induction z as [z | z]
+    ; try (apply (fromempty g)).
+    + specialize (IHP₁ _ _ _ f g).
+      exact (maponpaths (maponpaths inl) IHP₁ @ maponpathscomp0 inl _ _).
+    + specialize (IHP₂ _ _ _ f g).
+      exact (maponpaths (maponpaths inr) IHP₂ @ maponpathscomp0 inr _ _).
+  - refine (_ @ !(pathsdirprod_concat _ _ _ _)).
+    apply paths_pathsdirprod.
+    + apply IHP₁.
+    + apply IHP₂.
 Qed.
 
 Definition map_on_sem_endpoint_one_types_natural_constr_help
@@ -317,7 +342,244 @@ Proof.
     exact (maponpaths (λ z, pathsdirprod z _) (IHP₁ (pr1 z))
            @ maponpaths (pathsdirprod _) (IHP₂ (pr2 z))).
 Qed.
-      
+
+Definition poly_act_morphism_path_groupoid_functor
+           {A P Q : poly_code}
+           (e : endpoint A P Q)
+           {X : total_bicat (disp_alg_bicat (⟦ A ⟧))}
+           {x y : poly_act P (pr1 (path_groupoid (pr1 X)))}
+           (p : poly_act_morphism P (path_groupoid (pr1 X)) x y)
+  : maponpaths
+      (sem_endpoint_UU
+         e
+         (λ z0, pr2 X ((pr1 ((poly_path_groupoid A) (pr1 X))) z0)))
+      (poly_act_morphism_path_groupoid
+         p)
+    =
+    poly_act_morphism_path_groupoid
+      (sem_endpoint_grpd_data_functor_morphism
+         e
+         (prealg_path_groupoid_map A (pr1 X) (pr2 X))
+         p).
+Proof.
+  induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P Q | P Q | P Q | P Q
+                  | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ g | ].
+  - (* Identity *)
+    exact (maponpathsidfun _).
+  - (* Composition *)
+    simpl.
+    cbn.
+    refine (!(maponpathscomp _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      exact (IHe₁ _ _ p).
+    }
+    apply IHe₂.
+  - (* Left inclusion *)
+    apply idpath.
+  - (* Right inclusion *)
+    apply idpath.
+  - (* Left projection *)
+    exact (maponpaths_pr1_pathsdirprod _ _).
+  - (* Right projection *)
+    exact (maponpaths_pr2_pathsdirprod _ _).
+  - (* Pairing *)
+    simpl ; cbn.
+    etrans.
+    {
+      apply maponpaths_prod_path.
+    }
+    refine (maponpaths (λ z, pathsdirprod z _) (IHe₁ _ _ p) @ _).
+    exact (maponpaths (pathsdirprod _) (IHe₂ _ _ p)).
+  - (* Constant *)
+    exact (maponpaths_for_constant_function _ _).
+  - (* Constant map *)
+    apply idpath.
+  - (* Constructor *)
+    simpl.
+    refine (!_).
+    refine (_ @ maponpathscomp (λ z, pr1 (poly_path_groupoid A (pr1 X)) z) (pr2 X) _).
+    apply maponpaths.
+    apply poly_path_groupoid_is_id_is_nat.
+Qed.
+
+Definition map_on_sem_endpoint_one_types_natural_help
+           {A P Q : poly_code}
+           (e : endpoint A P Q)
+           {X Y : total_bicat (disp_alg_bicat (⟦ A ⟧))}
+           (f : X --> Y)
+           (z : poly_act P (pr1 X : one_type))
+  : poly_act_morphism_path_groupoid
+      (sem_endpoint_grpd_natural_data
+         e (# (total_prealg_path_groupoid A) f)
+         z)
+      @ path_groupoid_endpoint e (poly_map P (pr1 f) z)
+    =
+    maponpaths (poly_map Q (pr1 f)) (path_groupoid_endpoint e z)
+               @ sem_endpoint_UU_natural e (pr12 f) z.
+Proof.
+  induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P Q | P Q | P Q | P Q
+                  | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ g | ].
+  - (* Identity *)
+    refine (_ @ !(pathscomp0rid _)).
+    etrans.
+    {
+      apply pathscomp0rid.
+    }
+    apply poly_act_morphism_path_groupoid_poly_act_identity.
+  - (* Composition *)
+    specialize (IHe₁ z).
+    refine (!_).
+    etrans.
+    {
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpathscomp0.
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            refine (maponpaths (λ z, z @ _) _).
+            exact (maponpathscomp (sem_endpoint_UU e₂ (pr2 X)) (poly_map R (pr1 f)) _).
+          }
+          exact (homotsec_natural'
+                   (sem_endpoint_UU_natural e₂ (pr12 f))
+                   (path_groupoid_endpoint e₁ z)).
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (!(maponpathscomp _ _ _)).
+        }
+        etrans.
+        {
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        apply maponpaths.
+        exact (!IHe₁).
+      }
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths.
+      exact (maponpathscomp0
+               (sem_endpoint_UU e₂ (pr2 Y))
+               _
+               (path_groupoid_endpoint e₁ (poly_map P (pr1 f) z))).
+    }
+    clear IHe₁.
+    refine (path_assoc _ _ _ @ _).
+    refine (!_).
+    refine (path_assoc _ _ _ @ _).
+    apply maponpaths_2.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      exact (!(IHe₂
+                 (sem_endpoint_UU
+                    e₁
+                    (λ z0, pr2 X ((pr1 ((poly_path_groupoid A) (pr1 X))) z0))
+                    z))).
+    }
+    clear IHe₂.
+    refine (!(path_assoc _ _ _) @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply poly_act_morphism_path_groupoid_compose.
+    }
+    refine (!(path_assoc _ _ _) @ _).
+    apply maponpaths.
+    refine (!_).
+    etrans.
+    {
+      refine (!_).
+      exact (homotsec_natural'
+               (path_groupoid_endpoint e₂)
+               (poly_act_morphism_path_groupoid _)).
+    }
+    apply maponpaths_2.
+    exact (poly_act_morphism_path_groupoid_functor e₂ _).
+  - (* Left inclusion *)
+    refine (_ @ !(pathscomp0rid _)).
+    refine (pathscomp0rid _ @ _).
+    apply poly_act_morphism_path_groupoid_poly_act_identity.
+  - (* Right inclusion *)
+    refine (_ @ !(pathscomp0rid _)).
+    refine (pathscomp0rid _ @ _).
+    apply poly_act_morphism_path_groupoid_poly_act_identity.
+  - (* Left projection *)
+    refine (_ @ !(pathscomp0rid _)).
+    refine (pathscomp0rid _ @ _).
+    apply poly_act_morphism_path_groupoid_poly_act_identity.
+  - (* Right projection *)
+    refine (_ @ !(pathscomp0rid _)).
+    refine (pathscomp0rid _ @ _).
+    apply poly_act_morphism_path_groupoid_poly_act_identity.
+  - (* Pairing *)
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      refine (!_).
+      apply maponpaths_pathsdirprod.
+    }
+    refine (!_).
+    exact (pathsdirprod_concat _ _ _ _
+           @ paths_pathsdirprod (IHe₁ _) (IHe₂ _)
+           @ !(pathsdirprod_concat _ _ _ _)).
+  - (* Constant *)
+    refine (_ @ !(pathscomp0rid _)).
+    refine (pathscomp0rid _ @ _).
+    apply poly_act_morphism_path_groupoid_poly_act_identity.
+  - (* Constant map *)
+    refine (_ @ !(pathscomp0rid _)).
+    refine (pathscomp0rid _ @ _).
+    apply poly_act_morphism_path_groupoid_poly_act_identity.
+  - (* Constructor *)
+    refine (!_).
+    refine (_ @ path_assoc _ _ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      exact (!(maponpathscomp0 (pr2 Y) _ _)).
+    }
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      simpl.
+      exact (maponpathscomp (pr2 X) (pr1 f) _).
+    }
+    etrans.
+    {
+      exact (homotsec_natural'
+               (pr12 f)
+               (poly_path_groupoid_is_id z)).
+    }
+    apply maponpaths.
+    etrans.
+    {
+      exact (!(maponpathscomp (poly_map A (pr1 f)) (pr2 Y) _)).
+    }
+    apply maponpaths.
+    exact (map_on_sem_endpoint_one_types_natural_constr_help (pr1 f) z).
+Qed.
+  
 Definition map_on_sem_endpoint_one_types_natural
            {A P Q : poly_code}
            (e : endpoint A P Q)
@@ -333,112 +595,8 @@ Definition map_on_sem_endpoint_one_types_natural
   maponpaths (poly_map Q (pr1 f)) (path_groupoid_endpoint e z)
   @ pr1 (psnaturality_of (sem_endpoint_one_types e) f) z.
 Proof.
-  induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                  | P Q | P Q | P Q | P Q
-                  | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ g | ].
-  - (* Identity *)
-    refine (pathscomp0rid _ @ _).
-    refine (_ @ poly_act_morphism_path_groupoid_poly_act_identity P (pr1 f) z).
-
-    apply maponpaths.
-    exact (poly_act_id_left
-             P
-             (one_type_to_groupoid (pr1 Y))
-             (poly_map P (pr1 f) z)
-             (poly_map P (pr1 f) z)
-             (poly_act_identity
-                P (one_type_to_groupoid (pr1 Y))
-                (poly_map P (pr1 f) z))             
-          ).
-  - (* Composition *)
-    (*specialize (IHe₁ z).
-    specialize (IHe₂ (sem_endpoint_one_types e₁ X z)).
-    refine (!_).
-    etrans.
-    {
-      apply maponpaths.
-      etrans.
-      {
-        exact (pathscomp0rid
-                ((pr1 (psnaturality_of
-                        (sem_endpoint_one_types e₂)
-                        f)
-                     (sem_endpoint_one_types e₁ X z)
-                   @ idpath _)
-                   @ maponpaths
-                       (sem_endpoint_one_types e₂ Y)
-                       (pr1 (psnaturality_of (sem_endpoint_one_types e₁) f) z))).
-      }
-      apply maponpaths_2.
-      apply pathscomp0rid.
-    }*)
-    apply TODO.
-  - (* Left inclusion *)
-    refine (pathscomp0rid _ @ _).
-    exact (maponpaths
-             (maponpaths inl)
-             (poly_act_morphism_path_groupoid_poly_act_identity P _ _)).
-  - (* Right inclusion *)
-    refine (pathscomp0rid _ @ _).
-    exact (maponpaths
-             (maponpaths inr)
-             (poly_act_morphism_path_groupoid_poly_act_identity Q _ _)).
-  - (* Left projection *)
-    refine (pathscomp0rid _ @ _).
-    exact (poly_act_morphism_path_groupoid_poly_act_identity P _ _).
-  - (* Right projection *)
-    refine (pathscomp0rid _ @ _).
-    exact (poly_act_morphism_path_groupoid_poly_act_identity Q _ _).
-  - (* Pairing *)
-    refine (!_).
-    etrans.
-    {
-      apply maponpaths_2.
-      refine (!_).
-      exact (maponpaths_pathsdirprod
-               (poly_map Q (pr1 f)) (poly_map R (pr1 f))
-               (path_groupoid_endpoint e₁ z) (path_groupoid_endpoint e₂ z)).
-    }
-    refine (pathsdirprod_concat
-              (maponpaths (poly_map Q (pr1 f)) (path_groupoid_endpoint e₁ z))
-              (pr1 (psnaturality_of (sem_endpoint_one_types e₁) f) z)
-              (maponpaths (poly_map R (pr1 f)) (path_groupoid_endpoint e₂ z))
-              (pr1 (psnaturality_of (sem_endpoint_one_types e₂) f) z)
-            @ _).
-    refine (!_).
-    refine (pathsdirprod_concat
-              (poly_act_morphism_path_groupoid
-                 ((pr11 (psnaturality_of
-                           (sem_endpoint_grpd e₁)
-                           (# (total_prealg_path_groupoid A) f))) z))
-              (path_groupoid_endpoint e₁ (poly_map P (pr1 f) z))
-              (poly_act_morphism_path_groupoid
-                 ((pr11 (psnaturality_of
-                           (sem_endpoint_grpd e₂)
-                           (# (total_prealg_path_groupoid A) f))) z))
-              (path_groupoid_endpoint e₂ (poly_map P (pr1 f) z))
-              @ _).
-    refine (maponpaths (λ z, pathsdirprod z _) (IHe₁ z) @ _).
-    exact (maponpaths (pathsdirprod _) (IHe₂ z)).
-  - (* Constant *)
-    apply idpath.
-  - (* Constant map *)
-    apply idpath.
-  - (* Constructor *)
-    refine (!(path_assoc _ _ _) @ _).
-    refine (!_).
-    etrans.
-    {
-      apply maponpaths_2.
-      apply (maponpathscomp (pr2 X) (pr1 f)).
-    }
-    refine (homotsec_natural' (pr12 f) (poly_path_groupoid_is_id z) @ _).
-    apply maponpaths.
-    refine (!(maponpathscomp (poly_map A (pr1 f)) (pr2 Y) _) @ _).
-    refine (_ @ maponpathscomp0 (pr2 Y) _ _).
-    apply maponpaths.
-    exact (map_on_sem_endpoint_one_types_natural_constr_help (pr1 f) z).
-Time Qed.
+  exact (map_on_sem_endpoint_one_types_natural_help e f z).
+Qed.
 
 Definition map_on_sem_endpoint_one_types_natural'
            {A P Q : poly_code}
@@ -611,7 +769,6 @@ Section LiftPathGroupoid.
            (path_alg_path_groupoid_ob hX)
            (poly_act_functor
               I
-              (one_type_to_groupoid (pr1 X)) (one_type_to_groupoid (pr1 Y))
               (function_to_functor (pr1 f))))
         (pr1 (psnaturality_of
                (sem_endpoint_grpd r)
@@ -624,7 +781,6 @@ Section LiftPathGroupoid.
         (pre_whisker
            (poly_act_functor_data
               S
-              (one_type_to_groupoid (pr1 X)) (one_type_to_groupoid (pr1 Y))
               (function_to_functor (pr1 f)))
            (path_alg_path_groupoid_ob hY)).
   Proof.

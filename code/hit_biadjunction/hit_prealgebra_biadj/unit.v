@@ -51,10 +51,6 @@ Require Export hit_biadjunction.hit_prealgebra_biadj.lift_gquot.
 
 Local Open Scope cat.
 
-Local Arguments poly_act_compose _ {_ _ _ _} _ _.
-Local Arguments poly_act_functor_composition_data _ {_ _ _} _ _.
-Local Arguments poly_act_nat_trans_data _ {_ _ _ _} _.
-  
 Definition poly_path_groupoid_gquot_functor
            (P : poly_code)
            {G₁ G₂ : groupoid}
@@ -209,7 +205,7 @@ Proof.
                    (dirprodf ((poly_gquot P₁) G) ((poly_gquot P₂) G))
                    (pathsdirprod
                       (# (pr1 ((poly_path_groupoid P₁) (gquot_functor_obj G)))
-                         (poly_act_functor_morphisms
+                         (@poly_act_functor_morphisms
                             P₁ G
                             (one_type_to_groupoid (gquot_functor_obj G))
                             (gquot_unit_functor G)
@@ -217,7 +213,7 @@ Proof.
                             (pr1 g)))
                       (# (pr1 ((poly_path_groupoid P₂)
                                  (gquot_functor_obj G)))
-                         (poly_act_functor_morphisms
+                         (@poly_act_functor_morphisms
                             P₂ G
                             (one_type_to_groupoid (gquot_functor_obj G))
                             (gquot_unit_functor G)
@@ -298,14 +294,14 @@ Definition prealg_unit_natural_lem₁_inl
            {q : gquot (poly_act_groupoid P₁ G₁)}
            (p : gcl (poly_act_groupoid P₁ G₁) z = q)
   : maponpaths
-      (gquot_functor_map (poly_act_functor (P₁ + P₂) G₁ G₂ F))
+      (gquot_functor_map (poly_act_functor (P₁ + P₂) F))
       (maponpaths gquot_inl_grpd p)
   @ gquot_inl_grpd_gquot_functor F q
   =
   maponpaths
     gquot_inl_grpd
     (maponpaths
-       (gquot_functor_map (poly_act_functor P₁ G₁ G₂ F))
+       (gquot_functor_map (poly_act_functor P₁ F))
        p).
 Proof.
   induction p.
@@ -320,14 +316,14 @@ Definition prealg_unit_natural_lem₁_inr
            {q : gquot (poly_act_groupoid P₂ G₁)}
            (p : gcl (poly_act_groupoid P₂ G₁) z = q)
   : maponpaths
-      (gquot_functor_map (poly_act_functor (P₁ + P₂) G₁ G₂ F))
+      (gquot_functor_map (poly_act_functor (P₁ + P₂) F))
       (maponpaths gquot_inr_grpd p)
   @ gquot_inr_grpd_gquot_functor F q
   =
   maponpaths
     gquot_inr_grpd
     (maponpaths
-       (gquot_functor_map (poly_act_functor P₂ G₁ G₂ F))
+       (gquot_functor_map (poly_act_functor P₂ F))
        p).
 Proof.
   induction p.
@@ -341,7 +337,7 @@ Section LiftUnitProd.
         {G₁ G₂ : grpd_bicat}
         (F : grpd_bicat ⟦ G₁, G₂ ⟧)
     : ∏ (x : poly_act P₁ (gquot G₁)),
-      gquot_functor_map (poly_act_functor P₁ G₁ G₂ F) ((poly_gquot P₁) G₁ x)
+      gquot_functor_map (poly_act_functor P₁ F) (poly_gquot P₁ G₁ x)
       =
       (poly_gquot P₁) G₂ (poly_map P₁ (gquot_functor_map F) x)
     := pr1 (psnaturality_of (poly_gquot P₁) F).
@@ -350,7 +346,7 @@ Section LiftUnitProd.
         {G₁ G₂ : grpd_bicat}
         (F : grpd_bicat ⟦ G₁, G₂ ⟧)
     : ∏ (x : poly_act P₂ (gquot G₁)),
-      gquot_functor_map (poly_act_functor P₂ G₁ G₂ F) ((poly_gquot P₂) G₁ x)
+      gquot_functor_map (poly_act_functor P₂ F) (poly_gquot P₂ G₁ x)
       =
       (poly_gquot P₂) G₂ (poly_map P₂ (gquot_functor_map F) x)
     := pr1 (psnaturality_of (poly_gquot P₂) F).
@@ -420,7 +416,7 @@ Section LiftUnitProd.
              (F : grpd_bicat ⟦ G₁, G₂ ⟧)
              (z : poly_act (P₁ * P₂) (pr1 G₁))
     : maponpaths
-        (gquot_functor_map (poly_act_functor (P₁ * P₂) G₁ G₂ F))
+        (gquot_functor_map (poly_act_functor (P₁ * P₂) F))
         (maponpaths
            (λ z0, prod_gquot_comp (pr1 z0) (pr2 z0))
            (pathsdirprod
@@ -431,10 +427,10 @@ Section LiftUnitProd.
       (λ z, prod_gquot_comp (pr1 z) (pr2 z))
       (pathsdirprod
          (maponpaths
-            (gquot_functor_map (poly_act_functor P₁ G₁ G₂ F))
+            (gquot_functor_map (poly_act_functor P₁ F))
             (prealg_unit_comp_help P₁ (pr1 z)))
          (maponpaths
-            (gquot_functor_map (poly_act_functor P₂ G₁ G₂ F))
+            (gquot_functor_map (poly_act_functor P₂ F))
             (prealg_unit_comp_help P₂ (pr2 z))))
     @ !(prod_gquot_data_comp_nat_help
           _ _ F
@@ -455,7 +451,7 @@ Section LiftUnitProd.
     refine (_ @ !h @ _).
     + exact (maponpathscomp
                (λ z0, prod_gquot_comp (pr1 z0) (pr2 z0))
-               (gquot_functor_map (poly_act_functor (P₁ * P₂) G₁ G₂ F))
+               (gquot_functor_map (poly_act_functor (P₁ * P₂) F))
                (pathsdirprod
                   (prealg_unit_comp_help P₁ (pr1 z))
                   (prealg_unit_comp_help P₂ (pr2 z)))).
@@ -468,8 +464,8 @@ Section LiftUnitProd.
       }
       exact (maponpathscomp
                (dirprodf
-                  (gquot_functor_map (poly_act_functor P₁ G₁ G₂ F))
-                  (gquot_functor_map (poly_act_functor P₂ G₁ G₂ F)))
+                  (gquot_functor_map (poly_act_functor P₁ F))
+                  (gquot_functor_map (poly_act_functor P₂ F)))
                (λ z0, prod_gquot_comp (pr1 z0) (pr2 z0))
                (pathsdirprod
                   (prealg_unit_comp_help P₁ (pr1 z))
@@ -590,7 +586,7 @@ Section LiftUnitProd.
              (F : grpd_bicat ⟦ G₁, G₂ ⟧)
              (z : poly_act (P₁ * P₂) (pr1 G₁))
     : maponpaths
-        (gquot_functor_map (poly_act_functor (P₁ * P₂) G₁ G₂ F))
+        (gquot_functor_map (poly_act_functor (P₁ * P₂) F))
         (prealg_unit_comp_help (P₁ * P₂) z)
     @ pr1 (psnaturality_of (poly_gquot (P₁ * P₂)) F)
           ((pr1 ((poly_path_groupoid (P₁ * P₂)) (gquot_psfunctor G₁)))
@@ -606,10 +602,10 @@ Section LiftUnitProd.
       (λ z0, prod_gquot_comp (pr1 z0) (pr2 z0))
       ((pathsdirprod
           (maponpaths
-             (gquot_functor_map (poly_act_functor P₁ G₁ G₂ F))
+             (gquot_functor_map (poly_act_functor P₁ F))
              (prealg_unit_comp_help P₁ (pr1 z)))
           (maponpaths
-             (gquot_functor_map (poly_act_functor P₂ G₁ G₂ F))
+             (gquot_functor_map (poly_act_functor P₂ F))
              (prealg_unit_comp_help P₂ (pr2 z)))
        @ pathsdirprod
            (pr1 (psnaturality_of (poly_gquot P₁) F)
@@ -650,10 +646,10 @@ Section LiftUnitProd.
                    (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                    (pathsdirprod
                       (maponpaths
-                         (gquot_functor_map (poly_act_functor P₁ G₁ G₂ F))
+                         (gquot_functor_map (poly_act_functor P₁ F))
                          (prealg_unit_comp_help P₁ (pr1 z)))
                       (maponpaths
-                         (gquot_functor_map (poly_act_functor P₂ G₁ G₂ F))
+                         (gquot_functor_map (poly_act_functor P₂ F))
                          (prealg_unit_comp_help P₂ (pr2 z))))
                    (pathsdirprod _ _)))
               @ _).
@@ -670,7 +666,7 @@ Definition prealg_unit_natural_lem₁
            (F : grpd_bicat ⟦ G₁, G₂ ⟧)
            (z : poly_act P (pr1 G₁))
   : maponpaths
-      (gquot_functor_map (poly_act_functor P G₁ G₂ F))
+      (gquot_functor_map (poly_act_functor P F))
       (prealg_unit_comp_help P z)
   @ pr1 (psnaturality_of (poly_gquot P) F)
       (pr1 (poly_path_groupoid P (gquot_psfunctor G₁))
@@ -888,7 +884,7 @@ Proof.
   {
     apply maponpaths_2.
     exact (!(maponpathscomp
-               (gquot_functor_map (poly_act_functor P G₁ G₂ F))
+               (gquot_functor_map (poly_act_functor P F))
                (gquot_functor_map hG₂)
                _)).
   }
@@ -906,7 +902,6 @@ Definition prealg_unit_natural_lem₃
   @ # (poly_path_groupoid
          P (gquot_functor_obj G₂) : _ ⟶ _)
   (poly_act_compose
-     P
      (@poly_act_functor_composition_data
         P G₁ (one_type_to_groupoid (gquot_functor_obj G₁))
         (one_type_to_groupoid (gquot_functor_obj G₂)) (gquot_unit_functor G₁)

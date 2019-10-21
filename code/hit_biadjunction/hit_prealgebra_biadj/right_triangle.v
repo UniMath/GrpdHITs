@@ -275,9 +275,9 @@ Proof.
     }
     refine (!(gconcat _ _ _) @ _).
     apply maponpaths.
-    apply (pathsdirprod
-             (poly_act_id_right _ _ _ _ _)
-             (poly_act_id_left _ _ _ _ _)).
+    exact (pathsdirprod
+             (poly_act_id_right _)
+             (poly_act_id_left _)).
 Qed.
 
 Definition step₂_help

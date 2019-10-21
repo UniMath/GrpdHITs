@@ -4,6 +4,59 @@ Require Import UniMath.MoreFoundations.All.
 
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
+Definition path_rotate_lr
+           {A : UU}
+           {a₁ a₂ a₃ : A}
+           {p : a₁ = a₂} {q : a₂ = a₃} {r : a₁ = a₃}
+  : r @ !q = p → r = p @ q.
+Proof.
+  intros s.
+  refine (!_).
+  refine (maponpaths (λ z, z @ _) (!s) @ _).
+  refine (!(path_assoc _ _ _) @ _).
+  refine (maponpaths (λ z, _ @ z) (pathsinv0l q) @ _).
+  exact (pathscomp0rid r).
+Defined.
+
+Definition path_rotate_rl
+           {A : UU}
+           {a₁ a₂ a₃ : A}
+           {p : a₁ = a₂} {q : a₂ = a₃} {r : a₁ = a₃}
+  : !p @ r = q → r = p @ q.
+Proof.
+  intros s.
+  refine (!_).
+  etrans.
+  {
+    apply maponpaths.
+    exact (!s).
+  }
+  refine (path_assoc _ _ _ @ _).
+  etrans.
+  {
+    apply maponpaths_2.
+    apply pathsinv0r.
+  }
+  apply idpath.
+Defined.
+
+Definition homotweqweqinvweq
+           {X Y : UU}
+           (w : X ≃ Y)
+           (y : Y)
+  : maponpaths (invmap w) (homotweqinvweq w y)
+    =
+    homotinvweqweq w (invmap w y).
+Proof.
+  exact (other_adjoint
+           w
+           (invmap w)
+           (homotweqinvweq w)
+           (homotinvweqweq w)
+           (homotweqinvweqweq w)
+           y).
+Defined.
+
 Definition empty_one_type
   : one_type
   := make_one_type ∅ (hlevelntosn _ _ (hlevelntosn _ _ isapropempty)).
@@ -13,6 +66,24 @@ Definition unit_one_type
   := make_one_type unit (hlevelntosn _ _ (hlevelntosn _ _ isapropunit)).
 
 (** General lemmata involving paths *)
+Definition maponpaths_prod_path
+           {A B C : UU}
+           (f : A → B)
+           (g : A → C)
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+  : maponpaths
+      (λ a, f a ,, g a)
+      p
+    =
+    pathsdirprod
+      (maponpaths f p)
+      (maponpaths g p).
+Proof.
+  induction p.
+  apply idpath.
+Defined.
+
 Definition paths_pathsdirprod
            {A B : UU}
            {a₁ a₂ : A} {b₁ b₂ : B}

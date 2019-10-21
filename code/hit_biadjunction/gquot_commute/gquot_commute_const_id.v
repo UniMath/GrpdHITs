@@ -95,7 +95,7 @@ Definition id_gquot_nat
            (G₁ G₂ : groupoid)
            (F : G₁ ⟶ G₂)
   : ∏ (x : gquot G₁),
-    gquot_functor_map (poly_act_functor I G₁ G₂ F) (id_gquot_comp G₁ x)
+    gquot_functor_map (poly_act_functor I F) (id_gquot_comp G₁ x)
     =
     id_gquot_comp G₂ (gquot_functor_map F x).
 Proof.
@@ -111,7 +111,7 @@ Proof.
               _) ;
       [ refine (!((!(maponpathscomp _ _ _))
                     @ maponpaths
-                        (maponpaths (gquot_functor_map (poly_act_functor I G₁ G₂ F)))
+                        (maponpaths (gquot_functor_map (poly_act_functor I F)))
                         (gquot_rec_beta_gcleq G₁ _ _ _ _ _ _ _ _ g)
                     @ _)) ;
       exact (gquot_rec_beta_gcleq (poly_act_groupoid I G₁) _ _ _ _ _ _ _ _ _)

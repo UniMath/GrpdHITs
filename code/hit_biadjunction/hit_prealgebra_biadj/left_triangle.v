@@ -278,7 +278,7 @@ Definition left_triangle_help_lem
     maponpaths
       ((poly_gquot P) G)
       (# ((poly_path_groupoid P) (gquot_functor_obj G) : _ ⟶ _)
-         (# (poly_act_functor
+         (# (@poly_act_functor
                P G (one_type_to_groupoid (gquot_functor_obj G))
                (gquot_unit_functor G)) g))
     @ ! prealg_unit_comp_help P a₂.
@@ -372,14 +372,14 @@ Proof.
                        ((poly_gquot P₁) G)
                        (# (pr1 ((poly_path_groupoid P₁)
                                   (gquot_functor_obj G)))
-                          (poly_act_functor_morphisms
+                          (@poly_act_functor_morphisms
                              P₁ G (one_type_to_groupoid (gquot_functor_obj G))
                              (gquot_unit_functor G)
                              (pr1 a₁) (pr1 a₂) (pr1 g))))
                     (maponpaths
                        ((poly_gquot P₂) G)
                        (# (pr1 ((poly_path_groupoid P₂) (gquot_functor_obj G)))
-                          (poly_act_functor_morphisms
+                          (@poly_act_functor_morphisms
                              P₂ G (one_type_to_groupoid (gquot_functor_obj G))
                              (gquot_unit_functor G)
                              (pr2 a₁) (pr2 a₂) (pr2 g)))))
@@ -450,8 +450,8 @@ Proof.
     refine (!(gconcat _ _ _) @ _).
     apply maponpaths.
     exact (pathsdirprod
-             (poly_act_id_right _ _ _ _ _)
-             (poly_act_id_left _ _ _ _ _)).
+             (poly_act_id_right _)
+             (poly_act_id_left _)).
 Qed.
 
 Definition left_triangle_help_square
@@ -474,7 +474,7 @@ Definition left_triangle_help_square
                (prealg_path_groupoid_map
                   P (gquot_functor_obj G) (prealg_gquot_map P G hG))
                (gquot_functor_map
-                  (poly_act_functor
+                  (@poly_act_functor
                      P G (one_type_to_groupoid (gquot_functor_obj G))
                      (gquot_unit_functor G))
                   z)))
@@ -501,7 +501,7 @@ Proof.
                  (prealg_path_groupoid_map
                     P (gquot_functor_obj G) (prealg_gquot_map P G hG))
                  (gquot_functor_map
-                    (poly_act_functor
+                    (@poly_act_functor
                        P G
                        (one_type_to_groupoid (gquot_functor_obj G))
                        (gquot_unit_functor G)) z))
@@ -574,7 +574,7 @@ Definition left_triangle_help
             P (gquot_functor_obj G)
             (prealg_gquot_map P G hG))
          (gquot_functor_map
-            (poly_act_functor
+            (@poly_act_functor
                P G
                (one_type_to_groupoid (gquot_functor_obj G))
                (gquot_unit_functor G))
@@ -623,7 +623,7 @@ Local Definition step₃_help
       {G : grpd_bicat}
       (z : poly_act P (gquot G))
   : gquot_functor_map
-      (poly_act_functor
+      (@poly_act_functor
          P G
          (one_type_to_groupoid (gquot_functor_obj G)) (gquot_unit_functor G))
       ((poly_gquot P) G z)
@@ -809,7 +809,7 @@ Definition step₃_prod
        prod_gquot_comp
          z0
          (gquot_functor_map
-            (poly_act_functor
+            (@poly_act_functor
                P₂ G (one_type_to_groupoid (gquot_functor_obj G))
                (gquot_unit_functor G)) ((poly_gquot P₂) G (pr2 z)))) 
       (step₃_help (pr1 z))
@@ -1137,7 +1137,7 @@ Definition step₄_lem₁
            (a : poly_act_groupoid P G)
   : maponpaths
       (gquot_functor_map
-         (poly_act_functor
+         (@poly_act_functor
             P G (one_type_to_groupoid (gquot_functor_obj G))
             (gquot_unit G)))
       (! poly_gquot_gquot_poly_comp P a)
@@ -1164,7 +1164,7 @@ Proof.
         {
           exact (maponpathscomp
                    (gquot_functor_map
-                      (poly_act_functor
+                      (@poly_act_functor
                          P₁ G
                          (one_type_to_groupoid (gquot_functor_obj G))
                          (gquot_unit G)))
@@ -1188,7 +1188,7 @@ Proof.
         exact (maponpathscomp
                  gquot_inl_grpd
                  (gquot_functor_map
-                    (poly_act_functor
+                    (@poly_act_functor
                        (P₁ + P₂) G
                        (one_type_to_groupoid (gquot_functor_obj G))
                        (gquot_unit G)))
@@ -1207,7 +1207,7 @@ Proof.
         {
           exact (maponpathscomp
                    (gquot_functor_map
-                      (poly_act_functor
+                      (@poly_act_functor
                          P₂ G
                          (one_type_to_groupoid (gquot_functor_obj G))
                          (gquot_unit G)))
@@ -1231,7 +1231,7 @@ Proof.
         exact (maponpathscomp
                  gquot_inr_grpd
                  (gquot_functor_map
-                    (poly_act_functor
+                    (@poly_act_functor
                        (P₁ + P₂) G
                        (one_type_to_groupoid (gquot_functor_obj G))
                        (gquot_unit G)))
@@ -1284,7 +1284,7 @@ Proof.
       exact (maponpathscomp
                (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                (gquot_functor_map
-                  (poly_act_functor
+                  (@poly_act_functor
                      (P₁ * P₂) G
                      (one_type_to_groupoid (gquot_functor_obj G))
                      (gquot_unit G)))
@@ -1312,11 +1312,11 @@ Proof.
       exact (!(maponpathscomp
                  (dirprodf
                     (gquot_functor_map
-                       (poly_act_functor
+                       (@poly_act_functor
                           P₁ G (one_type_to_groupoid (gquot_functor_obj G))
                           (gquot_unit G)))
                     (gquot_functor_map
-                       (poly_act_functor
+                       (@poly_act_functor
                           P₂ G (one_type_to_groupoid (gquot_functor_obj G))
                           (gquot_unit G))))
                  (λ z, prod_gquot_comp (pr1 z) (pr2 z))
@@ -1338,14 +1338,14 @@ Proof.
                  (pathsdirprod
                     (maponpaths
                        (gquot_functor_map
-                          (poly_act_functor
+                          (@poly_act_functor
                              P₁ G
                              (one_type_to_groupoid (gquot_functor_obj G))
                              (gquot_unit G)))
                        (! poly_gquot_gquot_poly_comp P₁ (pr1 a)))
                     (maponpaths
                        (gquot_functor_map
-                          (poly_act_functor
+                          (@poly_act_functor
                              P₂ G
                              (one_type_to_groupoid (gquot_functor_obj G))
                              (gquot_unit G)))
@@ -1403,8 +1403,8 @@ Proof.
     apply maponpaths.
     simpl.
     exact (pathsdirprod
-             (poly_act_id_right _ _ _ _ _)
-             (poly_act_id_left _ _ _ _ _)).
+             (poly_act_id_right _)
+             (poly_act_id_left _)).
 Qed.
 
 Definition step₄_lem₂
@@ -1634,7 +1634,7 @@ Definition step₄_lemma
                P (gquot_functor_obj G) (prealg_gquot_map P G hG)))
          (maponpaths
             (gquot_functor_map
-               (poly_act_functor
+               (@poly_act_functor
                   P G
                   (one_type_to_groupoid (gquot_functor_obj G))
                   (gquot_unit G)))
@@ -1668,11 +1668,6 @@ Proof.
     refine (!_).
     etrans.
     {
-      do 4 apply maponpaths.
-      apply pathscomp0rid.
-    }
-    etrans.
-    {
       do 2 apply maponpaths.
       apply maponpaths_2.
       exact (!(maponpathscomp
@@ -1689,26 +1684,9 @@ Proof.
                     (poly_gquot P G)
                     (poly_part_of_left_triangle
                        (gquot_poly (gcl (poly_act_groupoid P G) a))))
-                 (! (! poly_gquot_gquot_poly_comp P a)))).
+                 (poly_gquot_gquot_poly_comp P a))).
     }
     refine (path_assoc _ _ _ @ _).
-    etrans.
-    {
-      do 2 apply maponpaths_2.
-      do 4 apply maponpaths.
-      apply pathscomp0rid.
-    }
-    etrans.
-    {
-      do 2 apply maponpaths_2.
-      do 4 apply maponpaths.
-      apply pathsinv0inv0.
-    }
-    etrans.
-    {
-      do 3 apply maponpaths.
-      apply pathsinv0inv0.
-    }
     etrans.
     {
       apply maponpaths_2.
@@ -1724,7 +1702,7 @@ Proof.
                  (gquot_counit_map (gquot_functor_obj G))
                  (maponpaths
                     (gquot_functor_map
-                       (poly_act_functor
+                       (@poly_act_functor
                           P G (one_type_to_groupoid (gquot_functor_obj G))
                           (gquot_unit_functor G))) (! poly_gquot_gquot_poly_comp P a))).
       }
@@ -1744,7 +1722,7 @@ Proof.
                  _
                  (maponpaths
                     (gquot_functor_map
-                       (poly_act_functor
+                       (@poly_act_functor
                           P G (one_type_to_groupoid (gquot_functor_obj G))
                           (gquot_unit_functor G)))
                     (! poly_gquot_gquot_poly_comp P a))

@@ -61,9 +61,6 @@ Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_prealgebra_biadj.
 Require Import hit_biadjunction.hit_path_algebra_biadj.
 
-Local Definition TODO {A : UU} : A.
-Admitted.
-
 Local Open Scope cat.
 
 (** Necessary operation *)
@@ -75,7 +72,7 @@ Definition poly_act_morphism_to_path
 Proof.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
   - exact (λ p, p).
-  - exact (λ p, pr1 (idtoiso p)).
+  - exact (λ p, pr1 (@idtoiso G _ _ p)).
   - induction x as [x | x], y as [y | y].
     + exact (λ p, IHP₁ x y (ii1_injectivity _ _ p)).
     + exact (λ p, fromempty (negpathsii1ii2 _ _ p)).
@@ -87,9 +84,9 @@ Defined.
 (** Lemmata *)
 Definition poly_act_morphism_to_path_idpath
            {P : poly_code}
-           {X : one_type}
-           (x : poly_act P (one_type_to_groupoid X))
-  : poly_act_morphism_to_path (idpath x) = poly_act_identity _ _ x.
+           {X : groupoid}
+           (x : poly_act P X)
+  : poly_act_morphism_to_path (idpath x) = poly_act_identity x.
 Proof.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
   - apply idpath.
@@ -100,6 +97,27 @@ Proof.
   - exact (pathsdirprod (IHP₁ (pr1 x)) (IHP₂ (pr2 x))).
 Qed.
 
+Definition poly_act_compose_poly_act_morphism_to_path
+           {P : poly_code}
+           {X : groupoid}
+           {x y z : poly_act P X}
+           (p : x = y) (q : y = z)
+  : poly_act_compose
+      (poly_act_morphism_to_path p)
+      (poly_act_morphism_to_path q)
+    =
+    poly_act_morphism_to_path (p @ q).
+Proof.
+  induction p ; induction q.
+  simpl.
+  etrans.
+  {
+    apply maponpaths.
+    apply poly_act_morphism_to_path_idpath.
+  }
+  apply poly_act_id_right.
+Qed.
+  
 Definition ii1_injectivity_maponpaths_inl
            {A B : UU}
            {x y : A}
@@ -119,6 +137,16 @@ Proof.
   induction p.
   apply idpath.
 Defined.
+
+Definition poly_act_morphism_to_path_path_groupoid
+           {X : one_type}
+           {x y : poly_act I (one_type_to_groupoid X)}
+           (g : x = y)
+  : poly_act_morphism_to_path g = g.
+Proof.
+  induction g.
+  apply idpath.
+Qed.
 
 Definition poly_act_morphism_to_path_poly_act_groupoid
            {P : poly_code}
@@ -186,6 +214,24 @@ Proof.
   exact (pr1 p z).
 Defined.
 
+Definition poly_path_groupoid_poly_act_morphism_to_path
+           {P : poly_code}
+           {X : one_type}
+           {a₁ a₂ : poly_act P (path_groupoid X : groupoid)}
+           (w : a₁ = a₂)
+  : # ((poly_path_groupoid P) X : _ ⟶ _) (poly_act_morphism_to_path w)
+    =
+    maponpaths (pr1 ((poly_path_groupoid P) X)) w.
+Proof.
+  induction w.
+  etrans.
+  {
+    apply maponpaths.
+    exact (poly_act_morphism_to_path_idpath _).
+  }
+  exact (functor_id (poly_path_groupoid P X) _).
+Qed.
+
 Definition poly_act_morphism_to_path_inv
            {P : poly_code}
            {G : groupoid}
@@ -193,7 +239,7 @@ Definition poly_act_morphism_to_path_inv
            (p : x = y)
   : poly_act_morphism_to_path (! p)
     =
-    poly_act_inverse P _ _ _ (poly_act_morphism_to_path p).
+    poly_act_inverse (poly_act_morphism_to_path p).
 Proof.
   induction p.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
@@ -207,8 +253,6 @@ Proof.
     + exact (IHP₂ x).
   - exact (pathsdirprod (IHP₁ (pr1 x)) (IHP₂ (pr2 x))).
 Qed.
-
-Local Arguments poly_act_compose _ _ {_ _ _} _ _.
 
 Definition sem_homot_endpoint_grpd_one_type
            (Σ : hit_signature)
@@ -281,7 +325,23 @@ Proof.
       }
       apply maponpaths_2.
       apply pathsinv0inv0.
-  - apply TODO.
+  - refine (maponpaths (λ z, poly_act_compose z _) IHh₁ @ _).
+    refine (maponpaths (λ z, poly_act_compose _ z) IHh₂ @ _).
+    etrans.
+    {
+      apply poly_act_compose_poly_act_morphism_to_path.
+    }
+    apply maponpaths.
+    refine (!(path_assoc _ _ _) @ _).
+    apply maponpaths.
+    refine (!(path_assoc _ _ _) @ _).
+    refine (_ @ path_assoc _ _ _).
+    apply maponpaths.
+    do 2 refine (path_assoc _ _ _ @ _).
+    apply maponpaths_2.
+    refine (_ @ pathscomp0lid _).
+    apply maponpaths_2.
+    apply pathsinv0l.
   - refine (!_).
     etrans.
     {
@@ -298,54 +358,43 @@ Proof.
       {
         refine (path_assoc _ _ _ @ _).
         apply maponpaths_2.
-        refine (!(path_assoc _ _ _) @ _).
         etrans.
         {
           apply maponpaths.
-          apply pathsinv0r.
+          etrans.
+          {
+            apply maponpaths.
+            apply maponpathscomp0.
+          }
+          apply pathscomp_inv.
         }
-        apply pathscomp0rid.
-      }
-      etrans.
-      {
-        apply maponpaths.
+        refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
         etrans.
         {
-          refine (!_).
-          apply maponpathsinv0.
+          do 2 apply maponpaths.
+          apply maponpathscomp.
         }
-        apply maponpaths.
-        apply pathscomp_inv.
-      }
-      refine (!(maponpathscomp0 _ _ _) @ _).
-      apply maponpaths.
-      refine (path_assoc _ _ _ @ _).
-      etrans.
-      {
-        apply maponpaths_2.
         apply pathsinv0r.
       }
+      apply maponpaths_2.
       apply pathscomp0lid.
     }
     etrans.
     {
       apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
       etrans.
       {
         apply maponpaths.
+        refine (path_assoc _ _ _ @ _).
         etrans.
         {
-          apply maponpaths.
-          refine (!_).
-          apply maponpathsinv0.
+          apply maponpaths_2.
+          apply pathsinv0r.
         }
-        exact (maponpathscomp _ _ _).
+        apply pathscomp0lid.
       }
-      refine (!(maponpathscomp0
-                  (λ q, _)
-                  _
-                  _) @ _).
-      apply maponpaths.
       apply pathsinv0r.
     }
     exact (poly_act_morphism_to_path_idpath _).
@@ -353,6 +402,11 @@ Proof.
     etrans.
     {
       refine (maponpaths (poly_act_morphism_to_path) _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply pathscomp0rid.
+      }
       apply pathsinv0r.
     }
     exact (poly_act_morphism_to_path_idpath _).
@@ -363,7 +417,6 @@ Proof.
       etrans.
       {
         refine (maponpaths (λ z, z @ _) _).
-        refine (pathscomp0rid (maponpaths (λ z0, z0) (path_groupoid_endpoint e z)) @ _).
         apply maponpathsidfun.
       }
       apply pathsinv0r.
@@ -423,37 +476,60 @@ Proof.
       apply maponpaths_pr2_pathsdirprod.
     }
     apply idpath.
-  - apply TODO.
+  - refine (pathsdirprod (IHh₁ @ !_) (IHh₂ @ !_)).
+    + apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply pathsdirprod_concat.
+      }
+      apply maponpaths_pr1_pathsdirprod.
+    + apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply pathsdirprod_concat.
+      }
+      apply maponpaths_pr2_pathsdirprod.
   - refine (!_).
     etrans.
     {
       refine (maponpaths poly_act_morphism_to_path _).
-      etrans.
-      {
-        apply maponpaths_2.
-        exact (pathscomp0rid (maponpaths inl (path_groupoid_endpoint e₁ z))).
-      }
+      simpl.
       etrans.
       {
         do 2 apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          exact (pathscomp0rid (maponpaths inl (path_groupoid_endpoint e₂ z))).
-        }
-        exact (!(maponpathsinv0 inl (path_groupoid_endpoint e₂ z))).
+        refine (!_).
+        apply (maponpathsinv0 inl).
       }
       etrans.
       {
         apply maponpaths.
-        exact (!(maponpathscomp0
-                   inl
-                   (sem_homot_endpoint_one_types
-                      h (pr1 X) (pr2 X) z
-                      (path_groupoid_path_arg p))
-                   (! path_groupoid_endpoint e₂ z))).
+        refine (!_).
+        apply (maponpathscomp0 inl).
       }
-      exact (!(maponpathscomp0 inl _ _)).
+      refine (!_).
+      apply (maponpathscomp0 inl).
     }
     etrans.
     {
@@ -470,32 +546,21 @@ Proof.
     etrans.
     {
       refine (maponpaths poly_act_morphism_to_path _).
-      etrans.
-      {
-        apply maponpaths_2.
-        exact (pathscomp0rid (maponpaths inr (path_groupoid_endpoint e₁ z))).
-      }
+      simpl.
       etrans.
       {
         do 2 apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          exact (pathscomp0rid (maponpaths inr (path_groupoid_endpoint e₂ z))).
-        }
-        exact (!(maponpathsinv0 inr (path_groupoid_endpoint e₂ z))).
+        refine (!_).
+        apply (maponpathsinv0 inr).
       }
       etrans.
       {
         apply maponpaths.
-        exact (!(maponpathscomp0
-                   inr
-                   (sem_homot_endpoint_one_types
-                      h (pr1 X) (pr2 X) z
-                      (path_groupoid_path_arg p))
-                   (! path_groupoid_endpoint e₂ z))).
+        refine (!_).
+        apply (maponpathscomp0 inr).
       }
-      exact (!(maponpathscomp0 inr _ _)).
+      refine (!_).
+      apply (maponpathscomp0 inr).
     }
     etrans.
     {
@@ -508,8 +573,182 @@ Proof.
       apply ii2_injectivity_maponpaths_inr.
     }
     exact (!IHh).
-  - apply TODO.
-  - apply TODO.
+  - refine (!_).
+    etrans.
+    {
+      apply poly_act_morphism_to_path_path_groupoid.
+    }
+    pose (homotsec_natural
+            (pr2 X j)
+            (path_groupoid_endpoint e z))
+      as h.
+    etrans.
+    {
+      apply maponpaths.
+      apply maponpaths_2.
+      exact h.
+    }
+    clear h.
+    etrans.
+    {
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      etrans.
+      {
+        refine (!_).
+        apply maponpathscomp0.
+      }
+      apply maponpaths.
+      apply pathsinv0r.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        apply pathscomp_inv.
+      }
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply (maponpathsinv0 (sem_endpoint_UU (path_right Σ j) (pr21 X))).
+      }
+      etrans.
+      {
+        refine (!_).
+        apply (maponpathscomp0 (sem_endpoint_UU (path_right Σ j) (pr21 X))).
+      }
+      apply maponpaths.
+      apply pathsinv0r.
+    }
+    apply idpath.
+  - refine (!_).
+    etrans.
+    {
+      apply poly_act_morphism_to_path_path_groupoid.
+    }
+    simpl.
+    etrans.
+    {
+      apply maponpaths_2.
+      exact (!(maponpathscomp0 (pr21 X) _ _)).
+    }
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply pathscomp_inv.
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply (maponpathsinv0 (pr21 X)).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply (maponpathsinv0 (pr21 X)).
+        }
+        exact (!(maponpathscomp0 (pr21 X) _ _)).
+      }
+      exact (!(maponpathscomp0 (pr21 X) _ _)).
+    }
+    etrans.
+    {
+      exact (!(maponpathscomp0 (pr21 X) _ _)).
+    }
+    apply maponpaths.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      exact IHh.
+    }
+    clear IHh.
+    etrans.
+    {
+      exact (poly_path_groupoid_poly_act_morphism_to_path _).
+    }
+    refine (!_).
+    etrans.
+    {
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      refine (!(path_assoc _ _ _) @ _).
+      pose (homotsec_natural'
+              (λ z, (poly_path_groupoid_is_id z))
+              (path_groupoid_endpoint el z
+               @ sem_homot_endpoint_one_types
+                   h
+                   (pr1 X) (pr2 X)
+                   z
+                   (path_groupoid_path_arg p)))
+        as q.
+      etrans.
+      {
+        apply maponpaths.
+        exact (!(maponpathsidfun _)).
+      }
+      exact (!q).
+    }
+    refine (!(path_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        pose (homotsec_natural'
+                (λ z, (poly_path_groupoid_is_id z))
+                (!(path_groupoid_endpoint er z)))
+          as q.
+        etrans.
+        {
+          apply maponpaths.
+          exact (!(maponpathsidfun _)).
+        }
+        exact (!q).
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      apply pathscomp0rid.
+    }
+    etrans.
+    {
+      refine (!_).
+      apply maponpathscomp0.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      refine (!_).
+      apply path_assoc.
+    }
+    apply idpath.
   - refine (!_).
     etrans.
     {
@@ -535,7 +774,7 @@ Proof.
       apply pathscomp0rid.
     }
     exact (poly_act_morphism_to_path_poly_act_groupoid _).
-Time Qed.
+Qed.
 
 Definition path_groupoid_is_hit_algebra
            (Σ : hit_signature)

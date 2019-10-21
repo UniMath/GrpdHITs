@@ -106,7 +106,7 @@ Section GQuotSum.
                    _) ;
            [ refine (!(!(maponpathscomp _ _ _) @ _)) ;
              refine (maponpaths
-                       (maponpaths (gquot_functor_map (poly_act_functor (P₁ + P₂) X Y f)))
+                       (maponpaths (gquot_functor_map (poly_act_functor (P₁ + P₂) f)))
                        (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _) @ _) ;
              apply gquot_rec_beta_gcleq
            | refine (!(!(maponpathscomp _ _ _) @ _)) ;
@@ -152,7 +152,7 @@ Section GQuotSum.
                    _) ;
            [ refine (!(!(maponpathscomp _ _ _) @ _)) ;
              refine (maponpaths
-                       (maponpaths (gquot_functor_map (poly_act_functor (P₁ + P₂) X Y f)))
+                       (maponpaths (gquot_functor_map (poly_act_functor (P₁ + P₂) f)))
                        (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _) @ _) ;
              apply gquot_rec_beta_gcleq
            | refine (!(!(maponpathscomp _ _ _) @ _)) ;
@@ -202,10 +202,10 @@ Section GQuotSum.
         @ maponpaths
             gquot_inl_grpd
             (gquot_functor_cell
-               (poly_act_nat_trans P₁ X Y f g p) z)
+               (poly_act_nat_trans P₁ p) z)
       =
       (gquot_functor_cell
-        (poly_act_nat_trans (P₁ + P₂) X Y f g p) (gquot_inl_grpd z))
+        (poly_act_nat_trans (P₁ + P₂) p) (gquot_inl_grpd z))
       @ gquot_inl_grpd_gquot_functor g z.
   Proof.
     use gquot_ind_prop.
@@ -226,10 +226,10 @@ Section GQuotSum.
       (gquot_inr_grpd_gquot_functor f z)
         @ maponpaths gquot_inr_grpd
             (gquot_functor_cell
-               (poly_act_nat_trans P₂ X Y f g p) z)
+               (poly_act_nat_trans P₂ p) z)
       =
       gquot_functor_cell
-        (poly_act_nat_trans (P₁ + P₂) X Y f g p) (gquot_inr_grpd z)
+        (poly_act_nat_trans (P₁ + P₂) p) (gquot_inr_grpd z)
       @ gquot_inr_grpd_gquot_functor g z.
     Proof.
     use gquot_ind_prop.
@@ -312,27 +312,27 @@ Section GQuotSum.
              (f : X --> Y) (g : Y --> Z)
     : ∏ (z : gquot (⦃ P₁ ⦄ X)),
       maponpaths
-        (gquot_functor_map (poly_act_functor (P₁ + P₂) Y Z g))
+        (gquot_functor_map (poly_act_functor (P₁ + P₂) g))
         (gquot_inl_grpd_gquot_functor f z)
     @ gquot_inl_grpd_gquot_functor
         g
-        (gquot_functor_map (poly_act_functor P₁ X Y f) z)
+        (gquot_functor_map (poly_act_functor P₁ f) z)
     @ maponpaths
         gquot_inl_grpd
         (gquot_functor_composition
-           (poly_act_functor P₁ X Y f)
-           (poly_act_functor P₁ Y Z g)
+           (poly_act_functor P₁ f)
+           (poly_act_functor P₁ g)
            z
     @ gquot_functor_cell
-           (poly_act_functor_composition P₁ X Y Z f g) 
+           (poly_act_functor_composition P₁ f g) 
            z)
     =
       (gquot_functor_composition
-         (poly_act_functor (P₁ + P₂) X Y f)
-         (poly_act_functor (P₁ + P₂) Y Z g)
+         (poly_act_functor (P₁ + P₂) f)
+         (poly_act_functor (P₁ + P₂) g)
          (gquot_inl_grpd z)
     @ gquot_functor_cell
-        (poly_act_functor_composition (P₁ + P₂) X Y Z f g)
+        (poly_act_functor_composition (P₁ + P₂) f g)
         (gquot_inl_grpd z))
     @ gquot_inl_grpd_gquot_functor (f ∙ g) z.
   Proof.
@@ -356,15 +356,15 @@ Section GQuotSum.
     : maponpaths
         (gquot_functor_map (# ⦃ P₁ + P₂ ⦄ g))
         (maponpaths gquot_inr_grpd p)
-        @ gquot_inr_grpd_gquot_functor
-        g y
+      @ gquot_inr_grpd_gquot_functor
+          g y
       =
       (gquot_inr_grpd_gquot_functor _ _)
-        @ maponpaths
-        gquot_inr_grpd
-        (maponpaths
-           (gquot_functor_map (# ⦃ P₂ ⦄ g))
-           p).
+      @ maponpaths
+          gquot_inr_grpd
+          (maponpaths
+             (gquot_functor_map (# ⦃ P₂ ⦄ g))
+             p).
   Proof.
     induction p.
     refine (!_).
@@ -376,27 +376,27 @@ Section GQuotSum.
              (f : X --> Y) (g : Y --> Z)
     : ∏ (z : gquot (⦃ P₂ ⦄ X)),
       maponpaths
-        (gquot_functor_map (poly_act_functor (P₁ + P₂) Y Z g))
+        (gquot_functor_map (poly_act_functor (P₁ + P₂) g))
         (gquot_inr_grpd_gquot_functor f z)
     @ gquot_inr_grpd_gquot_functor
         g
-        (gquot_functor_map (poly_act_functor P₂ X Y f) z)
+        (gquot_functor_map (poly_act_functor P₂ f) z)
     @ maponpaths
         gquot_inr_grpd
         (gquot_functor_composition
-           (poly_act_functor P₂ X Y f)
-           (poly_act_functor P₂ Y Z g)
+           (poly_act_functor P₂ f)
+           (poly_act_functor P₂ g)
            z
     @ gquot_functor_cell
-           (poly_act_functor_composition P₂ X Y Z f g) 
+           (poly_act_functor_composition P₂ f g) 
            z)
     =
       (gquot_functor_composition
-         (poly_act_functor (P₁ + P₂) X Y f)
-         (poly_act_functor (P₁ + P₂) Y Z g)
+         (poly_act_functor (P₁ + P₂) f)
+         (poly_act_functor (P₁ + P₂) g)
          (gquot_inr_grpd z)
     @ gquot_functor_cell
-        (poly_act_functor_composition (P₁ + P₂) X Y Z f g)
+        (poly_act_functor_composition (P₁ + P₂) f g)
         (gquot_inr_grpd z))
     @ gquot_inr_grpd_gquot_functor (f ∙ g) z.
   Proof.

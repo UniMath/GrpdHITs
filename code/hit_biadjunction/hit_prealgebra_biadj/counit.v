@@ -165,7 +165,7 @@ Local Definition psnaturality_help
       (z : poly_act P (gquot (one_type_to_groupoid X)))
   : gquot_functor_map
       (poly_act_functor
-         P (one_type_to_groupoid X) (one_type_to_groupoid Y)
+         P
          (function_to_functor f))
       ((poly_gquot P) (one_type_to_groupoid X) z)
     =
@@ -179,13 +179,12 @@ Definition poly_act_identity_one_type_to_groupoid
            {X Y : one_types}
            (f : one_types ⟦ X, Y ⟧)
            (a : poly_act_groupoid P (one_type_to_groupoid X))
-  : poly_act_identity P (one_type_to_groupoid Y) (poly_map P f a)
+  : @poly_act_identity P (one_type_to_groupoid Y) (poly_map P f a)
     =
     poly_act_functor_morphisms
-      P _ _
+      P
       (function_to_functor f)
-      a a
-      (poly_act_identity P (one_type_to_groupoid X) a).
+      (@poly_act_identity P (one_type_to_groupoid X) a).
 Proof.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
   - apply idpath.
@@ -204,15 +203,15 @@ Definition prod_gquot_comp_gquot_functor_map
       (z₂ : gquot (poly_act_groupoid P₂ (one_type_to_groupoid X))),
     prod_gquot_comp
       (gquot_functor_map
-         (poly_act_functor P₁ _ _ (function_to_functor f))
+         (poly_act_functor P₁ (function_to_functor f))
          z₁)
       (gquot_functor_map
-         (poly_act_functor P₂ _ _ (function_to_functor f))
+         (poly_act_functor P₂ (function_to_functor f))
          z₂)
     =
     gquot_functor_map
       (poly_act_functor
-         (P₁ * P₂) _ _ (function_to_functor f))
+         (P₁ * P₂) (function_to_functor f))
       (prod_gquot_comp z₁ z₂)
   := λ z₁ z₂, !(prod_gquot_data_comp_nat_help
                   (one_type_to_groupoid X) (one_type_to_groupoid Y)
@@ -229,7 +228,6 @@ Definition prealg_counit_equation_lem₁_help_prod₁
        gquot_functor_map
          (poly_act_functor
             (P₁ * P₂)
-            (one_type_to_groupoid X) (one_type_to_groupoid Y)
             (function_to_functor f))
          z0)
       (! maponpaths
@@ -246,7 +244,6 @@ Definition prealg_counit_equation_lem₁_help_prod₁
              gquot_functor_map
                (poly_act_functor
                   P₁
-                  (one_type_to_groupoid X) (one_type_to_groupoid Y)
                   (function_to_functor f)) z0)
             (! poly_gquot_is_gcl P₁ (pr1 z)))
          (maponpaths
@@ -254,7 +251,6 @@ Definition prealg_counit_equation_lem₁_help_prod₁
              gquot_functor_map
                (poly_act_functor
                   P₂
-                  (one_type_to_groupoid X) (one_type_to_groupoid Y)
                   (function_to_functor f)) z0)
             (! poly_gquot_is_gcl P₂ (pr2 z))))
     @ prod_gquot_comp_gquot_functor_map
@@ -343,7 +339,6 @@ Definition prealg_counit_equation_lem₁
         gquot_functor_map
           (poly_act_functor
              P
-             (one_type_to_groupoid X) (one_type_to_groupoid Y)
              (function_to_functor f)) z0)
        (! poly_gquot_is_gcl P z)
        @ psnaturality_help z)
@@ -379,7 +374,6 @@ Proof.
                        gquot_functor_map
                          (poly_act_functor
                             P₁
-                            (one_type_to_groupoid X) (one_type_to_groupoid Y)
                             (function_to_functor f)) z0)
                       (! poly_gquot_is_gcl P₁ z))
                    (psnaturality_help z)).
@@ -417,7 +411,6 @@ Proof.
                     gquot_functor_map
                       (poly_act_functor
                          (P₁ + P₂)
-                         (one_type_to_groupoid X) (one_type_to_groupoid Y)
                          (function_to_functor f)) z0)
                    (! poly_gquot_is_gcl P₁ z)).
         }
@@ -428,8 +421,7 @@ Proof.
                    (λ z0 ,
                     gquot_functor_map
                       (poly_act_functor
-                         P₁ (one_type_to_groupoid X) (one_type_to_groupoid Y)
-                         (function_to_functor f))
+                         P₁ (function_to_functor f))
                       z0)
                    gquot_inl_grpd
                    (! poly_gquot_is_gcl P₁ z)).
@@ -453,7 +445,6 @@ Proof.
                        gquot_functor_map
                          (poly_act_functor
                             P₂
-                            (one_type_to_groupoid X) (one_type_to_groupoid Y)
                             (function_to_functor f)) z0)
                       (! poly_gquot_is_gcl P₂ z))
                    (psnaturality_help z)).
@@ -491,7 +482,6 @@ Proof.
                     gquot_functor_map
                       (poly_act_functor
                          (P₁ + P₂)
-                         (one_type_to_groupoid X) (one_type_to_groupoid Y)
                          (function_to_functor f)) z0)
                    (! poly_gquot_is_gcl P₂ z)).
         }
@@ -502,8 +492,7 @@ Proof.
                    (λ z0 ,
                     gquot_functor_map
                       (poly_act_functor
-                         P₂ (one_type_to_groupoid X) (one_type_to_groupoid Y)
-                         (function_to_functor f))
+                         P₂  (function_to_functor f))
                       z0)
                    gquot_inr_grpd
                    (! poly_gquot_is_gcl P₂ z)).
@@ -540,15 +529,13 @@ Proof.
                          (λ z0,
                           gquot_functor_map
                             (poly_act_functor
-                               P₁ (one_type_to_groupoid X) (one_type_to_groupoid Y)
-                               (function_to_functor f)) z0)
+                               P₁ (function_to_functor f)) z0)
                          (! poly_gquot_is_gcl P₁ (pr1 z)))
                       (maponpaths
                          (λ z0,
                           gquot_functor_map
                             (poly_act_functor
-                               P₂ (one_type_to_groupoid X) (one_type_to_groupoid Y)
-                               (function_to_functor f)) z0)
+                               P₂ (function_to_functor f)) z0)
                          (! poly_gquot_is_gcl P₂ (pr2 z))))
                    (pathsdirprod
                       (psnaturality_help (pr1 z))
@@ -564,8 +551,6 @@ Proof.
                           gquot_functor_map
                             (poly_act_functor
                                P₁
-                               (one_type_to_groupoid X)
-                               (one_type_to_groupoid Y)
                                (function_to_functor f))
                             z0)
                          (! poly_gquot_is_gcl P₁ (pr1 z)))
@@ -574,8 +559,6 @@ Proof.
                           gquot_functor_map
                             (poly_act_functor
                                P₂
-                               (one_type_to_groupoid X)
-                               (one_type_to_groupoid Y)
                                (function_to_functor f))
                             z0)
                          (! poly_gquot_is_gcl P₂ (pr2 z)))
@@ -797,6 +780,9 @@ Section LiftCounit.
          hX
          (poly_path_groupoid_poly_map P z).
 
+  Definition TODO {A : UU} : A.
+  Admitted.
+
   Definition prealg_counit_equation
              {X Y : one_types}
              {f : one_types ⟦ X, Y ⟧}
@@ -956,8 +942,6 @@ Section LiftCounit.
             (prealg_gquot_help P (# path_groupoid f) (prealg_mor_inv P hf))
             (!(poly_gquot_is_gcl P z)))
       as h.
-    simpl in h.
-    cbn in h.
     etrans.
     {
       do 2 apply maponpaths_2.
@@ -1025,41 +1009,16 @@ Section LiftCounit.
                    (λ z0,
                     (gquot_functor_map
                        (poly_act_functor
-                          P (one_type_to_groupoid X) (one_type_to_groupoid Y)
-                          (function_to_functor f)) z0))
+                          P (function_to_functor f)) z0))
                    (gquot_functor_map (prealg_path_groupoid_map P Y hY))
                    (! poly_gquot_is_gcl P z))).
       }
       etrans.
       {
         apply maponpaths_2.
-        exact (!(maponpathscomp0
-                   (gquot_functor_map (prealg_path_groupoid_map P Y hY))
-                   (maponpaths
-                      (λ z0,
-                       gquot_functor_map
-                         (poly_act_functor
-                            P (one_type_to_groupoid X) (one_type_to_groupoid Y)
-                            (function_to_functor f)) z0)
-                      (! poly_gquot_is_gcl P z))
-                   _)).
+        exact (!(maponpathscomp0 _ _ _)).
       }
-      exact (!(maponpathscomp0
-                 (gquot_functor_map (prealg_path_groupoid_map P Y hY))
-                 (maponpaths
-                    (λ z0,
-                     gquot_functor_map
-                       (poly_act_functor
-                          P (one_type_to_groupoid X)
-                          (one_type_to_groupoid Y)
-                          (function_to_functor f)) z0)
-                    (! poly_gquot_is_gcl P z)
-             @ pr1 (psnaturality_of (poly_gquot P) (# path_groupoid f)) z)
-                     (poly_gquot_is_gcl
-                        P
-                        (poly_map
-                           P
-                           (gquot_functor_map (function_to_functor f)) z)))).
+      exact (!(maponpathscomp0 _ _ _)).
     }
     etrans.
     {
