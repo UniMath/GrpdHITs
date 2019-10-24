@@ -66,6 +66,126 @@ Definition unit_one_type
   := make_one_type unit (hlevelntosn _ _ (hlevelntosn _ _ isapropunit)).
 
 (** General lemmata involving paths *)
+Definition equality_by_case_inv_equality_by_case
+           {A B : UU}
+           {x y : A ⨿ B}
+           (p : equality_cases x y)
+  : equality_by_case (@inv_equality_by_case A B x y p) = p.
+Proof.
+  induction x as [x | x], y as [y | y] ; induction p.
+  - apply idpath.
+  - apply idpath.
+Defined.
+
+Definition inv_equality_by_case_equality_by_case
+           {A B : UU}
+           {x y : A ⨿ B}
+           (p : x = y)
+  : @inv_equality_by_case A B x y (equality_by_case p) = p.
+Proof.
+  induction x, y, p ; apply idpath.
+Defined.
+
+Definition ii1_injectivity_inl
+           {A B : UU}
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+  : ii1_injectivity _ _ (maponpaths (@inl A B) p) = p.
+Proof.
+  exact (@equality_by_case_inv_equality_by_case A B (inl a₁) (inl a₂) p).
+Defined.
+
+Definition inl_ii1_injectivity
+           {A B : UU}
+           {a₁ a₂ : A}
+           (p : @inl A B a₁ = inl a₂)
+  : maponpaths inl (ii1_injectivity _ _ p) = p.
+Proof.
+  exact (@inv_equality_by_case_equality_by_case A B (inl a₁) (inl a₂) p).
+Defined.
+
+Definition ii1_injectivity_concat
+           {A B : UU}
+           {a₁ a₂ a₃ : A}
+           (p : inl a₁ = inl a₂) (q : inl a₂ = inl a₃)
+  : @ii1_injectivity A B _ _ (p @ q)
+    =
+    ii1_injectivity _ _ p @ ii1_injectivity _ _ q.
+Proof.
+  refine (!_).
+  etrans.
+  {
+    exact (!(@ii1_injectivity_inl A B _ _ _)).
+  }
+  etrans.
+  {
+    apply maponpaths.
+    apply maponpathscomp0.
+  }
+  etrans.
+  {
+    apply maponpaths.
+    etrans.
+    {
+      apply maponpaths_2.
+      apply inl_ii1_injectivity.
+    }
+    apply maponpaths.
+    apply inl_ii1_injectivity.
+  }
+  apply idpath.
+Defined.
+
+Definition ii2_injectivity_inr
+           {A B : UU}
+           {b₁ b₂ : B}
+           (p : b₁ = b₂)
+  : ii2_injectivity _ _ (maponpaths (@inr A B) p) = p.
+Proof.
+  exact (@equality_by_case_inv_equality_by_case A B (inr b₁) (inr b₂) p).
+Defined.
+
+Definition inr_ii2_injectivity
+           {A B : UU}
+           {b₁ b₂ : B}
+           (p : @inr A B b₁ = inr b₂)
+  : maponpaths inr (ii2_injectivity _ _ p) = p.
+Proof.
+  exact (@inv_equality_by_case_equality_by_case A B (inr b₁) (inr b₂) p).
+Defined.
+
+Definition ii2_injectivity_concat
+           {A B : UU}
+           {b₁ b₂ b₃ : B}
+           (p : inr b₁ = inr b₂) (q : inr b₂ = inr b₃)
+  : @ii2_injectivity A B _ _ (p @ q)
+    =
+    ii2_injectivity _ _ p @ ii2_injectivity _ _ q.
+Proof.
+  refine (!_).
+  etrans.
+  {
+    exact (!(@ii2_injectivity_inr A B _ _ _)).
+  }
+  etrans.
+  {
+    apply maponpaths.
+    apply maponpathscomp0.
+  }
+  etrans.
+  {
+    apply maponpaths.
+    etrans.
+    {
+      apply maponpaths_2.
+      apply inr_ii2_injectivity.
+    }
+    apply maponpaths.
+    apply inr_ii2_injectivity.
+  }
+  apply idpath.
+Defined.
+
 Definition maponpaths_prod_path
            {A B C : UU}
            (f : A → B)
@@ -92,6 +212,16 @@ Definition paths_pathsdirprod
   : pathsdirprod p₁ q₁ = pathsdirprod p₂ q₂.
 Proof.
   induction s₁, s₂.
+  apply idpath.
+Defined.
+
+Definition pathsdirprod_eta
+           {A B : UU}
+           {x y : A × B}
+           (p : x = y)
+  : p = pathsdirprod (maponpaths pr1 p) (maponpaths dirprod_pr2 p).
+Proof.
+  induction p.
   apply idpath.
 Defined.
 

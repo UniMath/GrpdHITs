@@ -780,9 +780,6 @@ Section LiftCounit.
          hX
          (poly_path_groupoid_poly_map P z).
 
-  Definition TODO {A : UU} : A.
-  Admitted.
-
   Definition prealg_counit_equation
              {X Y : one_types}
              {f : one_types ⟦ X, Y ⟧}

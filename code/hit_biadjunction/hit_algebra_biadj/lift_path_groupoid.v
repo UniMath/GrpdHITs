@@ -201,17 +201,19 @@ Definition path_groupoid_path_arg
            (p : pr1 (sem_endpoint_grpd
                        l
                        (pr1 (hit_path_algebra_biadjunction Σ X)))
-                ⟹
+                       z
+                -->
                 pr1 (sem_endpoint_grpd
                        r
-                       (pr1 (hit_path_algebra_biadjunction Σ X))))
+                       (pr1 (hit_path_algebra_biadjunction Σ X)))
+                       z)
   : sem_endpoint_one_types l (pr1 X) z
     =
     sem_endpoint_one_types r (pr1 X) z.
 Proof.
   refine (!(path_groupoid_endpoint _ _) @ _ @ path_groupoid_endpoint _ _).
   apply poly_act_groupoid_to_path.
-  exact (pr1 p z).
+  exact p.
 Defined.
 
 Definition poly_path_groupoid_poly_act_morphism_to_path
@@ -263,20 +265,22 @@ Definition sem_homot_endpoint_grpd_one_type
            (h : homot_endpoint
                   (path_left Σ) (path_right Σ)
                   al ar l r)
+           (z : poly_act Q (pr11 X : one_type))
            (p : pr1 (sem_endpoint_grpd
                        al
                        (pr1 ((hit_path_algebra_biadjunction Σ) X)))
-                ⟹
+                    z
+                -->
                 pr1 (sem_endpoint_grpd
                        ar
-                       (pr1 (hit_path_algebra_biadjunction Σ X))))
-           (z : poly_act Q (pr11 X : one_type))
+                       (pr1 (hit_path_algebra_biadjunction Σ X)))
+                    z)
   : sem_homot_endpoint_grpd
       h
       (pr1 ((hit_path_algebra_biadjunction Σ) X))
       (pr2 ((hit_path_algebra_biadjunction Σ) X))
-      p
       z
+      p
     =
     poly_act_morphism_to_path
       (path_groupoid_endpoint
@@ -302,29 +306,26 @@ Proof.
       apply pathsinv0r.
     }
     exact (poly_act_morphism_to_path_idpath _).
-  - refine (_ @ maponpaths _ IHh
-              @ !(poly_act_morphism_to_path_inv
-                    (path_groupoid_endpoint e₁ z
-                     @ sem_homot_endpoint_one_types
-                         h (pr1 X) (pr2 X) z
-                         (path_groupoid_path_arg p)
-                     @ ! path_groupoid_endpoint e₂ z))
+  - refine (maponpaths _ IHh
+            @ !(poly_act_morphism_to_path_inv
+                  (path_groupoid_endpoint e₁ z
+                   @ sem_homot_endpoint_one_types
+                       h (pr1 X) (pr2 X) z
+                       (path_groupoid_path_arg p)
+                   @ ! path_groupoid_endpoint e₂ z))
               @ maponpaths poly_act_morphism_to_path _).
-    + simpl.
-      cbn.
-      apply poly_act_id_right.
-    + etrans.
-      {
-        apply pathscomp_inv.
-      }
-      refine (_ @ !(path_assoc _ _ _)).
-      apply maponpaths_2.
-      etrans.
-      {
-        apply pathscomp_inv.
-      }
-      apply maponpaths_2.
-      apply pathsinv0inv0.
+    etrans.
+    {
+      apply pathscomp_inv.
+    }
+    refine (_ @ !(path_assoc _ _ _)).
+    apply maponpaths_2.
+    etrans.
+    {
+      apply pathscomp_inv.
+    }
+    apply maponpaths_2.
+    apply pathsinv0inv0.
   - refine (maponpaths (λ z, poly_act_compose z _) IHh₁ @ _).
     refine (maponpaths (λ z, poly_act_compose _ z) IHh₂ @ _).
     etrans.
@@ -783,7 +784,7 @@ Definition path_groupoid_is_hit_algebra
     →
     is_hit_algebra_grpd Σ (hit_path_algebra_biadjunction Σ X).
 Proof.
-  intros HX i p z.
+  intros HX i z p.
   specialize (HX i z (path_groupoid_path_arg p)).
   refine (sem_homot_endpoint_grpd_one_type _ _ _ _
           @ _
