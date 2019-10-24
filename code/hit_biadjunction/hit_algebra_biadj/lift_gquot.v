@@ -1229,6 +1229,6 @@ Proof.
           @ !(sem_homot_endpoint_one_types_gquot_poly_poly_gquot _ _ _ _ _)).
   apply maponpaths.
   apply maponpaths_2.
-  apply helpgquot_is_hit_algebra_lem.
+  apply gquot_is_hit_algebra_lem.
   exact HX.
 Qed.
