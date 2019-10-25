@@ -410,51 +410,357 @@ Proof.
     exact (nat_trans_eq_pointwise (pr2 α) z).
 Qed.
 
-Local Definition TODO {A : UU} : A.
-Admitted.
+Definition sem_endpoint_grpd_id_constr
+           {P : poly_code}
+           {X : groupoid}
+           (z : poly_act P (pr11 X))
+           (f : poly_act_morphism P X z _)
+  : f
+    =
+    poly_act_compose
+      f
+      (poly_act_nat_trans_data
+         P
+         (nat_trans_id (functor_identity X)) z).
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - exact (!(pathscomp0rid _)).
+  - exact (!(id_right _)).
+  - induction z as [z | z].
+    + apply IHP₁.
+    + apply IHP₂.
+  - exact (pathsdirprod (IHP₁ _ _) (IHP₂ _ _)).
+Qed.
+
+Definition sem_endpoint_grpd_id
+           {A P Q : poly_code}
+           (e : endpoint A P Q)
+           {X : total_bicat (disp_alg_bicat ⦃ A ⦄)}
+           (z : poly_act P (pr11 X))
+  : poly_act_functor_identity_data Q (pr1 X)
+    (sem_endpoint_UU e (pr12 X) z)
+  · poly_act_nat_trans_data Q (id₂ (id₁ (pr1 X)))
+      (sem_endpoint_UU e (pr12 X) z)
+  · sem_endpoint_grpd_natural_data e (id₁ X) z
+  =
+  sem_endpoint_grpd_data_functor_morphism
+    e
+    (pr2 X)
+    (poly_act_functor_identity_data P (pr1 X) z
+     · poly_act_nat_trans_data P (id₂ (id₁ (pr1 X))) z).
+Proof.
+  induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P Q | P Q | P Q | P Q
+                  | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P T t | C₁ C₂ h | ].
+  - (* Identity *)
+    apply poly_act_id_right.
+  - (* Composition *)
+    refine (poly_act_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply IHe₂.
+    }
+    etrans.
+    {
+      refine (!_).
+      exact (functor_comp
+               (sem_endpoint_grpd_data_functor e₂ _)
+               _
+               _).
+    }
+    exact (maponpaths
+             (sem_endpoint_grpd_data_functor_morphism e₂ (pr2 X))
+             (IHe₁ _)).
+  - (* Left inclusion *)
+    apply (@poly_act_id_right P).
+  - (* Right inclusion *)
+    apply (@poly_act_id_right Q).
+  - (* Left projection *)
+    apply (@poly_act_id_right P).
+  - (* Right projection *)
+    apply (@poly_act_id_right Q).
+  - (* Pairing *)
+    exact (pathsdirprod (IHe₁ _) (IHe₂ _)).
+  - (* Constant *)
+    apply idpath.
+  - (* Constant map *)
+    apply idpath.
+  - (* Constructor *)
+    etrans.
+    {
+      refine (maponpaths (λ z, z · _) _).
+      apply id_left.
+    }
+    etrans.
+    {
+      apply id_left.
+    }
+    etrans.
+    {
+      refine (maponpaths (λ z, z · _) _).      
+      exact (@id_left (pr11 X) _ _ _).
+    }
+    etrans.
+    {
+      exact (@id_left (pr11 X) _ _ _).
+    }
+    refine (maponpaths (#(pr12 X)) _).
+    exact (sem_endpoint_grpd_id_constr z _).
+Qed.
+
+Definition sem_endpoint_grpd_comp_constr
+           {P : poly_code}
+           {X Y Z : groupoid}
+           (f : X ⟶ Y)
+           (g : Y ⟶ Z)
+           (z : poly_act P (pr11 X))
+  : poly_act_functor_composition_data P f g z
+    =
+    poly_act_compose
+      (poly_act_functor_composition_data P f g z)
+      (poly_act_nat_trans_data P (nat_trans_id (functor_composite f g)) z).
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - exact (!(pathscomp0rid _)).
+  - exact (!(id_right _)).
+  - induction z as [z | z].
+    + apply IHP₁.
+    + apply IHP₂.
+  - exact (pathsdirprod (IHP₁ _) (IHP₂ _)).
+Qed.
+
+Definition sem_endpoint_grpd_comp
+           {A P Q : poly_code}
+           (e : endpoint A P Q)
+           {X Y Z : total_bicat (disp_alg_bicat ⦃ A ⦄)}
+           (f : total_bicat (disp_alg_bicat ⦃ A ⦄) ⟦ X, Y ⟧)
+           (g : total_bicat (disp_alg_bicat ⦃ A ⦄) ⟦ Y, Z ⟧)
+           (z : poly_act P (pr11 X))
+  : poly_act_functor_composition_data
+      Q (pr1 f) (pr1 g)
+      (sem_endpoint_UU e (pr12 X) z)
+  · poly_act_nat_trans_data
+      Q (id₂ (pr1 f · pr1 g))
+      (sem_endpoint_UU e (pr12 X) z)
+  · sem_endpoint_grpd_natural_data e (f · g) z
+  =
+  poly_act_compose
+    (poly_act_functor_morphisms Q (pr1 g) (sem_endpoint_grpd_natural_data e f z))
+    (poly_act_compose
+       (sem_endpoint_grpd_natural_data e g (poly_map P (pr11 f) z))
+       (sem_endpoint_grpd_data_functor_morphism
+          e (pr2 Z)
+          (poly_act_functor_composition_data P (pr1 f) (pr1 g) z
+           · poly_act_nat_trans_data P (id₂ (pr1 f · pr1 g)) z))).
+Proof.
+  induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P Q | P Q | P Q | P Q
+                  | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P T t | C₁ C₂ h | ].
+  - (* Identity *)
+    refine (poly_act_id_right _ @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply (functor_id (poly_act_functor P (pr1 g))).
+    }
+    etrans.
+    {
+      apply poly_act_id_left.
+    }
+    apply poly_act_id_left.
+  - (* Composition *)
+    refine (poly_act_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply IHe₂.
+    }
+    clear IHe₂.
+    refine (!(poly_act_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      refine (!(poly_act_assoc _ _ _) @ _).
+      apply maponpaths.
+      etrans.
+      {
+        refine (!_).
+        apply (functor_comp (sem_endpoint_grpd_data_functor e₂ Z)).
+      }
+      apply maponpaths.
+      apply IHe₁.
+    }
+    clear IHe₁.
+    etrans.
+    {
+      do 2 apply maponpaths.
+      apply (functor_comp (sem_endpoint_grpd_data_functor e₂ Z)).
+    }
+    refine (!_).
+    refine (poly_act_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths_2.
+      refine (poly_act_assoc _ _ _ @ _).
+      do 2 apply maponpaths_2.
+      apply (functor_comp (poly_act_functor R (pr1 g))).
+    }
+    do 3 refine (!(poly_act_assoc _ _ _) @ _).
+    apply maponpaths.
+    refine (poly_act_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths_2.     
+      apply (nat_trans_ax (sem_endpoint_grpd_natural e₂ g)).
+    }
+    refine (!(poly_act_assoc _ _ _) @ _).
+    do 2 apply maponpaths.
+    refine (!_).
+    apply (functor_comp (sem_endpoint_grpd_data_functor e₂ Z)).
+  - (* Left inclusion *)
+    refine (poly_act_id_right _ @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply (functor_id (poly_act_functor P (pr1 g))).
+    }
+    etrans.
+    {
+      apply (@poly_act_id_left P).
+    }
+    apply poly_act_id_left.
+  - (* Right inclusion *)
+    refine (poly_act_id_right _ @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply (functor_id (poly_act_functor Q (pr1 g))).
+    }
+    etrans.
+    {
+      apply (@poly_act_id_left Q).
+    }
+    apply poly_act_id_left.
+  - (* Left projection *)
+    refine (poly_act_id_right _ @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply (functor_id (poly_act_functor P (pr1 g))).
+    }
+    etrans.
+    {
+      apply poly_act_id_left.
+    }
+    apply poly_act_id_left.
+  - (* Right projection *)
+    refine (poly_act_id_right _ @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      apply (functor_id (poly_act_functor Q (pr1 g))).
+    }
+    etrans.
+    {
+      apply poly_act_id_left.
+    }
+    apply poly_act_id_left.
+  - (* Pairing *)
+    exact (pathsdirprod (IHe₁ _) (IHe₂ _)).
+  - (* Constant *)
+    apply idpath.
+  - (* Constant map *)
+    apply idpath.
+  - (* Constructor *)
+    etrans.
+    {
+      refine (maponpaths (λ z, z · _) _).
+      apply id_left.
+    }
+    refine (id_left _ @ _).
+    etrans.
+    {
+      refine (maponpaths (λ z, z · _) (id_right _ @ _)).
+      refine (maponpaths (λ z, z · _) (id_right _ @ _)).
+      exact (id_left (# (pr11 g) _)).
+    }
+    refine (assoc' _ _ _ @ _).
+    refine (maponpaths (λ z, # (pr11 g) _ · z) _).
+    refine (maponpaths (λ z, _ · z) _).
+    refine (maponpaths (# (pr12 Z)) _).
+    exact (sem_endpoint_grpd_comp_constr (pr1 f) (pr1 g) z).
+Qed.
+ 
+Opaque ps_comp.
 
 Definition sem_endpoint_grpd_laws
            {A P Q : poly_code}
            (e : endpoint A P Q)
   : is_pstrans (sem_endpoint_grpd_data e).
 Proof.
-  apply TODO.
-Qed.
-(*
-  induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                  | P Q | P Q | P Q | P Q
-                  | P Q R e₁ IHe₁ e₂ IHe₂
-                  | P T t | C₁ C₂ h | ]
-  ; repeat split.
-  - intros X Y f g α.
-    use nat_trans_eq.
-    { apply homset_property. }
-    Transparent ps_comp.
-    intro x.
-    cbn.
-    refine (poly_act_id_right _ @ !(poly_act_id_left _)).
-    apply poly_act_id_le
-    cbn.
-  induction e ; repeat split.
-  repeat split.
-  - intros X Y f g α.
-    use nat_trans_eq.
-    { exact (@poly_act_isaset_mor Q (pr1 Y)). }
-    intro x.
-    exact (sem_endpoint_grpd_natural_natural e α x).
-  - intro X.
-    simpl.
-    use nat_trans_eq.
-    { exact (@poly_act_isaset_mor Q (pr1 X)). }
-    simpl.
-    cbn.
-    apply TODO.
-  - intros X Y Z f g.
-    use nat_trans_eq.
-    { exact (@poly_act_isaset_mor Q (pr1 Z)). }
-    apply TODO.
-    Time Qed.
- *)
+  repeat split
+  ; [intros X Y f g α | intro X | intros X Y Z f g].
+  - use nat_trans_eq
+    ; [ exact (@poly_act_isaset_mor _ _) | intro z].
+    exact (sem_endpoint_grpd_natural_natural e α z).
+  - use nat_trans_eq
+    ; [ exact (@poly_act_isaset_mor _ _) | intro z].
+    refine (sem_endpoint_grpd_id e z @ _).
+    refine (!_).
+    etrans.
+    {
+      refine (maponpaths (λ z, z · _) _).
+      apply id_left.
+    }
+    apply id_left.
+  - use nat_trans_eq
+    ; [ exact (@poly_act_isaset_mor _ _) | intro z].
+    refine (sem_endpoint_grpd_comp e f g z @ _).
+    refine (!_).
+    etrans.
+    {
+      refine (maponpaths
+                (λ q, poly_act_compose
+                        q
+                        _)
+                _).
+      etrans.
+      {
+        exact (@poly_act_id_right
+                 Q (pr1 Z)
+                 _ _
+                 (poly_act_compose
+                    _
+                    _)).
+      }
+      refine (maponpaths
+                (λ q, poly_act_compose
+                        q
+                        _)
+                _).
+      etrans.
+      {
+        exact (@poly_act_id_right
+                 Q (pr1 Z)
+                 _ _
+                 (poly_act_compose
+                    _
+                    _)).
+      }
+      exact (@poly_act_id_left Q (pr1 Z) _ _ _).
+    }
+    refine (!_).
+    apply poly_act_assoc.
+Qed.    
+
 Definition sem_endpoint_grpd
            {A P Q : poly_code}
            (e : endpoint A P Q)
