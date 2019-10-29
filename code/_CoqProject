@@ -35,9 +35,6 @@ signature/hit.v
 
 displayed_algebras/displayed_algebra.v
 
-existence/initial_algebra.v
-existence/initial_groupoid_algebra.v
-
 hit_biadjunction/path_groupoid_commute/path_groupoid_const_id.v
 hit_biadjunction/path_groupoid_commute/path_groupoid_sum.v
 hit_biadjunction/path_groupoid_commute/path_groupoid_prod.v
@@ -71,6 +68,11 @@ hit_biadjunction/hit_algebra_biadj/lift_path_groupoid.v
 hit_biadjunction/hit_algebra_biadj/lift_gquot.v
 hit_biadjunction/hit_algebra_biadj.v
 
+initial_grpd_alg/W_poly.v
+initial_grpd_alg/initial_groupoid_algebra.v
+initial_grpd_alg/is_initial.v
+
+existence/initial_algebra.v
 existence/hit_existence.v
 
 examples/circle.v

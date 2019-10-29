@@ -30,7 +30,8 @@ Require Import algebra.groupoid_polynomials.
 Require Import algebra.groupoid_endpoints.
 Require Import algebra.groupoid_homotopies.
 Require Import existence.initial_algebra.
-Require Import existence.initial_groupoid_algebra.
+Require Import initial_grpd_alg.initial_groupoid_algebra.
+Require Import initial_grpd_alg.is_initial.
 Require Import hit_biadjunction.hit_algebra_biadj.
 
 Local Open Scope cat.

@@ -246,3 +246,22 @@ Proof.
        intro x ; cbn ;
        exact (iso_after_iso_inv (_ ,, _))).
 Defined.
+
+Definition groupoid_cancel
+           {G : groupoid}
+           {a b c : G}
+           (f₁ f₂ : a --> b)
+           (g : b --> c)
+  : f₁ · g = f₂ · g → f₁ = f₂.
+Proof.
+  intro H.
+  refine (!(id_right _) @ _).
+  simple refine (maponpaths (λ x, _ · x) (!(iso_inv_after_iso (make_iso g _))) @ _).
+  { apply G. }
+  simpl.
+  refine (assoc _ _ _ @ _).
+  refine (maponpaths (λ x, x · _) H @ _).
+  refine (assoc' _ _ _ @ _).
+  refine (maponpaths (λ x, _ · x) (iso_inv_after_iso (make_iso g _)) @ _).
+  apply id_right.
+Qed.

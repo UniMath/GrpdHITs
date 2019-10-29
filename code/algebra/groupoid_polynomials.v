@@ -32,14 +32,15 @@ Require Import signature.hit_signature.
 Local Open Scope cat.
 
 (** Action of polynomials on groupoids *)
-Definition poly_act_morphism
+Definition poly_act_rel
            (P : poly_code)
-           (G : groupoid)
-  : poly_act P G → poly_act P G → UU.
+           {X : UU}
+           (R : X → X → UU)
+  : poly_act P X → poly_act P X → UU.
 Proof.
   induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (λ a b, a = b).
-  - exact (λ x y, G ⟦ x , y ⟧).
+  - exact (λ x y, R x y).
   - intros x y.
     induction x as [x | x], y as [y | y].
     + exact (IHP₁ x y).
@@ -49,38 +50,90 @@ Proof.
   - exact (λ x y, IHP₁ (pr1 x) (pr1 y) × IHP₂ (pr2 x) (pr2 y)).
 Defined.
 
+Definition poly_act_rel_identity
+           (P : poly_code)
+           {X : UU}
+           (R : X → X → UU)
+           (r : ∏ (x : X), R x x)
+           (x : poly_act P X)
+  : poly_act_rel P R x x.
+Proof.
+  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  - exact (idpath x).
+  - exact (r x).
+  - induction x as [x | x].
+    + exact (IHP₁ x).
+    + exact (IHP₂ x).
+  - exact (IHP₁ (pr1 x) ,, IHP₂ (pr2 x)).
+Defined.
+
+Definition poly_act_rel_inv
+           (P : poly_code)
+           {X : UU}
+           (R : X → X → UU)
+           (i : ∏ (x y : X), R x y → R y x)
+           {x y : poly_act P X}
+           (r : poly_act_rel P R x y)
+  : poly_act_rel P R y x.
+Proof.
+  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  - exact (! r).
+  - exact (i _ _ r).
+  - induction x as [x | x], y as [y | y].
+    + exact (IHP₁ _ _ r).
+    + exact (fromempty r).
+    + exact (fromempty r).
+    + exact (IHP₂ _ _ r).
+  - exact (IHP₁ _ _ (pr1 r) ,, IHP₂ _ _ (pr2 r)).
+Defined.
+
+Definition poly_act_rel_comp
+           (P : poly_code)
+           {X : UU}
+           (R : X → X → UU)
+           (c : ∏ (x y z : X), R x y → R y z → R x z)
+           {x y z : poly_act P X}
+           (r₁ : poly_act_rel P R x y)
+           (r₂ : poly_act_rel P R y z)
+  : poly_act_rel P R x z.
+Proof.
+  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  - exact (r₁ @ r₂).
+  - exact (c _ _ _ r₁ r₂).
+  - induction x as [x | x], y as [y | y].
+    + induction z as [z | z].
+      * exact (IHP₁ _ _ _ r₁ r₂).
+      * exact (fromempty r₂).
+    + exact (fromempty r₁).
+    + exact (fromempty r₁).
+    + induction z as [z | z].
+      * exact (fromempty r₂).
+      * exact (IHP₂ _ _ _ r₁ r₂).
+  - exact (IHP₁ _ _ _ (pr1 r₁) (pr1 r₂) ,, IHP₂ _ _ _ (pr2 r₁) (pr2 r₂)).
+Defined.
+
+Definition poly_act_morphism
+           (P : poly_code)
+           (G : groupoid)
+  : poly_act P G → poly_act P G → UU
+  := poly_act_rel P (@precategory_morphisms G).
+
 Definition poly_act_identity
            {P : poly_code}
            {G : groupoid}
-  : ∏ (x : poly_act P G), poly_act_morphism P G x x.
-Proof.
-  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
-  - exact idpath.
-  - exact identity.
-  - intros x.
-    induction x as [x | x].
-    + exact (IHP₁ x).
-    + exact (IHP₂ x).
-  - exact (λ x, IHP₁ (pr1 x) ,, IHP₂ (pr2 x)).
-Defined.
+  : ∏ (x : poly_act P G), poly_act_morphism P G x x
+  := poly_act_rel_identity P (@precategory_morphisms G) identity.
 
 Definition poly_act_inverse
            {P : poly_code}
            {G : groupoid}
   : ∏ {x y : poly_act P G},
-    poly_act_morphism P G x y → poly_act_morphism P G y x.
-Proof.
-  intros x y.
-  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
-  - exact (λ p, !p).
-  - exact (λ f, inv_from_iso (make_iso _ (pr2 G _ _ f))).
-  - induction x as [x | x], y as [y | y].
-    + exact (IHP₁ x y).
-    + exact fromempty.
-    + exact fromempty.
-    + exact (IHP₂ x y).
-  - exact (λ f, IHP₁ _ _ (pr1 f) ,, IHP₂ _ _ (pr2 f)).
-Defined.
+    poly_act_morphism P G x y → poly_act_morphism P G y x
+  := @poly_act_rel_inv
+       P
+       _
+       (@precategory_morphisms G)
+       (λ _ _ f, inv_from_iso (make_iso _ (pr2 G _ _ f))).
 
 Definition poly_act_compose
            {P : poly_code}
@@ -88,23 +141,12 @@ Definition poly_act_compose
   : ∏ {x y z : poly_act P G},
     poly_act_morphism P G x y
     → poly_act_morphism P G y z
-    → poly_act_morphism P G x z.
-Proof.
-  intros x y z.
-  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
-  - exact (λ p q, p @ q).
-  - exact (λ f g, f · g).
-  - induction x as [x | x], y as [y | y].
-    + induction z as [z | z].
-      * exact (IHP₁ x y z).
-      * exact (λ _, fromempty).
-    + exact fromempty.
-    + exact fromempty.
-    + induction z as [z | z].
-      * exact (λ _, fromempty).
-      * exact (IHP₂ x y z).
-  - exact (λ f g, IHP₁ _ _ _ (pr1 f) (pr1 g) ,, IHP₂ _ _ _ (pr2 f) (pr2 g)).
-Defined.
+    → poly_act_morphism P G x z
+  := @poly_act_rel_comp
+       P
+       _
+       (@precategory_morphisms G)
+       (λ _ _ _ f g, f · g).
 
 Definition poly_act_id_right
            {P : poly_code}

@@ -15,6 +15,7 @@ Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Unitors.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
+Require Import UniMath.Bicategories.DisplayedBicats.DispInvertibles.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
@@ -316,3 +317,58 @@ Definition make_algebra_map_grpd
            (f : pr1 X --> pr1 Y)
   : X --> Y
   := f ,, tt.
+
+Definition hit_prealg_is_invertible_2cell
+           (Σ : hit_signature)
+           {X Y : hit_prealgebra_grpd Σ}
+           {f g : X --> Y}
+           (α : f ==> g)
+  : is_invertible_2cell α.
+Proof.
+  use is_invertible_disp_to_total.
+  use tpair.
+  - apply grpd_bicat_is_invertible_2cell.
+  - exact (disp_locally_groupoid_alg
+             ⦃ point_constr Σ ⦄
+             (pr1 X) (pr1 Y)
+             (pr1 f) (pr1 g)
+             (make_invertible_2cell
+                (grpd_bicat_is_invertible_2cell (pr1 α)))
+             (pr2 X) (pr2 Y)
+             (pr2 f) (pr2 g)
+             (pr2 α)).
+Defined.
+
+Definition hit_path_alg_is_invertible_2cell
+           (Σ : hit_signature)
+           {X Y : hit_path_algebra_grpd Σ}
+           {f g : X --> Y}
+           (α : f ==> g)
+  : is_invertible_2cell α.
+Proof.
+  use is_invertible_disp_to_total.
+  use tpair.
+  - apply hit_prealg_is_invertible_2cell.
+  - exact (disp_locally_groupoid_depprod
+             (path_label Σ)
+             (λ i, add_cell_disp_cat _ _ _ _ _)
+             (λ i, disp_locally_groupoid_add_cell _ _ _ _ _)
+             (pr1 X) (pr1 Y)
+             (pr1 f) (pr1 g)
+             (make_invertible_2cell
+                (hit_prealg_is_invertible_2cell Σ (pr1 α)))
+             (pr2 X) (pr2 Y)
+             (pr2 f) (pr2 g)
+             (pr2 α)).
+Defined.
+
+Definition hit_alg_is_invertible_2cell
+           (Σ : hit_signature)
+           {X Y : hit_algebra_grpd Σ}
+           {f g : X --> Y}
+           (α : f ==> g)
+  : is_invertible_2cell α.
+Proof.
+  apply bicat_is_invertible_2cell_to_fullsub_is_invertible_2cell.
+  apply hit_path_alg_is_invertible_2cell.
+Defined.

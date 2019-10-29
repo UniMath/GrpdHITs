@@ -9,6 +9,92 @@ Require Import signature.hit_signature.
 Local Definition TODO {A : UU} : A.
 Admitted.
 
+Definition transportf_fun_space
+           {X : UU}
+           {Y : X → UU}
+           {Z : UU}
+           {x₁ x₂ : X}
+           (p : x₁ = x₂)
+           (f : Y x₁ → Z)
+           (y : Y x₂)
+  : transportf (λ x, Y x → Z) p f y
+    =
+    f (transportb Y p y).
+Proof.
+  induction p.
+  apply idpath.
+Defined.
+           
+Definition sum_fam
+           {X₁ X₂ : UU}
+           (Y₁ : X₁ → UU)
+           (Y₂ : X₂ → UU)
+  : X₁ ⨿ X₂ → UU.
+Proof.
+  intro z.
+  induction z as [z | z].
+  - exact (Y₁ z).
+  - exact (Y₂ z).
+Defined.
+
+Definition transportf_maponpaths_inl
+           {X₁ X₂ : UU}
+           (Y₁ : X₁ → UU)
+           (Y₂ : X₂ → UU)
+           {x₁ x₂ : X₁}
+           (p : x₁ = x₂)
+           (y : sum_fam Y₁ Y₂ (inl x₁))
+  : transportf
+      (λ x, sum_fam Y₁ Y₂ x)
+      (maponpaths inl p)
+      y
+    =
+    transportf Y₁ p y.
+Proof.
+  induction p.
+  apply idpath.
+Defined.
+
+Definition transportf_maponpaths_inr
+           {X₁ X₂ : UU}
+           (Y₁ : X₁ → UU)
+           (Y₂ : X₂ → UU)
+           {x₁ x₂ : X₂}
+           (p : x₁ = x₂)
+           (y : sum_fam Y₁ Y₂ (inr x₁))
+  : transportf
+      (λ x, sum_fam Y₁ Y₂ x)
+      (maponpaths inr p)
+      y
+    =
+    transportf Y₂ p y.
+Proof.
+  induction p.
+  apply idpath.
+Defined.
+
+Definition transportb_maponpaths_pathsdirprod
+           {X₁ X₂ : UU}
+           (Y₁ : X₁ → UU)
+           (Y₂ : X₂ → UU)
+           {x₁ x₂ : X₁} {y₁ y₂ : X₂}
+           (p : x₁ = x₂) (q : y₁ = y₂)
+           (z : Y₁ x₂ ⨿ Y₂ y₂)
+  : transportb
+      (λ x, Y₁ (pr1 x) ⨿ Y₂ (pr2 x))
+      (pathsdirprod p q)
+      z
+    =
+    coprod_rect
+      _
+      (λ w, inl (transportb Y₁ p w))
+      (λ w, inr (transportb Y₂ q w))
+      z.
+Proof.
+  induction p, q.
+  induction z ; apply idpath.
+Defined.
+
 (** Basics of containers *)
 Record container :=
   mkContainer
@@ -28,7 +114,7 @@ Proof.
   - exact P.
 Defined.
 
-Notation "S ◅ P" := (make_container S P) (at level 70) : container_scope.
+Notation "S ◅ P" := (make_container S P) (at level 60) : container_scope.
 
 Local Open Scope container_scope.
 
@@ -312,11 +398,73 @@ Definition to_interpret_poly_interpret_poly
            (x : ⟦ poly_container P ⟧ X)
   : to_interpret_poly P X (interpret_poly P X x) = x.
 Proof.
-  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
-  - apply TODO.
-  - apply TODO.
-  - apply TODO.
-  - apply TODO.
+  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ]
+  ; induction x as [i x].
+  - use total2_paths_f.
+    + apply idpath.
+    + use funextsec ; cbn.
+      intro z ; induction z.
+  - induction i.
+    use total2_paths_f.
+    + apply idpath.
+    + use funextsec.
+      intro z.
+      induction z.
+      apply idpath.
+  - induction i as [i | i].
+    + use total2_paths_f.
+      * exact (maponpaths inl (maponpaths pr1 (IHP₁ (i ,, x)))).
+      * use funextsec.
+        intro z.
+        refine (_ @ eqtohomot (fiber_paths (IHP₁ (i ,, x))) z).
+        refine (transportf_fun_space _ _ _ @ _ @ !(transportf_fun_space _ _ _)).
+        apply maponpaths.
+        refine (_ @ transportf_maponpaths_inl _ _ _ _).
+        apply transportf_paths.
+        refine (!_).
+        exact (maponpathsinv0 inl _).
+    + use total2_paths_f.
+      * exact (maponpaths inr (maponpaths pr1 (IHP₂ (i ,, x)))).
+      * simpl.
+        use funextsec.
+        intro z.
+        refine (_ @ eqtohomot (fiber_paths (IHP₂ (i ,, x))) z).
+        refine (transportf_fun_space _ _ _ @ _ @ !(transportf_fun_space _ _ _)).
+        apply maponpaths.
+        refine (_ @ transportf_maponpaths_inr _ _ _ _).
+        apply transportf_paths.
+        refine (!_).
+        exact (maponpathsinv0 inr _).
+  - use total2_paths_f.
+    + exact (pathsdirprod (maponpaths pr1 (IHP₁ _)) (maponpaths pr1 (IHP₂ _))).
+    + use funextsec.
+      intro z.
+      refine (transportf_fun_space _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths.
+        simpl.
+        apply transportb_maponpaths_pathsdirprod.
+      }
+      induction z as [z | z] ; simpl.
+      * refine (_ @ eqtohomot
+                      (fiber_paths
+                         (IHP₁
+                            (cpair
+                               (poly_container P₁)
+                               (pr1 i)
+                               (λ q, x (inl q)))))
+                      z).
+        exact (!(transportf_fun_space _ _ _)).
+      * refine (_ @ eqtohomot
+                      (fiber_paths
+                         (IHP₂
+                            (cpair
+                               (poly_container P₂)
+                               (pr2 i)
+                               (λ q, x (inr q)))))
+                      z).
+        exact (!(transportf_fun_space _ _ _)).
 Defined.
 
 Definition interpret_poly_to_interpret_poly
@@ -326,10 +474,12 @@ Definition interpret_poly_to_interpret_poly
   : interpret_poly P X (to_interpret_poly P X y) = y.
 Proof.
   induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
-  - apply TODO.
-  - apply TODO.
-  - apply TODO.
-  - apply TODO.
+  - apply idpath.
+  - apply idpath.
+  - induction y as [y | y].
+    + exact (maponpaths inl (IHP₁ y)).
+    + exact (maponpaths inr (IHP₂ y)).
+  - exact (pathsdirprod (IHP₁ (pr1 y)) (IHP₂ (pr2 y))).
 Defined.
 
 Definition interpret_poly_weq
@@ -394,6 +544,68 @@ Definition poly_initial_rec
        (λ q, fY (interpret_poly P Y q))
        z.
 
+Definition poly_initial_comp_help
+           (P : poly_code)
+           (X Y : UU)
+           (f : X → Y)
+           (x : poly_act P X)
+  : interpret_map
+      (poly_container P)
+      f
+      (to_interpret_poly P X x)
+    =
+    to_interpret_poly P Y (poly_map P f x).
+Proof.
+  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - use total2_paths_f.
+    + apply idpath.
+    + cbn.
+      use funextsec.
+      intro z ; induction z.
+  - apply idpath.
+  - induction x as [x | x].
+    + use total2_paths_f.
+      * exact (maponpaths inl (maponpaths pr1 (IHP₁ x))).
+      * refine (_ @ fiber_paths (IHP₁ x)).
+        use funextsec.
+        intro z.
+        refine (transportf_fun_space _ _ _ @ _ @ !(transportf_fun_space _ _ _)).
+        apply maponpaths.
+        refine (_ @ transportf_maponpaths_inl _ _ _ _).
+        apply transportf_paths.
+        refine (!_).
+        exact (maponpathsinv0 inl _).
+    + use total2_paths_f.
+      * exact (maponpaths inr (maponpaths pr1 (IHP₂ x))).
+      * refine (_ @ fiber_paths (IHP₂ x)).
+        use funextsec.
+        intro z.
+        refine (transportf_fun_space _ _ _ @ _ @ !(transportf_fun_space _ _ _)).
+        apply maponpaths.
+        refine (_ @ transportf_maponpaths_inr _ _ _ _).
+        apply transportf_paths.
+        refine (!_).
+        exact (maponpathsinv0 inr _).
+  - use total2_paths_f.
+    + exact (pathsdirprod
+               (maponpaths pr1 (IHP₁ _))
+               (maponpaths pr1 (IHP₂ _))).
+    + use funextsec.
+      intro z.
+      refine (transportf_fun_space _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths.
+        simpl.
+        apply transportb_maponpaths_pathsdirprod.
+      }
+      induction z as [z | z] ; simpl.
+      * refine (_ @ eqtohomot (fiber_paths (IHP₁ _)) z).
+        exact (!(transportf_fun_space _ _ _)).
+      * refine (_ @ eqtohomot (fiber_paths (IHP₂ _)) z).
+        exact (!(transportf_fun_space _ _ _)).
+Defined.
+
 Definition poly_initial_comp
            (P : poly_code)
            (Y : UU)
@@ -411,7 +623,22 @@ Proof.
           @
           maponpaths
             fY
-            _
-         ).
-  apply TODO.
+            _).
+  refine (_ @ interpret_poly_to_interpret_poly _ _ _).
+  apply maponpaths.
+  apply poly_initial_comp_help.
 Defined.
+
+(** W_ind *)
+Fixpoint W_ind_map
+         (C : container)
+         (Y : W C → UU)
+         (Yc : ∏ (i : shapes C)
+                 (f : positions C i → W C)
+                 (v : ∏ (y : positions C i), Y(f y)),
+               Y (sup C (i ,, f)))
+         (z : W C)
+  : Y z
+  := match z with
+     | sup _ z => Yc (pr1 z) (pr2 z) (λ i, W_ind_map C Y Yc (pr2 z i))
+     end.
