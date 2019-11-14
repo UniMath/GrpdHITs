@@ -30,14 +30,14 @@ Require Import algebra.groupoid_polynomials.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 (** Commutation of path groupoid with constant *)
 Section PathGroupoidConstant.
   Variable (A : one_types).
 
   Definition const_path_groupoid_data
-    : pstrans_data (ps_comp ⦃ C A ⦄ path_groupoid) (ps_comp path_groupoid (⟦ C A ⟧)).
+    : pstrans_data (comp_psfunctor ⦃ C A ⦄ path_groupoid) (comp_psfunctor path_groupoid (⟦ C A ⟧)).
   Proof.
     use make_pstrans_data.
     - exact (λ _, functor_identity _).
@@ -74,7 +74,7 @@ Section PathGroupoidConstant.
   Qed.
 
   Definition const_path_groupoid
-    : pstrans (ps_comp ⦃ C A ⦄ path_groupoid) (ps_comp path_groupoid (⟦ C A ⟧)).
+    : pstrans (comp_psfunctor ⦃ C A ⦄ path_groupoid) (comp_psfunctor path_groupoid (⟦ C A ⟧)).
   Proof.
     use make_pstrans.
     - exact const_path_groupoid_data.
@@ -84,7 +84,7 @@ End PathGroupoidConstant.
 
 (** Commutation of path groupoid with identity *)
 Definition id_path_groupoid_data
-  : pstrans_data (ps_comp ⦃ I ⦄ path_groupoid) (ps_comp path_groupoid (⟦ I ⟧)).
+  : pstrans_data (comp_psfunctor ⦃ I ⦄ path_groupoid) (comp_psfunctor path_groupoid (⟦ I ⟧)).
 Proof.
   use make_pstrans_data.
   - exact (λ _, functor_identity _).
@@ -121,7 +121,9 @@ Proof.
 Qed.
 
 Definition id_path_groupoid
-  : pstrans (ps_comp ⦃ I ⦄ path_groupoid) (ps_comp path_groupoid (⟦ I ⟧)).
+  : pstrans
+      (comp_psfunctor ⦃ I ⦄ path_groupoid)
+      (comp_psfunctor path_groupoid (⟦ I ⟧)).
 Proof.
   use make_pstrans.
   - exact id_path_groupoid_data.

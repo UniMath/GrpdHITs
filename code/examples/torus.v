@@ -20,11 +20,11 @@ Definition torus_point_constr
   : poly_code
   := C unit_one_type.
 
-Inductive torus_paths : Type :=
+Inductive torus_paths : UU :=
 | p_left : torus_paths
 | p_right : torus_paths.
 
-Inductive torus_homots : Type :=
+Inductive torus_homots : UU :=
 | com : torus_homots.
 
 Definition torus_signature

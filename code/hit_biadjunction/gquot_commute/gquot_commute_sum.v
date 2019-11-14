@@ -30,7 +30,7 @@ Require Import algebra.groupoid_polynomials.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 Definition gquot_inl_grpd
            {P₁ P₂ : poly_code}
@@ -67,17 +67,17 @@ Defined.
 Section GQuotSum.
   Context {P₁ P₂ : poly_code}
           (IHP₁ : pstrans
-                    (ps_comp (⟦ P₁ ⟧) gquot_psfunctor)
-                    (ps_comp gquot_psfunctor ⦃ P₁ ⦄))
+                    (comp_psfunctor (⟦ P₁ ⟧) gquot_psfunctor)
+                    (comp_psfunctor gquot_psfunctor ⦃ P₁ ⦄))
           (IHP₂ : pstrans
-                    (ps_comp (⟦ P₂ ⟧) gquot_psfunctor)
-                    (ps_comp gquot_psfunctor ⦃ P₂ ⦄)).
+                    (comp_psfunctor (⟦ P₂ ⟧) gquot_psfunctor)
+                    (comp_psfunctor gquot_psfunctor ⦃ P₂ ⦄)).
 
   Definition sum_gquot_data_comp
              (X : grpd_bicat)
-    : (ps_comp (⟦ P₁ + P₂ ⟧) gquot_psfunctor) X
+    : (comp_psfunctor (⟦ P₁ + P₂ ⟧) gquot_psfunctor) X
       -->
-      (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄) X.
+      (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄) X.
   Proof.
     intro z.
     induction z as [z | z].
@@ -89,7 +89,7 @@ Section GQuotSum.
              {X Y : grpd_bicat}
              (f : X --> Y)
     : ∏ (z : gquot (⦃ P₁ ⦄ X)),
-      # (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inl_grpd z)
+      # (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inl_grpd z)
       =
       gquot_inl_grpd (gquot_functor_map (# ⦃ P₁ ⦄ f) z).
   Proof.
@@ -123,7 +123,7 @@ Section GQuotSum.
              {X Y : grpd_bicat}
              (f : X --> Y)
              (z : ⟦ P₁ ⟧ (gquot_psfunctor X) : one_type)
-    : # (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inl_grpd (IHP₁ X z))
+    : # (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inl_grpd (IHP₁ X z))
       =
       sum_gquot_data_comp Y (inl (# (⟦ P₁ ⟧) (gquot_functor_map f) z)).
   Proof.
@@ -135,7 +135,7 @@ Section GQuotSum.
              {X Y : grpd_bicat}
              (f : X --> Y)
     : ∏ (z : gquot (⦃ P₂ ⦄ X)),
-      # (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inr_grpd z)
+      # (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inr_grpd z)
       =
       gquot_inr_grpd (gquot_functor_map (# ⦃ P₂ ⦄ f) z).
   Proof.
@@ -169,7 +169,7 @@ Section GQuotSum.
              {X Y : grpd_bicat}
              (f : X --> Y)
              (z : ⟦ P₂ ⟧ (gquot_psfunctor X) : one_type)
-    : # (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inr_grpd (IHP₂ X z))
+    : # (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄) f (gquot_inr_grpd (IHP₂ X z))
       =
       sum_gquot_data_comp Y (inr (# (⟦ P₂ ⟧) (gquot_functor_map f) z)).
   Proof.
@@ -179,8 +179,8 @@ Section GQuotSum.
 
   Definition sum_gquot_data
     : pstrans_data
-        (ps_comp (⟦ P₁ + P₂ ⟧) gquot_psfunctor)
-        (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄).
+        (comp_psfunctor (⟦ P₁ + P₂ ⟧) gquot_psfunctor)
+        (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄).
   Proof.
     use make_pstrans_data.
     - exact sum_gquot_data_comp.
@@ -247,9 +247,9 @@ Section GQuotSum.
     : ∏ z,
       maponpaths
         gquot_inl_grpd
-        ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ ⦄))) X z)
+        ((pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₁ ⦄))) X z)
       =
-      (pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄)))
+      (pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄)))
         X (gquot_inl_grpd z)
         @ gquot_inl_grpd_gquot_functor (id₁ X) z.
   Proof.
@@ -268,9 +268,9 @@ Section GQuotSum.
     : ∏ z,
       maponpaths
         gquot_inr_grpd
-        ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₂ ⦄))) X z)
+        ((pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₂ ⦄))) X z)
       =
-      (pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄)))
+      (pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄)))
         X (gquot_inr_grpd z)
         @ gquot_inr_grpd_gquot_functor (id₁ X) z.
   Proof.
@@ -686,8 +686,8 @@ Section GQuotSum.
 
   Definition sum_gquot
     : pstrans
-        (ps_comp (⟦ P₁ + P₂ ⟧) gquot_psfunctor)
-        (ps_comp gquot_psfunctor ⦃ P₁ + P₂ ⦄).
+        (comp_psfunctor (⟦ P₁ + P₂ ⟧) gquot_psfunctor)
+        (comp_psfunctor gquot_psfunctor ⦃ P₁ + P₂ ⦄).
   Proof.
     use make_pstrans.
     - exact sum_gquot_data.

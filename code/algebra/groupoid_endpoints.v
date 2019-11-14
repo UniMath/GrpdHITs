@@ -84,8 +84,8 @@ Definition sem_endpoint_grpd_data_functor_data
            (e : endpoint A P Q)
            (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
   : functor_data
-      (ps_comp ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid)
-      (ps_comp ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid).
+      (comp_psfunctor ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid)
+      (comp_psfunctor ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid).
 Proof.
   use make_functor_data.
   - exact (sem_endpoint_UU e (λ z, (pr2 X : _ ⟶ _) z)).
@@ -177,9 +177,9 @@ Definition sem_endpoint_grpd_data_functor
            {A P Q : poly_code}
            (e : endpoint A P Q)
            (X : total_bicat (disp_alg_bicat ⦃ A ⦄))
-  : (ps_comp ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid)
+  : (comp_psfunctor ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid)
     ⟶
-    (ps_comp ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid).
+    (comp_psfunctor ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)) X : groupoid).
 Proof.
   use make_functor.
   - exact (sem_endpoint_grpd_data_functor_data e X).
@@ -318,8 +318,8 @@ Definition sem_endpoint_grpd_data
            {A P Q : poly_code}
            (e : endpoint A P Q)
   : pstrans_data
-      (ps_comp ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)))
-      (ps_comp ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄))).
+      (comp_psfunctor ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)))
+      (comp_psfunctor ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄))).
 Proof.
   use make_pstrans_data.
   - exact (sem_endpoint_grpd_data_functor e).
@@ -699,7 +699,7 @@ Proof.
     exact (sem_endpoint_grpd_comp_constr (pr1 f) (pr1 g) z).
 Qed.
  
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 Definition sem_endpoint_grpd_laws
            {A P Q : poly_code}
@@ -765,8 +765,8 @@ Definition sem_endpoint_grpd
            {A P Q : poly_code}
            (e : endpoint A P Q)
   : pstrans
-      (ps_comp ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)))
-      (ps_comp ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄))).
+      (comp_psfunctor ⦃ P ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄)))
+      (comp_psfunctor ⦃ Q ⦄ (pr1_psfunctor (disp_alg_bicat ⦃ A ⦄))).
 Proof.
   use make_pstrans.
   - exact (sem_endpoint_grpd_data e).

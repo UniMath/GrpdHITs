@@ -356,3 +356,47 @@ Section Projections.
         (homot_right_endpoint j)
     := pr2 (pr222 (pr222 (pr222 (pr222 Σ)))).
 End Projections.
+
+Definition sem_homot_endpoint_UU
+           {A : poly_code}
+           {J : UU}
+           {S : J → poly_code}
+           {l : ∏ (j : J), endpoint A (S j) I}
+           {r : ∏ (j : J), endpoint A (S j) I}
+           {Q : poly_code}
+           {TR : poly_code}
+           {al ar : endpoint A Q TR}
+           {T : poly_code}
+           {sl sr : endpoint A Q T}
+           (p : homot_endpoint l r al ar sl sr)
+           (X : UU)
+           (c : poly_act A X → X)
+           (pX : ∏ (i : J),
+                 sem_endpoint_UU (l i) c
+                 ~
+                 sem_endpoint_UU (r i) c)
+           (z : poly_act Q X)
+           (p_arg : sem_endpoint_UU al c z = sem_endpoint_UU ar c z)
+  : sem_endpoint_UU sl c z = sem_endpoint_UU sr c z.
+Proof.
+  induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+                  | R₁ R₂ T e₁ e₂ e₃ | T e | T e
+                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
+                  | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
+                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
+                  | j e | el er | ].
+  - exact (idpath _).
+  - exact (!IHp).
+  - exact (IHP₁ @ IHP₂).
+  - apply idpath.
+  - apply idpath.
+  - apply idpath.
+  - exact (maponpaths pr1 IHp).
+  - exact (maponpaths dirprod_pr2 IHp).
+  - exact (pathsdirprod IHp₁ IHp₂).
+  - exact (maponpaths inl IHp).
+  - exact (maponpaths inr IHp).
+  - exact (pX j _).
+  - exact (maponpaths c IHp).
+  - exact p_arg.
+Defined.

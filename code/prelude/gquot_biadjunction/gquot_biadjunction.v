@@ -104,8 +104,8 @@ Defined.
 
 Definition gquot_unit_data
   : pstrans_data
-      (ps_id_functor grpd_bicat)
-      (ps_comp path_groupoid gquot_psfunctor).
+      (id_psfunctor grpd_bicat)
+      (comp_psfunctor path_groupoid gquot_psfunctor).
 Proof.
   use make_pstrans_data.
   - exact gquot_unit_functor.
@@ -141,8 +141,8 @@ Qed.
 
 Definition gquot_unit
   : pstrans
-      (ps_id_functor grpd_bicat)
-      (ps_comp path_groupoid gquot_psfunctor).
+      (id_psfunctor grpd_bicat)
+      (comp_psfunctor path_groupoid gquot_psfunctor).
 Proof.
   use make_pstrans.
   - exact gquot_unit_data.
@@ -170,9 +170,9 @@ Definition gquot_counit_data_po
       _
       (gcl (path_groupoid X) x₁) (gcl (path_groupoid X) x₂)
       (λ z : gquot (path_groupoid X),
-             (gquot_counit_map X · # (ps_id_functor one_types) f) z
+             (gquot_counit_map X · # (id_psfunctor one_types) f) z
              =
-             (# (ps_comp gquot_psfunctor path_groupoid) f · gquot_counit_map Y) z)
+             (# (comp_psfunctor gquot_psfunctor path_groupoid) f · gquot_counit_map Y) z)
       (idpath _)
       (idpath _)
       (gcleq (one_type_to_groupoid X) p).
@@ -201,7 +201,9 @@ Proof.
 Defined.
 
 Definition gquot_counit_data
-  : pstrans_data (ps_comp gquot_psfunctor path_groupoid) (ps_id_functor one_types).
+  : pstrans_data
+      (comp_psfunctor gquot_psfunctor path_groupoid)
+      (id_psfunctor one_types).
 Proof.
   use make_pstrans_data.
   - exact gquot_counit_map.
@@ -250,8 +252,8 @@ Qed.
       
 Definition gquot_counit
   : pstrans
-      (ps_comp gquot_psfunctor path_groupoid)
-      (ps_id_functor one_types).
+      (comp_psfunctor gquot_psfunctor path_groupoid)
+      (id_psfunctor one_types).
 Proof.
   use make_pstrans.
   - exact gquot_counit_data.
@@ -274,10 +276,10 @@ Definition gquot_biadj_triangle_l_data_po
   : @PathOver
       _
       (gcl G x₁) (gcl G x₂)
-      (λ z : gquot G,
-             biadj_triangle_l_lhs gquot_biadj_unit_counit G z
-             =
-             id_trans gquot_psfunctor G z)
+      (λ z,
+       biadj_triangle_l_lhs gquot_biadj_unit_counit G z
+       =
+       id_pstrans gquot_psfunctor G z)
       (idpath ((biadj_triangle_l_lhs gquot_biadj_unit_counit) G (gcl G x₁)))
       (idpath ((biadj_triangle_l_lhs gquot_biadj_unit_counit) G (gcl G x₂)))
       (gcleq G f).
@@ -298,7 +300,7 @@ Qed.
 
 Definition gquot_biadj_triangle_l_data_cell
            (G : groupoid)
-  : biadj_triangle_l_lhs gquot_biadj_unit_counit G ==> id_trans gquot_psfunctor G.
+  : biadj_triangle_l_lhs gquot_biadj_unit_counit G ==> id_pstrans gquot_psfunctor G.
 Proof.
   use gquot_ind_set.
   - exact (λ _, idpath _).
@@ -310,7 +312,7 @@ Defined.
 Definition gquot_biadj_triangle_l_data
   : invertible_modification_data
       (biadj_triangle_l_lhs gquot_biadj_unit_counit)
-      (id_trans gquot_psfunctor).
+      (id_pstrans gquot_psfunctor).
 Proof.
   intros G.
   use make_invertible_2cell.
@@ -346,7 +348,7 @@ Defined.
 Definition gquot_biadj_triangle_r_data
   : invertible_modification_data
       (biadj_triangle_r_lhs gquot_biadj_unit_counit)
-      (id_trans gquot_biadj_unit_counit).
+      (id_pstrans gquot_biadj_unit_counit).
 Proof.
   intros X.
   use make_invertible_2cell.

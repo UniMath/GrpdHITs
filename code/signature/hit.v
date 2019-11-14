@@ -25,27 +25,30 @@ Section SetInduction.
   Context {Σ : hit_signature}
           {X : hit_algebra_one_types Σ}
           (HX : is_HIT Σ X)
-          (Y : alg_carrier X → one_type)
+          (Y : alg_carrier X → UU)
           (Yisaset : ∏ (x : alg_carrier X), isaset (Y x))
           (c : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
-               poly_dact (point_constr Σ) Y x
+               poly_dact_UU (point_constr Σ) Y x
                →
                Y (alg_constr X x))
           (p : ∏ (j : path_label Σ)
                  (x : poly_act (path_source Σ j) (alg_carrier X))
-                 (y : poly_dact (path_source Σ j) Y x),
+                 (y : poly_dact_UU (path_source Σ j) Y x),
                @PathOver
                  _ _ _
                  Y
-                 (endpoint_dact (pr11 X) Y (path_left Σ j) c y)
-                 (endpoint_dact (pr11 X) Y (path_right Σ j) c y) 
+                 (endpoint_dact_UU _ Y (path_left Σ j) c y)
+                 (endpoint_dact_UU _ Y (path_right Σ j) c y) 
                  (alg_path X j x)).
 
   Definition set_disp_algebra
     : disp_algebra X.
   Proof.
     use make_disp_algebra.
-    - exact Y.
+    - intro x.
+      refine (make_one_type (Y x) _).
+      apply hlevelntosn.
+      apply Yisaset.
     - exact c.
     - exact p.
     - intros j z zz p_arg pp_arg.
@@ -61,10 +64,10 @@ Section PropInduction.
   Context {Σ : hit_signature}
           {X : hit_algebra_one_types Σ}
           (HX : is_HIT Σ X)
-          (Y : alg_carrier X → one_type)
+          (Y : alg_carrier X → UU)
           (Yisaprop : ∏ (x : alg_carrier X), isaprop (Y x))
           (c : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
-               poly_dact (point_constr Σ) Y x
+               poly_dact_UU (point_constr Σ) Y x
                →
                Y (alg_constr X x)).
 
@@ -72,7 +75,10 @@ Section PropInduction.
     : disp_algebra X.
   Proof.
     use make_disp_algebra.
-    - exact Y.
+    - intro x.
+      refine (make_one_type (Y x) _).
+      do 2 apply hlevelntosn.
+      apply Yisaprop.
     - exact c.
     - intros j x y.
       apply path_to_PathOver.

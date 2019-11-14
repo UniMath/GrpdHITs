@@ -30,23 +30,23 @@ Require Import algebra.groupoid_polynomials.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 (** Commutation with sums *)
 Section PathGroupoidSum.
   Context {P₁ P₂ : poly_code}
           (IHP₁ : pstrans
-                    (ps_comp ⦃ P₁ ⦄ path_groupoid)
-                    (ps_comp path_groupoid (⟦ P₁ ⟧)))
+                    (comp_psfunctor ⦃ P₁ ⦄ path_groupoid)
+                    (comp_psfunctor path_groupoid (⟦ P₁ ⟧)))
           (IHP₂ : pstrans
-                    (ps_comp ⦃ P₂ ⦄ path_groupoid)
-                    (ps_comp path_groupoid (⟦ P₂ ⟧))).
+                    (comp_psfunctor ⦃ P₂ ⦄ path_groupoid)
+                    (comp_psfunctor path_groupoid (⟦ P₂ ⟧))).
 
   Definition path_groupoid_sum_data_comp_data
              (X : one_types)
     : functor_data
-        ((ps_comp ⦃ P₁ + P₂ ⦄ path_groupoid) X : groupoid)
-        ((ps_comp path_groupoid (⟦ P₁ + P₂ ⟧)) X : groupoid).
+        ((comp_psfunctor ⦃ P₁ + P₂ ⦄ path_groupoid) X : groupoid)
+        ((comp_psfunctor path_groupoid (⟦ P₁ + P₂ ⟧)) X : groupoid).
   Proof.
     use make_functor_data.
     - intros z.
@@ -87,8 +87,8 @@ Section PathGroupoidSum.
   Definition path_groupoid_sum_data_comp
              (X : one_types)
     : functor
-        ((ps_comp ⦃ P₁ + P₂ ⦄ path_groupoid) X : groupoid)
-        ((ps_comp path_groupoid (⟦ P₁ + P₂ ⟧)) X : groupoid).
+        ((comp_psfunctor ⦃ P₁ + P₂ ⦄ path_groupoid) X : groupoid)
+        ((comp_psfunctor path_groupoid (⟦ P₁ + P₂ ⟧)) X : groupoid).
   Proof.
     use make_functor.
     - exact (path_groupoid_sum_data_comp_data X).
@@ -99,8 +99,8 @@ Section PathGroupoidSum.
              {X Y : one_types}
              (f : X --> Y)
     : nat_trans_data
-        (path_groupoid_sum_data_comp X ∙ # (ps_comp path_groupoid (⟦ P₁ + P₂ ⟧)) f)
-        (# (ps_comp ⦃ P₁ + P₂ ⦄ path_groupoid) f ∙ path_groupoid_sum_data_comp Y).
+        (path_groupoid_sum_data_comp X ∙ # (comp_psfunctor path_groupoid (⟦ P₁ + P₂ ⟧)) f)
+        (# (comp_psfunctor ⦃ P₁ + P₂ ⦄ path_groupoid) f ∙ path_groupoid_sum_data_comp Y).
   Proof.
     intros z.
     induction z as [z | z].
@@ -135,9 +135,9 @@ Section PathGroupoidSum.
              {X Y : one_types}
              (f : X --> Y)
     : (path_groupoid_sum_data_comp X)
-        ∙ # (ps_comp path_groupoid (⟦ P₁ + P₂ ⟧)) f
+        ∙ # (comp_psfunctor path_groupoid (⟦ P₁ + P₂ ⟧)) f
         ⟹
-        # (ps_comp ⦃ P₁ + P₂ ⦄ path_groupoid) f ∙ path_groupoid_sum_data_comp Y.
+        # (comp_psfunctor ⦃ P₁ + P₂ ⦄ path_groupoid) f ∙ path_groupoid_sum_data_comp Y.
   Proof.
     use make_nat_trans.
     - exact (path_groupoid_sum_data_nat_data f).
@@ -146,8 +146,8 @@ Section PathGroupoidSum.
         
   Definition path_groupoid_sum_data
     : pstrans_data
-        (ps_comp ⦃ P₁ + P₂ ⦄ path_groupoid)
-        (ps_comp path_groupoid (⟦ P₁ + P₂ ⟧)).
+        (comp_psfunctor ⦃ P₁ + P₂ ⦄ path_groupoid)
+        (comp_psfunctor path_groupoid (⟦ P₁ + P₂ ⟧)).
   Proof.
     use make_pstrans_data.
     - exact path_groupoid_sum_data_comp.
@@ -262,8 +262,8 @@ Section PathGroupoidSum.
 
   Definition path_groupoid_sum
     : pstrans
-        (ps_comp ⦃ P₁ + P₂ ⦄ path_groupoid)
-        (ps_comp path_groupoid (⟦ P₁ + P₂ ⟧)).
+        (comp_psfunctor ⦃ P₁ + P₂ ⦄ path_groupoid)
+        (comp_psfunctor path_groupoid (⟦ P₁ + P₂ ⟧)).
   Proof.
     use make_pstrans.
     - exact path_groupoid_sum_data.

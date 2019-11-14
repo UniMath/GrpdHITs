@@ -369,12 +369,13 @@ Proof.
 Defined.
 
 (** Action of polynomials on natural transformations *)
-Definition poly_act_nat_trans_data
+Definition poly_act_nat_trans_data_help
            (P : poly_code)
-           {G₁ G₂ : groupoid}
-           {F₁ F₂ : G₁ ⟶ G₂}
-           (α : F₁ ⟹ F₂)
-  : nat_trans_data (poly_act_functor P F₁) (poly_act_functor P F₂).
+           {X : UU} {G : groupoid}
+           {f g : X → G}
+           (α : ∏ (x : X), G ⟦ f x , g x ⟧)
+  : ∏ (x : poly_act P X),
+    poly_act_morphism P G (poly_map P f x) (poly_map P g x).
 Proof.
   intro x.
   induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
@@ -384,6 +385,16 @@ Proof.
     + exact (IHP₁ x).
     + exact (IHP₂ x).
   - exact (IHP₁ (pr1 x) ,, IHP₂ (pr2 x)).
+Defined.
+
+Definition poly_act_nat_trans_data
+           (P : poly_code)
+           {G₁ G₂ : groupoid}
+           {F₁ F₂ : G₁ ⟶ G₂}
+           (α : F₁ ⟹ F₂)
+  : nat_trans_data (poly_act_functor P F₁) (poly_act_functor P F₂).
+Proof.
+  exact (poly_act_nat_trans_data_help P α).
 Defined.
 
 Definition poly_act_nat_trans_is_nat_trans

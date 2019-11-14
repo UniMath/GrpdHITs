@@ -30,10 +30,10 @@ Section gquot_rec.
     simple refine (gquot_ind
                      (λ _, Y)
                      gclY
-                     (λ a₁ a₂ g, PathOver_inConstantFamily _ (gcleqY a₁ a₂ g))
+                     (λ a₁ a₂ g, PathOver_inConstantFamily _ (gcleqY g))
                      (λ a, const_globe_over
                                  (ge G a)
-                                 (gcleqY a a (identity a))
+                                 (gcleqY (identity a))
                                  (idpath _)
                                  (geY a))
                      _
@@ -46,15 +46,15 @@ Section gquot_rec.
                      (PathOver_inConstantFamily_concat _ _)
                      (const_globe_over
                         (gconcat G g₁ g₂)
-                        (gcleqY a₁ a₃ (g₁ · g₂))
-                        (gcleqY a₁ a₂ g₁ @ gcleqY a₂ a₃ g₂)
+                        (gcleqY (g₁ · g₂))
+                        (gcleqY g₁ @ gcleqY g₂)
                         (gconcatY a₁ a₂ a₃ g₁ g₂)
                      )
                   ).
   Defined.
 
   Definition gquot_rec_beta_gcleq (a₁ a₂ : G) (g : a₁ --> a₂)
-    : maponpaths gquot_rec (gcleq G g) = gcleqY a₁ a₂ g.
+    : maponpaths gquot_rec (gcleq G g) = gcleqY g.
   Proof.
     apply (PathOver_inConstantFamily_inj (gcleq G g)).
     refine (!(apd_const _ _) @ _).

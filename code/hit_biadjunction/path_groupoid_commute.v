@@ -34,16 +34,16 @@ Require Export hit_biadjunction.path_groupoid_commute.path_groupoid_prod.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 (** Commutation of path groupoid with polynomials *)
 Definition poly_path_groupoid
            (P : poly_code)
   : pstrans
-      (ps_comp
+      (comp_psfunctor
          (⦃ P ⦄)
          path_groupoid)
-      (ps_comp
+      (comp_psfunctor
          path_groupoid
          (⟦ P ⟧)).
 Proof.

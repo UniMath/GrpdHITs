@@ -30,7 +30,7 @@ Require Import algebra.groupoid_polynomials.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 Definition prod_gquot_comp
            {P₁ P₂ : poly_code}
@@ -71,11 +71,11 @@ Defined.
 Section GQuotProd.
   Context {P₁ P₂ : poly_code}
           (IHP₁ : pstrans
-                    (ps_comp (⟦ P₁ ⟧) gquot_psfunctor)
-                    (ps_comp gquot_psfunctor ⦃ P₁ ⦄))
+                    (comp_psfunctor (⟦ P₁ ⟧) gquot_psfunctor)
+                    (comp_psfunctor gquot_psfunctor ⦃ P₁ ⦄))
           (IHP₂ : pstrans
-                    (ps_comp (⟦ P₂ ⟧) gquot_psfunctor)
-                    (ps_comp gquot_psfunctor ⦃ P₂ ⦄)).
+                    (comp_psfunctor (⟦ P₂ ⟧) gquot_psfunctor)
+                    (comp_psfunctor gquot_psfunctor ⦃ P₂ ⦄)).
   
   Definition prod_gquot_data_comp
              (G : groupoid)
@@ -267,8 +267,8 @@ Section GQuotProd.
 
   Definition prod_gquot_data
     : pstrans_data
-        (ps_comp (⟦ P₁ * P₂ ⟧) gquot_psfunctor)
-        (ps_comp gquot_psfunctor ⦃ P₁ * P₂ ⦄).
+        (comp_psfunctor (⟦ P₁ * P₂ ⟧) gquot_psfunctor)
+        (comp_psfunctor gquot_psfunctor ⦃ P₁ * P₂ ⦄).
   Proof.
     use make_pstrans_data.
     - exact prod_gquot_data_comp.
@@ -504,8 +504,8 @@ Section GQuotProd.
     maponpaths
       (λ z, prod_gquot_comp (pr1 z) (pr2 z))
       (pathsdirprod
-         ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ ⦄))) G z₁)
-         ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₂ ⦄))) G z₂)).
+         ((pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₁ ⦄))) G z₁)
+         ((pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₂ ⦄))) G z₂)).
   Proof.
     use gquot_double_ind_prop.
     - intros a b.
@@ -599,7 +599,7 @@ Section GQuotProd.
         }
         exact (!(eqtohomot (pstrans_id IHP₁ G) (pr1 x))
                : _
-               = (pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ ⦄))) G (IHP₁ G (pr1 x))
+               = (pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₁ ⦄))) G (IHP₁ G (pr1 x))
                @ IHP₁_help (functor_identity _) (pr1 x)).
       }
       etrans.
@@ -621,7 +621,7 @@ Section GQuotProd.
         }
         exact (!(eqtohomot (pstrans_id IHP₂ G) (pr2 x))
                : _
-               = (pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₂ ⦄))) G (IHP₂ G (pr2 x))
+               = (pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₂ ⦄))) G (IHP₂ G (pr2 x))
                @ IHP₂_help (functor_identity _) (pr2 x)).
       }
       refine (!_).
@@ -633,8 +633,8 @@ Section GQuotProd.
       apply (maponpathscomp0
                  (λ z, prod_gquot_comp (pr1 z) (pr2 z))
                  (pathsdirprod
-                    ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₁ ⦄))) G (IHP₁ G (pr1 x)))
-                    ((pr122 (pr1 (ps_comp gquot_psfunctor ⦃ P₂ ⦄))) G (IHP₂ G (pr2 x))))
+                    ((pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₁ ⦄))) G (IHP₁ G (pr1 x)))
+                    ((pr122 (pr1 (comp_psfunctor gquot_psfunctor ⦃ P₂ ⦄))) G (IHP₂ G (pr2 x))))
                  (pathsdirprod
                     (IHP₁_help (functor_identity _) (pr1 x))
                     (IHP₂_help (functor_identity _) (pr2 x)))
@@ -1044,8 +1044,8 @@ Section GQuotProd.
   
   Definition prod_gquot
     : pstrans
-        (ps_comp (⟦ P₁ * P₂ ⟧) gquot_psfunctor)
-        (ps_comp gquot_psfunctor ⦃ P₁ * P₂ ⦄).
+        (comp_psfunctor (⟦ P₁ * P₂ ⟧) gquot_psfunctor)
+        (comp_psfunctor gquot_psfunctor ⦃ P₁ * P₂ ⦄).
   Proof.
     use make_pstrans.
     - exact prod_gquot_data.

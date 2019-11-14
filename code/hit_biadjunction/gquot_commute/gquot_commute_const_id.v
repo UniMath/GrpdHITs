@@ -30,7 +30,7 @@ Require Import algebra.groupoid_polynomials.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 (** Commutation of groupoid quotient with constant *)
 Section GQuotConstant.
@@ -38,8 +38,8 @@ Section GQuotConstant.
   
   Definition const_gquot_data
     : pstrans_data
-        (ps_comp (⟦ C A ⟧) gquot_psfunctor)
-        (ps_comp gquot_psfunctor ⦃ C A ⦄).
+        (comp_psfunctor (⟦ C A ⟧) gquot_psfunctor)
+        (comp_psfunctor gquot_psfunctor ⦃ C A ⦄).
   Proof.
     use make_pstrans_data.
     - exact (λ _, gcl (poly_act_groupoid (C A) _)).
@@ -69,8 +69,8 @@ Section GQuotConstant.
 
   Definition const_gquot
     : pstrans
-        (ps_comp (⟦ C A ⟧) gquot_psfunctor)
-        (ps_comp gquot_psfunctor ⦃ C A ⦄).
+        (comp_psfunctor (⟦ C A ⟧) gquot_psfunctor)
+        (comp_psfunctor gquot_psfunctor ⦃ C A ⦄).
   Proof.
     use make_pstrans.
     - exact const_gquot_data.
@@ -127,8 +127,8 @@ Defined.
 
 Definition id_gquot_data
   : pstrans_data
-      (ps_comp (⟦ I ⟧) gquot_psfunctor)
-      (ps_comp gquot_psfunctor ⦃ I ⦄).
+      (comp_psfunctor (⟦ I ⟧) gquot_psfunctor)
+      (comp_psfunctor gquot_psfunctor ⦃ I ⦄).
 Proof.
   use make_pstrans_data.
   - exact id_gquot_comp.
@@ -167,8 +167,8 @@ Qed.
 
 Definition id_gquot
   : pstrans
-      (ps_comp (⟦ I ⟧) gquot_psfunctor)
-      (ps_comp gquot_psfunctor ⦃ I ⦄).
+      (comp_psfunctor (⟦ I ⟧) gquot_psfunctor)
+      (comp_psfunctor gquot_psfunctor ⦃ I ⦄).
 Proof.
   use make_pstrans.
   - exact id_gquot_data.

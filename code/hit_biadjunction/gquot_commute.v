@@ -35,7 +35,7 @@ Require Export hit_biadjunction.gquot_commute.gquot_commute_prod.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 Definition maponpaths_homot
            {A B : UU}
@@ -53,10 +53,10 @@ Defined.
 Definition poly_gquot
            (P : poly_code)
   : pstrans
-      (ps_comp
+      (comp_psfunctor
          (⟦ P ⟧)
          gquot_psfunctor)
-      (ps_comp
+      (comp_psfunctor
          gquot_psfunctor
          ⦃ P ⦄).
 Proof.

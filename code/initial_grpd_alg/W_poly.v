@@ -4,10 +4,31 @@ Require Import UniMath.MoreFoundations.All.
 
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
+Require Import prelude.all.
 Require Import signature.hit_signature.
+Require Import displayed_algebras.displayed_algebra.
 
-Local Definition TODO {A : UU} : A.
-Admitted.
+Declare Scope container_scope.
+
+Definition transportf_depfun
+           {A B : UU}
+           {Y : A → UU}
+           {Z : B → UU}
+           (f : A → B)
+           (ff : ∏ (a : A), Y a → Z(f a))
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+           (y : Y a₁)
+  : transportf
+      Z
+      (maponpaths f p)
+      (ff a₁ y)
+    =
+    ff a₂ (transportf Y p y).
+Proof.
+  induction p.
+  apply idpath.
+Defined.
 
 Definition transportf_fun_space
            {X : UU}
@@ -93,6 +114,28 @@ Definition transportb_maponpaths_pathsdirprod
 Proof.
   induction p, q.
   induction z ; apply idpath.
+Defined.
+
+Definition transportf_prod
+           {A B : UU}
+           {Y : A → UU}
+           {Z : B → UU}
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+           {b₁ b₂ : B}
+           (q : b₁ = b₂)
+           (y : Y a₁)
+           (z : Z b₁)
+  : transportf
+      (λ (x : A × B), Y (pr1 x) × Z (pr2 x))
+      (pathsdirprod p q)
+      (y ,, z)
+    =
+    transportf Y p y ,, transportf Z q z.
+Proof.
+  induction p.
+  induction q.
+  apply idpath.
 Defined.
 
 (** Basics of containers *)
@@ -392,7 +435,7 @@ Proof.
                   (IHP₁ (pr1 z) ,, IHP₂ (pr2 z))).
 Defined.
 
-Definition to_interpret_poly_interpret_poly
+Definition to_interpret_poly_interpret_poly'
            (P : poly_code)
            (X : UU)
            (x : ⟦ poly_container P ⟧ X)
@@ -493,9 +536,16 @@ Proof.
   - exact (interpret_poly P X).
   - use gradth.
     + exact (to_interpret_poly P X).
-    + exact (to_interpret_poly_interpret_poly P X).
+    + exact (to_interpret_poly_interpret_poly' P X).
     + exact (interpret_poly_to_interpret_poly P X).
 Defined.
+
+Definition to_interpret_poly_interpret_poly
+           (P : poly_code)
+           (X : UU)
+           (x : ⟦ poly_container P ⟧ X)
+  : to_interpret_poly P X (interpret_poly P X x) = x
+  := homotinvweqweq (interpret_poly_weq P X) x.
 
 (** W-types for containers *)
 Inductive W (C : container) : UU :=
@@ -520,6 +570,32 @@ Definition W_rec_comp
            (fY : ⟦ C ⟧ Y → Y)
            (z : ⟦ C ⟧ (W C))
   : W_rec_map C Y fY (sup C z) = fY (interpret_map C (W_rec_map C Y fY) z)
+  := idpath _.
+
+Fixpoint W_ind_map
+         (C : container)
+         (Y : W C → UU)
+         (Yc : ∏ (i : shapes C)
+                 (f : positions C i → W C)
+                 (v : ∏ (y : positions C i), Y(f y)),
+               Y (sup C (i ,, f)))
+         (z : W C)
+  : Y z
+  := match z with
+     | sup _ z => Yc (pr1 z) (pr2 z) (λ i, W_ind_map C Y Yc (pr2 z i))
+     end.
+
+Definition W_ind_comp
+           (C : container)
+           (Y : W C → UU)
+           (Yc : ∏ (i : shapes C)
+                   (f : positions C i → W C)
+                   (v : ∏ (y : positions C i), Y(f y)),
+                 Y (sup C (i ,, f)))
+           (z : ⟦ C ⟧ (W C))
+  : W_ind_map C Y Yc (sup C z)
+    =
+    Yc (pr1 z) (pr2 z) (λ i, W_ind_map C Y Yc (pr2 z i))
   := idpath _.
 
 (** W-types for polynomials *)
@@ -629,16 +705,130 @@ Proof.
   apply poly_initial_comp_help.
 Defined.
 
-(** W_ind *)
-Fixpoint W_ind_map
-         (C : container)
-         (Y : W C → UU)
-         (Yc : ∏ (i : shapes C)
-                 (f : positions C i → W C)
-                 (v : ∏ (y : positions C i), Y(f y)),
-               Y (sup C (i ,, f)))
-         (z : W C)
-  : Y z
-  := match z with
-     | sup _ z => Yc (pr1 z) (pr2 z) (λ i, W_ind_map C Y Yc (pr2 z i))
-     end.
+Definition poly_initial_ind_help
+           {P : poly_code}
+           {T : UU}
+           {Y : T → UU}
+           {i : shapes (poly_container P)}
+           {h : positions (poly_container P) i → T}
+           (H : ∏ (y : positions (poly_container P) i), Y (h y))
+  : poly_dact_UU P Y (interpret_poly P T (i,, h)).
+Proof.
+  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - exact i.
+  - exact (H tt).
+  - induction i as [i | i].
+    + exact (IHP₁ i h H).
+    + exact (IHP₂ i h H).
+  - exact (IHP₁ _ _ (λ z, H (inl z)) ,, IHP₂ _ _ (λ z, H (inr z))).
+Defined.
+
+Definition poly_initial_ind
+           (P : poly_code)
+           (Y : poly_initial P → UU)
+           (Yc : ∏ (x : poly_act P (poly_initial P)),
+                 poly_dact_UU P Y x
+                 →
+                 Y (poly_initial_alg P x))
+  : ∏ (x : poly_initial P), Y x.
+Proof.
+  refine (W_ind_map
+            (poly_container P)
+            Y
+            (λ i h H, _)).
+  exact (transportf
+           Y
+           (maponpaths
+              (sup _)
+              (to_interpret_poly_interpret_poly _ _ _))
+           (Yc (interpret_poly P _ (i ,, h)) (poly_initial_ind_help H))).
+Defined.
+
+Definition transportf_poly_dact_UU
+           {P : poly_code}
+           {X : UU}
+           {Y : X → UU}
+           (x : poly_act P X)
+           (f : ∏ x : X, Y x)
+  : transportf
+      (poly_dact_UU P Y)
+      (interpret_poly_to_interpret_poly P X x)
+      (poly_initial_ind_help
+         (λ i,
+          f (pr2 (to_interpret_poly P X x) i)))
+    =
+    poly_dmap P Y f x.
+Proof.
+  induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - apply idpath.
+  - induction x as [x | x].
+    + exact (transportf_maponpaths_inl _ _ _ _ @ IHP₁ x).
+    + exact (transportf_maponpaths_inr _ _ _ _ @ IHP₂ x).
+  - exact (transportf_prod _ _ _ _
+            @ pathsdirprod
+                (IHP₁ (pr1 x))
+                (IHP₂ (pr2 x))).
+Qed.
+
+Definition poly_initial_ind_comp_help
+           {A B C : UU}
+           {Y : A → UU}
+           {Z : C → UU}
+           {f : A → B} {f' : B → A}
+           (e : ∏ a, f'(f a) = a)
+           {g : B → C}
+           (ff : ∏ (a : A), Y a → Z (g(f a)))
+           {a : A}
+           (y : Y (f' (f a)))
+  : transportf
+      Z
+      (maponpaths g (maponpaths f (e a)))
+      (ff (f'(f a)) y)
+    =
+    ff a (transportf Y (e a) y).
+Proof.
+  refine (_ @ transportf_depfun (λ z, g(f z)) ff (e a) y).
+  apply transportf_paths.
+  apply maponpathscomp.
+Qed.
+    
+Definition poly_initial_ind_comp
+           (P : poly_code)
+           (Y : poly_initial P → UU)
+           (Yc : ∏ (x : poly_act P (poly_initial P)),
+                 poly_dact_UU P Y x
+                 →
+                 Y (poly_initial_alg P x))
+           (x : poly_act P (poly_initial P))
+  : poly_initial_ind P Y Yc (poly_initial_alg P x)
+    =
+    Yc x (poly_dmap P Y (poly_initial_ind P Y Yc) x).
+Proof.
+  cbn.
+  etrans.
+  {
+    refine (maponpaths
+              (λ z, transportf
+                      Y
+                      (maponpaths
+                         (sup (poly_container P))
+                         z)
+                      _)
+              _).
+    refine (!(homotweqweqinvweq (interpret_poly_weq P (poly_initial P)) x) @ _).
+    apply maponpaths.
+    etrans.
+    {
+      apply pathscomp0rid.
+    }
+    apply pathsinv0inv0.
+  }
+  refine (poly_initial_ind_comp_help
+            (interpret_poly_to_interpret_poly _ _)
+            Yc
+            _
+          @ _).
+  apply maponpaths.
+  apply transportf_poly_dact_UU.
+Qed.

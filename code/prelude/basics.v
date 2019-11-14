@@ -615,5 +615,62 @@ Definition transport_path_hset
 Proof.
   rewrite <- UA_for_HLevels_is_transportf.
   unfold path_HLevel.
-  exact (eqtohomot (maponpaths pr1 (homotweqinvweq (UA_for_HLevels 2 A B) f)) u).
+  exact (eqtohomot
+           (maponpaths
+              _
+              (homotweqinvweq (UA_for_HLevels 2 A B) f))
+           u).
 Defined.
+
+(** On quotient *)
+Definition setquotuniv'
+           {X : UU}
+           {R : hrel X}
+           {Y : UU}
+           {Yset : isaset Y}
+           (f : X → Y)
+           (H : iscomprelfun R f)
+  : setquot R → Y
+  := setquotuniv R (make_hSet Y Yset) f H.
+
+Definition setquotuniv'_comm
+           {X : UU}
+           {R : eqrel X}
+           {Y : UU}
+           {Yset : isaset Y}
+           (f : X → Y)
+           (H : iscomprelfun R f)
+           (x : X)
+  : @setquotuniv' X R Y Yset f H (setquotpr _ x) = f x
+  := idpath _.
+
+Definition isaprop_iseqrel
+           {X : UU}
+           (R : hrel X)
+  : isaprop (iseqrel R).
+Proof.
+  repeat apply isapropdirprod.
+  - repeat (use impred ; intro).
+    apply R.
+  - repeat (use impred ; intro).
+    apply R.
+  - repeat (use impred ; intro).
+    apply R.
+Qed.
+
+Definition setquotpr_eq
+           {X : UU}
+           {R : hrel X}
+           (H₁ H₂ : iseqrel R)
+           (x : X)
+  : setquotpr (make_eqrel R H₁) x
+    =
+    setquotpr (make_eqrel R H₂) x.
+Proof.
+  assert (pH : H₁ = H₂).
+  {
+    apply isaprop_iseqrel.
+  }
+  induction pH.
+  apply idpath.
+Qed.

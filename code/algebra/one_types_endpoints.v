@@ -35,7 +35,7 @@ Require Import algebra.one_types_polynomials.
 
 Local Open Scope cat.
 
-Opaque ps_comp.
+Opaque comp_psfunctor.
 
 Definition sem_endpoint_UU_natural
            {A P Q : poly_code}
@@ -81,8 +81,8 @@ Definition sem_endpoint_one_types_data
            {A P Q : poly_code}
            (e : endpoint A P Q)
   : pstrans_data
-      (ps_comp (⟦ P ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧))))
-      (ps_comp (⟦ Q ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧)))).
+      (comp_psfunctor (⟦ P ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧))))
+      (comp_psfunctor (⟦ Q ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧)))).
 Proof.
   use make_pstrans_data.
   - exact (λ X, sem_endpoint_UU e (pr2 X)).
@@ -481,8 +481,8 @@ Definition sem_endpoint_one_types
            {A P Q : poly_code}
            (e : endpoint A P Q)
   : pstrans
-      (ps_comp (⟦ P ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧))))
-      (ps_comp (⟦ Q ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧)))).
+      (comp_psfunctor (⟦ P ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧))))
+      (comp_psfunctor (⟦ Q ⟧) (pr1_psfunctor (disp_alg_bicat (⟦ A ⟧)))).
 Proof.
   use make_pstrans.
   - exact (sem_endpoint_one_types_data e).

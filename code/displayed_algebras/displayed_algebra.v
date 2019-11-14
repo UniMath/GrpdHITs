@@ -31,9 +31,9 @@ Some operations needed to define displayed algebras
  *)
 Definition poly_dact_UU
            (P : poly_code)
-           {X : one_type}
+           {X : UU}
            (Y : X → UU)
-  : (⟦ P ⟧ X : one_type) → UU.
+  : poly_act P X → UU.
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (λ _, T).
@@ -50,7 +50,7 @@ Definition poly_dact_is_one_type
            {X : one_type}
            (Y : X → UU)
            (Y_is_one_type : ∏ (x : X), isofhlevel 3 (Y x))
-  : ∏ (x : ⟦ P ⟧ X : one_type), isofhlevel 3 (poly_dact_UU P Y x).
+  : ∏ (x : poly_act P X), isofhlevel 3 (poly_dact_UU P Y x).
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (λ _, one_type_isofhlevel T).
@@ -66,10 +66,38 @@ Definition poly_dact
            (P : poly_code)
            {X : one_type}
            (Y : X → one_type)
-  : (⟦ P ⟧ X : one_type) → one_type
+  : poly_act P X → one_type
   := λ x, make_one_type
             (poly_dact_UU P Y x)
             (poly_dact_is_one_type P Y (λ z, one_type_isofhlevel (Y z)) x).
+
+Definition endpoint_dact_UU
+           {A : poly_code}
+           {X : UU}
+           (c : poly_act A X → X)
+           (Y : X → UU)
+           {P Q : poly_code}
+           (e : endpoint A P Q)
+           (cc : ∏ (x : poly_act A X),
+                poly_dact_UU A Y x → Y (c x))
+  : ∏ {z : poly_act P X},
+    poly_dact_UU P Y z
+    →
+    poly_dact_UU Q Y (sem_endpoint_UU e c z).
+Proof.
+  induction e as [ | P Q R e₁ IHe₁ e₂ IHe₂ | | | |
+                   | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ].
+  - exact (λ z, idfun _).
+  - exact (λ z x, IHe₂ (sem_endpoint_UU e₁ c z) (IHe₁ z x)).
+  - exact (λ z, idfun _).
+  - exact (λ z, idfun _).
+  - exact (λ z, pr1).
+  - exact (λ z, pr2).
+  - exact (λ z x, (IHe₁ z x ,, IHe₂ z x)).
+  - exact (λ _ _, t).
+  - exact (λ z Hz, f Hz).
+  - exact cc.
+Defined.
 
 Definition endpoint_dact
            {A : poly_code}
@@ -82,21 +110,8 @@ Definition endpoint_dact
   : ∏ {z : (⟦ P ⟧ (pr1 X) : one_type)},
     poly_dact P Y z
     →
-    poly_dact Q Y (sem_endpoint_one_types e X z).
-Proof.
-  induction e as [ | P Q R e₁ IHe₁ e₂ IHe₂ | | | |
-                   | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ].
-  - exact (λ z, idfun _).
-  - exact (λ z x, IHe₂ (sem_endpoint_one_types e₁ X z) (IHe₁ z x)).
-  - exact (λ z, idfun _).
-  - exact (λ z, idfun _).
-  - exact (λ z, pr1).
-  - exact (λ z, pr2).
-  - exact (λ z x, (IHe₁ z x ,, IHe₂ z x)).
-  - exact (λ _ _, t).
-  - exact (λ z Hz, f Hz).
-  - exact c.
-Defined.
+    poly_dact Q Y (sem_endpoint_one_types e X z)
+  := λ _, endpoint_dact_UU (pr2 X) Y e c.
 
 (** Needed for lifting homotopies *)
 Definition PathOver_pr1
@@ -479,10 +494,10 @@ Operation necessary to define sections
  *)
 Definition poly_dmap
            (P : poly_code)
-           {X : one_type}
-           (Y : X → one_type)
+           {X : UU}
+           (Y : X → UU)
            (f : ∏ (x : X), Y x)
-  : ∏ (x : poly_act P X), poly_dact P Y x.
+  : ∏ (x : poly_act P X), poly_dact_UU P Y x.
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - exact (idfun T).
@@ -534,18 +549,19 @@ Defined.
 
 Definition PathOver_square
            {A : UU}
-           {Y : A → UU}
+           (Y : A → UU)
            {a₁ a₂ : A}
-           {p : a₁ = a₂}
+           {p₁ p₂ : a₁ = a₂}
+           (h : p₁ = p₂)
            {y₁ z₁ : Y a₁}
            {y₂ z₂ : Y a₂}
-           (q₁ : PathOver y₁ y₂ p)
-           (q₂ : PathOver z₁ z₂ p)
+           (q₁ : PathOver y₁ y₂ p₁)
+           (q₂ : PathOver z₁ z₂ p₂)
            (s₁ : y₁ = z₁)
            (s₂ : y₂ = z₂)
   : UU.
 Proof.
-  induction s₁ ; induction s₂.
+  induction s₁, s₂, h.
   exact (q₁ = q₂).
 Defined.
 
@@ -562,6 +578,8 @@ Definition disp_algebra_map
      ∏ (j : path_label Σ)
        (x : poly_act (path_source Σ j) (alg_carrier X)),
      PathOver_square
+       _
+       (idpath _)
        (apd f (alg_path X j x))
        (disp_alg_path Y j x (poly_dmap (path_source Σ j) (pr1 Y) f x))
        (endpoint_dact_natural (path_left Σ j) cf x)

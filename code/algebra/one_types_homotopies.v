@@ -60,29 +60,8 @@ Definition sem_homot_endpoint_one_types
                  sem_endpoint_one_types (r i) X)
            (z : poly_act Q (pr1 X : one_type))
            (p_arg : sem_endpoint_one_types al X z = sem_endpoint_one_types ar X z)
-  : sem_endpoint_one_types sl X z = sem_endpoint_one_types sr X z.
-Proof.
-  induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
-                  | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
-  - exact (idpath (sem_endpoint_one_types e X z)).
-  - exact (!IHp).
-  - exact (IHP₁ @ IHP₂).
-  - apply idpath.
-  - apply idpath.
-  - apply idpath.
-  - exact (maponpaths pr1 IHp).
-  - exact (maponpaths dirprod_pr2 IHp).
-  - exact (pathsdirprod IHp₁ IHp₂).
-  - exact (maponpaths inl IHp).
-  - exact (maponpaths inr IHp).
-  - exact (pX j ((pr111 (sem_endpoint_one_types e)) X z)).
-  - exact (maponpaths (pr2 X) IHp).
-  - exact p_arg.
-Defined.
+  : sem_endpoint_one_types sl X z = sem_endpoint_one_types sr X z
+  := sem_homot_endpoint_UU p (pr1 X : one_type) (pr2 X) pX z p_arg.
 
 (** Bicategory of prealgebras *)
 Definition hit_prealgebra_one_types
@@ -351,4 +330,59 @@ Proof.
         ** apply one_types_is_univalent_2_1.
         ** apply disp_alg_bicat_univalent_2_1.
   - exact (isaprop_is_hit_algebra_one_types Σ).
+Defined.
+
+Definition hit_prealg_is_invertible_2cell_one_type
+           (Σ : hit_signature)
+           {X Y : hit_prealgebra_one_types Σ}
+           {f g : X --> Y}
+           (α : f ==> g)
+  : is_invertible_2cell α.
+Proof.
+  use is_invertible_disp_to_total.
+  use tpair.
+  - apply one_type_2cell_iso.
+  - exact (disp_locally_groupoid_alg
+             (⟦ point_constr Σ ⟧)
+             (pr1 X) (pr1 Y)
+             (pr1 f) (pr1 g)
+             (make_invertible_2cell
+                (one_type_2cell_iso (pr1 α)))
+             (pr2 X) (pr2 Y)
+             (pr2 f) (pr2 g)
+             (pr2 α)).
+Defined.
+
+Definition hit_path_alg_is_invertible_2cell_one_type
+           (Σ : hit_signature)
+           {X Y : hit_path_algebra_one_types Σ}
+           {f g : X --> Y}
+           (α : f ==> g)
+  : is_invertible_2cell α.
+Proof.
+  use is_invertible_disp_to_total.
+  use tpair.
+  - apply hit_prealg_is_invertible_2cell_one_type.
+  - exact (disp_locally_groupoid_depprod
+             (path_label Σ)
+             (λ i, add_cell_disp_cat _ _ _ _ _)
+             (λ i, disp_locally_groupoid_add_cell _ _ _ _ _)
+             (pr1 X) (pr1 Y)
+             (pr1 f) (pr1 g)
+             (make_invertible_2cell
+                (hit_prealg_is_invertible_2cell_one_type Σ (pr1 α)))
+             (pr2 X) (pr2 Y)
+             (pr2 f) (pr2 g)
+             (pr2 α)).
+Defined.
+
+Definition hit_alg_is_invertible_2cell_one_type
+           (Σ : hit_signature)
+           {X Y : hit_algebra_one_types Σ}
+           {f g : X --> Y}
+           (α : f ==> g)
+  : is_invertible_2cell α.
+Proof.
+  apply bicat_is_invertible_2cell_to_fullsub_is_invertible_2cell.
+  apply hit_path_alg_is_invertible_2cell_one_type.
 Defined.

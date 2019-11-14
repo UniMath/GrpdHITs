@@ -1,5 +1,8 @@
-COQC = coqc COQDEP = coqdep
+COQC = /Users/nmvdw/Documents/UniMath/sub/coq/bin/coqc
+COQDEP = /Users/nmvdw/Documents/UniMath/sub/coq/bin/coqdep
 -R . "sem"
+
+-arg "-type-in-type"
 
 prelude/basics.v
 prelude/grpd_bicat.v
@@ -34,6 +37,14 @@ algebra/groupoid_homotopies.v
 signature/hit.v
 
 displayed_algebras/displayed_algebra.v
+displayed_algebras/constant_display.v
+displayed_algebras/total_algebra.v
+displayed_algebras/total_algebra_map.v
+
+initial_grpd_alg/W_poly.v
+initial_grpd_alg/relation_2.v
+initial_grpd_alg/initial_groupoid_algebra.v
+initial_grpd_alg/is_initial.v
 
 hit_biadjunction/path_groupoid_commute/path_groupoid_const_id.v
 hit_biadjunction/path_groupoid_commute/path_groupoid_sum.v
@@ -67,10 +78,6 @@ hit_biadjunction/hit_path_algebra_biadj.v
 hit_biadjunction/hit_algebra_biadj/lift_path_groupoid.v
 hit_biadjunction/hit_algebra_biadj/lift_gquot.v
 hit_biadjunction/hit_algebra_biadj.v
-
-initial_grpd_alg/W_poly.v
-initial_grpd_alg/initial_groupoid_algebra.v
-initial_grpd_alg/is_initial.v
 
 existence/initial_algebra.v
 existence/hit_existence.v
