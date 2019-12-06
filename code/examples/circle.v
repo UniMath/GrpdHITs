@@ -102,6 +102,8 @@ Section CircleInduction.
 
   Definition circle_ind_loop
     : PathOver_square
+        _
+        _
         (apd (pr1 circle_ind_disp_algebra_map) (circle_loop X))
         Yloop
         circle_ind_base

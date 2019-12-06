@@ -71,6 +71,86 @@ Definition poly_dact
             (poly_dact_UU P Y x)
             (poly_dact_is_one_type P Y (λ z, one_type_isofhlevel (Y z)) x).
 
+Definition dep_id_fun
+           {X : UU}
+           {Y : X → UU}
+  : ∏ (x : X), Y x → Y x
+  := λ _ z, z.
+
+Definition dep_comp_fun
+           {A B C : UU}
+           {YA : A → UU} {YB : B → UU} {YC : C → UU}
+           {f : A → B} {g : B → C}
+           (ff : ∏ (a : A), YA a → YB (f a))
+           (gg : ∏ (b : B), YB b → YC (g b))
+  : ∏ (a : A), YA a → YC (g(f a))
+  := λ x z, gg (f x) (ff x z).
+
+Definition dep_inl_fun
+           {P Q : poly_code}
+           {X : UU}
+           {Y : X → UU}
+  : ∏ (x : poly_act P X),
+    poly_dact_UU P Y x → poly_dact_UU (P + Q) Y (inl x)
+  := λ _ z, z.
+
+Definition dep_inr_fun
+           {P Q : poly_code}
+           {X : UU}
+           {Y : X → UU}
+  : ∏ (x : poly_act Q X),
+    poly_dact_UU Q Y x → poly_dact_UU (P + Q) Y (inr x)
+  := λ _ z, z.
+
+Definition dep_pr1_fun
+           {P Q : poly_code}
+           {X : UU}
+           {Y : X → UU}
+  : ∏ (x : poly_act (P * Q) X),
+    poly_dact_UU (P * Q) Y x → poly_dact_UU P Y (pr1 x)
+  := λ _ z, pr1 z.
+
+Definition dep_pr2_fun
+           {P Q : poly_code}
+           {X : UU}
+           {Y : X → UU}
+  : ∏ (x : poly_act (P * Q) X),
+    poly_dact_UU (P * Q) Y x → poly_dact_UU Q Y (pr2 x)
+  := λ _ z, pr2 z.
+
+Definition dep_pair_fun
+           {P Q R : poly_code}
+           {X : UU}
+           {Y : X → UU}
+           {f : poly_act P X → poly_act Q X}
+           (ff : ∏ (x : poly_act P X),
+                 poly_dact_UU P Y x → poly_dact_UU Q Y (f x))
+           {g : poly_act P X → poly_act R X}
+           (gg : ∏ (x : poly_act P X),
+                 poly_dact_UU P Y x → poly_dact_UU R Y (g x))
+  : ∏ (x : poly_act P X),
+    poly_dact_UU P Y x → poly_dact_UU (Q * R) Y (f x ,, g x)
+  := λ x z, ff x z ,, gg x z.
+
+Definition dep_const_fun
+           {P : poly_code}
+           {X : UU}
+           {Y : X → UU}
+           {T : one_type}
+           (t : T)
+  : ∏ (x : poly_act P X),
+    poly_dact_UU P Y x → poly_dact_UU (C T) Y t
+  := λ _ _, t.
+
+Definition dep_constfun_fun
+           {X : UU}
+           {Y : X → UU}
+           {T₁ T₂ : one_type}
+           (f : T₁ → T₂)
+  : ∏ (x : poly_act (C T₁) X),
+    poly_dact_UU (C T₁) Y x → poly_dact_UU (C T₂) Y (f x)
+  := λ _ z, f z.
+
 Definition endpoint_dact_UU
            {A : poly_code}
            {X : UU}
@@ -87,15 +167,15 @@ Definition endpoint_dact_UU
 Proof.
   induction e as [ | P Q R e₁ IHe₁ e₂ IHe₂ | | | |
                    | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ].
-  - exact (λ z, idfun _).
-  - exact (λ z x, IHe₂ (sem_endpoint_UU e₁ c z) (IHe₁ z x)).
-  - exact (λ z, idfun _).
-  - exact (λ z, idfun _).
-  - exact (λ z, pr1).
-  - exact (λ z, pr2).
-  - exact (λ z x, (IHe₁ z x ,, IHe₂ z x)).
-  - exact (λ _ _, t).
-  - exact (λ z Hz, f Hz).
+  - exact dep_id_fun.
+  - exact (dep_comp_fun IHe₁ IHe₂).
+  - exact dep_inl_fun.
+  - exact dep_inr_fun.
+  - exact dep_pr1_fun.
+  - exact dep_pr2_fun.
+  - exact (dep_pair_fun IHe₁ IHe₂).
+  - exact (dep_const_fun t).
+  - exact (dep_constfun_fun f).
   - exact cc.
 Defined.
 

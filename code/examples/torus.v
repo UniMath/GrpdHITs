@@ -153,6 +153,7 @@ Section TorusInduction.
 
   Definition torus_ind_path_left
     : PathOver_square
+        _ _
         (apd (pr1 torus_ind_disp_algebra_map) (torus_path_left X))
         Yleft
         torus_ind_base
@@ -161,6 +162,7 @@ Section TorusInduction.
 
   Definition torus_ind_path_right
     : PathOver_square
+        _ _
         (apd (pr1 torus_ind_disp_algebra_map) (torus_path_right X))
         Yright
         torus_ind_base
