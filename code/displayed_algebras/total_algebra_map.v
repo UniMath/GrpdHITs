@@ -28,6 +28,7 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
+Require Import displayed_algebras.globe_over_lem.
 Require Import displayed_algebras.total_algebra.
 
 Local Open Scope cat.
