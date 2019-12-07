@@ -38,6 +38,7 @@ signature/hit.v
 
 displayed_algebras/displayed_algebra.v
 displayed_algebras/constant_display.v
+displayed_algebras/globe_over_lem.v
 displayed_algebras/total_algebra.v
 displayed_algebras/total_algebra_map.v
 
@@ -85,3 +86,4 @@ existence/hit_existence.v
 examples/circle.v
 examples/torus.v
 examples/set_trunc.v
+examples/mod2.v

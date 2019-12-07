@@ -13,6 +13,7 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
+Require Import displayed_algebras.globe_over_lem.
 
 Local Open Scope cat.
 
@@ -120,11 +121,6 @@ Section Mod2AlgebraProjections.
        @ pathscomp0rid _.
 End Mod2AlgebraProjections.
 
-Definition TODO {A : UU} : A.
-Admitted.
-
-Local Arguments idpath {_ _}.
-
 Section Mod2Induction.
   Context {X : hit_algebra_one_types mod2_signature}
           (Y : alg_carrier X → one_type)
@@ -150,6 +146,165 @@ Section Mod2Induction.
       exact YZ.
     - exact (YS x xx).
   Defined.
+  
+  Definition help_globe_type
+             {n : alg_carrier X}
+             (nn : Y n)
+             {p : tt = tt}
+             (pp : @PathOver unit tt tt (λ _ : unit, unit) tt tt p)
+    : UU.
+  Proof.
+    refine
+      (globe_over
+         Y
+         (pr2 X ap_mod n p)
+         (@apd_2
+            _ _
+            (poly_dact (point_constr mod2_signature) Y)
+            Y
+            _ cY
+            _ _
+            _
+            _ _
+            (composePathOver
+               (inversePathOver
+                  (identityPathOver _))
+               (composePathOver
+                  (identityPathOver _)
+                  (composePathOver
+                     (@PathOver_inr
+                        (C unit_one_type) I (pr111 X) Y
+                        ((pr211 X) (inr ((pr211 X) (inr n)))) n ((pr21 X) mod n)
+                        (YS ((pr211 X) (inr n)) (YS n nn)) nn (Ymod n nn))
+                     (composePathOver
+                        (inversePathOver _)
+                        (composePathOver
+                           (identityPathOver _)
+                           (identityPathOver _)))))))
+         (composePathOver
+            (inversePathOver
+               (identityPathOver _))
+            (composePathOver
+               (identityPathOver _)
+               (composePathOver
+                  (Ymod ((pr211 X) (inr n)) (cY (inr n) nn))
+                  (composePathOver
+                     (inversePathOver
+                        (identityPathOver _))
+                     (composePathOver
+                        (identityPathOver _)
+                        (identityPathOver _))))))).
+    apply idpath.
+  Defined.
+
+  Definition help_globe
+             {n : alg_carrier X}
+             (nn : Y n)
+             {p : tt = tt}
+             (pp : @PathOver unit tt tt (λ _ : unit, unit) tt tt p)
+    : help_globe_type nn pp.
+  Proof.
+    unfold help_globe_type.
+    refine
+      (globe_over_move_globe_one_type
+         (one_type_isofhlevel (pr111 X))
+         (concat_globe_over
+            (@apd2_globe_over
+               _ _
+               (poly_dact (point_constr mod2_signature) Y)
+               Y
+               _ cY
+               _ _ _ _ _ _ _ _ _
+               _)
+            _)).
+    - refine (concat_globe_over
+                (globe_over_compose_left'
+                   _
+                   (globe_over_compose_left'
+                      _
+                      (globe_over_compose_left'
+                         _
+                         (globe_over_compose_left'
+                            _
+                            (globe_over_id_right _)))))
+                _).
+      refine (concat_globe_over
+                (globe_over_compose_left'
+                   _
+                   (globe_over_compose_left'
+                      _
+                      (globe_over_compose_left'
+                         _
+                         (globe_over_id_right _))))
+                _).
+      refine (concat_globe_over
+                (globe_over_compose_left'
+                   _
+                   (globe_over_compose_left'
+                      _
+                      (globe_over_id_right _)))
+                _).
+      refine (concat_globe_over
+                (globe_over_compose_left'
+                   _
+                   (globe_over_id_left _))
+                _).
+      apply globe_over_id_left.
+    - refine (inv_globe_over _).
+      refine (concat_globe_over _ _).
+      + refine (concat_globe_over
+                  (globe_over_compose_left'
+                     _
+                     (globe_over_compose_left'
+                        _
+                        (globe_over_compose_left'
+                           _
+                           (globe_over_compose_left'
+                              _
+                              (globe_over_id_right _)))))
+                  _).
+        refine (concat_globe_over
+                  (globe_over_compose_left'
+                     _
+                     (globe_over_compose_left'
+                        _
+                        (globe_over_compose_left'
+                           _
+                           (globe_over_id_right _))))
+                  _).
+        refine (concat_globe_over
+                  (globe_over_compose_left'
+                     _
+                     (globe_over_compose_left'
+                        _
+                        (globe_over_id_right _)))
+                  _).
+        refine (concat_globe_over
+                  (globe_over_compose_left'
+                     _
+                     (globe_over_id_left _))
+                  _).
+        apply globe_over_id_left.
+      + simpl.
+        refine (inv_globe_over _).        
+        refine (concat_globe_over
+                  _
+                  (Yap_mod n nn)).
+        refine (concat_globe_over
+                  (@apd2_globe_over
+                     _ _
+                     (poly_dact (point_constr mod2_signature) Y)
+                     Y
+                     _ cY
+                     _ _ _ _ _ _ _ _ _
+                     (inv_globe_over
+                        (@apd2_inr
+                           (C unit_one_type) I
+                           _ _ _ _ _ _ _
+                           (Ymod n nn))))
+                  _).
+        exact (apd2_comp _ _ _).
+  Qed.
 
   Definition make_mod2_disp_algebra
     : disp_algebra X.
@@ -160,17 +315,9 @@ Section Mod2Induction.
     - intros j x y.
       induction j.
       exact (Ymod x y).
-    - (*intros j n nn p pp.
+    - intros j n nn p pp.
       induction j.
-      simpl in p, pp ; cbn in p , pp.
-      Opaque identityPathOver inversePathOver composePathOver.
-      simpl ; cbn.
-      unfold idfun.
-      clear pp.
-      assert (p = @idpath _ tt) as H by apply isapropunit.
-      rewrite H.
-      clear H p.*)
-      apply TODO.
+      exact (help_globe nn pp).
   Defined.
 
   Variable (HX : is_HIT mod2_signature X).
@@ -192,10 +339,12 @@ Section Mod2Induction.
              (n : alg_carrier X)
     : mod2_ind (mod2_S X n) = YS n (mod2_ind n)
     := pr12 mod2_ind_disp_algebra_map (inr n).
-
-  Definition torus_ind_mod
+  
+  Definition mod2_ind_mod
              (n : alg_carrier X)
     : PathOver_square
+        _
+        (idpath _)
         (apd (pr1 mod2_ind_disp_algebra_map) (alg_path X mod n))
         (Ymod n (pr1 mod2_ind_disp_algebra_map n))
         (pr12 mod2_ind_disp_algebra_map
