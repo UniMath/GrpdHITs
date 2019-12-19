@@ -29,8 +29,8 @@ Local Open Scope cat.
     >>
 *)
 Module Export gquot.
-  Private Inductive gquot (G : groupoid) :=
-  | gcl : G → gquot G.
+  Private Inductive gquot (G : groupoid) : UU :=
+  | gcl : ob G → gquot G.
 
   Axiom gcleq
     : ∏ (G : groupoid) {a₁ a₂ : G} (g : a₁ --> a₂),
