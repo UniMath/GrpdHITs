@@ -467,7 +467,11 @@ Proof.
   - exact (IHp₁ ,, IHp₂).
   - exact IHp.
   - exact IHp.
-  - apply initial_alg_path.
+  - exact (initial_alg_path
+             (path_left Σ)
+             (path_right Σ)
+             j
+             (sem_endpoint_UU e (poly_initial_alg (point_constr Σ)) z)).
   - simpl.
     apply initial_alg_ap.
     apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly.
@@ -535,6 +539,14 @@ Inductive initial_groupoid_algebra_mor_el_eq_UU
       initial_groupoid_algebra_mor_el_eq_UU
         (initial_alg_inl_path P Q f)
         (initial_alg_inl_path P Q g)
+  | initial_alg_inl_path_id
+    : ∏ (P₁ P₂ : poly_code)
+        (x : poly_act
+               P₁
+               (initial_groupoid_algebra_ob_poly (point_constr Σ))),
+      initial_groupoid_algebra_mor_el_eq_UU
+        (initial_alg_inl_path P₁ P₂ (initial_alg_id x))
+        (initial_alg_id _)
   | initial_alg_inl_path_comp
     : ∏ (P Q : poly_code)
         (x y z : poly_act P (initial_groupoid_algebra_ob Σ))
@@ -557,6 +569,22 @@ Inductive initial_groupoid_algebra_mor_el_eq_UU
       initial_groupoid_algebra_mor_el_eq_UU
         (initial_alg_inr_path P Q f)
         (initial_alg_inr_path P Q g)
+  | initial_alg_inr_path_id
+    : ∏ (P₁ P₂ : poly_code)
+        (x : poly_act
+               P₂
+               (initial_groupoid_algebra_ob_poly (point_constr Σ))),
+      initial_groupoid_algebra_mor_el_eq_UU
+        (initial_alg_inr_path P₁ P₂ (initial_alg_id x))
+        (initial_alg_id _)
+  | initial_alg_pair_path_id
+    : ∏ (P₁ P₂ : poly_code)
+        (x : poly_act
+               (P₁ * P₂)
+               (initial_groupoid_algebra_ob_poly (point_constr Σ))),
+      initial_groupoid_algebra_mor_el_eq_UU
+        (initial_alg_pair_path (initial_alg_id (pr1 x)) (initial_alg_id (pr2 x)))
+        (initial_alg_id x)
   | initial_alg_inr_path_comp
     : ∏ (P Q : poly_code)
         (x y z : poly_act Q (initial_groupoid_algebra_ob Σ))
@@ -718,8 +746,10 @@ Arguments initial_alg_trans {_ _ _ _ _ _ _} _ _.
 Arguments initial_alg_ap_id {_} _.
 Arguments initial_alg_ap_comp {_ _ _ _} _ _.
 Arguments initial_alg_inl_path2 {_} _ _ {_ _ _ _} _.
+Arguments initial_alg_inl_path_id {_} {_} _ _.
 Arguments initial_alg_inl_path_comp {_} _ _ {_ _ _} _ _.
 Arguments initial_alg_inr_path2 {_} _ _ {_ _ _ _} _.
+Arguments initial_alg_inr_path_id {_} _ {_} _.
 Arguments initial_alg_inr_path_comp {_} _ _ {_ _ _} _ _.
 Arguments initial_alg_pair_path2 {_ _ _ _ _ _ _ _ _ _ _} _ _.
 Arguments initial_alg_pair_path_comp {_ _ _ _ _ _ _ _ _} _ _ _ _.
@@ -735,6 +765,351 @@ Arguments initial_alg_left_inv {_ _ _ _} _.
 Arguments initial_alg_right_inv {_ _ _ _} _.
 Arguments path_constr_is_natural {_} _ {_ _} _.
 Arguments initial_alg_homotopy {_} _ _ _.
+
+Definition poly_act_rel_to_initial_groupoid_algebra_mor_el_poly_id
+           {Σ : hit_signature}
+           {P : poly_code}
+           (x : poly_act P (initial_groupoid_algebra_ob_poly (point_constr Σ)))
+  : initial_groupoid_algebra_mor_el_eq_UU
+      (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+         (poly_act_rel_identity
+            P
+            (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+            initial_alg_id
+            x))
+      (initial_alg_id x).
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply initial_alg_refl.
+  - apply initial_alg_refl.
+  - induction x as [x | x].
+    + simpl.
+      refine (initial_alg_trans
+                (initial_alg_inl_path2 _ _ (IHP₁ _))
+                _)
+      ; clear IHP₁ IHP₂.
+      exact (initial_alg_inl_path_id _ x).
+    + simpl.
+      refine (initial_alg_trans
+                (initial_alg_inr_path2 _ _ (IHP₂ _))
+                _)
+      ; clear IHP₁ IHP₂.
+      exact (initial_alg_inr_path_id _ x).
+  - simpl.
+    refine (initial_alg_trans
+              (initial_alg_pair_path2 (IHP₁ _) (IHP₂ _))
+              _)
+    ; clear IHP₁ IHP₂.
+    exact (initial_alg_pair_path_id _ _ x).
+Qed.
+
+Definition initial_alg_inl_path_inv
+           {Σ : hit_signature}
+           {P₁ P₂ : poly_code}
+           {x y : poly_act P₁ (initial_groupoid_algebra_ob_poly (point_constr Σ))}
+           (p : initial_groupoid_algebra_mor_el_poly
+                  (path_left Σ) (path_right Σ)
+                  P₁
+                  x y)
+  : initial_groupoid_algebra_mor_el_eq_UU
+      (initial_alg_inl_path
+         P₁ P₂
+         (initial_alg_inv p))
+      (initial_alg_inv (initial_alg_inl_path P₁ P₂ p)).
+Proof.
+  refine (initial_alg_trans
+            _
+            (initial_alg_left_unit _)).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_inl_path_id _ _))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_inl_path2
+                  _
+                  _
+                  (initial_alg_left_inv p)))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_sym (initial_alg_inl_path_comp _ _ _ _)))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_sym (initial_alg_assoc _ _ _))).
+  refine (initial_alg_trans
+            (initial_alg_sym (initial_alg_right_unit _))
+            _).
+  use initial_alg_eq_lwhisker.
+  use initial_alg_sym.
+  apply initial_alg_right_inv.
+Qed.
+
+Definition initial_alg_inr_path_inv
+           {Σ : hit_signature}
+           {P₁ P₂ : poly_code}
+           {x y : poly_act P₂ (initial_groupoid_algebra_ob_poly (point_constr Σ))}
+           (p : initial_groupoid_algebra_mor_el_poly
+                  (path_left Σ) (path_right Σ)
+                  P₂
+                  x y)
+  : initial_groupoid_algebra_mor_el_eq_UU
+      (initial_alg_inr_path
+         P₁ P₂
+         (initial_alg_inv p))
+      (initial_alg_inv
+         (initial_alg_inr_path
+            P₁ P₂
+            p)).
+Proof.
+  refine (initial_alg_trans
+            _
+            (initial_alg_left_unit _)).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_inr_path_id _ _))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_inr_path2
+                  _
+                  _
+                  (initial_alg_left_inv p)))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_sym (initial_alg_inr_path_comp _ _ _ _)))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_sym (initial_alg_assoc _ _ _))).
+  refine (initial_alg_trans
+            (initial_alg_sym (initial_alg_right_unit _))
+            _).
+  use initial_alg_eq_lwhisker.
+  use initial_alg_sym.
+  apply initial_alg_right_inv.
+Qed.
+
+Definition initial_alg_pair_path_inv
+           {Σ : hit_signature}
+           {P₁ P₂ : poly_code}
+           {x y : poly_act
+                    (P₁ * P₂)
+                    (initial_groupoid_algebra_ob_poly (point_constr Σ))}
+           (p₁ : initial_groupoid_algebra_mor_el_poly
+                  (path_left Σ) (path_right Σ)
+                  P₁
+                  (pr1 x) (pr1 y))
+           (p₂ : initial_groupoid_algebra_mor_el_poly
+                   (path_left Σ) (path_right Σ)
+                   P₂
+                   (pr2 x) (pr2 y))
+  : initial_groupoid_algebra_mor_el_eq_UU
+      (initial_alg_pair_path
+         (initial_alg_inv p₁)
+         (initial_alg_inv p₂))
+      (initial_alg_inv
+         (initial_alg_pair_path p₁ p₂)).
+Proof.
+  refine (initial_alg_trans
+            _
+            (initial_alg_left_unit _)).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_pair_path_id _ _ _))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_pair_path2
+                  (initial_alg_left_inv p₁)
+                  (initial_alg_left_inv p₂)))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_eq_rwhisker
+               _
+               (initial_alg_sym (initial_alg_pair_path_comp _ _ _ _ _ _ _ _ _)))).
+  refine (initial_alg_trans
+            _
+            (initial_alg_sym (initial_alg_assoc _ _ _))).
+  refine (initial_alg_trans
+            (initial_alg_sym (initial_alg_right_unit _))
+            _).
+  use initial_alg_eq_lwhisker.
+  use initial_alg_sym.
+  apply initial_alg_right_inv.
+Qed.
+
+Definition poly_act_rel_to_initial_groupoid_algebra_mor_el_poly_inv
+           {Σ : hit_signature}
+           {P : poly_code}
+           {x y : poly_act
+                    P
+                    (initial_groupoid_algebra_ob_poly (point_constr Σ))}
+           (p : poly_act_rel
+                  P
+                  (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+                  x y)
+  : initial_groupoid_algebra_mor_el_eq_UU
+      (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+         (poly_act_rel_inv
+            P
+            (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+            (@initial_alg_inv
+               (point_constr Σ) (path_label Σ) (path_source Σ) 
+               (path_left Σ) (path_right Σ) I) p))
+      (initial_alg_inv (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly p)).
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - induction p.
+    simpl.
+    refine (initial_alg_trans
+              _
+              (initial_alg_left_unit _)).
+    use initial_alg_sym.
+    apply initial_alg_right_inv.
+  - apply initial_alg_refl.
+  - induction x as [x | x], y as [y | y].
+    + simpl.
+      refine (initial_alg_trans
+                (initial_alg_inl_path2 _ _ (IHP₁ _ _ _))
+                _)
+      ; clear IHP₁ IHP₂.
+      apply initial_alg_inl_path_inv.
+    + induction p.
+    + induction p.
+    + simpl.
+      refine (initial_alg_trans
+                (initial_alg_inr_path2 _ _ (IHP₂ _ _ _))
+                _)
+      ; clear IHP₁ IHP₂.
+      apply initial_alg_inr_path_inv.
+  - simpl.
+    refine (initial_alg_trans
+              (initial_alg_pair_path2 (IHP₁ _ _ _) (IHP₂ _ _ _))
+              _)
+    ; clear IHP₁ IHP₂.
+    apply initial_alg_pair_path_inv.
+Qed.
+
+Definition poly_act_rel_to_initial_groupoid_algebra_mor_el_poly_comp
+           {Σ : hit_signature}
+           {P : poly_code}
+           {x y z : poly_act
+                      P
+                      (initial_groupoid_algebra_ob_poly (point_constr Σ))}
+           (p₁ : poly_act_rel
+                   P
+                   (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+                   x y)
+           (p₂ : poly_act_rel
+                   P
+                   (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+                   y z)
+  : initial_groupoid_algebra_mor_el_eq_UU
+      (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+         (poly_act_rel_comp
+            P
+            (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+            (@initial_alg_comp
+               (point_constr Σ) (path_label Σ) (path_source Σ) 
+               (path_left Σ) (path_right Σ) I) p₁ p₂))
+      (initial_alg_comp
+         (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly p₁)
+         (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly p₂)).
+Proof.
+  induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - induction p₁, p₂.
+    cbn.
+    use initial_alg_sym.
+    apply initial_alg_left_unit.
+  - apply initial_alg_refl.
+  - induction x as [x | x], y as [y | y].
+    + induction z as [z | z].
+      * simpl.
+        refine (initial_alg_trans
+                  (initial_alg_inl_path2 _ _ (IHP₁ _ _ _ _ _))
+                  _)
+        ; clear IHP₁ IHP₂.
+        apply initial_alg_inl_path_comp.
+      * induction p₂.
+    + induction p₁.
+    + induction p₁.
+    + induction z as [z | z].
+      * induction p₂.
+      * simpl.
+        refine (initial_alg_trans
+                  (initial_alg_inr_path2 _ _ (IHP₂ _ _ _ _ _))
+                  _)
+        ; clear IHP₁ IHP₂.
+        apply initial_alg_inr_path_comp.
+  - simpl.
+    refine (initial_alg_trans
+              (initial_alg_pair_path2
+                 (IHP₁ _ _ _ _ _)
+                 (IHP₂ _ _ _ _ _))
+              _)
+    ; clear IHP₁ IHP₂.
+    apply initial_alg_pair_path_comp.
+Qed.
+
+Definition initial_groupoid_algebra_mor_el_poly_to_poly_act_rel_spec_alt
+           {Σ : hit_signature}
+           {P : poly_code}
+           {x y : poly_act
+                    P                        
+                    (initial_groupoid_algebra_ob_poly (point_constr Σ))}
+           (p : initial_groupoid_algebra_mor_el_poly
+                  (path_left Σ) (path_right Σ)
+                  P
+                  x y)
+  : initial_groupoid_algebra_mor_el_eq_UU
+      (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+         (initial_groupoid_algebra_mor_el_poly_to_poly_act_rel p))
+      p.
+Proof.
+  induction p as [ P x | P x y p IHp | P x y z p₁ IHp₁ p₂ IHp₂
+                   | j x | P Q x y p IHp | P Q x y p IHp
+                   | P Q x₁ y₁ x₂ y₂ p₁ IHp₁ p₂ IHp₂
+                   | x y p IHp ].
+  - apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly_id.
+  - simpl.
+    refine (initial_alg_trans
+              _
+              (initial_alg_inv_eq IHp)).
+    apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly_inv.
+  - simpl.
+    refine (initial_alg_trans
+              _
+              (initial_alg_eq_lwhisker _ IHp₁)).
+    refine (initial_alg_trans
+              _
+              (initial_alg_eq_rwhisker _ IHp₂)).
+    apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly_comp.
+  - apply initial_alg_refl.
+  - simpl.
+    apply initial_alg_inl_path2.
+    exact IHp.
+  - simpl.
+    apply initial_alg_inr_path2.
+    exact IHp.
+  - simpl.
+    apply initial_alg_pair_path2.
+    + exact IHp₁.
+    + exact IHp₂.
+  - apply initial_alg_refl.
+Qed.
+
 
 Section InitialGroupoidAlg.
   Variable (Σ : hit_signature).

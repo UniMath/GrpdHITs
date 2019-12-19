@@ -205,15 +205,15 @@ Section HITIsInitial.
           e
           (pr121 (pr1 f))
           x
-          @ maponpaths
-          (sem_endpoint_UU e (pr211 Y))
-          (HIT_2cell_property_help
-             _
-             Hx)
-          @ !(sem_endpoint_UU_natural
-                e
-                (pr121 (pr1 g))
-                x).
+        @ maponpaths
+            (sem_endpoint_UU e (pr211 Y))
+            (HIT_2cell_property_help
+               _
+               Hx)
+        @ !(sem_endpoint_UU_natural
+              e
+              (pr121 (pr1 g))
+              x).
     Proof.
       induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
                       | P Q | P Q | P Q | P Q
