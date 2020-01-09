@@ -2,6 +2,8 @@ COQC = coqc
 COQDEP = coqdep
 -R . "sem"
 
+-arg "-type-in-type"
+
 prelude/basics.v
 prelude/grpd_bicat.v
 prelude/cubical_methods.v
