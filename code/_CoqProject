@@ -1,8 +1,6 @@
-COQC = /Users/nmvdw/Documents/UniMath/sub/coq/bin/coqc
-COQDEP = /Users/nmvdw/Documents/UniMath/sub/coq/bin/coqdep
+COQC = coqc
+COQDEP = coqdep
 -R . "sem"
-
--arg "-type-in-type"
 
 prelude/basics.v
 prelude/grpd_bicat.v
