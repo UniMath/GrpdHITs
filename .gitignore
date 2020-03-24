@@ -40,4 +40,4 @@ Makefile.conf
 *.vok
 *.vos
 .DS_STORE
-.v~
+*.v~
