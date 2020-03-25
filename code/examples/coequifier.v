@@ -39,6 +39,42 @@ Proof.
   apply refl_e.
 Defined.
 
+Definition sem_fmap_eq
+           {A : poly_code}
+           {X Y : one_type}
+           {f g : X → Y}
+           {J : UU}
+           {S : J → poly_code}
+           {l r : ∏ j : J, endpoint A (S j) I}
+           {TR : poly_code}
+           {al ar : endpoint A (C X) TR}
+           (p : f = g)
+           {h : hit_signature}
+           (Z : hit_algebra_one_types h)
+           (x : X)
+  : UU.
+Proof.
+  Check @sem_homot_endpoint_one_types _ _ _ _ _ _ _ al ar _ _ _ (fmap_eq p).
+        (pr11 Z) (pr21 Z) x.
+  
+
+(**
+A, B : one_type
+  f, g : A → B
+  p, q : ∏ x : A, f x = g x
+  X : hit_algebra_one_types coequifier_signature
+  x : A
+  i := alg_homot X tt x (idpath tt)
+   : maponpaths (pr211 X)
+       (sem_homot_endpoint_one_types (fmap_eq (funextsec (λ _ : A, B) f g p)) 
+          (pr11 X) (pr21 X) x (idpath tt)) =
+     maponpaths (pr211 X)
+       (sem_homot_endpoint_one_types (fmap_eq (funextsec (λ _ : A, B) f g q)) 
+          (pr11 X) (pr21 X) x (idpath tt))
+  ============================
+  maponpaths coequif_inc (p x) = maponpaths coequif_inc (q x)
+**)
+                                            
 Section CoequifierSignature.
   Context
     (A B : one_type)
