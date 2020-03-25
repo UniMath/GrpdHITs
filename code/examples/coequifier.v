@@ -144,6 +144,25 @@ Proof.
   apply TODO.
 Defined.
 
+Definition fmap_eq
+           {A : poly_code}
+           {X Y : one_type}
+           {f g : X → Y}
+           {J : UU}
+           {S : J → poly_code}
+           {l r : ∏ j : J, endpoint A (S j) I}
+           {TR : poly_code}
+           {al ar : endpoint A (C X) TR}
+           (p : f = g)
+  : homot_endpoint
+      l r
+      al ar
+      (fmap f)
+      (fmap g).
+Proof.
+  induction p.
+  apply refl_e.
+Defined.
 
 Context
   (A B : one_type)
@@ -192,6 +211,10 @@ Proof.
   unfold s_endpoint.
   unfold t_endpoint.
   apply ap_constr.
+  apply fmap_eq.
+  apply funextsec.
+  exact p.
+Defined.
 
 Definition right_homotopy_endpoint
   : homot_endpoint
