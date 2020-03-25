@@ -19,131 +19,6 @@ Local Open Scope cat.
 Definition TODO {A : UU} : A.
 Admitted.
 
-(** MISSING HOMOTOPY ENDPOINTS *)
-Definition whisker_π₁
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           {e₁ e₂ : endpoint A Q (P₁ * P₂)}
-           (h : homot_endpoint
-                  l r
-                  al ar
-                  e₁
-                  e₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e₁ (π₁ _ _))
-      (comp e₂ (π₁ _ _)).
-Proof.
-  apply TODO.
-Defined.
-
-Definition whisker_π₂
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           {e₁ e₂ : endpoint A Q (P₁ * P₂)}
-           (h : homot_endpoint
-                  l r
-                  al ar
-                  e₁
-                  e₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e₁ (π₂ _ _))
-      (comp e₂ (π₂ _ _)).
-Proof.
-  apply TODO.
-Defined.
-
-Definition pr1_pair
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           (e₁ : endpoint A Q P₁)
-           (e₂ : endpoint A Q P₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp (pair e₁ e₂) (π₁ _ _))
-      e₁.
-Proof.
-  apply TODO.
-Defined.
-
-Definition pr2_pair
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           (e₁ : endpoint A Q P₁)
-           (e₂ : endpoint A Q P₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp (pair e₁ e₂) (π₂ _ _))
-      e₂.
-Proof.
-  apply TODO.
-Defined.
-
-Definition comp_pair
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ P₃ : poly_code}
-           (e₁ : endpoint A Q P₁)
-           (e₂ : endpoint A P₁ P₂)
-           (e₃ : endpoint A P₁ P₃)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e₁ (pair e₂ e₃))
-      (pair (comp e₁ e₂) (comp e₁ e₃)).
-Proof.
-  apply TODO.
-Defined.
-
-Definition comp_const
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {T : one_type}
-           (t : T)
-           {P : poly_code}
-           (e : endpoint A Q P)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e (c _ t))
-      (c _ t).
-Proof.
-  apply TODO.
-Defined.
-
 Definition fmap_eq
            {A : poly_code}
            {X Y : one_type}
@@ -168,7 +43,7 @@ Section CoequifierSignature.
   Context
     (A B : one_type)
     (f g : A → B)
-    (p q : forall (x : A), f x = g x).
+    (p q : ∏ (x : A), f x = g x).
   
   Definition no_endpoint
     : ∏ j : ∅, endpoint (C B) (fromempty j) I.
@@ -240,6 +115,25 @@ Section CoequifierSignature.
     - intro. exact t_endpoint.
     - intro. exact left_homot_endpoint.
     - intro. exact right_homot_endpoint.
-  Qed.
+  Defined.
 
+  Section CoequifierProjections.
+    Variable (X : hit_algebra_one_types coequifier_signature).
 
+    Definition coequif_inc
+      : B → alg_carrier X
+      := alg_constr X.
+
+    Definition coequif_homot
+               (x : A)
+      : maponpaths
+          coequif_inc
+          (p x)
+        =
+        maponpaths
+          coequif_inc
+          (q x).
+    Proof.
+      pose (alg_homot X tt x (idpath _)) as i.
+      simpl in i.
+      cbn in i.
