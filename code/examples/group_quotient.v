@@ -23,117 +23,195 @@ Require Import existence.hit_existence.
 
 Local Open Scope cat.
 
+Definition TODO {A : UU} : A.
+Admitted.
+
+Definition prod_one_type
+           (A B : one_type)
+  : one_type.
+Proof.
+  refine (make_one_type (A × B) _).
+  apply isofhleveldirprod.
+  - apply A.
+  - apply B.
+Defined.
+
+Definition comp_constant
+           {A P Q : poly_code}
+           {J : UU}
+           {S : J → poly_code}
+           {l r : ∏ j : J, endpoint A (S j) I}
+           {TR : poly_code}
+           {al ar : endpoint A P TR}
+           {X : one_type}
+           (e : endpoint A P Q)
+           (x : X)
+  : homot_endpoint
+      l
+      r
+      al
+      ar
+      (comp e (c Q x))
+      (c P x).
+Proof.
+  apply TODO.
+Defined.
+
 Section GroupQuotient.
   Variable (G : gr).
 
+  Definition carrier_G : one_type.
+  Proof.
+    refine (make_one_type G _).
+    apply hlevelntosn ; apply (pr11 G).
+  Defined.
+
+  Definition mult_G : prod_one_type carrier_G carrier_G → carrier_G.
+  Proof.
+    cbn ; intros x.
+    exact (@op G (pr1 x) (pr2 x)).
+  Defined.
+
   Definition group_quot_point_constr
+    : poly_code
     := C unit_one_type.
 
   Inductive group_quot_homots : UU :=
   | group_quot_ident : group_quot_homots
   | group_quot_comp : group_quot_homots.
 
-  Definition TODO {A : UU} : A.
-  Admitted.
+  Definition group_quot_path_label
+    : UU
+    := unit.
 
+  Definition group_quot_path_arg
+    : group_quot_path_label → poly_code
+    := λ _, C carrier_G.
+
+  Definition group_quot_base_ep
+             (P : poly_code)
+    : endpoint group_quot_point_constr P I
+    := comp (c P (tt : unit_one_type)) constr.
+
+  Definition group_quot_homot_point_arg
+    : group_quot_homots → poly_code.
+  Proof.
+    intro j ; induction j.
+    - exact (C unit_one_type).
+    - exact (C (prod_one_type carrier_G carrier_G)).
+  Defined.
+
+  Definition group_quot_homot_path_arg_poly
+    : group_quot_homots → poly_code
+    := λ _, C unit_one_type.
+ 
+  Definition group_quot_homot_path_arg_lr
+             (j : group_quot_homots)
+    : endpoint
+        group_quot_point_constr
+        (group_quot_homot_point_arg j)
+        (group_quot_homot_path_arg_poly j).
+  Proof.
+    exact (@c _ _ unit_one_type tt).
+  Defined.
+
+  Definition group_quot_homot_lr_endpoint
+             (j : group_quot_homots)
+    : endpoint group_quot_point_constr (group_quot_homot_point_arg j) I.
+  Proof.
+    induction j.
+    - exact (group_quot_base_ep _).
+    - exact (group_quot_base_ep _).
+  Defined.
+
+  Definition group_quot_loop_hp
+             {P Q : poly_code}
+             {al ar : endpoint group_quot_point_constr P Q}
+             (g : endpoint group_quot_point_constr P (C carrier_G))
+    : homot_endpoint
+        (λ j0, group_quot_base_ep (group_quot_path_arg j0))
+        (λ j0, group_quot_base_ep (group_quot_path_arg j0))
+        al ar
+        (group_quot_base_ep P) (group_quot_base_ep P).
+  Proof.
+    simple refine
+           (trans_e
+              _
+              (trans_e
+                 (path_constr tt g)
+                 _)).
+    - cbn.
+      unfold group_quot_base_ep.
+      refine (trans_e
+                _
+                (inv_e (comp_assoc _ _ _))).
+      apply ap_constr.
+      apply inv_e.
+      apply comp_constant.
+    - cbn.
+      unfold group_quot_base_ep.
+      refine (trans_e
+                (comp_assoc _ _ _)
+                _).
+      apply ap_constr.
+      apply comp_constant.
+  Defined.
+
+  Local Notation "p ~ q" := (homot_endpoint _ _ _ _ p q).
+
+  Definition group_quot_homot_left
+             (j : group_quot_homots)
+    : homot_endpoint
+        (λ j0, group_quot_base_ep (group_quot_path_arg j0))
+        (λ j0, group_quot_base_ep (group_quot_path_arg j0))
+        (group_quot_homot_path_arg_lr j) (group_quot_homot_path_arg_lr j)
+        (group_quot_homot_lr_endpoint j) (group_quot_homot_lr_endpoint j).
+  Proof.
+    induction j.
+    - (* unit *)
+      apply group_quot_loop_hp.
+      apply c.
+      exact (unel G).
+    - (* multiplication *)
+      apply group_quot_loop_hp.
+      exact (fmap mult_G).
+  Defined.
+
+  Definition group_quot_homot_right
+             (j : group_quot_homots)
+    : homot_endpoint
+        (λ j0, group_quot_base_ep (group_quot_path_arg j0))
+        (λ j0, group_quot_base_ep (group_quot_path_arg j0))
+        (group_quot_homot_path_arg_lr j) (group_quot_homot_path_arg_lr j)
+        (group_quot_homot_lr_endpoint j) (group_quot_homot_lr_endpoint j).
+  Proof.
+    induction j.
+    - (* unit *)
+      apply refl_e.
+    - (* multiplication *)
+      refine (trans_e (group_quot_loop_hp (fmap _)) (group_quot_loop_hp (fmap _))).
+      + exact pr1.
+      + exact pr2.
+  Defined.
+  
   Definition group_quot_signature
     : hit_signature.
   Proof.
     simple refine (_ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _  ,, _ ,, _ ,, _ ,, _).
     - exact group_quot_point_constr.
-    - exact unit.
-    - refine (λ _, C (make_one_type G _)).
-      apply hlevelntosn ; apply (pr11 G).
-    - intro ; simpl.
-      refine (comp (c _ _) constr).
-      exact tt.
-    - intro ; simpl.
-      refine (comp (c _ _) constr).
-      exact tt.
+    - exact group_quot_path_label.
+    - exact group_quot_path_arg.
+    - exact (λ _, group_quot_base_ep _).
+    - exact (λ _, group_quot_base_ep _).
     - exact group_quot_homots.
-    - intro x ; induction x.
-      + exact (C unit_one_type).
-      + refine (C (make_one_type G _) * C (make_one_type G _))
-        ; apply hlevelntosn ; apply (pr11 G).
-    - exact (λ _, C unit_one_type).
-    - exact (λ _, @c _ _ unit_one_type tt).
-    - exact (λ _, @c _ _ unit_one_type tt).
-    - intro x ; induction x.
-      + refine (comp (c _ _) constr).
-        exact tt.
-      + refine (comp (c _ _) constr).
-        exact tt.
-    - intro x ; induction x.
-      + refine (comp (c _ _) constr).
-        exact tt.
-      + refine (comp (c _ _) constr).
-        exact tt.
-    - intro x ; induction x.
-      + simpl.
-        simple refine
-               (trans_e
-                  (trans_e
-                     _
-                     (path_constr tt (c _ _)))
-                  _).
-        * simpl.
-          refine (trans_e
-                    _
-                    (inv_e (comp_assoc _ _ _))).
-          apply ap_constr.
-          apply inv_e.
-          Print homot_endpoint.
-          Check comp.
-
-                  Check refl_e.
-
-        homot_endpoint
-          (λ _ : unit,
-                 comp
-                   (c
-                      (C
-                         (make_one_type (pr1 G)
-                                        (λ (t1 t2 : pr1 G) (t0 t3 : t1 = t2), isapropifcontr ((pr211 G) t1 t2 t0 t3))))
-                      tt)
-                   constr)
-          (λ _ : unit,
-                 comp
-                   (c
-                      (C
-                         (make_one_type
-                            (pr1 G)
-                            (λ (t1 t2 : pr1 G) (t0 t3 : t1 = t2), isapropifcontr ((pr211 G) t1 t2 t0 t3))))
-                      tt) constr)
-          (c (C unit_one_type) tt)
-          (c (C unit_one_type) tt)
-          constr
-          (comp
-             (c (C unit_one_type) ?Goal0)
-             (comp
-                (c
-                   (C
-                      (make_one_type
-                         (pr1 G)
-                         (λ (t1 t2 : pr1 G) (t0 t3 : t1 = t2), isapropifcontr ((pr211 G) t1 t2 t0 t3))))
-                   tt) constr))
-
-          apply TODO.
-        * exact (unel G).
-        exact (trans_e
-                 (trans_e
-                    (inv_e (comp_id_l _))
-                    (path_constr (unel G) (id_e _ _)))
-                 (comp_id_l _)).
-      + simpl.
-        Check (path_constr).
-        Check (trans_e
-                 (path_constr (π₁ _ _) (id_e _ _))
-                 (path_constr (π₂ _ _) (id_e _ _))).
-               _).
-        apply TODO.
-    - intro x ; induction x.
-      + apply refl_e.
-      + apply TODO.
+    - exact group_quot_homot_point_arg.
+    - exact group_quot_homot_path_arg_poly.
+    - exact group_quot_homot_path_arg_lr.
+    - exact group_quot_homot_path_arg_lr.
+    - exact group_quot_homot_lr_endpoint.
+    - exact group_quot_homot_lr_endpoint.
+    - exact group_quot_homot_left.
+    - exact group_quot_homot_right.
   Defined.
 
   (** Projections of circle algebra *)
@@ -147,9 +225,9 @@ Section GroupQuotient.
     Definition group_quot_loop
                (g : G)
       : group_quot_base = group_quot_base
-      := alg_path X g tt.
+      := alg_path X tt g.
     End AlgebraProjections.
-
+  (*
   Section GroupQuotInduction.
     Context {X : hit_algebra_one_types group_quot_signature}
             (Y : alg_carrier X → one_type)
@@ -173,7 +251,7 @@ Section GroupQuotient.
         induction j.
     Defined.
      *)
-
+    
   Variable (HX : is_HIT circle_signature X).
 
   (** Induction principle *)
@@ -197,9 +275,12 @@ Section GroupQuotient.
         Yloop
         circle_ind_base
         circle_ind_base
-    := pr22 circle_ind_disp_algebra_map loop tt.
-End CircleInduction.
+        := pr22 circle_ind_disp_algebra_map loop tt.
+    End CircleInduction.
+   *)
+End GroupQuotient.
 
+(*
 Definition circle
   := pr1 (hit_existence circle_signature).
 
@@ -217,3 +298,4 @@ Definition circle_is_path_space
        circle_signature
        (poly_initial_alg circle_point_constr tt)
        (poly_initial_alg circle_point_constr tt).
+*)
