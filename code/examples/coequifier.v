@@ -5,6 +5,10 @@ Require Import UniMath.MoreFoundations.All.
 Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.Bicategories.Core.Bicat.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -50,7 +54,6 @@ Definition sem_fmap_eq
            {TR : poly_code}
            {al ar : endpoint A (C X) TR}
            (p : f = g)
-           (x : X)
            (Z : UU)
            (c : poly_act A Z → Z)
            (q : ∏ i : J, homotsec (sem_endpoint_UU (l i) c) (sem_endpoint_UU (r i) c))
@@ -61,7 +64,139 @@ Proof.
   induction p.  
   apply idpath.
 Qed.
-                                            
+
+Definition sem_fmap_funextsec_eq
+           {A : poly_code}
+           {X Y : one_type}
+           {f g : X → Y}
+           {J : UU}
+           {S : J → poly_code}
+           {l r : ∏ j : J, endpoint A (S j) I}
+           {TR : poly_code}
+           {al ar : endpoint A (C X) TR}
+           (p : f ~ g)
+           {Z : UU}
+           {c : poly_act A Z → Z}
+           (q : ∏ i : J, homotsec (sem_endpoint_UU (l i) c) (sem_endpoint_UU (r i) c))
+           {z : poly_act (C X) Z}
+           (p_arg : sem_endpoint_UU al c z = sem_endpoint_UU ar c z)       
+  : sem_homot_endpoint_UU (fmap_eq (funextsec _ _ _ p)) Z c q z p_arg = p z.
+Proof.
+  refine (sem_fmap_eq _ _ _ _ _ _ @ _).
+  exact (eqtohomot (toforallpaths_funextsec p) z).
+Qed.
+
+Definition homot_endpoint_dact_fmap_eq
+           {A : poly_code}
+           {B₁ B₂ : one_type}
+           {f g : B₁ → B₂}
+           {J : UU}
+           {S : J → poly_code}
+           {l r : ∏ j : J, endpoint A (S j) I}
+           {X : total_bicat
+                  (disp_depprod_bicat
+                     J
+                     (λ j, add_cell_disp_cat
+                             _ _ _
+                             (sem_endpoint_one_types (l j))
+                             (sem_endpoint_one_types (r j))))}
+           {Y : pr111 X → one_type}
+           (cX : ∏ (x : poly_act A (pr111 X)),
+                 poly_dact_UU A Y x
+                 →
+                 Y ((pr21 X) x))
+           (pX : ∏ (j : J)
+                   (x : poly_act (S j) (pr111 X))
+                   (y : poly_dact_UU (S j) Y x),
+                 @PathOver
+                   _
+                   (sem_endpoint_UU (l j) (pr21 X) x)
+                   _ _
+                   (endpoint_dact (pr1 X) Y (l j) cX y)
+                   (endpoint_dact (pr1 X) Y (r j) cX y)
+                   (pr2 X j x))
+           {TR : poly_code}
+           {al ar : endpoint A (C B₁) TR}
+           {b₁ b₂ : B₁}
+           {p_arg : sem_endpoint_UU al (pr21 X) b₁ = sem_endpoint_UU ar (pr21 X) b₁}
+           (pp_arg : @PathOver
+                       _
+                       (sem_endpoint_UU al _ _)
+                       _ _
+                       (endpoint_dact (pr1 X) Y al cX b₂)
+                       (endpoint_dact (pr1 X) Y ar cX b₂)
+                       p_arg)
+           (p : f = g)
+  : globe_over
+      (λ _, B₂)
+      (idpath _)
+      (homot_endpoint_dact (fmap_eq p) cX pX _ pp_arg)
+      (PathOver_inConstantFamily _ (toforallpaths _ _ _ p b₂)).
+Proof.
+  induction p.
+  apply idpath.
+Qed.
+
+Definition homot_endpoint_dact_funext_fmap_eq
+           {A : poly_code}
+           {B₁ B₂ : one_type}
+           {f g : B₁ → B₂}
+           {J : UU}
+           {S : J → poly_code}
+           {l r : ∏ j : J, endpoint A (S j) I}
+           {X : total_bicat
+                  (disp_depprod_bicat
+                     J
+                     (λ j, add_cell_disp_cat
+                             _ _ _
+                             (sem_endpoint_one_types (l j))
+                             (sem_endpoint_one_types (r j))))}
+           {Y : pr111 X → one_type}
+           (cX : ∏ (x : poly_act A (pr111 X)),
+                 poly_dact_UU A Y x
+                 →
+                 Y ((pr21 X) x))
+           (pX : ∏ (j : J)
+                   (x : poly_act (S j) (pr111 X))
+                   (y : poly_dact_UU (S j) Y x),
+                 @PathOver
+                   _
+                   (sem_endpoint_UU (l j) (pr21 X) x)
+                   _ _
+                   (endpoint_dact (pr1 X) Y (l j) cX y)
+                   (endpoint_dact (pr1 X) Y (r j) cX y)
+                   (pr2 X j x))
+           {TR : poly_code}
+           {al ar : endpoint A (C B₁) TR}
+           {b₁ b₂ : B₁}
+           {p_arg : sem_endpoint_UU al (pr21 X) b₁ = sem_endpoint_UU ar (pr21 X) b₁}
+           (pp_arg : @PathOver
+                       _
+                       (sem_endpoint_UU al _ _)
+                       _ _
+                       (endpoint_dact (pr1 X) Y al cX b₂)
+                       (endpoint_dact (pr1 X) Y ar cX b₂)
+                       p_arg)
+           (p : f ~ g)
+  : globe_over
+      (λ _, B₂)
+      (sem_fmap_funextsec_eq p (pr2 X) p_arg)
+      (homot_endpoint_dact (fmap_eq (funextsec _ _ _ p)) cX pX _ pp_arg)
+      (PathOver_inConstantFamily _ (p b₂)).
+Proof.
+  apply TODO.
+  (*
+  refine (concat_globe_over
+            (homot_endpoint_dact_fmap_eq _ _ _ _)
+            _).
+  unfold globe_over.
+  cbn.
+  do 2 apply maponpaths.
+  exact (eqtohomot (toforallpaths_funextsec p) b₂).
+   *)
+Qed.
+  
+       
 Section CoequifierSignature.
   Context
     (A B : one_type)
@@ -162,10 +297,11 @@ Section CoequifierSignature.
       cbn in i.
       refine (_ @ i @ _).
       - apply maponpaths.
-        apply TODO.
+        refine (!_).
+        apply sem_fmap_funextsec_eq.
       - apply maponpaths.
-        apply TODO.
-    Defined.
+        apply sem_fmap_funextsec_eq.
+    Qed.
   End CoequifierProjections.
 
   Section CoequifierInduction.
@@ -177,16 +313,16 @@ Section CoequifierSignature.
                         Y
                         (coequif_homot x)
                         (@apd_2
-                           _ _ (λ z, Y(coequif_inc z)) _
+                           _ _ (λ z, B) _
                            coequif_inc (λ z _, Yinc z)
                            _ _ _ _ _
-                           (apd Yinc (p x)))
+                           (PathOver_inConstantFamily _ (p x)))
                         (@apd_2
-                           _ _ (λ z, Y(coequif_inc z)) _
+                           _ _ (λ z, B) _
                            coequif_inc (λ z _, Yinc z)
                            _ _ _ _ _
-                           (apd Yinc (q x)))).
-             
+                           (PathOver_inConstantFamily _ (q x)))).
+    
     Definition make_coequifier_disp_alg
       : disp_algebra X.
     Proof.
@@ -196,19 +332,37 @@ Section CoequifierSignature.
         exact (Yinc b).
       - intro j.
         induction j.
-      - (*simpl ; intros j z zz r rr.
-        cbn in z, zz.
+      - simpl ; intros j z zz r rr.
         refine (globe_over_move_globe_one_type
-                  _
+                  (one_type_isofhlevel (pr111 X))
                   (concat_globe_over
                      _
                      (concat_globe_over
                         (Yhomot z)
                         _))).
-        { apply (one_type_isofhlevel (pr111 X)). }
-        apply TODO.
-        apply TODO.*)
-        apply TODO.
+        + refine (concat_globe_over
+                    _
+                    _).
+          * use apd2_globe_over.
+            ** exact (p z).
+            ** apply sem_fmap_funextsec_eq.
+            ** unfold dep_constfun_fun in *.
+               apply PathOver_inConstantFamily.
+               exact (p zz).
+            ** apply homot_endpoint_dact_funext_fmap_eq.
+          * apply TODO.
+        + refine (inv_globe_over _).
+          refine (concat_globe_over
+                    _
+                    _).
+          * use apd2_globe_over.
+            ** exact (q z).
+            ** apply sem_fmap_funextsec_eq.
+            ** unfold dep_constfun_fun in *.
+               apply PathOver_inConstantFamily.
+               exact (q zz).
+            ** apply homot_endpoint_dact_funext_fmap_eq.
+          * apply TODO.
     Defined.
 
     Variable (HX : is_HIT coequifier_signature X).
