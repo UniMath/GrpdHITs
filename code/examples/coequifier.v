@@ -21,8 +21,55 @@ Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
 
-Definition TODO {A : UU} : A.
-Admitted.
+Definition globe_PathOver_inConstantFamily
+           {A B : one_type}
+           {a₁ a₂ : A}
+           {p₁ p₂ : a₁ = a₂}
+           (g : p₁ = p₂)
+           {b₁ b₂ : B}
+           {q₁ q₂ : b₁ = b₂}
+           (h : q₁ = q₂)
+  : globe_over
+      (λ (x : A), B)
+      g
+      (PathOver_inConstantFamily p₁ q₁)
+      (PathOver_inConstantFamily p₂ q₂).
+Proof.
+  induction g, p₁.
+  exact h.
+Qed.
+
+Definition apd_2_1
+           {A B : UU}
+           {Y : B → UU}
+           {c : A → B}
+           (cc : ∏ (a : A), Y (c a))
+           {a₁ a₂ : A}
+           (p : a₁ = a₂)
+  : PathOver (cc a₁) (cc a₂) (maponpaths c p).
+Proof.
+  induction p ; apply idpath.
+Defined.
+
+Definition apd_2_first
+           {A B : UU}
+           {Y₁ : A → UU}
+           {Y₂ : B → UU}
+           {c : A → B}
+           (cc : ∏ (a : A), Y₂ (c a))
+           {a₁ a₂ : A}
+           {p : a₁ = a₂}
+           {y₁ : Y₁ a₁} {y₂ : Y₁ a₂}
+           (q : PathOver y₁ y₂ p)
+  : globe_over
+      Y₂
+      (idpath _)
+      (apd_2 (λ z _, cc z) p q)
+      (apd_2_1 cc p).
+Proof.
+  induction p, q.
+  apply idpath.
+Qed.
 
 Definition fmap_eq
            {A : poly_code}
@@ -184,18 +231,12 @@ Definition homot_endpoint_dact_funext_fmap_eq
       (homot_endpoint_dact (fmap_eq (funextsec _ _ _ p)) cX pX _ pp_arg)
       (PathOver_inConstantFamily _ (p b₂)).
 Proof.
-  apply TODO.
-  (*
   refine (concat_globe_over
             (homot_endpoint_dact_fmap_eq _ _ _ _)
             _).
-  unfold globe_over.
-  cbn.
-  do 2 apply maponpaths.
+  use globe_PathOver_inConstantFamily.
   exact (eqtohomot (toforallpaths_funextsec p) b₂).
-   *)
-Qed.
-  
+Qed.  
        
 Section CoequifierSignature.
   Context
@@ -350,7 +391,10 @@ Section CoequifierSignature.
                apply PathOver_inConstantFamily.
                exact (p zz).
             ** apply homot_endpoint_dact_funext_fmap_eq.
-          * apply TODO.
+          * refine (concat_globe_over
+                      (apd_2_first _ _)
+                      _).
+            exact (inv_globe_over (apd_2_first _ _)).
         + refine (inv_globe_over _).
           refine (concat_globe_over
                     _
@@ -362,7 +406,10 @@ Section CoequifierSignature.
                apply PathOver_inConstantFamily.
                exact (q zz).
             ** apply homot_endpoint_dact_funext_fmap_eq.
-          * apply TODO.
+          * refine (concat_globe_over
+                      (apd_2_first _ _)
+                      _).
+            exact (inv_globe_over (apd_2_first _ _)).
     Defined.
 
     Variable (HX : is_HIT coequifier_signature X).
