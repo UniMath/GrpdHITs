@@ -50,31 +50,17 @@ Definition sem_fmap_eq
            {TR : poly_code}
            {al ar : endpoint A (C X) TR}
            (p : f = g)
-           {h : hit_signature}
-           (Z : hit_algebra_one_types h)
            (x : X)
-  : UU.
+           (Z : UU)
+           (c : poly_act A Z → Z)
+           (q : ∏ i : J, homotsec (sem_endpoint_UU (l i) c) (sem_endpoint_UU (r i) c))
+           (z : poly_act (C X) Z)
+           (p_arg : sem_endpoint_UU al c z = sem_endpoint_UU ar c z)       
+  : sem_homot_endpoint_UU (fmap_eq p) Z c q z p_arg = toforallpaths _ f g p z.
 Proof.
-  Check @sem_homot_endpoint_one_types _ _ _ _ _ _ _ al ar _ _ _ (fmap_eq p).
-        (pr11 Z) (pr21 Z) x.
-  
-
-(**
-A, B : one_type
-  f, g : A → B
-  p, q : ∏ x : A, f x = g x
-  X : hit_algebra_one_types coequifier_signature
-  x : A
-  i := alg_homot X tt x (idpath tt)
-   : maponpaths (pr211 X)
-       (sem_homot_endpoint_one_types (fmap_eq (funextsec (λ _ : A, B) f g p)) 
-          (pr11 X) (pr21 X) x (idpath tt)) =
-     maponpaths (pr211 X)
-       (sem_homot_endpoint_one_types (fmap_eq (funextsec (λ _ : A, B) f g q)) 
-          (pr11 X) (pr21 X) x (idpath tt))
-  ============================
-  maponpaths coequif_inc (p x) = maponpaths coequif_inc (q x)
-**)
+  induction p.  
+  apply idpath.
+Qed.
                                             
 Section CoequifierSignature.
   Context
