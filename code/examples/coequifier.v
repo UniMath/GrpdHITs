@@ -12,6 +12,7 @@ Require Import signature.hit.
 Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
+Require Import displayed_algebras.globe_over_lem.
 Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
@@ -118,7 +119,7 @@ Section CoequifierSignature.
   Defined.
 
   Section CoequifierProjections.
-    Variable (X : hit_algebra_one_types coequifier_signature).
+    Context {X : hit_algebra_one_types coequifier_signature}.
 
     Definition coequif_inc
       : B → alg_carrier X
@@ -137,3 +138,74 @@ Section CoequifierSignature.
       pose (alg_homot X tt x (idpath _)) as i.
       simpl in i.
       cbn in i.
+      refine (_ @ i @ _).
+      - apply maponpaths.
+        apply TODO.
+      - apply maponpaths.
+        apply TODO.
+    Defined.
+  End CoequifierProjections.
+
+  Section CoequifierInduction.
+    Context {X : hit_algebra_one_types coequifier_signature}
+            (Y : alg_carrier X → one_type)
+            (Yinc : ∏ (b : B), Y (coequif_inc b))
+            (Yhomot : ∏ (x : A),
+                      globe_over
+                        Y
+                        (coequif_homot x)
+                        (@apd_2
+                           _ _ (λ z, Y(coequif_inc z)) _
+                           coequif_inc (λ z _, Yinc z)
+                           _ _ _ _ _
+                           (apd Yinc (p x)))
+                        (@apd_2
+                           _ _ (λ z, Y(coequif_inc z)) _
+                           coequif_inc (λ z _, Yinc z)
+                           _ _ _ _ _
+                           (apd Yinc (q x)))).
+             
+    Definition make_coequifier_disp_alg
+      : disp_algebra X.
+    Proof.
+      use make_disp_algebra.
+      - exact Y.
+      - simpl ; intros b bb.
+        exact (Yinc b).
+      - intro j.
+        induction j.
+      - (*simpl ; intros j z zz r rr.
+        cbn in z, zz.
+        refine (globe_over_move_globe_one_type
+                  _
+                  (concat_globe_over
+                     _
+                     (concat_globe_over
+                        (Yhomot z)
+                        _))).
+        { apply (one_type_isofhlevel (pr111 X)). }
+        apply TODO.
+        apply TODO.*)
+        apply TODO.
+    Defined.
+
+    Variable (HX : is_HIT coequifier_signature X).
+
+    (** Induction principle *)
+    Definition coequif_ind_disp_algebra_map
+      : disp_algebra_map make_coequifier_disp_alg
+      := HX make_coequifier_disp_alg.
+
+    Definition coequif_ind
+      : ∏ (x : alg_carrier X), Y x
+      := pr1 coequif_ind_disp_algebra_map.
+
+    Definition coequif_ind_base
+               (b : B)
+      : coequif_ind (coequif_inc b) = Yinc b
+      := pr12 coequif_ind_disp_algebra_map b.
+  End CoequifierInduction.
+End CoequifierSignature.
+  
+
+    
