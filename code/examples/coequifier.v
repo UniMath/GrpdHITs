@@ -18,6 +18,7 @@ Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.globe_over_lem.
 Require Import displayed_algebras.displayed_algebra.
+Require Import displayed_algebras.total_algebra_map.
 
 Local Open Scope cat.
 
@@ -353,17 +354,17 @@ Section CoequifierSignature.
                       globe_over
                         Y
                         (coequif_homot x)
-                        (@apd_2
-                           _ _ (λ z, B) _
-                           coequif_inc (λ z _, Yinc z)
-                           _ _ _ _ _
+                        (apd_depfun
+                           (λ z, B)
+                           Y
+                           (λ b _, Yinc b)
                            (PathOver_inConstantFamily _ (p x)))
-                        (@apd_2
-                           _ _ (λ z, B) _
-                           coequif_inc (λ z _, Yinc z)
-                           _ _ _ _ _
+                        (apd_depfun
+                           (λ z, B)
+                           Y
+                           (λ b _, Yinc b)
                            (PathOver_inConstantFamily _ (q x)))).
-    
+
     Definition make_coequifier_disp_alg
       : disp_algebra X.
     Proof.
