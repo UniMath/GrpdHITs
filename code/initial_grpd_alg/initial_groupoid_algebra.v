@@ -405,6 +405,9 @@ Proof.
     exact (initial_alg_ap (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly f)).
 Defined.
 
+Definition TODO {A : UU} : A.
+Admitted.
+
 Definition sem_homot_endpoint_initial
            {Σ : hit_signature}
            {Q : poly_code}
@@ -438,44 +441,53 @@ Definition sem_homot_endpoint_initial
          (poly_initial_alg (point_constr Σ))
          z).
 Proof.
-  induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+  induction p as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                  | T₁ T₂ e₁ e₂ e₃
                   | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
+                  | P R e₁ e₂ | P R e₁ e₂
+                  | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                  | P₁ P₂ P₃ e₁ e₂ e₃
+                  | W w T e
+                  | j e | ].
   - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
     apply initial_alg_id.
   - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
     apply initial_alg_inv.
     apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly.
-    exact IHp.
+    exact IHh.
   - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
     refine (initial_alg_comp _ _).
     + apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly.
-      exact IHP₁.
+      exact IHh₁.
     + apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly.
-      exact IHP₂.
+      exact IHh₂.
+  - apply TODO.
+    (*
+simpl.
+    apply initial_alg_ap.
+    apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly.
+    apply IHp.*)
   - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
     apply initial_alg_id.
   - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
     apply initial_alg_id.
   - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
     apply initial_alg_id.
-  - exact (pr1 IHp).
-  - exact (pr2 IHp).
-  - exact (IHp₁ ,, IHp₂).
-  - exact IHp.
-  - exact IHp.
+  - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
+    apply initial_alg_id.
+  - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
+    apply initial_alg_id.
+  - exact (IHh₁ ,, IHh₂).
+  - refine (_ ,, _)
+    ; apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel
+    ; apply initial_alg_id.
+  - apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel.
+    apply initial_alg_id.
   - exact (initial_alg_path
              (path_left Σ)
              (path_right Σ)
              j
              (sem_endpoint_UU e (poly_initial_alg (point_constr Σ)) z)).
-  - simpl.
-    apply initial_alg_ap.
-    apply poly_act_rel_to_initial_groupoid_algebra_mor_el_poly.
-    apply IHp.
   - exact p_arg.
 Defined.
 
@@ -2307,26 +2319,28 @@ Section InitialGroupoidAlg.
            _
            (sem_homot_endpoint_initial p z p_arg)).
   Proof.
-    induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+    induction p as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                    | T₁ T₂ e₁ e₂ e₃ h IHh
                     | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                    | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
-                    | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                    | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                    | j e | el er | ].
+                    | P R e₁ e₂ | P R e₁ e₂
+                    | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | W w T e
+                    | j e | ].
     - refine (!_).
       apply quot_rel_poly_act_identity.
     - simpl.
       etrans.
       {
         apply maponpaths.
-        exact IHp.
+        exact IHh.
       }
-      clear IHp.
+      clear IHh.
       refine (!_).
       refine (quot_rel_poly_act_inv
                 (initial_groupoid_algebra_mor_el_poly_to_poly_act_rel
                    (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
-                      (sem_homot_endpoint_initial p z p_arg)))
+                      (sem_homot_endpoint_initial h z p_arg)))
               @ _).
       do 2 apply maponpaths.
       apply maponpaths.
@@ -2335,14 +2349,14 @@ Section InitialGroupoidAlg.
       etrans.
       {
         apply maponpaths.
-        exact IHP₂.
+        exact IHh₂.
       }
       etrans.
       {
         apply maponpaths_2.
-        exact IHP₁.
+        exact IHh₁.
       }
-      clear IHP₁ IHP₂.
+      clear IHh₁ IHh₂.
       refine (!_).
       refine (quot_rel_poly_act_comp _ _ @ _).
       etrans.
@@ -2357,47 +2371,40 @@ Section InitialGroupoidAlg.
         apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel_spec.
       }
       apply idpath.
-    - refine (!_).
-      apply quot_rel_poly_act_identity.
-    - refine (!_).
-      apply quot_rel_poly_act_identity.
-    - refine (!_).
-      apply quot_rel_poly_act_identity.
-    - simpl.
-      etrans.
-      {
-        apply maponpaths.
-        exact IHp.
-      }
-      apply idpath.
-    - simpl.
-      etrans.
-      {
-        apply maponpaths.
-        exact IHp.
-      }
-      apply idpath.
-    - exact (pathsdirprod IHp₁ IHp₂).
-    - refine (IHp @ _).
+    - apply TODO.
+    (*
+      - refine (IHp @ _).
       apply maponpaths.
       apply setquotpr_eq.
-    - refine (IHp @ _).
-      apply maponpaths.
-      apply setquotpr_eq.
-    - apply setquotpr_eq.
-    - simpl.
+
       etrans.
       {
         do 2 apply maponpaths.
-        exact IHp.
+        exact IHh.
       }
-      clear IHp.
+      clear IHh.
       etrans.
       {
         apply maponpaths.
         apply poly_act_quot_rel_quot_rel_poly_act.
       }
       apply setquotpr_eq.
+     *)
+    - refine (!_).
+      apply quot_rel_poly_act_identity.
+    - refine (!_).
+      apply quot_rel_poly_act_identity.
+    - refine (!_).
+      apply quot_rel_poly_act_identity.
+    - refine (!_).
+      apply quot_rel_poly_act_identity.
+    - refine (!_).
+      apply quot_rel_poly_act_identity.
+    - exact (pathsdirprod IHh₁ IHh₂).
+    - apply TODO.
+    - refine (!_).
+      apply quot_rel_poly_act_identity.
+    - apply setquotpr_eq.
     - apply idpath.
   Qed.
 

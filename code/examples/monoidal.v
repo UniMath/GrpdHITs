@@ -16,93 +16,9 @@ Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
 
+(** MISSING HOMOTOPY ENDPOINTS *)
 Definition TODO {A : UU} : A.
 Admitted.
-
-(** MISSING HOMOTOPY ENDPOINTS *)
-Definition whisker_π₁
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           {e₁ e₂ : endpoint A Q (P₁ * P₂)}
-           (h : homot_endpoint
-                  l r
-                  al ar
-                  e₁
-                  e₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e₁ (π₁ _ _))
-      (comp e₂ (π₁ _ _)).
-Proof.
-  apply TODO.
-Defined.
-
-Definition whisker_π₂
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           {e₁ e₂ : endpoint A Q (P₁ * P₂)}
-           (h : homot_endpoint
-                  l r
-                  al ar
-                  e₁
-                  e₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e₁ (π₂ _ _))
-      (comp e₂ (π₂ _ _)).
-Proof.
-  apply TODO.
-Defined.
-
-Definition pr1_pair
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           (e₁ : endpoint A Q P₁)
-           (e₂ : endpoint A Q P₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp (pair e₁ e₂) (π₁ _ _))
-      e₁.
-Proof.
-  apply TODO.
-Defined.
-
-Definition pr2_pair
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ : poly_code}
-           (e₁ : endpoint A Q P₁)
-           (e₂ : endpoint A Q P₂)
-  : homot_endpoint
-      l r
-      al ar
-      (comp (pair e₁ e₂) (π₂ _ _))
-      e₂.
-Proof.
-  apply TODO.
-Defined.
 
 Definition comp_pair
            {A : poly_code}
@@ -121,26 +37,11 @@ Definition comp_pair
       (comp e₁ (pair e₂ e₃))
       (pair (comp e₁ e₂) (comp e₁ e₃)).
 Proof.
-  apply TODO.
-Defined.
-
-Definition comp_const
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {T : one_type}
-           (t : T)
-           {P : poly_code}
-           (e : endpoint A Q P)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e (c _ t))
-      (c _ t).
-Proof.
+  Print homot_endpoint.
+  refine (trans_e
+            _
+            (path_pair _ _)).
+  Print homot_endpoint.
   apply TODO.
 Defined.
 
@@ -303,12 +204,12 @@ Proof.
             _
             (inv_e
                (comp_assoc _ _ _))).
-  apply ap_constr.
+  apply ap_e.
   refine (trans_e
             _
             (inv_e
                (comp_assoc _ _ _))).
-  apply path_inr.
+  apply ap_e.
   unfold unit_endpoint.
   refine (trans_e
             (path_pair _ _)
@@ -316,13 +217,13 @@ Proof.
   - refine (trans_e
               _
               (inv_e (comp_assoc _ _ _))).
-    apply ap_constr.
+    apply ap_e.
     refine (trans_e
               _
               (inv_e (comp_assoc _ _ _))).
     apply path_inl.
     apply inv_e.
-    apply comp_const.
+    apply comp_constant.
   - apply inv_e.
     apply comp_id_r.
 Defined.
@@ -352,12 +253,12 @@ Proof.
             _
             (inv_e
                (comp_assoc _ _ _))).
-  apply ap_constr.
+  apply ap_e.
   refine (trans_e
             _
             (inv_e
                (comp_assoc _ _ _))).
-  apply path_inr.
+  apply ap_e.
   unfold unit_endpoint.
   refine (trans_e
             (path_pair _ _)
@@ -367,13 +268,13 @@ Proof.
   - refine (trans_e
               _
               (inv_e (comp_assoc _ _ _))).
-    apply ap_constr.
+    apply ap_e.
     refine (trans_e
               _
               (inv_e (comp_assoc _ _ _))).
     apply path_inl.
     apply inv_e.
-    apply comp_const.
+    apply comp_constant.
 Defined.
 
 Definition assoc_homot_endpoint
@@ -405,11 +306,11 @@ Proof.
   - refine (trans_e
               _
               (inv_e (comp_assoc _ _ _))).
-    apply ap_constr.
+    apply ap_e.
     refine (trans_e
               _
               (inv_e (comp_assoc _ _ _))).
-    apply path_inr.
+    apply ap_e.
     refine (trans_e
               (path_pair _ _)
               (inv_e (comp_pair _ _ _))).
@@ -418,17 +319,17 @@ Proof.
                 (comp_assoc _ _ _)
                 _).
       refine (trans_e
-                (whisker_π₁ (pr1_pair _ _))
+                (ap_e _ (pair_π₁ _ _))
                 _).
-      apply pr1_pair.
+      apply pair_π₁.
     + refine (trans_e
                 _
                 (inv_e (comp_assoc _ _ _))).
-      apply ap_constr.
+      apply ap_e.
       refine (trans_e
                 _
                 (inv_e (comp_assoc _ _ _))).
-      apply path_inr.
+      apply ap_e.
       refine (trans_e
                 (path_pair _ _)
                 (inv_e (comp_pair _ _ _))).
@@ -437,30 +338,30 @@ Proof.
                   (comp_assoc _ _ _)
                   _).
         refine (trans_e
-                  (whisker_π₂ (pr1_pair _ _))
+                  (ap_e _ (pair_π₁ _ _))
                   _).
-        apply pr2_pair.
+        apply pair_π₂.
       * apply inv_e.
-        apply pr2_pair.
+        apply pair_π₂.
   - refine (trans_e
               (comp_assoc _ _ _)
               _).
-    apply ap_constr.
+    apply ap_e.
     refine (trans_e
               (comp_assoc _ _ _)
               _).
-    apply path_inr.
+    apply ap_e.
     refine (trans_e
               (comp_pair _ _ _)
               (path_pair _ _)).
     + refine (trans_e
                 (comp_assoc _ _ _)
                 _).
-      apply ap_constr.
+      apply ap_e.
       refine (trans_e
                 (comp_assoc _ _ _)
                 _).
-      apply path_inr.
+      apply ap_e.
       refine (trans_e
                 (comp_pair _ _ _)
                 (path_pair _ _)).
@@ -468,17 +369,17 @@ Proof.
                   (comp_assoc _ _ _)
                   _).
         refine (trans_e
-                  (whisker_π₁ (pr1_pair _ _))
+                  (ap_e _ (pair_π₁ _ _))
                   _).
-        apply pr1_pair.
+        apply pair_π₁.
       * refine (trans_e
                   (comp_assoc _ _ _)
                   _).
         refine (trans_e
-                  (whisker_π₂ (pr1_pair _ _))
+                  (ap_e _ (pair_π₁ _ _))
                   _).
-        apply pr2_pair.
-    + apply pr2_pair.
+        apply pair_π₂.
+    + apply pair_π₂.
 Defined.
 
 Definition lwhisker_endpoint
@@ -501,8 +402,8 @@ Definition lwhisker_endpoint
       (mult_endpoint e₁ e₃).
 Proof.
   unfold mult_endpoint.
-  use ap_constr.
-  use path_inr.
+  use ap_e.
+  use ap_e.
   use path_pair.
   - apply refl_e.
   - exact h.
@@ -528,8 +429,8 @@ Definition rwhisker_endpoint
       (mult_endpoint e₂ e₃).
 Proof.
   unfold mult_endpoint.
-  use ap_constr.
-  use path_inr.
+  use ap_e.
+  use ap_e.
   use path_pair.
   - exact h.
   - apply refl_e.
@@ -584,7 +485,6 @@ Proof.
                    _
                    (assoc_homot_endpoint _ _ _)))).
 Defined.
-
 
 Definition monoidal_signature
   : hit_signature.

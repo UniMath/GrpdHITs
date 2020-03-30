@@ -334,7 +334,7 @@ Proof.
       apply maponpaths.
       exact (maponpathscomp0 dirprod_pr2 H₁ H₂).
 Qed.
-
+(*
 Definition PathOver_poly_dact_const_pr1
            {P₁ P₂ : poly_code}
            {X Y : one_type}
@@ -384,7 +384,7 @@ Proof.
   refine (!_).
   apply maponpaths_pr2_pathsdirprod.
 Qed.
-
+ *)
 Definition PathOver_cases
            {P₁ P₂ : poly_code}
            {A : UU}
@@ -718,6 +718,9 @@ Section ConstantDispAlgebra.
             @ alg_path Y j (poly_dact_const (path_source Σ j) x z)
             @ !(endpoint_dact_const _ _ (path_right Σ j) z)).
 
+  Definition TODO {A : UU} : A.
+  Admitted.
+
   Definition homot_endpoint_dact_const
              {Q : poly_code}
              {TR : poly_code}
@@ -770,11 +773,12 @@ Section ConstantDispAlgebra.
   Proof.
     refine (!_).
     induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+                    | T₁ T₂ e₁ e₂ e₃ h IHh
                     | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                    | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
+                    | P R e₁ e₂ | P R e₁ e₂
                     | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                    | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                    | j e | el er | ].
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | Z x T e | j e | ].
     - simpl.
       etrans.
       {
@@ -823,6 +827,28 @@ Section ConstantDispAlgebra.
         apply pathsinv0l.
       }
       apply idpath.
+    - (*refine (_ @ maponpaths _ IHh).
+      clear IHh.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            refine (!_).
+            apply (maponpathsinv0 _).
+          }
+          refine (!_).
+          apply (maponpathscomp0 (alg_constr Y)).
+        }
+        refine (!_).
+        apply (maponpathscomp0 (alg_constr Y)).
+      }
+      exact (!(apd_2_const (alg_constr X) (alg_constr Y) _ _)).*)
+      apply TODO.
     - simpl.
       etrans.
       {
@@ -870,85 +896,31 @@ Section ConstantDispAlgebra.
       }
       exact (PathOver_poly_dact_const_idpath _).
     - simpl.
-      refine (_ @ maponpaths _ IHp).
-      refine (!_).
       etrans.
       {
-        refine (!_).
-        exact (PathOver_poly_dact_const_pr1
-                 (sem_homot_endpoint_one_types p (pr11 X) (pr21 X) z p_arg)
-                 (endpoint_dact_const (pr11 X) (pr11 Y) (pair e₁ e₃) zz
-                  @ _
-                  @ ! endpoint_dact_const (pr11 X) (pr11 Y) (pair e₂ e₄) zz)).
+        apply maponpaths.
+        cbn.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths_pr1_pathsdirprod.
+        }
+        apply pathsinv0r.
       }
-      apply maponpaths.
-      etrans.
-      {
-        exact (maponpathscomp0
-                 pr1
-                 (endpoint_dact_const (pr11 X) (pr11 Y) (pair e₁ e₃) zz)
-                 (_ @ !(endpoint_dact_const (pr11 X) (pr11 Y) (pair e₂ e₄) zz))).
-      }
-      etrans.
-      {
-        apply maponpaths_2.
-        apply maponpaths_pr1_pathsdirprod.
-      }
-      apply maponpaths.
-      etrans.
-      {
-        exact (maponpathscomp0
-                 pr1
-                 _
-                 (!(endpoint_dact_const (pr11 X) (pr11 Y) (pair e₂ e₄) zz))).
-      }
-      apply maponpaths.
-      etrans.
-      {
-        apply maponpathsinv0.
-      }
-      apply maponpaths.
-      apply maponpaths_pr1_pathsdirprod.
+      exact (PathOver_poly_dact_const_idpath _).
     - simpl.
-      refine (_ @ maponpaths _ IHp).
-      refine (!_).
       etrans.
       {
-        refine (!_).
-        exact (PathOver_poly_dact_const_pr2
-                 (sem_homot_endpoint_one_types p (pr11 X) (pr21 X) z p_arg)
-                 (endpoint_dact_const (pr11 X) (pr11 Y) (pair e₁ e₃) zz
-                  @ _
-                  @ ! endpoint_dact_const (pr11 X) (pr11 Y) (pair e₂ e₄) zz)).
+        apply maponpaths.
+        cbn.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths_pr2_pathsdirprod.
+        }
+        apply pathsinv0r.
       }
-      apply maponpaths.
-      etrans.
-      {
-        exact (maponpathscomp0
-                 dirprod_pr2
-                 (endpoint_dact_const (pr11 X) (pr11 Y) (pair e₁ e₃) zz)
-                 (_ @ !(endpoint_dact_const (pr11 X) (pr11 Y) (pair e₂ e₄) zz))).
-      }
-      etrans.
-      {
-        apply maponpaths_2.
-        apply maponpaths_pr2_pathsdirprod.
-      }
-      apply maponpaths.
-      etrans.
-      {
-        exact (maponpathscomp0
-                 dirprod_pr2
-                 _
-                 (!(endpoint_dact_const (pr11 X) (pr11 Y) (pair e₂ e₄) zz))).
-      }
-      apply maponpaths.
-      etrans.
-      {
-        apply maponpathsinv0.
-      }
-      apply maponpaths.
-      apply maponpaths_pr2_pathsdirprod.
+      exact (PathOver_poly_dact_const_idpath _).
     - refine (_ @ path_PathOverPair IHp₁ IHp₂).
       refine (_ @ !(PathOver_pair_poly_dact_const _ _ _ _ _ _ _ _)).
       apply maponpaths.
@@ -967,48 +939,14 @@ Section ConstantDispAlgebra.
         apply pathsdirprod_concat.
       }
       apply idpath.
-    - refine (_ @ maponpaths PathOver_inl IHp).
-      refine (_ @ !(PathOver_inl_poly_dact_const _ _ _ _)).
-      apply maponpaths.
+    - apply TODO.
+    - simpl.
+      cbn.
       etrans.
-      {
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply (maponpathsinv0 inl).
-          }
-          refine (!_).
-          apply (maponpathscomp0 inl).
-        }
-        refine (!_).
-        apply (maponpathscomp0 inl).
+      {        
+        apply pathscomp0rid.
       }
-      apply idpath.
-    - refine (_ @ maponpaths PathOver_inr IHp).
-      refine (_ @ !(PathOver_inr_poly_dact_const _ _ _ _)).
-      apply maponpaths.
-      etrans.
-      {
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply (maponpathsinv0 inr).
-          }
-          refine (!_).
-          apply (maponpathscomp0 inr).
-        }
-        refine (!_).
-        apply (maponpathscomp0 inr).
-      }
-      apply idpath.
+      apply maponpaths_for_constant_function.
     - simpl.
       unfold const_disp_algebra_PathOver.
       apply maponpaths.
@@ -1039,27 +977,6 @@ Section ConstantDispAlgebra.
       do 2 apply maponpaths_2.
       apply maponpaths.
       apply pathsinv0inv0.
-    - refine (_ @ maponpaths _ IHp).
-      clear IHp.
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply (maponpathsinv0 (alg_constr Y)).
-          }
-          refine (!_).
-          apply (maponpathscomp0 (alg_constr Y)).
-        }
-        refine (!_).
-        apply (maponpathscomp0 (alg_constr Y)).
-      }
-      exact (!(apd_2_const (alg_constr X) (alg_constr Y) _ _)).
     - simpl.
       etrans.
       {

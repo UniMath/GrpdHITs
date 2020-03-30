@@ -21,32 +21,25 @@ Definition set_trunc_point_constr
   : poly_code
   := C A.
 
-Inductive set_trunc_paths : Type := .
-
-Inductive set_trunc_homots : Type :=
-| is_trunc : set_trunc_homots.
-
 Definition set_trunc_signature
            (A : one_type)
   : hit_signature.
 Proof.
   simple refine (_ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _  ,, _ ,, _ ,, _ ,, _).
   - exact (set_trunc_point_constr A).
-  - exact set_trunc_paths.
+  - exact empty.
   - intro x ; induction x.
   - intro x ; induction x.
   - intro x ; induction x.
-  - exact set_trunc_homots.
+  - exact unit.
   - exact (λ _, I * I).
   - exact (λ _, I * I).
   - exact (λ _, pair (π₁ _ _) (π₁ _ _)).
   - exact (λ _, pair (π₂ _ _) (π₂ _ _)).
   - exact (λ _, π₁ _ _).
   - exact (λ _, π₂ _ _).
-  - refine (λ _, _).
-    exact (path_pr1 path_arg).
-  - refine (λ _, _).
-    exact (path_pr2 path_arg).
+  - exact (λ _, path_pr1 path_arg).
+  - exact (λ _, path_pr2 path_arg).
 Defined.
 
 Section SetTruncAlgebraProjections.
@@ -65,8 +58,10 @@ Section SetTruncAlgebraProjections.
     : ∏ (a b : set_trunc_carrier) (p q : a = b), p = q
     := λ a b p q,
        !(maponpaths_pr1_pathsdirprod p q)
-        @ pr2 X is_trunc (a ,, b) (pathsdirprod p q)
-        @ maponpaths_pr2_pathsdirprod p q.
+       @ !(pathscomp0rid _) 
+       @ pr2 X tt (a ,, b) (pathsdirprod p q)
+       @ pathscomp0rid _
+       @ maponpaths_pr2_pathsdirprod p q.
 End SetTruncAlgebraProjections.
 
 Section SetTruncInduction.

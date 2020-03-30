@@ -387,33 +387,48 @@ Definition homot_endpoint_dact
       (sem_homot_endpoint_one_types p (pr1 X) (pr2 X) _ p_arg).
 Proof.
   induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+                  | T₁ T₂ e₁ e₂ e₃ h IHh
                   | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
+                  | P R e₁ e₂ | P R e₁ e₂
                   | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
-  - apply identityPathOver.
-  - exact (inversePathOver IHp).
-  - exact (composePathOver IHP₁ IHP₂).
-  - apply identityPathOver.
-  - apply identityPathOver.
-  - apply identityPathOver.
-  - exact (PathOver_pr1 IHp).
-  - exact (PathOver_pr2 IHp).
-  - exact (PathOver_pair IHp₁ IHp₂).
-  - exact (PathOver_inl IHp).
-  - exact (PathOver_inr IHp).
-  - apply (pp j).    
-  - exact (@apd_2
-             _ _ _
-             Y _
-             c
+                  | P₁ P₂ P₃ e₁ e₂ e₃
+                  | Z x T e | j e | ].
+  - (** identity path *)
+    apply identityPathOver.
+  - (** inverse path *)
+    exact (inversePathOver IHp).
+  - (** concatenation of paths *)
+    exact (composePathOver IHP₁ IHP₂).
+  - (** ap on paths *)
+    exact (@apd_2
              _ _
-             ((sem_homot_endpoint_one_types p (pr1 X) (pr2 X) z p_arg))
              _ _
-             IHp
-          ).
-  - exact pp_arg.
+             (sem_endpoint_UU e₃ (pr21 X))
+             (@endpoint_dact _ (pr1 X) Y _ _ e₃ c)
+             _ _
+             ((sem_homot_endpoint_one_types _ (pr1 X) (pr2 X) z p_arg))
+             _ _
+             IHh).
+  - (** associator *)
+    apply identityPathOver.
+  - (** left unitor *)
+    apply identityPathOver.
+  - (** right unitor *)
+    apply identityPathOver.
+  - (** first projection *)
+    apply identityPathOver.
+  - (** second projection *)
+    apply identityPathOver.
+  - (** pairing *)
+    exact (PathOver_pair IHp₁ IHp₂).
+  - (** composition before pair *)
+    apply identityPathOver.
+  - (** composition with constant *)
+    apply identityPathOver.
+  - (** path constructor *)
+    apply (pp j).
+  - (** path argument *)
+    exact pp_arg.
 Defined.
 
 (**

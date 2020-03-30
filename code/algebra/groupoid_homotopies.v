@@ -66,17 +66,20 @@ Definition sem_homot_endpoint_grpd
   : pr1 (sem_endpoint_grpd sl X) z --> pr1 (sem_endpoint_grpd sr X) z.
 Proof.
   induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+                  | T₁ T₂ e₁ e₂ e₃ h IHh
                   | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
+                  | P R e₁ e₂ | P R e₁ e₂
                   | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
+                  | P₁ P₂ P₃ e₁ e₂ e₃
+                  | Z x T e | j e | ].
   - (* identity *)
     apply poly_act_identity.
   - (* symmetry *)
     exact (poly_act_inverse IHp).
   - (* transitivity *)
     exact (poly_act_compose IHP₁ IHP₂).
+  - (* ap with endpoint *)
+    exact (#(sem_endpoint_grpd e₃ X : _ ⟶ _) IHh).
   - (* associativity *)
     apply poly_act_identity.
   - (* left identity *)
@@ -84,19 +87,17 @@ Proof.
   - (* right identity *)
     apply poly_act_identity.
   - (* first projection *)
-    exact (pr1 IHp).
+    apply poly_act_identity.
   - (* second projection *)
-    exact (pr2 IHp).
+    apply poly_act_identity.
   - (* pair of endpoints *)
     exact (IHp₁ ,, IHp₂).
-  - (* left inclusion *)
-    exact IHp.
-  - (* right inclusion *)
-    exact IHp.
+  - (* composition before pair *)
+    apply poly_act_identity.
+  - (* composition with constant *)
+    apply poly_act_identity.
   - (* path constructor *)
     exact (pX j _).
-  - (* point constructor *)
-    exact (#(pr2 X : _ ⟶ _) IHp).
   - (* path argument *)
     exact p_arg.
 Defined.

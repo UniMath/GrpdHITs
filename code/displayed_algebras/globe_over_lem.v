@@ -461,7 +461,6 @@ Proof.
   apply idpath.
 Qed.
 
-
 Definition globe_over_pr1
            {P₁ P₂ : poly_code}
            {X : one_type}

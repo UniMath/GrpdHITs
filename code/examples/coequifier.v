@@ -430,6 +430,4 @@ Section CoequifierSignature.
       := pr12 coequif_ind_disp_algebra_map b.
   End CoequifierInduction.
 End CoequifierSignature.
-  
-
     

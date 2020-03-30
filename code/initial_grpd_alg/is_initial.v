@@ -851,12 +851,14 @@ Section GrpdAlgUMP.
              (poly_act_inverse
                 (univ1_functor_data_endpoint sr _))).
     Proof.
-      induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+      induction p as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                      | T₁ T₂ e₁ e₂ e₃
                       | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                      | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
-                      | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                      | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                      | j e | el er | ].
+                      | P R e₁ e₂ | P R e₁ e₂
+                      | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                      | P₁ P₂ P₃ e₁ e₂ e₃
+                      | W w T e
+                      | j e | ].
       - simpl.
         refine (!_).
         etrans.
@@ -870,7 +872,7 @@ Section GrpdAlgUMP.
         }
         exact (!(univ1_functor_data_help_eq_id _)).
       - simpl.
-        refine (_ @ maponpaths poly_act_inverse IHp @ _).
+        refine (_ @ maponpaths poly_act_inverse IHh @ _).
         + apply univ1_functor_data_help_eq_inv.
         + etrans.
           {
@@ -885,8 +887,8 @@ Section GrpdAlgUMP.
           apply maponpaths_2.
           apply poly_act_inverse_inverse.
       - simpl.
-        refine (_ @ maponpaths (λ z, poly_act_compose z _) IHP₁
-                  @ maponpaths (λ z, poly_act_compose _ z) IHP₂
+        refine (_ @ maponpaths (λ z, poly_act_compose z _) IHh₁
+                  @ maponpaths (λ z, poly_act_compose _ z) IHh₂
                   @ _).
         + apply univ1_functor_data_help_eq_comp.
         + refine (!(poly_act_assoc _ _ _) @ _).
@@ -900,6 +902,7 @@ Section GrpdAlgUMP.
             apply poly_act_inv_left.
           }
           apply poly_act_id_right.
+      - apply TODO.
       - simpl.
         etrans.
         {
@@ -992,35 +995,14 @@ Section GrpdAlgUMP.
         }
         exact (!(univ1_functor_data_help_eq_id _)).        
       - simpl.
-        refine (_ @ maponpaths pr1 IHp).
-        pose (sem_homot_endpoint_initial p z p_arg).
-        induction (sem_homot_endpoint_initial p z p_arg)
-        ; apply idpath.
+        apply TODO.
       - simpl.
-        refine (_ @ maponpaths dirprod_pr2 IHp).
-        induction (sem_homot_endpoint_initial p z p_arg)
-        ; apply idpath.
-      - exact (pathsdirprod IHp₁ IHp₂).
+        apply TODO.
+      - exact (pathsdirprod IHh₁ IHh₂).
       - simpl.
-        refine (IHp @ _).
-        refine (!_).
-        etrans.
-        {
-          apply maponpaths_2.
-          apply poly_act_id_left.
-        }
-        do 3 apply maponpaths.
-        apply poly_act_id_left.
+        apply TODO.
       - simpl.
-        refine (IHp @ _).
-        refine (!_).
-        etrans.
-        {
-          apply maponpaths_2.
-          apply poly_act_id_left.
-        }
-        do 3 apply maponpaths.
-        apply poly_act_id_left.
+        apply TODO.
       - simpl.
         refine (_ @ assoc _ _ _).
         apply maponpaths.
@@ -1042,7 +1024,7 @@ Section GrpdAlgUMP.
         }
         refine (!_).
         apply (pr2 (pr21 Y j)).
-      - simpl.
+      (*- simpl.
         refine (assoc' _ _ _ @ _).
         refine (_ @ assoc _ _ _).
         apply maponpaths.
@@ -1091,7 +1073,7 @@ Section GrpdAlgUMP.
           }
           apply id_left.
         }
-        apply iso_inv_after_iso.
+        apply iso_inv_after_iso.*)
       - simpl.
         refine (!_).
         etrans.

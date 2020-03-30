@@ -18,13 +18,8 @@ Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
 Require Import initial_grpd_alg.W_poly.
-Require Import initial_grpd_alg.initial_groupoid_algebra.
-Require Import existence.hit_existence.
 
 Local Open Scope cat.
-
-Definition TODO {A : UU} : A.
-Admitted.
 
 Definition prod_one_type
            (A B : one_type)
@@ -34,27 +29,6 @@ Proof.
   apply isofhleveldirprod.
   - apply A.
   - apply B.
-Defined.
-
-Definition comp_constant
-           {A P Q : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {TR : poly_code}
-           {al ar : endpoint A P TR}
-           {X : one_type}
-           (e : endpoint A P Q)
-           (x : X)
-  : homot_endpoint
-      l
-      r
-      al
-      ar
-      (comp e (c Q x))
-      (c P x).
-Proof.
-  apply TODO.
 Defined.
 
 Section GroupQuotient.
@@ -145,7 +119,7 @@ Section GroupQuotient.
       refine (trans_e
                 _
                 (inv_e (comp_assoc _ _ _))).
-      apply ap_constr.
+      apply ap_e.
       apply inv_e.
       apply comp_constant.
     - cbn.
@@ -153,12 +127,14 @@ Section GroupQuotient.
       refine (trans_e
                 (comp_assoc _ _ _)
                 _).
-      apply ap_constr.
+      apply ap_e.
       apply comp_constant.
   Defined.
 
+  (*
   Local Notation "p ~ q" := (homot_endpoint _ _ _ _ p q).
-
+   *)
+  
   Definition group_quot_homot_left
              (j : group_quot_homots)
     : homot_endpoint
@@ -279,23 +255,3 @@ Section GroupQuotient.
     End CircleInduction.
    *)
 End GroupQuotient.
-
-(*
-Definition circle
-  := pr1 (hit_existence circle_signature).
-
-Definition circle_path_space_base
-  : UU
-  := ((pr111 (initial_groupoid_algebra circle_signature) : groupoid)
-        ⟦ poly_initial_alg circle_point_constr tt
-        , poly_initial_alg circle_point_constr tt ⟧).
-
-Definition circle_is_path_space
-  : circle_base circle = circle_base circle
-    ≃
-    circle_path_space_base
-  := hit_path_space
-       circle_signature
-       (poly_initial_alg circle_point_constr tt)
-       (poly_initial_alg circle_point_constr tt).
-*)
