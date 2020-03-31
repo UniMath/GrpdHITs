@@ -429,47 +429,55 @@ Section TotalAlgebra.
       apply idpath.
     - (* ap on endpoints *)
       simpl.
-      apply TODO.
-      (*
-refine (!_).
+      refine (!_).
       etrans.
       {
         etrans.
         {
           apply maponpaths_2.
+          apply pathscomp_inv.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        do 2 refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths_2.
           etrans.
           {
-            apply maponpaths.
-            apply pathscomp0rid.
+            apply maponpaths_2.
+            exact (!(maponpathsinv0 _ _)).
           }
-          refine (!_).
-          apply maponpathsinv0.
+          exact (!(maponpathscomp0 _ _ _)).
         }
         etrans.
         {
-          do 2 apply maponpaths.
-          apply pathscomp0rid.
+          exact (!(maponpathscomp0 _ _ _)).
         }
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        exact (!IHh).
+      }
+      clear IHh.
+      etrans.
+      {
+        apply maponpaths.
         etrans.
         {
-          apply maponpaths.
-          refine (!_).
-          apply maponpathscomp0.
+          apply maponpaths_2.
+          apply maponpathscomp.
         }
-        refine (!_).
-        apply maponpathscomp0.
+        apply (homotsec_natural' (pr1_endpoint e₃)).
+      }
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply pathsinv0l.
       }
       refine (!_).
-      etrans.
-      {
-        apply (maponpathscomp operation pr1).
-      }
-      etrans.
-      {
-        exact (!(maponpathscomp (poly_pr1 _) (alg_constr X) _)).
-      }
-      exact (maponpaths (maponpaths (alg_constr X)) IHh).
-       *)
+      apply maponpathscomp.
     - (* associativity *)
       simpl.
       refine (!_).
@@ -587,7 +595,27 @@ refine (!_).
       exact (paths_pathsdirprod IHh₁ IHh₂).
     - (* composition with pair *)
       simpl.
-      apply TODO.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths_2.
+              apply maponpaths_prod_path.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply pathsdirprod_inv.
+        }
+        apply pathsdirprod_concat.
+      }
+      exact (paths_pathsdirprod (pathsinv0l _) (pathsinv0l _)).
     - (* composition with constant *)
       simpl.
       refine (!_).
