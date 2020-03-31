@@ -21,37 +21,145 @@ Definition mod2_point_constr
   : poly_code
   := C unit_one_type + I.
 
-Inductive mod2_paths : Type :=
-| mod : mod2_paths.
+Definition mod2_paths : Type := unit.
 
-Inductive mod2_homots : Type :=
-| ap_mod : mod2_homots.
+Definition mod2_paths_args (j : mod2_paths) : poly_code := I.
 
+
+Definition zero_e
+           (P : poly_code)
+  : endpoint mod2_point_constr P I
+  := comp
+       (comp
+          (c P (tt : unit_one_type))
+          (ι₁ _ _))
+       constr.
+
+Definition suc_e
+           {P : poly_code}
+           (e : endpoint mod2_point_constr P I)
+  : endpoint mod2_point_constr P I
+  := comp (comp e (ι₂ _ _)) constr.
+
+
+Definition TODO (A : UU) : A.
+Admitted.
+
+Definition mod2_paths_lhs
+           (i : mod2_paths)
+  : endpoint mod2_point_constr (mod2_paths_args i) I
+  := suc_e (suc_e (id_e _ _)).
+
+Definition mod2_paths_rhs
+           (i : mod2_paths)
+  : endpoint mod2_point_constr (mod2_paths_args i) I
+  := id_e _ _.
+
+Definition mod2_homots : Type := unit.
+
+Definition mod2_homots_point_arg
+           (i : mod2_homots)
+  : poly_code
+  := I.
+
+Definition mod2_homots_point_left_endpoint
+           (i : mod2_homots)
+  : endpoint mod2_point_constr (mod2_homots_point_arg i) I
+  := suc_e (suc_e (suc_e (id_e _ _))).
+
+Definition mod2_homots_point_right_endpoint
+           (i : mod2_homots)
+  : endpoint mod2_point_constr (mod2_homots_point_arg i) I
+  := suc_e (id_e _ _).
+
+Definition ap_suc_e
+           {i : mod2_homots}
+           {e₁ e₂ : endpoint mod2_point_constr (mod2_homots_point_arg i) I}
+           (h : homot_endpoint
+                  mod2_paths_lhs
+                  mod2_paths_rhs
+                  (c (mod2_homots_point_arg i) (tt : unit_one_type))
+                  (c (mod2_homots_point_arg i) (tt : unit_one_type))
+                  e₁
+                  e₂)
+  : homot_endpoint
+      mod2_paths_lhs
+      mod2_paths_rhs
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (suc_e e₁)
+      (suc_e e₂)
+  := ap_e _ (ap_e _ h).
+
+Definition mod2_homots_point_rhs
+           (i : mod2_homots)
+  : homot_endpoint
+      mod2_paths_lhs
+      mod2_paths_rhs
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (mod2_homots_point_left_endpoint i)
+      (mod2_homots_point_right_endpoint i)
+  := ap_suc_e 
+       (trans_e (inv_e (comp_id_l _))
+                (trans_e (path_constr tt _)
+                         (comp_id_l _))).
+
+(** WIP *)
+Definition mod2_homots_point_lhs
+           (i : mod2_homots)
+  : homot_endpoint
+      mod2_paths_lhs
+      mod2_paths_rhs
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (mod2_homots_point_left_endpoint i)
+      (mod2_homots_point_right_endpoint i).
+Proof.
+  unfold mod2_homots_point_left_endpoint.
+  unfold mod2_homots_point_right_endpoint.
+  refine (trans_e _ (comp_id_r _)).
+  refine (trans_e _ (path_constr tt _)).
+  unfold mod2_paths_lhs.
+  unfold suc_e.
+  refine (trans_e _ (inv_e (comp_assoc _ _ _))).
+  apply ap_e.
+  refine (trans_e _ (inv_e (comp_assoc _ _ _))).
+  apply ap_e.
+  refine (trans_e (inv_e (comp_assoc _ _ _)) _).
+  apply TODO.
+Defined.
+  
 Definition mod2_signature
   : hit_signature.
 Proof.
   simple refine (_ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _  ,, _ ,, _ ,, _ ,, _).
   - exact mod2_point_constr.
   - exact mod2_paths.
-  - exact (λ _, I).
-  - exact (λ _, comp ((comp (ι₂ _ _) constr))
-                     (comp (ι₂ _ _) constr)).
-  - exact (λ _, id_e _ _).
+  - exact mod2_paths_args.
+  - exact mod2_paths_lhs.
+  - exact mod2_paths_rhs.
   - exact mod2_homots.
-  - exact (λ _, I).
+  - exact mod2_homots_point_arg.
   - exact (λ _, C unit_one_type).
   - exact (λ _, @c _ _ unit_one_type tt).
   - exact (λ _, @c _ _ unit_one_type tt).
-  - exact (λ _,
-           comp
-             (comp
-                (comp
-                   (comp (ι₂ (C unit_one_type) I) constr)
-                   (comp (ι₂ (C unit_one_type) I) constr))
-                (ι₂ (C unit_one_type) I))
-             constr).
-  - exact (λ _, comp (ι₂ (C unit_one_type) I) constr).
-  - intro j.
+  - exact mod2_homots_point_left_endpoint.
+  - exact mod2_homots_point_right_endpoint.
+  - exact mod2_homots_point_lhs.
+  - exact mod2_homots_point_rhs.
+Defined.
+
+(** Arrived here *)
+
+
+
+
+
+
+
+    
+    intro j.
     apply ap_constr.
     refine (trans_e
               (inv_e (comp_id_l _))
