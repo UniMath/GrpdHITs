@@ -827,11 +827,28 @@ Section ConstantDispAlgebra.
         apply pathsinv0l.
       }
       apply idpath.
-    - (*refine (_ @ maponpaths _ IHh).
+    - (*simpl.
+      refine (_ @ maponpaths _ IHh).
       clear IHh.
       etrans.
       {
         apply maponpaths.
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply pathscomp_inv.
+        }
+        refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        apply maponpaths.
+        exact (!(maponpathsinv0 (sem_endpoint_one_types e₃ (pr11 Y)) _)).
+      }
+      Check (apd_2_const).
+               (sem_endpoint_UU e₃ (pr211 X))).
+      Check (!(apd_2_const (sem_endpoint_UU e₃))).
+             (endpoint_dact (pr11 X) _ e₃))). (alg_constr Y) _ _)).        
+          Search (!(_ @ _)).
         etrans.
         {
           apply maponpaths.
@@ -939,7 +956,71 @@ Section ConstantDispAlgebra.
         apply pathsdirprod_concat.
       }
       apply idpath.
-    - apply TODO.
+    - simpl.
+      refine (paths_pathsdirprod _ _ @ _).
+      + etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                apply maponpaths_2.
+                etrans.
+                {
+                  apply maponpaths.
+                  cbn.
+                  apply maponpaths_prod_path.
+                }
+                apply pathsdirprod_concat.
+              }
+              etrans.
+              {
+                apply maponpaths.
+                apply pathsdirprod_inv.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply maponpaths_pr1_pathsdirprod.
+          }
+          apply pathsinv0r.
+        }
+        exact (PathOver_poly_dact_const_idpath _).
+      + etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                apply maponpaths_2.
+                etrans.
+                {
+                  apply maponpaths.
+                  cbn.
+                  apply maponpaths_prod_path.
+                }
+                apply pathsdirprod_concat.
+              }
+              etrans.
+              {
+                apply maponpaths.
+                apply pathsdirprod_inv.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply maponpaths_pr2_pathsdirprod.
+          }
+          apply pathsinv0r.
+        }
+        exact (PathOver_poly_dact_const_idpath _).
+      + apply idpath.
     - simpl.
       cbn.
       etrans.

@@ -2401,7 +2401,10 @@ Section InitialGroupoidAlg.
     - refine (!_).
       apply quot_rel_poly_act_identity.
     - exact (pathsdirprod IHh₁ IHh₂).
-    - apply TODO.
+    - simpl
+      ; apply pathsdirprod
+      ; refine (!_)
+      ; apply quot_rel_poly_act_identity.
     - refine (!_).
       apply quot_rel_poly_act_identity.
     - apply setquotpr_eq.

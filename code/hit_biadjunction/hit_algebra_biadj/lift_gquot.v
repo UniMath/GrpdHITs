@@ -701,7 +701,34 @@ Proof.
     apply pathsdirprod_concat.
   - (* composition pair *)
     simpl.
-    apply TODO.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths_prod_path.
+      }
+      apply pathsdirprod_concat.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths.
+        apply ge.
+      }
+      simpl.
+      apply pathsdirprod_inv.
+    }
+    etrans.
+    {
+      apply pathsdirprod_concat.
+    }
+    exact (paths_pathsdirprod (pathsinv0r _) (pathsinv0r _)).
   - (* composition constant *)
     simpl.
     refine (!_).

@@ -995,14 +995,65 @@ Section GrpdAlgUMP.
         }
         exact (!(univ1_functor_data_help_eq_id _)).        
       - simpl.
-        apply TODO.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply poly_act_inv_right.
+        }
+        exact (!(univ1_functor_data_help_eq_id _)).        
       - simpl.
-        apply TODO.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply poly_act_inv_right.
+        }
+        exact (!(univ1_functor_data_help_eq_id _)).        
       - exact (pathsdirprod IHh₁ IHh₂).
       - simpl.
-        apply TODO.
-      - simpl.
-        apply TODO.
+        apply pathsdirprod.
+        + refine (!_).
+          etrans.
+          {
+            apply maponpaths.
+            apply poly_act_id_left.
+          }
+          etrans.
+          {
+            apply poly_act_inv_right.
+          }
+          exact (!(univ1_functor_data_help_eq_id _)).        
+        + refine (!_).
+          etrans.
+          {
+            apply maponpaths.
+            apply poly_act_id_left.
+          }
+          etrans.
+          {
+            apply poly_act_inv_right.
+          }
+          exact (!(univ1_functor_data_help_eq_id _)).        
+      - apply idpath.
       - simpl.
         refine (_ @ assoc _ _ _).
         apply maponpaths.
