@@ -32,6 +32,20 @@ Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
 
+Definition globe_over_identity
+           {X : UU}
+           {Y : X → UU}
+           {x : X}
+           {y : Y x}
+           (pp : PathOver y y (idpath x))
+  : globe_over
+      Y
+      (idpath (idpath x))
+      pp pp.
+Proof.
+  apply idpath.
+Defined.
+
 Definition inv_globe_over
            {X : UU}
            {Y : X → UU}
@@ -947,6 +961,68 @@ Definition apd2_inr
          _ _ _ _ _
          pp)
       (PathOver_inr pp).
+Proof.
+  induction p, pp.
+  apply idpath.
+Qed.
+
+Definition apd2_dep_pair_fun
+           {P Q R : poly_code}
+           {X : one_type}
+           {Y : X → one_type}
+           {f : poly_act P X → poly_act Q X}
+           (ff : ∏ (x : poly_act P X), poly_dact_UU P Y x → poly_dact_UU Q Y (f x))
+           {g : poly_act P X → poly_act R X}
+           (gg : ∏ (x : poly_act P X), poly_dact_UU P Y x → poly_dact_UU R Y (g x))
+           {x₁ x₂ : poly_act P X}
+           {p : x₁ = x₂}
+           {y₁ : poly_dact_UU P Y x₁} {y₂ : poly_dact_UU P Y x₂}
+           (pp : PathOver y₁ y₂ p)
+  : globe_over
+      (poly_dact_UU (Q * R) Y)
+      (maponpaths_prod_path f g p)
+      (apd_2
+         (dep_pair_fun ff gg)
+         p
+         pp)
+      (PathOver_pair
+         (apd_2 ff p pp)
+         (apd_2 gg p pp)).
+Proof.
+  induction p, pp.
+  apply idpath.
+Qed.
+
+Definition maponpaths_const
+           {X Y : UU}
+           {x₁ x₂ : X}
+           (y : Y)
+           (p : x₁ = x₂)
+  : maponpaths (λ _, y) p = idpath y.
+Proof.
+  induction p.
+  apply idpath.
+Defined.
+
+Definition apd_2_dep_const_fun
+           {P : poly_code}
+           {X : UU}
+           (Y : X → UU)
+           {T : one_type}
+           (t : T)
+           {x₁ x₂ : poly_act P X}
+           (p : x₁ = x₂)
+           {y₁ : poly_dact_UU P Y x₁}
+           {y₂ : poly_dact_UU P Y x₂}
+           (pp : PathOver y₁ y₂ p)
+  : globe_over
+      _
+      (maponpaths_const t _)
+      (apd_2
+         (dep_const_fun t)
+         p
+         pp)
+      (identityPathOver _).
 Proof.
   induction p, pp.
   apply idpath.
