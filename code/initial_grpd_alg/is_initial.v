@@ -25,6 +25,7 @@ Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.FullSub.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -804,7 +805,146 @@ Section GrpdAlgUMP.
         do 2 apply maponpaths.
         apply univ1_functor_data_help_eq_constr.
     Qed.
-    
+
+    Definition univ1_functor_data_help_homot_endpoint_ap
+               {T₁ T₂ : poly_code}
+               (e : endpoint (point_constr Σ) T₁ T₂)
+               {x y : poly_act T₁ (poly_initial (point_constr Σ))}
+               (p : poly_act_rel
+                      T₁
+                      (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+                      x y)
+      : poly_act_compose
+          (univ1_functor_data_endpoint
+             e
+             x)
+          (poly_act_compose
+             (sem_endpoint_grpd_data_functor_morphism
+                e (pr211 Y)
+                (univ1_functor_data_help
+                   (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+                      p)))
+             (poly_act_inverse
+                (univ1_functor_data_endpoint
+                   e
+                   y)))
+        =
+        univ1_functor_data_help
+          (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+             (poly_act_rel_ap_endpoint e p)).
+    Proof.
+      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q
+                      | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P T t | C₁ C₂ g | ].
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        refine (_ @ IHe₂ _ _ _) ; clear IHe₂.
+        refine (!(poly_act_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply poly_act_inverse_compose.
+        }
+        do 2 refine (poly_act_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          exact (!(IHe₁ _ _ _)).
+        }
+        clear IHe₁.
+        etrans.
+        {
+          apply (functor_comp (sem_endpoint_grpd e₂ (_ ,, pr211 Y))).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply (functor_comp (sem_endpoint_grpd e₂ (_ ,, pr211 Y))).
+        }
+        cbn.
+        refine (poly_act_assoc _ _ _ @ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          apply (poly_act_inverse_functor (sem_endpoint_grpd e₂ (_ ,, pr211 Y))).
+        }
+        simpl.
+        apply maponpaths.
+        apply poly_act_id_right.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        apply pathsdirprod.
+        + apply IHe₁.
+        + apply IHe₂.
+      - apply idpath.
+      - induction p.
+        apply idpath.
+      - simpl.
+        refine (assoc _ _ _ @ _).
+        do 2 apply maponpaths.
+        use subtypePath.
+        { intro ; apply isaprop_is_iso. }
+        apply idpath.
+    Qed.
+      
     Definition univ1_functor_data_help_homot_endpoint
                {Q : poly_code}
                {TR : poly_code}
@@ -902,7 +1042,54 @@ Section GrpdAlgUMP.
             apply poly_act_inv_left.
           }
           apply poly_act_id_right.
-      - apply TODO.
+      - simpl.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            refine (!_).
+            apply poly_act_assoc.
+          }
+          apply maponpaths.
+          etrans.
+          {
+            do 2 apply maponpaths.
+            apply poly_act_inverse_compose.
+          }
+          do 2 refine (poly_act_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            refine (!_).
+            apply (functor_comp (sem_endpoint_grpd e₃ (_ ,, pr211 Y))).
+          }
+          simpl.
+          etrans.
+          {
+            apply maponpaths.
+            apply (poly_act_inverse_functor
+                     (sem_endpoint_grpd e₃ (_ ,, pr211 Y))).
+          }
+          simpl.
+          etrans.
+          {
+            refine (!_).
+            apply (functor_comp (sem_endpoint_grpd e₃ (_ ,, pr211 Y))).
+          }
+          cbn.
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply poly_act_id_right.
+          }
+          refine (!(poly_act_assoc _ _ _) @ _).
+          exact (!IHp).
+        }
+        clear IHp.
+        apply univ1_functor_data_help_homot_endpoint_ap.
       - simpl.
         etrans.
         {
@@ -1075,56 +1262,6 @@ Section GrpdAlgUMP.
         }
         refine (!_).
         apply (pr2 (pr21 Y j)).
-      (*- simpl.
-        refine (assoc' _ _ _ @ _).
-        refine (_ @ assoc _ _ _).
-        apply maponpaths.
-        refine (_ @ assoc' _ _ _).
-        etrans.
-        {
-          apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            exact IHp.
-          }
-          etrans.
-          {
-            apply (functor_comp (pr211 Y)).
-          }
-          apply maponpaths.
-          apply (functor_comp (pr211 Y)).
-        }
-        refine (assoc' _ _ _ @ _).
-        refine (_ @ assoc _ _ _).
-        apply maponpaths.
-        refine (assoc' _ _ _ @ _).
-        apply maponpaths.
-        use inv_iso_unique'.
-        simpl ; unfold precomp_with.
-        refine (assoc' _ _ _ @ _).
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            refine (assoc _ _ _ @ _).
-            apply maponpaths_2.
-            etrans.
-            {
-              refine (!_).
-              apply (functor_comp (pr211 Y)).
-            }
-            etrans.
-            {
-              apply maponpaths.
-              apply poly_act_inv_right.
-            }
-            apply (functor_id (pr211 Y)).
-          }
-          apply id_left.
-        }
-        apply iso_inv_after_iso.*)
       - simpl.
         refine (!_).
         etrans.
