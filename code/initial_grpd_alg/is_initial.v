@@ -1262,56 +1262,6 @@ Section GrpdAlgUMP.
         }
         refine (!_).
         apply (pr2 (pr21 Y j)).
-      (*- simpl.
-        refine (assoc' _ _ _ @ _).
-        refine (_ @ assoc _ _ _).
-        apply maponpaths.
-        refine (_ @ assoc' _ _ _).
-        etrans.
-        {
-          apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            exact IHp.
-          }
-          etrans.
-          {
-            apply (functor_comp (pr211 Y)).
-          }
-          apply maponpaths.
-          apply (functor_comp (pr211 Y)).
-        }
-        refine (assoc' _ _ _ @ _).
-        refine (_ @ assoc _ _ _).
-        apply maponpaths.
-        refine (assoc' _ _ _ @ _).
-        apply maponpaths.
-        use inv_iso_unique'.
-        simpl ; unfold precomp_with.
-        refine (assoc' _ _ _ @ _).
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            refine (assoc _ _ _ @ _).
-            apply maponpaths_2.
-            etrans.
-            {
-              refine (!_).
-              apply (functor_comp (pr211 Y)).
-            }
-            etrans.
-            {
-              apply maponpaths.
-              apply poly_act_inv_right.
-            }
-            apply (functor_id (pr211 Y)).
-          }
-          apply id_left.
-        }
-        apply iso_inv_after_iso.*)
       - simpl.
         refine (!_).
         etrans.
