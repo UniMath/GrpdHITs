@@ -35,15 +35,20 @@ Definition zero_e
           (ι₁ _ _))
        constr.
 
+
+Definition suc_e
+           {P : poly_code}
+           (e : endpoint mod2_point_constr P I)
+  : endpoint mod2_point_constr P I
+  := comp e (comp (ι₂ _ _) constr).
+
+(*
 Definition suc_e
            {P : poly_code}
            (e : endpoint mod2_point_constr P I)
   : endpoint mod2_point_constr P I
   := comp (comp e (ι₂ _ _)) constr.
-
-
-Definition TODO (A : UU) : A.
-Admitted.
+*)
 
 Definition mod2_paths_lhs
            (i : mod2_paths)
@@ -72,6 +77,30 @@ Definition mod2_homots_point_right_endpoint
   : endpoint mod2_point_constr (mod2_homots_point_arg i) I
   := suc_e (id_e _ _).
 
+Definition mod2_e
+           {i : mod2_homots}
+           (e : endpoint mod2_point_constr (mod2_homots_point_arg i) I)
+  : homot_endpoint
+      mod2_paths_lhs
+      mod2_paths_rhs
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (c (mod2_homots_point_arg i) (tt : unit_one_type))
+      (suc_e (suc_e e))
+      e
+  := trans_e
+       (ap_e
+          _
+          (trans_e
+             (ap_e
+                _
+                (inv_e (comp_id_r _)))
+             (inv_e (comp_assoc _ _ _))))
+       (trans_e
+          (inv_e (comp_assoc _ _ _))
+          (trans_e
+             (path_constr tt _)
+             (comp_id_r _))).
+
 Definition ap_suc_e
            {i : mod2_homots}
            {e₁ e₂ : endpoint mod2_point_constr (mod2_homots_point_arg i) I}
@@ -89,8 +118,12 @@ Definition ap_suc_e
       (c (mod2_homots_point_arg i) (tt : unit_one_type))
       (suc_e e₁)
       (suc_e e₂)
-  := ap_e _ (ap_e _ h).
-
+  := trans_e
+       (comp_assoc _ _ _)
+       (trans_e
+          (ap_e _ (ap_e _ h))
+          (inv_e (comp_assoc _ _ _))).
+  
 Definition mod2_homots_point_rhs
            (i : mod2_homots)
   : homot_endpoint
@@ -105,7 +138,7 @@ Definition mod2_homots_point_rhs
                 (trans_e (path_constr tt _)
                          (comp_id_l _))).
 
-(** WIP *)
+
 Definition mod2_homots_point_lhs
            (i : mod2_homots)
   : homot_endpoint
@@ -113,22 +146,9 @@ Definition mod2_homots_point_lhs
       mod2_paths_rhs
       (c (mod2_homots_point_arg i) (tt : unit_one_type))
       (c (mod2_homots_point_arg i) (tt : unit_one_type))
-      (mod2_homots_point_left_endpoint i)
-      (mod2_homots_point_right_endpoint i).
-Proof.
-  unfold mod2_homots_point_left_endpoint.
-  unfold mod2_homots_point_right_endpoint.
-  refine (trans_e _ (comp_id_r _)).
-  refine (trans_e _ (path_constr tt _)).
-  unfold mod2_paths_lhs.
-  unfold suc_e.
-  refine (trans_e _ (inv_e (comp_assoc _ _ _))).
-  apply ap_e.
-  refine (trans_e _ (inv_e (comp_assoc _ _ _))).
-  apply ap_e.
-  refine (trans_e (inv_e (comp_assoc _ _ _)) _).
-  apply TODO.
-Defined.
+      (suc_e (suc_e (suc_e (id_e _ _))))
+      (suc_e (id_e _ _))
+  := mod2_e (suc_e (id_e _ _)).
   
 Definition mod2_signature
   : hit_signature.
@@ -150,52 +170,6 @@ Proof.
   - exact mod2_homots_point_rhs.
 Defined.
 
-(** Arrived here *)
-
-
-
-
-
-
-
-    
-    intro j.
-    apply ap_constr.
-    refine (trans_e
-              (inv_e (comp_id_l _))
-              _).
-    refine (trans_e
-              (comp_assoc _ _ _)
-              _).
-    refine (trans_e
-              (path_inr
-                 (C unit_one_type)
-                 (path_constr
-                    mod
-                    (id_e _ _)))
-              _).
-    refine (trans_e
-              (inv_e (comp_assoc _ _ _))
-              _).
-    refine (trans_e
-              (comp_id_l _)
-              _).
-    apply comp_id_l.
-  - intro j.
-    simpl.
-    refine (trans_e
-              (inv_e (comp_assoc _ _ _))
-              _).
-    refine (trans_e
-              (inv_e (comp_assoc _ _ _))
-              _).
-    refine (trans_e
-              (path_constr mod (comp (ι₂ _ _) constr)
-              )
-              _).
-    apply comp_id_r.
-Defined.
-
 Section Mod2AlgebraProjections.
   Variable (X : hit_algebra_one_types mod2_signature).
 
@@ -213,21 +187,26 @@ Section Mod2AlgebraProjections.
 
   Definition mod2_mod
     : ∏ (x : mod2_carrier), mod2_S (mod2_S x) = x
-    := pr21 X mod.
+    := pr21 X tt.
 
   Definition mod2_ap_mod
     : ∏ (n : mod2_carrier),
       maponpaths mod2_S (mod2_mod n)
       =
-      mod2_mod (mod2_S n)
-    := λ n,
-       !(maponpathscomp inr (pr211 X) (mod2_mod n))
-       @ maponpaths
-           (maponpaths (pr211 X))
-           (!(pathscomp0rid _))
-       @ pr2 X ap_mod n (idpath _)
-       @ pathscomp0rid _.
+      mod2_mod (mod2_S n).
+  Proof.
+    intro n.
+    refine (!(maponpathscomp inr (pr211 X) (mod2_mod n)) @_).
+    refine (_@ pathscomp0rid _).
+    refine (_@ !(pr2 X tt n (idpath _))).
+    refine (_@ !(pathscomp0rid _)).
+    rewrite pathscomp0rid.
+    apply idpath.
+  Defined.
 End Mod2AlgebraProjections.
+
+
+(** Fixed until here *)
 
 Section Mod2Induction.
   Context {X : hit_algebra_one_types mod2_signature}
@@ -265,7 +244,7 @@ Section Mod2Induction.
     refine
       (globe_over
          Y
-         (pr2 X ap_mod n p)
+         (pr2 X tt n p)
          (@apd_2
             _ _
             (poly_dact (point_constr mod2_signature) Y)
@@ -282,7 +261,7 @@ Section Mod2Induction.
                   (composePathOver
                      (@PathOver_inr
                         (C unit_one_type) I (pr111 X) Y
-                        ((pr211 X) (inr ((pr211 X) (inr n)))) n ((pr21 X) mod n)
+                        ((pr211 X) (inr ((pr211 X) (inr n)))) n ((pr21 X) tt n)
                         (YS ((pr211 X) (inr n)) (YS n nn)) nn (Ymod n nn))
                      (composePathOver
                         (inversePathOver _)
@@ -397,7 +376,7 @@ Section Mod2Induction.
         refine (inv_globe_over _).        
         refine (concat_globe_over
                   _
-                  (Yap_mod n nn)).
+                  (Yap_tt n nn)).
         refine (concat_globe_over
                   (@apd2_globe_over
                      _ _
@@ -453,7 +432,7 @@ Section Mod2Induction.
     : PathOver_square
         _
         (idpath _)
-        (apd (pr1 mod2_ind_disp_algebra_map) (alg_path X mod n))
+        (apd (pr1 mod2_ind_disp_algebra_map) (alg_path X tt n))
         (Ymod n (pr1 mod2_ind_disp_algebra_map n))
         (pr12 mod2_ind_disp_algebra_map
               (inr ((pr211 X) (inr n)))
@@ -462,7 +441,7 @@ Section Mod2Induction.
              ((pr12 mod2_ind_disp_algebra_map) (inr n)))
         (idpath (pr1 mod2_ind_disp_algebra_map n)).
   Proof.
-    pose (pr22 mod2_ind_disp_algebra_map mod n) as p.
+    pose (pr22 mod2_ind_disp_algebra_map tt n) as p.
     simpl in p.
     cbn in p.
     rewrite !pathscomp0rid in p.
