@@ -716,6 +716,77 @@ Section TotalAlgebra.
     apply idpath.
   Qed.
 
+  Local Definition PathOver_poly_pr2_endpoint_path
+        {P Q : poly_code}
+        (e : endpoint (point_constr Σ) P Q)
+        {x₁ x₂ : poly_act P carrier}
+        (p : x₁ = x₂)
+    : !(pr1_endpoint e x₁)
+      @ maponpaths (sem_endpoint_one_types e (pr11 X)) (maponpaths (poly_pr1 P) p)
+      @ pr1_endpoint e x₂
+      =
+      maponpaths (poly_pr1 Q) (maponpaths (sem_endpoint_UU e operation) p).
+  Proof.
+    induction p.
+    apply pathsinv0l.
+  Qed.
+
+  Local Definition PathOver_poly_pr2_endpoint
+        {P Q : poly_code}
+        (e : endpoint (point_constr Σ) P Q)
+        {x₁ x₂ : poly_act P carrier}
+        (p : x₁ = x₂)
+    : globe_over
+        (poly_dact Q (pr1 Y))
+        (PathOver_poly_pr2_endpoint_path e p)
+        (composePathOver
+           (inversePathOver (pr2_endpoint e x₁))
+           (composePathOver
+              (@apd_2
+                 _ _
+                 (poly_dact P (pr1 Y))
+                 (poly_dact Q (pr1 Y))
+                 _
+                 (@endpoint_dact _ _ (pr1 Y) _ _ e (disp_alg_constr Y))
+                 _ _
+                 (maponpaths (poly_pr1 P) p)
+                 _ _
+                 (PathOver_poly_pr2 P p))
+              (pr2_endpoint e x₂)))
+        (PathOver_poly_pr2
+           Q
+           (maponpaths (sem_endpoint_UU e operation) p)).
+  Proof.
+    induction p.
+    induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                    | P Q | P Q | P Q | P Q
+                    | P Q R e₁ IHe₁ e₂ IHe₂
+                    | P T t | Z₁ Z₂ f | ].
+    - (* identity *)
+      apply TODO.
+    - (* composition *)
+      apply TODO.
+    - (* inl *)
+      apply TODO.
+    - (* inr *)
+      apply TODO.
+    - (* pr1 *)
+      apply TODO.
+    - (* pr2 *)
+      apply TODO.
+    - (* pair *)
+      apply TODO.
+    - (* constant *)
+      apply TODO.
+    - (* constant function *)
+      apply TODO.
+    - (* constructor *)
+      simpl.
+      pose (PathOver_poly_pr2_operation (idpath x₁)).
+      simpl in g.
+      apply TODO.
+  Qed.
+
   Local Definition pr2_homot_endpoint
         {Q : poly_code}
         {TR : poly_code}
@@ -829,7 +900,47 @@ Section TotalAlgebra.
                                        (globe_over_id_right _)))))))))))).
     - (* ap endpoint *)
       simpl.
-      apply TODO.
+      refine (globe_over_move_globe_one_type _ _).
+      { apply poly_act_hlevel. }
+      exact
+      (inv_globe_over
+         (concat_globe_over
+            (globe_over_compose_left'
+               _
+               (concat_globe_over
+                  (globe_over_assocl _ _ _)
+                  (globe_over_compose_right
+                     _
+                     (inv_globe_over
+                        (apd2_concat _ _ _)))))
+            (concat_globe_over
+               (globe_over_compose_right
+                  _
+                  (globe_over_comp_inv _ _))
+               (concat_globe_over
+                  (concat_globe_over
+                     (globe_over_assocr _ _ _)
+                     (globe_over_compose_left'
+                        _
+                        (concat_globe_over
+                           (globe_over_assocl _ _ _)
+                           (globe_over_compose_right
+                              _
+                              (concat_globe_over
+                                 (globe_over_compose_right
+                                    _
+                                    (apd2_inv _ _))
+                                 (inv_globe_over
+                                    (apd2_concat _ _ _)))))))
+                  (concat_globe_over
+                     (globe_over_compose_left'
+                        _
+                        (globe_over_compose_right
+                           _
+                           (apd2_globe_over
+                              _
+                              (inv_globe_over IHh))))
+                     (PathOver_poly_pr2_endpoint e₃ _)))))).
     - (* associativity *)
       simpl.
       refine (globe_over_move_globe_one_type _ _).
