@@ -351,9 +351,6 @@ Section TotalAlgebra.
               (pr2_endpoint (path_right Σ j) x))).
   Defined.
 
-  Definition TODO {A : UU} : A.
-  Admitted.
-  
   Local Definition pr1_homot_endpoint
         {Q : poly_code}
         {TR : poly_code}
@@ -687,35 +684,6 @@ Section TotalAlgebra.
       apply pathscomp0rid.
   Qed.
 
-  Local Definition PathOver_poly_pr2_operation
-        {x₁ x₂ : poly_act (point_constr Σ) carrier}
-        (q : x₁ = x₂)
-    : globe_over
-        Y
-        (maponpathscomp operation pr1 _
-         @ !(maponpathscomp (poly_pr1 _) (alg_constr X) _))
-        (PathOver_poly_pr2 I (maponpaths operation q))
-        (@apd_2
-           _ _
-           (poly_dact (point_constr Σ) (pr1 Y))
-           (poly_dact I (pr1 Y))
-           (alg_constr X)
-           (disp_alg_constr Y)
-           _ _ _ _ _
-           (PathOver_poly_pr2 (point_constr Σ) q)).
-  Proof.
-    induction q.
-    unfold globe_over.
-    cbn.
-    refine (!_).
-    etrans.
-    {
-      apply maponpaths.
-      apply PathOver_poly_pr2_is_idpath.
-    }
-    apply idpath.
-  Qed.
-
   Local Definition PathOver_poly_pr2_endpoint_path
         {P Q : poly_code}
         (e : endpoint (point_constr Σ) P Q)
@@ -729,7 +697,7 @@ Section TotalAlgebra.
   Proof.
     induction p.
     apply pathsinv0l.
-  Qed.
+  Defined.
 
   Local Definition PathOver_poly_pr2_endpoint
         {P Q : poly_code}
@@ -758,33 +726,15 @@ Section TotalAlgebra.
            (maponpaths (sem_endpoint_UU e operation) p)).
   Proof.
     induction p.
-    induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P Q | P Q | P Q | P Q
-                    | P Q R e₁ IHe₁ e₂ IHe₂
-                    | P T t | Z₁ Z₂ f | ].
-    - (* identity *)
-      apply TODO.
-    - (* composition *)
-      apply TODO.
-    - (* inl *)
-      apply TODO.
-    - (* inr *)
-      apply TODO.
-    - (* pr1 *)
-      apply TODO.
-    - (* pr2 *)
-      apply TODO.
-    - (* pair *)
-      apply TODO.
-    - (* constant *)
-      apply TODO.
-    - (* constant function *)
-      apply TODO.
-    - (* constructor *)
-      simpl.
-      pose (PathOver_poly_pr2_operation (idpath x₁)).
-      simpl in g.
-      apply TODO.
+    rewrite !PathOver_poly_pr2_is_idpath.
+    refine (globe_over_move_globe_one_type _ _).
+    { apply poly_act_hlevel. }
+    exact
+    (concat_globe_over
+       (globe_over_compose_left'
+          _
+          (globe_over_id_left _))
+       (globe_over_inv_left _)).
   Qed.
 
   Local Definition pr2_homot_endpoint
@@ -1124,35 +1074,6 @@ Section TotalAlgebra.
                                  (disp_alg_path Y j)
                                  (pr2_endpoint e x)))))))))).
       apply one_type_isofhlevel.
-      (*
-    - (* point constructor *)
-      refine (globe_over_move_globe_one_type _ _).
-      { apply one_type_isofhlevel. }
-      simple refine
-      (concat_globe_over
-         (PathOver_poly_pr2_operation _)
-         (concat_globe_over
-            (apd2_globe_over _ IHh)
-            (concat_globe_over
-               (apd2_concat _ _ _)
-               (concat_globe_over
-                  (globe_over_compose_left'
-                     _
-                     (apd2_concat _ _ _))
-                  (inv_globe_over
-                     (concat_globe_over
-                        (globe_over_compose_left'
-                           _
-                           (globe_over_compose_left'
-                              _
-                              (globe_over_id_right _)))
-                        (globe_over_compose_right
-                           _
-                           (concat_globe_over
-                              (globe_over_on_inv
-                                 (globe_over_id_right  _))
-                              (apd2_inv _ _))))))))).
-       *)
     - (* path argument *)
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
