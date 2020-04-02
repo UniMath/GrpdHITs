@@ -1,4 +1,7 @@
-(** Here we define the signature for the integers modulo 2 *)
+(**
+Here we define the signature for monoidal objects.
+Basically, these satisfy the same laws as monoidal categories, but instead, the laws are formulated using HIT signature.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
@@ -15,35 +18,6 @@ Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
-
-(** MISSING HOMOTOPY ENDPOINTS *)
-Definition TODO {A : UU} : A.
-Admitted.
-
-Definition comp_pair
-           {A : poly_code}
-           {J : UU}
-           {S : J → poly_code}
-           {l r : ∏ j : J, endpoint A (S j) I}
-           {Q TR : poly_code}
-           {al ar : endpoint A Q TR}
-           {P₁ P₂ P₃ : poly_code}
-           (e₁ : endpoint A Q P₁)
-           (e₂ : endpoint A P₁ P₂)
-           (e₃ : endpoint A P₁ P₃)
-  : homot_endpoint
-      l r
-      al ar
-      (comp e₁ (pair e₂ e₃))
-      (pair (comp e₁ e₂) (comp e₁ e₃)).
-Proof.
-  Print homot_endpoint.
-  refine (trans_e
-            _
-            (path_pair _ _)).
-  Print homot_endpoint.
-  apply TODO.
-Defined.
 
 Definition monoidal_point_constr
   : poly_code
@@ -506,36 +480,136 @@ Proof.
   - exact monoidal_homots_point_rhs.
 Defined.
 
-Section Monoidal2AlgebraProjections.
+Section MonoidalAlgebraProjections.
   Variable (X : hit_algebra_one_types monoidal_signature).
-  (*
-  Definition mod2_carrier
+
+  Definition monoidal_carrier
     : one_type
     := pr111 X.
 
-  Definition mod2_Z
-    : mod2_carrier
+  Definition monoidal_unit
+    : monoidal_carrier
     := pr211 X (inl tt).
 
-  Definition mod2_S
-    : mod2_carrier → mod2_carrier
-    := λ x, pr211 X (inr x).
+  Definition monoidal_mult
+             (x y : monoidal_carrier)
+    : monoidal_carrier
+    := pr211 X (inr (x ,, y)).
 
-  Definition mod2_mod
-    : ∏ (x : mod2_carrier), mod2_S (mod2_S x) = x
-    := pr21 X mod.
-
-  Definition mod2_ap_mod
-    : ∏ (n : mod2_carrier),
-      maponpaths mod2_S (mod2_mod n)
+  Definition monoidal_lunit
+             (x : monoidal_carrier)
+    : monoidal_mult monoidal_unit x
       =
-      mod2_mod (mod2_S n)
-    := λ n,
-       !(maponpathscomp inr (pr211 X) (mod2_mod n))
-       @ maponpaths
-           (maponpaths (pr211 X))
-           (!(pathscomp0rid _))
-       @ pr2 X ap_mod n (idpath _)
-       @ pathscomp0rid _.
-   *)
-End Monoidal2AlgebraProjections.
+      x
+    := pr21 X lunit x.
+  
+  Definition monoidal_runit
+             (x : monoidal_carrier)
+    : monoidal_mult x monoidal_unit
+      =
+      x
+    := pr21 X runit x.
+
+  Definition monoidal_assoc
+             (x y z : monoidal_carrier)
+    : monoidal_mult x (monoidal_mult y z)
+      =
+      monoidal_mult (monoidal_mult x y) z
+    := pr21 X massoc ((x ,, y) ,, z).
+  
+  Definition monoidal_triangle
+             (x y : monoidal_carrier)
+    : maponpaths
+        (λ z, monoidal_mult x z)
+        (monoidal_lunit y)
+      =
+      (monoidal_assoc _ _ _)
+      @ maponpaths
+          (λ z, monoidal_mult z y)
+          (monoidal_runit x).
+  Proof.
+    refine (_ @ pr2 X triangle (x ,, y) (idpath tt) @ _).
+    - unfold monoidal_mult, monoidal_lunit.
+      simpl.
+      rewrite !pathscomp0rid.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_r.
+        }
+        apply maponpathscomp.
+      }
+      exact (maponpathscomp (λ q, inr (x,, q)) (pr211 X)  (pr21 X lunit y)).
+    - unfold monoidal_assoc, monoidal_runit.
+      simpl.
+      rewrite !pathscomp0rid.
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_l.
+        }
+        exact (maponpathscomp (λ q, q ,, y) inr (pr21 X runit x)).
+      }
+      exact (maponpathscomp (λ q, inr (q,, y)) (pr211 X) (pr21 X runit x)).
+  Qed.
+
+  Definition monoidal_pentagon
+             (w x y z : monoidal_carrier)
+    : monoidal_assoc w x (monoidal_mult y z)
+      @ monoidal_assoc (monoidal_mult w x) y z
+      =
+      maponpaths
+        (λ q, monoidal_mult w q)
+        (monoidal_assoc x y z)
+      @ monoidal_assoc w (monoidal_mult x y) z
+      @ maponpaths
+          (λ q, monoidal_mult q z)
+          (monoidal_assoc w x y).
+  Proof.
+    refine (_ @ pr2 X pentagon (((w ,, x) ,, y) ,, z) (idpath tt) @ _).
+    - simpl.
+      rewrite !pathscomp0rid.
+      apply idpath.
+    - simpl.
+      rewrite !pathscomp0rid.
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            refine (!_).
+            apply ap_pair_r.
+          }
+          apply maponpathscomp.
+        }
+        apply (maponpathscomp (λ q, inr (w ,, q)) (pr211 X)).
+      }
+      do 2 apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_l.
+        }
+        apply (maponpathscomp (λ q, q ,, z) inr).
+      }
+      apply (maponpathscomp (λ q, inr (q ,, z)) (pr211 X)).
+  Qed.
+End MonoidalAlgebraProjections.
