@@ -24,6 +24,7 @@ Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
 
+(** The signature *)
 Definition coh_2gr_point_constr
   : poly_code
   := C unit_one_type + I + I * I.
@@ -699,61 +700,364 @@ Proof.
   - exact coh_2gr_homots_point_rhs.
 Defined.
 
+(**
+Projections.
+We define projections for both path algebras and algebras.
+This allowing reusing results for the builder.
+ *)
+Section Coherent2GroupPathAlgebraProjections.
+  Variable (X : hit_path_algebra_one_types coh_2gr_signature).
+  
+  Definition coh_2gr_carrier_PA
+    : one_type
+    := pr11 X.
+
+  Definition coh_2gr_unit_PA
+    : coh_2gr_carrier_PA
+    := pr21 X (inl (inl tt)).
+
+  Definition coh_2gr_inv_PA
+             (x : coh_2gr_carrier_PA)
+    : coh_2gr_carrier_PA
+    := pr21 X (inl (inr x)).
+
+  Definition coh_2gr_mult_PA
+             (x y : coh_2gr_carrier_PA)
+    : coh_2gr_carrier_PA
+    := pr21 X (inr (x ,, y)).
+
+  Definition coh_2gr_lunit_PA
+             (x : coh_2gr_carrier_PA)
+    : coh_2gr_mult_PA coh_2gr_unit_PA x
+      =
+      x
+    := pr2 X lunit x.
+  
+  Definition coh_2gr_runit_PA
+             (x : coh_2gr_carrier_PA)
+    : coh_2gr_mult_PA x coh_2gr_unit_PA
+      =
+      x
+    := pr2 X runit x.
+
+  Definition coh_2gr_linv_PA
+             (x : coh_2gr_carrier_PA)
+    : coh_2gr_mult_PA (coh_2gr_inv_PA x) x
+      =
+      coh_2gr_unit_PA
+    := pr2 X linv x.
+
+  Definition coh_2gr_rinv_PA
+             (x : coh_2gr_carrier_PA)
+    : coh_2gr_unit_PA
+      =
+      coh_2gr_mult_PA x (coh_2gr_inv_PA x)
+    := pr2 X rinv x.
+
+  Definition coh_2gr_assoc_PA
+             (x y z : coh_2gr_carrier_PA)
+    : coh_2gr_mult_PA x (coh_2gr_mult_PA y z)
+      =
+      coh_2gr_mult_PA (coh_2gr_mult_PA x y) z
+    := pr2 X massoc ((x ,, y) ,, z).
+
+  Definition coh_2gr_inv_adj_triangle_l_l
+             (x : coh_2gr_carrier_PA)
+    : maponpaths (λ z, coh_2gr_mult_PA z x) (coh_2gr_rinv_PA x)
+      @ !(coh_2gr_assoc_PA x (coh_2gr_inv_PA x) x)
+      @ maponpaths (λ z, coh_2gr_mult_PA x z) (coh_2gr_linv_PA x)
+      =
+      sem_homot_endpoint_one_types
+        (homot_left_path coh_2gr_signature inv_adj_triangle_l) 
+        (pr1 X) (pr2 X)
+        x (idpath tt).
+  Proof.
+    unfold coh_2gr_mult_PA, coh_2gr_linv_PA, coh_2gr_rinv_PA ;
+    unfold coh_2gr_assoc_PA, coh_2gr_inv_PA.
+    simpl.
+    rewrite !pathscomp0rid.
+    simpl.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_l.
+        }
+        apply (maponpathscomp (λ q, q ,, x) inr).
+      }
+      apply (maponpathscomp (λ q, inr (q ,, x))).
+    }
+    do 2 apply maponpaths.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_r.
+      }
+      apply (maponpathscomp (λ q, x ,, q) inr).
+    }
+    apply (maponpathscomp (λ q, inr (x ,, q))).
+  Qed.
+
+  Definition coh_2gr_inv_adj_triangle_l_r
+             (x : coh_2gr_carrier_PA)
+    : sem_homot_endpoint_one_types
+        (homot_right_path coh_2gr_signature inv_adj_triangle_l) 
+        (pr1 X) (pr2 X)
+        x (idpath tt)
+      = coh_2gr_lunit_PA x @ !(coh_2gr_runit_PA x).
+  Proof.
+    unfold coh_2gr_lunit_PA, coh_2gr_runit_PA.
+    simpl.
+    rewrite !pathscomp0rid.
+    apply idpath.
+  Qed.
+
+  Definition coh_2gr_inv_adj_triangle_r_l
+             (x : coh_2gr_carrier_PA)
+    : maponpaths (λ z, coh_2gr_mult_PA (coh_2gr_inv_PA x) z) (coh_2gr_rinv_PA x)
+      @ coh_2gr_assoc_PA (coh_2gr_inv_PA x) x (coh_2gr_inv_PA x)
+      @ maponpaths (λ z, coh_2gr_mult_PA z (coh_2gr_inv_PA x)) (coh_2gr_linv_PA x)
+      =
+      sem_homot_endpoint_one_types
+        (homot_left_path coh_2gr_signature inv_adj_triangle_r) 
+        (pr1 X) (pr2 X)
+        x (idpath tt).
+  Proof.
+    unfold coh_2gr_mult_PA, coh_2gr_linv_PA, coh_2gr_rinv_PA ;
+    unfold coh_2gr_assoc_PA, coh_2gr_inv_PA.
+    simpl.
+    rewrite !pathscomp0rid.
+    simpl.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_r.
+        }
+        apply (maponpathscomp _ inr).
+      }
+      apply (maponpathscomp (λ q, inr ((pr21 X) (inl (inr x)),, q)) (pr21 X)).
+    }
+    do 2 apply maponpaths.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_l.
+      }
+      apply (maponpathscomp (λ q, q ,, _) inr).
+    }
+    apply (maponpathscomp (λ q, inr (q ,, _))).
+  Qed.
+
+  Definition coh_2gr_inv_adj_triangle_r_r
+             (x : coh_2gr_carrier_PA)
+    : sem_homot_endpoint_one_types
+        (homot_right_path coh_2gr_signature inv_adj_triangle_r) 
+        (pr1 X) (pr2 X)
+        x
+        (idpath tt)
+      =
+      coh_2gr_runit_PA (coh_2gr_inv_PA x)
+      @ !(coh_2gr_lunit_PA (coh_2gr_inv_PA x)).
+  Proof.
+    unfold coh_2gr_lunit_PA, coh_2gr_runit_PA.
+    simpl.
+    rewrite !pathscomp0rid.
+    apply idpath.
+  Qed.
+
+  Definition coh_2gr_triangle_l
+             (x y : coh_2gr_carrier_PA)
+    : maponpaths (λ z, coh_2gr_mult_PA x z) (coh_2gr_lunit_PA y)
+      =
+      sem_homot_endpoint_one_types
+        (homot_left_path coh_2gr_signature triangle) 
+        (pr1 X) (pr2 X)
+        (x,, y) (idpath tt).
+  Proof.
+    unfold coh_2gr_mult_PA, coh_2gr_lunit_PA.
+    simpl.
+    rewrite !pathscomp0rid.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_r.
+      }
+      apply maponpathscomp.
+    }
+    exact (maponpathscomp (λ q, inr (x,, q)) (pr21 X)  (pr2 X lunit y)).
+  Qed.
+
+  Definition coh_2gr_triangle_r
+             (x y : coh_2gr_carrier_PA)
+    : sem_homot_endpoint_one_types
+        (homot_right_path coh_2gr_signature triangle) 
+        (pr1 X) (pr2 X)
+        (x,, y) (idpath tt)
+      =
+      coh_2gr_assoc_PA x coh_2gr_unit_PA y
+      @ maponpaths (λ z, coh_2gr_mult_PA z y) (coh_2gr_runit_PA x).
+  Proof.
+    unfold coh_2gr_assoc_PA, coh_2gr_runit_PA.
+    simpl.
+    rewrite !pathscomp0rid.
+    apply maponpaths.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_l.
+      }
+      exact (maponpathscomp (λ q, q ,, y) inr (pr2 X runit x)).
+    }
+    exact (maponpathscomp (λ q, inr (q,, y)) (pr21 X) (pr2 X runit x)).
+  Qed.
+
+  Definition coh_2gr_pentagon_l
+             (w x y z : coh_2gr_carrier_PA)
+    : coh_2gr_assoc_PA w x (coh_2gr_mult_PA y z)
+      @ coh_2gr_assoc_PA (coh_2gr_mult_PA w x) y z
+      =
+      sem_homot_endpoint_one_types
+        (homot_left_path coh_2gr_signature pentagon) 
+        (pr1 X) (pr2 X)
+        (((w,, x),, y),, z) (idpath tt).
+  Proof.
+    simpl.
+    rewrite !pathscomp0rid.
+    apply idpath.
+  Qed.
+
+  Definition coh_2gr_pentagon_r
+             (w x y z : coh_2gr_carrier_PA)
+    : sem_homot_endpoint_one_types
+        (homot_right_path coh_2gr_signature pentagon) 
+        (pr1 X) (pr2 X)
+        (((w,, x),, y),, z) (idpath tt)
+      =
+      maponpaths (λ q, coh_2gr_mult_PA w q) (coh_2gr_assoc_PA x y z)
+      @ coh_2gr_assoc_PA w (coh_2gr_mult_PA x y) z
+      @ maponpaths (λ q, coh_2gr_mult_PA q z) (coh_2gr_assoc_PA w x y).
+  Proof.
+    simpl.
+    rewrite !pathscomp0rid.
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_r.
+        }
+        apply maponpathscomp.
+      }
+      apply (maponpathscomp (λ q, inr (w ,, q)) (pr21 X)).
+    }
+    do 2 apply maponpaths.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_l.
+      }
+      apply (maponpathscomp (λ q, q ,, z) inr).
+    }
+    apply (maponpathscomp (λ q, inr (q ,, z)) (pr21 X)).
+  Qed.
+End Coherent2GroupPathAlgebraProjections.
+
 Section Coherent2GroupAlgebraProjections.
   Variable (X : hit_algebra_one_types coh_2gr_signature).
   
   Definition coh_2gr_carrier
     : one_type
-    := pr111 X.
+    := coh_2gr_carrier_PA (pr1 X).
 
   Definition coh_2gr_unit
     : coh_2gr_carrier
-    := pr211 X (inl (inl tt)).
+    := coh_2gr_unit_PA (pr1 X).
 
   Definition coh_2gr_inv
              (x : coh_2gr_carrier)
     : coh_2gr_carrier
-    := pr211 X (inl (inr x)).
+    := coh_2gr_inv_PA (pr1 X) x.
 
   Definition coh_2gr_mult
              (x y : coh_2gr_carrier)
     : coh_2gr_carrier
-    := pr211 X (inr (x ,, y)).
+    := coh_2gr_mult_PA (pr1 X) x y.
 
   Definition coh_2gr_lunit
              (x : coh_2gr_carrier)
     : coh_2gr_mult coh_2gr_unit x
       =
       x
-    := pr21 X lunit x.
+    := coh_2gr_lunit_PA (pr1 X) x.
   
   Definition coh_2gr_runit
              (x : coh_2gr_carrier)
     : coh_2gr_mult x coh_2gr_unit
       =
       x
-    := pr21 X runit x.
+    := coh_2gr_runit_PA (pr1 X) x.
 
   Definition coh_2gr_linv
              (x : coh_2gr_carrier)
     : coh_2gr_mult (coh_2gr_inv x) x
       =
       coh_2gr_unit
-    := pr21 X linv x.
+    := coh_2gr_linv_PA (pr1 X) x.
 
   Definition coh_2gr_rinv
              (x : coh_2gr_carrier)
     : coh_2gr_unit
       =
       coh_2gr_mult x (coh_2gr_inv x)
-    := pr21 X rinv x.
+    := coh_2gr_rinv_PA (pr1 X) x.
 
   Definition coh_2gr_assoc
              (x y z : coh_2gr_carrier)
     : coh_2gr_mult x (coh_2gr_mult y z)
       =
       coh_2gr_mult (coh_2gr_mult x y) z
-    := pr21 X massoc ((x ,, y) ,, z).
+    := coh_2gr_assoc_PA (pr1 X) x y z.
 
   Definition coh_2gr_inv_adj_triangle_l
              (x : coh_2gr_carrier)
@@ -768,44 +1072,8 @@ Section Coherent2GroupAlgebraProjections.
       coh_2gr_lunit x @ !(coh_2gr_runit x).
   Proof.
     refine (_ @ pr2 X inv_adj_triangle_l x (idpath tt) @ _).
-    - unfold coh_2gr_mult, coh_2gr_linv, coh_2gr_rinv, coh_2gr_assoc, coh_2gr_inv.
-      simpl.
-      rewrite !pathscomp0rid.
-      simpl.
-      refine (!_).
-      etrans.
-      {
-        apply maponpaths_2.
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply ap_pair_l.
-          }
-          apply (maponpathscomp (λ q, q ,, x) inr).
-        }
-        apply (maponpathscomp (λ q, inr (q ,, x))).
-      }
-      do 2 apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_r.
-        }
-        apply (maponpathscomp (λ q, x ,, q) inr).
-      }
-      apply (maponpathscomp (λ q, inr (x ,, q))).
-    - unfold coh_2gr_lunit, coh_2gr_runit.
-      simpl.
-      rewrite !pathscomp0rid.
-      apply idpath.
+    - exact (coh_2gr_inv_adj_triangle_l_l _ x).
+    - exact (coh_2gr_inv_adj_triangle_l_r _ x).
   Qed.
   
   Definition coh_2gr_inv_adj_triangle_r
@@ -821,44 +1089,8 @@ Section Coherent2GroupAlgebraProjections.
       coh_2gr_runit (coh_2gr_inv x) @ !(coh_2gr_lunit (coh_2gr_inv x)).
   Proof.
     refine (_ @ pr2 X inv_adj_triangle_r x (idpath tt) @ _).
-    - unfold coh_2gr_mult, coh_2gr_linv, coh_2gr_rinv, coh_2gr_assoc, coh_2gr_inv.
-      simpl.
-      rewrite !pathscomp0rid.
-      simpl.
-      refine (!_).
-      etrans.
-      {
-        apply maponpaths_2.
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply ap_pair_r.
-          }
-          apply (maponpathscomp _ inr).
-        }
-        apply (maponpathscomp (λ q, inr ((pr211 X) (inl (inr x)),, q)) (pr211 X)).
-      }
-      do 2 apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_l.
-        }
-        apply (maponpathscomp (λ q, q ,, _) inr).
-      }
-      apply (maponpathscomp (λ q, inr (q ,, _))).
-    - unfold coh_2gr_lunit, coh_2gr_runit.
-      simpl.
-      rewrite !pathscomp0rid.
-      apply idpath.
+    - exact (coh_2gr_inv_adj_triangle_r_l _ x).
+    - exact (coh_2gr_inv_adj_triangle_r_r _ x).
   Qed.
   
   Definition coh_2gr_triangle
@@ -873,38 +1105,8 @@ Section Coherent2GroupAlgebraProjections.
           (coh_2gr_runit x).
   Proof.
     refine (_ @ pr2 X triangle (x ,, y) (idpath tt) @ _).
-    - unfold coh_2gr_mult, coh_2gr_lunit.
-      simpl.
-      rewrite !pathscomp0rid.
-      refine (!_).
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_r.
-        }
-        apply maponpathscomp.
-      }
-      exact (maponpathscomp (λ q, inr (x,, q)) (pr211 X)  (pr21 X lunit y)).
-    - unfold coh_2gr_assoc, coh_2gr_runit.
-      simpl.
-      rewrite !pathscomp0rid.
-      apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_l.
-        }
-        exact (maponpathscomp (λ q, q ,, y) inr (pr21 X runit x)).
-      }
-      exact (maponpathscomp (λ q, inr (q,, y)) (pr211 X) (pr21 X runit x)).
+    - exact (coh_2gr_triangle_l _ x y).
+    - exact (coh_2gr_triangle_r _ x y).
   Qed.
 
   Definition coh_2gr_pentagon
@@ -921,39 +1123,138 @@ Section Coherent2GroupAlgebraProjections.
           (coh_2gr_assoc w x y).
   Proof.
     refine (_ @ pr2 X pentagon (((w ,, x) ,, y) ,, z) (idpath tt) @ _).
-    - simpl.
-      rewrite !pathscomp0rid.
-      apply idpath.
-    - simpl.
-      rewrite !pathscomp0rid.
-      etrans.
-      {
-        apply maponpaths_2.
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply ap_pair_r.
-          }
-          apply maponpathscomp.
-        }
-        apply (maponpathscomp (λ q, inr (w ,, q)) (pr211 X)).
-      }
-      do 2 apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_l.
-        }
-        apply (maponpathscomp (λ q, q ,, z) inr).
-      }
-      apply (maponpathscomp (λ q, inr (q ,, z)) (pr211 X)).
+    - exact (coh_2gr_pentagon_l _ w x y z).
+    - exact (coh_2gr_pentagon_r _ w x y z).
   Qed.
 End Coherent2GroupAlgebraProjections.
+
+(** Builder *)
+Section Coherent2GroupBuilder.
+  Variable (A : one_type)
+           (e : A)
+           (i : A → A)
+           (m : A → A → A)
+           (unitl_m : ∏ (x : A), m e x = x)
+           (unitr_m : ∏ (x : A), m x e = x)
+           (invl_m : ∏ (x : A), m (i x) x = e)
+           (invr_m : ∏ (x : A), e = m x (i x))
+           (assoc_m : ∏ (x y z : A), m x (m y z) = m (m x y) z)
+           (m_invt_l : ∏ (x : A),
+                       maponpaths (λ z, m z x) (invr_m x)
+                       @ !(assoc_m _ _ _)
+                       @ maponpaths (λ z, m x z) (invl_m x)
+                       =
+                       unitl_m x @ !(unitr_m x))
+           (m_invt_r : ∏ (x : A),
+                       maponpaths (λ z, m _ z) (invr_m x)
+                       @ assoc_m _ _ _
+                       @ maponpaths (λ z, m z _) (invl_m x)
+                       =
+                       unitr_m (i x) @ !(unitl_m (i x)))
+           (triangle_m : ∏ (x y : A),
+                         maponpaths (λ z, m x z) (unitl_m y)
+                         =
+                         (assoc_m _ _ _)
+                         @ maponpaths (λ z, m z y) (unitr_m x))
+           (pentagon_m : ∏ (w x y z : A),
+                         assoc_m w x (m y z)
+                         @ assoc_m (m w x) y z
+                         =
+                         maponpaths (λ q, m w q) (assoc_m x y z)
+                         @ assoc_m w (m x y) z
+                         @ maponpaths (λ q, m q z) (assoc_m w x y)).
+
+  Local Definition make_2gr_prealgebra
+    : hit_prealgebra_one_types coh_2gr_signature.
+  Proof.
+    use make_hit_prealgebra.
+    - exact A.
+    - apply one_type_isofhlevel.
+    - intro x ; induction x as [x | x].
+      + induction x as [ | x].
+        * exact e.
+        * exact (i x).
+      + exact (m (pr1 x) (pr2 x)).
+  Defined.
+  
+  Local Definition make_2gr_path_algebra
+    : hit_path_algebra_one_types coh_2gr_signature.
+  Proof.
+    use make_hit_path_algebra.
+    - exact make_2gr_prealgebra.
+    - intros j x.
+      induction j.
+      + (* unitl *)
+        apply unitl_m.
+      + (* unitr *)
+        apply unitr_m.
+      + (* invl *)
+        apply invl_m.
+      + (* invr *)
+        apply invr_m.
+      + (* assoc *)
+        apply assoc_m.
+  Defined.
+
+  Definition make_2gr_path_algebra_is_algebra
+    : is_hit_algebra_one_types coh_2gr_signature make_2gr_path_algebra.
+  Proof.
+    intros j x p.
+    induction j.
+    - (* inv_adj_triangle_l *)
+      refine (_ @ m_invt_l x @ _).
+      + exact (!(coh_2gr_inv_adj_triangle_l_l _ x)).
+      + exact (!(coh_2gr_inv_adj_triangle_l_r _ x)).
+    - (* inv_adj_triangle_r *)
+      refine (_ @ m_invt_r x @ _).
+      + exact (!(coh_2gr_inv_adj_triangle_r_l _ x)).
+      + exact (!(coh_2gr_inv_adj_triangle_r_r _ x)).
+    - (* triangle *)
+      refine (_ @ triangle_m (pr1 x) (pr2 x) @ _).
+      + exact (!(coh_2gr_triangle_l _ (pr1 x) (pr2 x))).
+      + exact (!(coh_2gr_triangle_r _ (pr1 x) (pr2 x))).
+    - (* pentagon *)
+      refine (_ @ pentagon_m (pr111 x) (pr211 x) (pr21 x) (pr2 x) @ _).
+      + exact (!(coh_2gr_pentagon_l _ (pr111 x) (pr211 x) (pr21 x) (pr2 x))).
+      + exact (!(coh_2gr_pentagon_r _ (pr111 x) (pr211 x) (pr21 x) (pr2 x))).
+  Qed.
+  
+  Definition make_2gr_algebra
+    : hit_algebra_one_types coh_2gr_signature.
+  Proof.
+    use make_algebra.
+    - exact make_2gr_path_algebra.
+    - exact make_2gr_path_algebra_is_algebra.
+  Defined.
+End Coherent2GroupBuilder.
+
+(** The loop space of a 2-type is a coherent 2-group *)
+Definition loop_space_2gr
+           {X : UU}
+           (HX : isofhlevel 4 X)
+           (x : X)
+  : hit_algebra_one_types coh_2gr_signature.
+Proof.
+  use make_2gr_algebra.
+  - use make_one_type.
+    + exact (x = x).
+    + exact (HX x x).
+  - exact (idpath x).
+  - exact (λ p, !p).
+  - exact (λ p q, p @ q).
+  - exact (λ p, idpath p).
+  - exact pathscomp0rid.
+  - exact pathsinv0l.
+  - exact (λ p, !(pathsinv0r p)).
+  - exact path_assoc.
+  - simpl.
+    intro p ; induction p.
+    apply idpath.
+  - intro p ; induction p.
+    apply idpath.
+  - intro p ; induction p.
+    exact (λ _, idpath _).
+  - intro p ; induction p.
+    intro p ; induction p.
+    exact (λ _ _, idpath _).
+Defined.
