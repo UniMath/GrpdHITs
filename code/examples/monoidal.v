@@ -21,6 +21,7 @@ Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
 
+(** The signature *)
 Definition monoidal_point_constr
   : poly_code
   := C unit_one_type + I * I.
@@ -482,6 +483,11 @@ Proof.
   - exact monoidal_homots_point_rhs.
 Defined.
 
+(**
+The projections of the algebra.
+We do this both for path algebras and algebras.
+This way we can reuse stuff for the builder
+ *)
 Section MonoidalPathAlgebraProjections.
   Variable (X : hit_path_algebra_one_types monoidal_signature).
 
@@ -638,6 +644,7 @@ Section MonoidalPathAlgebraProjections.
   Qed.
 End MonoidalPathAlgebraProjections.
 
+(** Projections for algebra *)
 Section MonoidalAlgebraProjections.
   Variable (X : hit_algebra_one_types monoidal_signature).
 
@@ -710,6 +717,7 @@ Section MonoidalAlgebraProjections.
   Qed.
 End MonoidalAlgebraProjections.
 
+(** The builder *)
 Section MonoidalAlgebraBuilder.
   Variable (A : one_type)
            (e : A)
@@ -787,6 +795,7 @@ Section MonoidalAlgebraBuilder.
   Defined.
 End MonoidalAlgebraBuilder.
 
+(** Lists form an algebra for this signature *)
 Definition concatenate_assoc
            {A : UU}
            (x y z : list A)
