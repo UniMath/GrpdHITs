@@ -860,9 +860,6 @@ Section Coherent2GroupAlgebraProjections.
       rewrite !pathscomp0rid.
       apply idpath.
   Qed.
-
-  Local Definition TODO {A : UU} : A.
-  Admitted.
   
   Definition coh_2gr_triangle
              (x y : coh_2gr_carrier)
@@ -876,9 +873,38 @@ Section Coherent2GroupAlgebraProjections.
           (coh_2gr_runit x).
   Proof.
     refine (_ @ pr2 X triangle (x ,, y) (idpath tt) @ _).
-    - simpl.
-      apply TODO.
-    - apply TODO.
+    - unfold coh_2gr_mult, coh_2gr_lunit.
+      simpl.
+      rewrite !pathscomp0rid.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_r.
+        }
+        apply maponpathscomp.
+      }
+      exact (maponpathscomp (λ q, inr (x,, q)) (pr211 X)  (pr21 X lunit y)).
+    - unfold coh_2gr_assoc, coh_2gr_runit.
+      simpl.
+      rewrite !pathscomp0rid.
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_l.
+        }
+        exact (maponpathscomp (λ q, q ,, y) inr (pr21 X runit x)).
+      }
+      exact (maponpathscomp (λ q, inr (q,, y)) (pr211 X) (pr21 X runit x)).
   Qed.
 
   Definition coh_2gr_pentagon
@@ -895,7 +921,39 @@ Section Coherent2GroupAlgebraProjections.
           (coh_2gr_assoc w x y).
   Proof.
     refine (_ @ pr2 X pentagon (((w ,, x) ,, y) ,, z) (idpath tt) @ _).
-    - apply TODO.
-    - apply TODO.
+    - simpl.
+      rewrite !pathscomp0rid.
+      apply idpath.
+    - simpl.
+      rewrite !pathscomp0rid.
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            refine (!_).
+            apply ap_pair_r.
+          }
+          apply maponpathscomp.
+        }
+        apply (maponpathscomp (λ q, inr (w ,, q)) (pr211 X)).
+      }
+      do 2 apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_l.
+        }
+        apply (maponpathscomp (λ q, q ,, z) inr).
+      }
+      apply (maponpathscomp (λ q, inr (q ,, z)) (pr211 X)).
   Qed.
 End Coherent2GroupAlgebraProjections.
