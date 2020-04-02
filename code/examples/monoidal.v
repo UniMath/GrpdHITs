@@ -482,42 +482,198 @@ Proof.
   - exact monoidal_homots_point_rhs.
 Defined.
 
+Section MonoidalPathAlgebraProjections.
+  Variable (X : hit_path_algebra_one_types monoidal_signature).
+
+  Definition monoidal_PA_carrier
+    : one_type
+    := pr11 X.
+
+  Definition monoidal_PA_unit
+    : monoidal_PA_carrier
+    := pr21 X (inl tt).
+
+  Definition monoidal_PA_mult
+             (x y : monoidal_PA_carrier)
+    : monoidal_PA_carrier
+    := pr21 X (inr (x ,, y)).
+
+  Definition monoidal_PA_lunit
+             (x : monoidal_PA_carrier)
+    : monoidal_PA_mult monoidal_PA_unit x
+      =
+      x
+    := pr2 X lunit x.
+  
+  Definition monoidal_PA_runit
+             (x : monoidal_PA_carrier)
+    : monoidal_PA_mult x monoidal_PA_unit
+      =
+      x
+    := pr2 X runit x.
+
+  Definition monoidal_PA_assoc
+             (x y z : monoidal_PA_carrier)
+    : monoidal_PA_mult x (monoidal_PA_mult y z)
+      =
+      monoidal_PA_mult (monoidal_PA_mult x y) z
+    := pr2 X massoc ((x ,, y) ,, z).
+
+  Definition monoidal_triangle_left
+             (x y : monoidal_PA_carrier)
+    : maponpaths (λ z, monoidal_PA_mult x z) (monoidal_PA_lunit y)
+      =
+      sem_homot_endpoint_one_types
+        (homot_left_path monoidal_signature triangle) 
+        (pr1 X) (pr2 X)
+        (x,, y)
+        (idpath tt).
+  Proof.
+    unfold monoidal_PA_mult, monoidal_PA_lunit.
+    simpl.
+    rewrite !pathscomp0rid.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_r.
+      }
+      apply maponpathscomp.
+    }
+    exact (maponpathscomp (λ q, inr (x,, q)) (pr21 X)  (pr2 X lunit y)).
+  Qed.
+
+  Definition monoidal_triangle_right
+             (x y : monoidal_PA_carrier)
+    : sem_homot_endpoint_one_types
+        (homot_right_path monoidal_signature triangle) 
+        (pr1 X) (pr2 X)
+        (x,, y)
+        (idpath tt)
+      =
+      monoidal_PA_assoc x monoidal_PA_unit y
+      @ maponpaths (λ z, monoidal_PA_mult z y) (monoidal_PA_runit x).
+  Proof.
+    unfold monoidal_PA_assoc, monoidal_PA_runit.
+    simpl.
+    rewrite !pathscomp0rid.
+    apply maponpaths.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_l.
+      }
+      exact (maponpathscomp (λ q, q ,, y) inr (pr2 X runit x)).
+    }
+    exact (maponpathscomp (λ q, inr (q,, y)) (pr21 X) (pr2 X runit x)).
+  Qed.
+
+  Definition monoidal_pentagon_left
+             (w x y z : monoidal_PA_carrier)
+    : monoidal_PA_assoc w x (monoidal_PA_mult y z)
+      @ monoidal_PA_assoc (monoidal_PA_mult w x) y z
+      =
+      sem_homot_endpoint_one_types
+        (homot_left_path monoidal_signature pentagon) 
+        (pr1 X) (pr2 X)
+        (((w,, x),, y),, z)
+        (idpath tt).
+  Proof.
+    simpl.
+    rewrite !pathscomp0rid.
+    apply idpath.
+  Qed.
+
+  Definition monoidal_pentagon_right
+             (w x y z : monoidal_PA_carrier)
+    : sem_homot_endpoint_one_types
+        (homot_right_path monoidal_signature pentagon) 
+        (pr1 X) (pr2 X)
+        (((w,, x),, y),, z)
+        (idpath tt)
+      =
+      maponpaths (λ q, monoidal_PA_mult w q) (monoidal_PA_assoc x y z)
+      @ monoidal_PA_assoc w (monoidal_PA_mult x y) z
+      @ maponpaths (λ q, monoidal_PA_mult q z) (monoidal_PA_assoc w x y).
+  Proof.
+    simpl.
+    rewrite !pathscomp0rid.
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_r.
+        }
+        apply maponpathscomp.
+      }
+      apply (maponpathscomp (λ q, inr (w ,, q)) (pr21 X)).
+    }
+    do 2 apply maponpaths.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply ap_pair_l.
+      }
+      apply (maponpathscomp (λ q, q ,, z) inr).
+    }
+    apply (maponpathscomp (λ q, inr (q ,, z)) (pr21 X)).
+  Qed.
+End MonoidalPathAlgebraProjections.
+
 Section MonoidalAlgebraProjections.
   Variable (X : hit_algebra_one_types monoidal_signature).
 
   Definition monoidal_carrier
     : one_type
-    := pr111 X.
+    := monoidal_PA_carrier (pr1 X).
 
   Definition monoidal_unit
     : monoidal_carrier
-    := pr211 X (inl tt).
+    := monoidal_PA_unit (pr1 X).
 
   Definition monoidal_mult
              (x y : monoidal_carrier)
     : monoidal_carrier
-    := pr211 X (inr (x ,, y)).
-
+    := monoidal_PA_mult (pr1 X) x y.
+  
   Definition monoidal_lunit
              (x : monoidal_carrier)
     : monoidal_mult monoidal_unit x
       =
       x
-    := pr21 X lunit x.
+    := monoidal_PA_lunit (pr1 X) x.
   
   Definition monoidal_runit
              (x : monoidal_carrier)
     : monoidal_mult x monoidal_unit
       =
       x
-    := pr21 X runit x.
+    := monoidal_PA_runit (pr1 X) x.
 
   Definition monoidal_assoc
              (x y z : monoidal_carrier)
     : monoidal_mult x (monoidal_mult y z)
       =
       monoidal_mult (monoidal_mult x y) z
-    := pr21 X massoc ((x ,, y) ,, z).
+    := monoidal_PA_assoc (pr1 X) x y z.
 
   Definition monoidal_triangle
              (x y : monoidal_carrier)
@@ -531,38 +687,8 @@ Section MonoidalAlgebraProjections.
           (monoidal_runit x).
   Proof.
     refine (_ @ pr2 X triangle (x ,, y) (idpath tt) @ _).
-    - unfold monoidal_mult, monoidal_lunit.
-      simpl.
-      rewrite !pathscomp0rid.
-      refine (!_).
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_r.
-        }
-        apply maponpathscomp.
-      }
-      exact (maponpathscomp (λ q, inr (x,, q)) (pr211 X)  (pr21 X lunit y)).
-    - unfold monoidal_assoc, monoidal_runit.
-      simpl.
-      rewrite !pathscomp0rid.
-      apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_l.
-        }
-        exact (maponpathscomp (λ q, q ,, y) inr (pr21 X runit x)).
-      }
-      exact (maponpathscomp (λ q, inr (q,, y)) (pr211 X) (pr21 X runit x)).
+    - apply monoidal_triangle_left.
+    - apply monoidal_triangle_right.
   Qed.
 
   Definition monoidal_pentagon
@@ -579,45 +705,10 @@ Section MonoidalAlgebraProjections.
           (monoidal_assoc w x y).
   Proof.
     refine (_ @ pr2 X pentagon (((w ,, x) ,, y) ,, z) (idpath tt) @ _).
-    - simpl.
-      rewrite !pathscomp0rid.
-      apply idpath.
-    - simpl.
-      rewrite !pathscomp0rid.
-      etrans.
-      {
-        apply maponpaths_2.
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply ap_pair_r.
-          }
-          apply maponpathscomp.
-        }
-        apply (maponpathscomp (λ q, inr (w ,, q)) (pr211 X)).
-      }
-      do 2 apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply ap_pair_l.
-        }
-        apply (maponpathscomp (λ q, q ,, z) inr).
-      }
-      apply (maponpathscomp (λ q, inr (q ,, z)) (pr211 X)).
+    - apply monoidal_pentagon_left.
+    - apply monoidal_pentagon_right.
   Qed.
 End MonoidalAlgebraProjections.
-
-Definition TODO {A : UU} : A.
-Admitted.
 
 Section MonoidalAlgebraBuilder.
   Variable (A : one_type)
@@ -672,12 +763,19 @@ Section MonoidalAlgebraBuilder.
     intros j x p.
     induction j ; cbn in x.
     - refine (_ @ triangle_m (pr1 x) (pr2 x) @ _).
-      + apply TODO.
-      + apply TODO.
-    - simpl.
-      refine (_ @ pentagon_m (pr111 x) (pr211 x) (pr21 x) (pr2 x) @ _).
-      + apply TODO.
-      + apply TODO.
+      + refine (!_).
+        exact (monoidal_triangle_left build_monoidal_path_algebra (pr1 x) (pr2 x)).
+      + refine (!_).
+        exact (monoidal_triangle_right build_monoidal_path_algebra (pr1 x) (pr2 x)).
+    - refine (_ @ pentagon_m (pr111 x) (pr211 x) (pr21 x) (pr2 x) @ _).
+      + refine (!_).
+        exact (monoidal_pentagon_left
+                 build_monoidal_path_algebra
+                 (pr111 x) (pr211 x) (pr21 x) (pr2 x)).
+      + refine (!_).
+        exact (monoidal_pentagon_right
+                 build_monoidal_path_algebra
+                 (pr111 x) (pr211 x) (pr21 x) (pr2 x)).
   Qed.
 
   Definition build_monoidal_algebra
@@ -744,12 +842,30 @@ Proof.
   - use list_ind.
     + apply idpath.
     + simpl ; intros x xs IHxs.
-      apply TODO.
-  - intros w ws IHws.
-    use list_ind ; simpl.
-    + apply TODO.
-    + simpl ; intros x xs IHxs.
-      apply TODO.
+      refine (maponpaths (maponpaths (cons x)) (IHxs @ pathscomp0rid _) @ _).
+      refine (_ @ !((pathscomp0rid _))).
+      refine (_ @ !(maponpathscomp
+                      (cons x)
+                      (λ q, concatenate nil q)
+                      (concatenate_assoc xs y z))).
+      exact (maponpathscomp (concatenate nil) (cons x) _).
+  - intros w ws IHws x.
+    refine (!(maponpathscomp0
+                (cons w)
+                (concatenate_assoc ws x (concatenate y z))
+                (concatenate_assoc (concatenate ws x) y z))
+            @ _).
+    refine (maponpaths (maponpaths (cons w)) (IHws x) @ _).
+    refine (maponpathscomp0 (cons w) _ _ @ _).
+    refine (maponpaths (λ q, q @ _) (maponpathscomp (concatenate ws) (cons w) _) @ _).
+    apply maponpaths.
+    refine (maponpathscomp0 (cons w) _ _ @ _).
+    apply maponpaths.
+    refine (maponpathscomp (λ q, concatenate q z) (cons w) _ @ _).
+    exact (!(maponpathscomp
+               (cons w)
+               (λ q, concatenate q z)
+               (concatenate_assoc ws x y))).
 Qed.
 
 Definition list_monoidal_algebra
