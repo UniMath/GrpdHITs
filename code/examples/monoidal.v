@@ -5,6 +5,8 @@ Basically, these satisfy the same laws as monoidal categories, but instead, the 
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
+Require Import UniMath.Combinatorics.Lists.
+
 Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.Bicategories.Core.Bicat.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -516,7 +518,7 @@ Section MonoidalAlgebraProjections.
       =
       monoidal_mult (monoidal_mult x y) z
     := pr21 X massoc ((x ,, y) ,, z).
-  
+
   Definition monoidal_triangle
              (x y : monoidal_carrier)
     : maponpaths
@@ -613,3 +615,156 @@ Section MonoidalAlgebraProjections.
       apply (maponpathscomp (λ q, inr (q ,, z)) (pr211 X)).
   Qed.
 End MonoidalAlgebraProjections.
+
+Definition TODO {A : UU} : A.
+Admitted.
+
+Section MonoidalAlgebraBuilder.
+  Variable (A : one_type)
+           (e : A)
+           (m : A → A → A)
+           (unitl_m : ∏ (x : A), m e x = x)
+           (unitr_m : ∏ (x : A), m x e = x)
+           (assoc_m : ∏ (x y z : A), m x (m y z) = m (m x y) z)
+           (triangle_m : ∏ (x y : A),
+                          maponpaths (λ z, m x z) (unitl_m y)
+                          =
+                          (assoc_m _ _ _)
+                            @ maponpaths (λ z, m z y) (unitr_m x))
+           (pentagon_m : ∏ (w x y z : A),
+                         assoc_m w x (m y z)
+                         @ assoc_m (m w x) y z
+                         =
+                         maponpaths (λ q, m w q) (assoc_m x y z)
+                         @ assoc_m w (m x y) z
+                         @ maponpaths (λ q, m q z) (assoc_m w x y)).
+
+  Local Definition build_monoidal_prealgebra
+    : hit_prealgebra_one_types monoidal_signature.
+  Proof.
+    use make_hit_prealgebra.
+    - apply A.
+    - apply one_type_isofhlevel.
+    - simpl ; intro x.
+      induction x as [ | x].
+      + exact e.
+      + exact (m (pr1 x) (pr2 x)).
+  Defined.
+
+  Local Definition build_monoidal_path_algebra
+    : hit_path_algebra_one_types monoidal_signature.
+  Proof.
+    use make_hit_path_algebra.
+    - exact build_monoidal_prealgebra.
+    - intros j x.
+      induction j.
+      + (* left unit *)
+        exact (unitl_m x).
+      + (* right unit *)
+        exact (unitr_m x).
+      + (* assoc *)
+        exact (assoc_m (pr11 x) (pr21 x) (pr2 x)).
+  Defined.
+
+  Local Definition build_monoidal_path_is_algebra
+    : is_hit_algebra_one_types monoidal_signature build_monoidal_path_algebra.
+  Proof.
+    intros j x p.
+    induction j ; cbn in x.
+    - refine (_ @ triangle_m (pr1 x) (pr2 x) @ _).
+      + apply TODO.
+      + apply TODO.
+    - simpl.
+      refine (_ @ pentagon_m (pr111 x) (pr211 x) (pr21 x) (pr2 x) @ _).
+      + apply TODO.
+      + apply TODO.
+  Qed.
+
+  Definition build_monoidal_algebra
+    : hit_algebra_one_types monoidal_signature.
+  Proof.
+    use make_algebra.
+    - exact build_monoidal_path_algebra.
+    - exact build_monoidal_path_is_algebra.
+  Defined.
+End MonoidalAlgebraBuilder.
+
+Definition concatenate_assoc
+           {A : UU}
+           (x y z : list A)
+  : concatenate
+      x
+      (concatenate y z)
+    =
+    concatenate
+      (concatenate x y)
+      z.
+Proof.
+  revert x.
+  apply list_ind.
+  - apply idpath.
+  - exact (λ x xs IHxs, maponpaths (cons x) IHxs).
+Defined.
+
+Definition list_triangle
+           {A : UU}
+           (x y : list A)
+  : idpath (concatenate x (concatenate nil y))
+    =
+    concatenate_assoc x nil y
+    @ maponpaths (λ z : list A, concatenate z y) (concatenate_nil x).
+Proof.
+  revert x.
+  apply list_ind.
+  - apply idpath.
+  - intros x xs IHxs ; simpl.
+    refine (maponpaths (maponpaths (cons x)) IHxs @ _) ; simpl.
+    refine (maponpathscomp0 (cons x) _ _ @ _).
+    apply maponpaths.
+    etrans.
+    {
+      apply (maponpathscomp (λ z, concatenate z y) (cons x)).
+    }
+    refine (!_).
+    apply (maponpathscomp (cons x) (λ z, concatenate z y)).
+Qed.
+
+Definition list_pentagon
+           {A : UU}
+           (w x y z : list A)
+  : concatenate_assoc w x (concatenate y z)
+    @ concatenate_assoc (concatenate w x) y z
+    =
+    maponpaths (λ q, concatenate w q) (concatenate_assoc x y z)
+    @ concatenate_assoc w (concatenate x y) z
+    @ maponpaths (λ q, concatenate q z) (concatenate_assoc w x y).
+Proof.
+  revert w x.
+  use list_ind ; simpl.
+  - use list_ind.
+    + apply idpath.
+    + simpl ; intros x xs IHxs.
+      apply TODO.
+  - intros w ws IHws.
+    use list_ind ; simpl.
+    + apply TODO.
+    + simpl ; intros x xs IHxs.
+      apply TODO.
+Qed.
+
+Definition list_monoidal_algebra
+           (A : one_type)
+  : hit_algebra_one_types monoidal_signature.
+Proof.
+  use build_monoidal_algebra.
+  - refine (make_one_type (list A) _).
+    apply isofhlevellist.
+    apply one_type_isofhlevel.
+  - exact nil.
+  - exact concatenate.
+  - exact nil_concatenate.
+  - exact concatenate_nil.
+  - exact concatenate_assoc.
+  - exact list_triangle.
+  - exact list_pentagon.
+Defined.
