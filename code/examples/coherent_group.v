@@ -1403,9 +1403,139 @@ Proof.
   apply isapropisweq.
 Qed.
 
-Definition TODO {A : UU} : A.
-Admitted.
+(** Necessary lemmas about function extensionality *)
+Definition funextsec_idpath
+           {X Y : UU}
+           (f : X → Y)
+  : funextsec _ _ _ (λ x, idpath (f x)) = idpath f.
+Proof.
+  refine (_ @ funextsec_toforallpaths _).
+  apply idpath.
+Qed.
 
+Definition inv_toforallpaths
+           {X : UU}
+           {Y : X → UU}
+           {f g : ∏ (x : X), Y x}
+           (p : f = g)
+  : (λ x, !(toforallpaths _ _ _ p x)) = toforallpaths _ _ _ (!p).
+Proof.
+  induction p.
+  apply idpath.
+Qed.
+
+Definition inv_funextsec
+           {X Y : UU}
+           {f g : X → Y}
+           (p : ∏ (x : X), f x = g x)
+  : !(funextsec _ _ _ p) = funextsec _ _ _ (λ x, !(p x)).
+Proof.
+  refine (!(funextsec_toforallpaths _) @ _).
+  apply maponpaths.
+  refine (!(inv_toforallpaths (funextsec _ _ _ p)) @ _) ; simpl.
+  use funextsec ; intro x.
+  apply maponpaths.
+  exact (eqtohomot (toforallpaths_funextsec p) x).
+Qed.
+
+Definition comp_toforallpaths
+           {X : UU}
+           {Y : X → UU}
+           {f g h : ∏ (x : X), Y x}
+           (p : f = g) (q : g = h)
+  : toforallpaths _ _ _ (p @ q)
+    =
+    (λ x, toforallpaths _ _ _ p x @ toforallpaths _ _ _ q x).
+Proof.
+  induction p, q.
+  apply idpath.
+Qed.
+
+Definition comp_funextsec
+           {X Y : UU}
+           {f g h : X → Y}
+           (p : ∏ (x : X), f x = g x)
+           (q : ∏ (x : X), g x = h x)
+  : funextsec _ _ _ p @ funextsec _ _ _ q
+    =
+    funextsec _ _ _ (λ x, p x @ q x).
+Proof.
+  refine (!(funextsec_toforallpaths _) @ _).
+  apply maponpaths.
+  refine (comp_toforallpaths _ _ @ _).
+  use funextsec ; intro x ; simpl.
+  rewrite !toforallpaths_funextsec.
+  apply idpath.
+Qed.
+
+Definition precomp_toforallpaths
+           {X Y Z : UU}
+           (f : X → Y)
+           {g h : Y → Z}
+           (p : g = h)
+  : toforallpaths
+      _ _ _
+      (maponpaths (λ z : Y → Z, (z ∘ f)%functions) p)
+    =
+    (λ x, toforallpaths _ _ _ p (f x)).
+Proof.
+  induction p.
+  apply idpath.
+Qed.
+
+Definition precomp_funextsec
+           {X Y Z : UU}
+           (f : X → Y)
+           {g h : Y → Z}
+           (p : ∏ (y : Y), g y = h y)
+  : maponpaths
+      (λ z : Y → Z, (z ∘ f)%functions)
+      (funextsec _ _ _ p)
+    =
+    funextsec _ _ _ (λ x : X, p (f x)).
+Proof.
+  refine (!(funextsec_toforallpaths _) @ _).
+  apply maponpaths.
+  refine (precomp_toforallpaths f (funextsec _ _ _ p) @ _).
+  use funextsec ; intro x.
+  exact (eqtohomot (toforallpaths_funextsec _) (f x)).
+Qed.
+
+Definition postcomp_toforallpaths
+           {X Y Z : UU}
+           {f g : X → Y}
+           (h : Y → Z)
+           (p : f = g)
+  : toforallpaths
+      _ _ _
+      (maponpaths (λ q : X → Y, (λ x, h(q x))) p)
+    =
+    (λ x, maponpaths h (toforallpaths _ _ _ p x)).
+Proof.
+  induction p.
+  apply idpath.
+Qed.
+
+Definition postcomp_funext
+           {X Y Z : UU}
+           {f g : X → Y}
+           (h : Y → Z)
+           (p : ∏ (x : X), f x = g x)
+  : maponpaths
+      (λ (z : X → Y) (x : X), h (z x))
+      (funextsec _ _ _ p)
+    =
+    funextsec _ _ _ (λ x : X, maponpaths h (p x)).
+Proof.
+  refine (!(funextsec_toforallpaths _) @ _).
+  apply maponpaths.
+  refine (postcomp_toforallpaths h _ @ _).
+  use funextsec ; intro x ; simpl.
+  apply maponpaths.
+  exact (eqtohomot (toforallpaths_funextsec p) x).
+Qed.  
+
+(** The lemmas on `path_weq` we need *)
 Definition inv_path_weq
            {X Y : UU}
            {f g : X ≃ Y}
@@ -1414,7 +1544,7 @@ Definition inv_path_weq
 Proof.
   refine (inv_path_weq' _ @ _).
   unfold path_weq ; apply maponpaths.
-  apply TODO.
+  apply inv_funextsec.
 Qed.
 
 Definition comp_path_weq
@@ -1428,7 +1558,7 @@ Definition comp_path_weq
 Proof.
   refine (comp_path_weq' _ _ @ _).
   unfold path_weq ; apply maponpaths.
-  apply TODO.
+  apply comp_funextsec.
 Qed.
 
 Definition precomp_path_weq
@@ -1445,7 +1575,7 @@ Proof.
   refine (precomp_path_weq' _ _ @ _).
   unfold path_weq.
   apply maponpaths.
-  apply TODO.
+  exact (precomp_funextsec f p).
 Qed.
 
 Definition postcomp_path_weq
@@ -1462,7 +1592,7 @@ Proof.
   refine (postcomp_path_weq' _ _ @ _).
   unfold path_weq.
   apply maponpaths.
-  apply TODO.
+  exact (postcomp_funext h p).
 Qed.
            
 Definition homotweq
