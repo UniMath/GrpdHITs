@@ -21,10 +21,9 @@ Definition mod2_point_constr
   : poly_code
   := C unit_one_type + I.
 
-Definition mod2_paths : Type := unit.
+Definition mod2_paths : UU := unit.
 
 Definition mod2_paths_args (j : mod2_paths) : poly_code := I.
-
 
 Definition zero_e
            (P : poly_code)
@@ -42,14 +41,6 @@ Definition suc_e
   : endpoint mod2_point_constr P I
   := comp e (comp (ι₂ _ _) constr).
 
-(*
-Definition suc_e
-           {P : poly_code}
-           (e : endpoint mod2_point_constr P I)
-  : endpoint mod2_point_constr P I
-  := comp (comp e (ι₂ _ _)) constr.
-*)
-
 Definition mod2_paths_lhs
            (i : mod2_paths)
   : endpoint mod2_point_constr (mod2_paths_args i) I
@@ -60,7 +51,7 @@ Definition mod2_paths_rhs
   : endpoint mod2_point_constr (mod2_paths_args i) I
   := id_e _ _.
 
-Definition mod2_homots : Type := unit.
+Definition mod2_homots : UU := unit.
 
 Definition mod2_homots_point_arg
            (i : mod2_homots)
@@ -134,10 +125,11 @@ Definition mod2_homots_point_rhs
       (mod2_homots_point_left_endpoint i)
       (mod2_homots_point_right_endpoint i)
   := ap_suc_e 
-       (trans_e (inv_e (comp_id_l _))
-                (trans_e (path_constr tt _)
-                         (comp_id_l _))).
-
+       (trans_e
+          (inv_e (comp_id_l _))
+          (trans_e
+             (path_constr tt _)
+             (comp_id_l _))).
 
 Definition mod2_homots_point_lhs
            (i : mod2_homots)
@@ -233,7 +225,7 @@ Section Mod2Induction.
       exact YZ.
     - exact (YS x xx).
   Defined.
-  
+  (*
   Definition help_globe_type
              {n : alg_carrier X}
              (nn : Y n)
@@ -241,6 +233,69 @@ Section Mod2Induction.
              (pp : @PathOver unit tt tt (λ _ : unit, unit) tt tt p)
     : UU.
   Proof.
+    refine
+      (globe_over
+         Y
+         (pr2 X tt n p)
+         _
+         (composePathOver
+            (identityPathOver _)
+            (composePathOver
+               (apd_2
+                  (λ z, cY z)
+                  (maponpaths inr ((pr21 X) tt n @ idpath n))
+                  (apd_2
+                     (λ z, dep_inr_fun z)
+                     ((pr21 X) tt n @ idpath n)
+                     (composePathOver
+                        (inversePathOver
+                           (identityPathOver _))
+                        (composePathOver
+                           (Ymod n (dep_id_fun n nn))
+                           (identityPathOver _)))))
+               (inversePathOver
+                  (identityPathOver _))))).
+    refine
+      (globe_over
+         Y
+         (pr2 X tt n p)
+         (composePathOver
+            (identityPathOver _)
+            (composePathOver
+               (inversePathOver
+                  (identityPathOver _))
+               (composePathOver
+                  (Ymod ((pr211 X) (inr n)) _)
+                  (identityPathOver _))))
+         _).
+    (composePathOver
+            (apd_2
+               (@endpoint_dact mod2_point_constr (pr11 X) Y (C unit_one_type + I) I constr cY)
+               (maponpaths inr ((pr21 X) tt n @ idpath n))
+               _
+            (inversePathOver
+               (identityPathOver _))))).
+
+(YS n (dep_inr_fun n (dep_id_fun n nn)))
+    
+(λ x, dep_inr_fun x)
+                  (λ x, cY x)
+                  
+
+    
+    Check (Ymod ((pr211 X) (inr n)) (cY (inr n) nn)).
+    refine
+      (globe_over
+         Y
+         (pr2 X tt n p)
+         _
+         (composePathOver
+            (inversePathOver (identityPathOver _))
+            (composePathOver
+               (identityPathOver _)
+               (composePathOver
+                  (Ymod ((pr211 X) (inr n)) (cY (inr n) nn))
+                  _)))).
     refine
       (globe_over
          Y
@@ -392,7 +447,7 @@ Section Mod2Induction.
                   _).
         exact (apd2_comp _ _ _).
   Qed.
-
+   *)
   Definition make_mod2_disp_algebra
     : disp_algebra X.
   Proof.
@@ -402,10 +457,46 @@ Section Mod2Induction.
     - intros j x y.
       induction j.
       exact (Ymod x y).
-    - intros j n nn p pp.
-      induction j.
-      exact (help_globe nn pp).
-  Defined.
+    - abstract
+        (intros j n nn p pp ;
+         induction j ;
+         refine (globe_over_move_globe_one_type _ _) ;
+         [ apply (pr111 X)
+         | refine (concat_globe_over
+                     (globe_over_compose_left'
+                        _
+                        (globe_over_id_left _))
+                     _) ;
+           refine (concat_globe_over
+                     (globe_over_compose_left'
+                        _
+                        (globe_over_id_right _))
+                     _) ;
+           refine (inv_globe_over _) ;
+           refine (concat_globe_over
+                     (globe_over_id_left _)
+                     _) ;
+           refine (concat_globe_over
+                     (globe_over_id_right _)
+                     _) ;
+           refine (concat_globe_over
+                     (apd2_comp dep_inr_fun _ _)
+                     _) ;
+           refine (concat_globe_over
+                     (@apd2_globe_over
+                        _ _ Y Y
+                        _ YS
+                        _ _ _ _ _ _ _ _ _
+                        (concat_globe_over
+                           (globe_over_id_left _)
+                           (globe_over_id_right _)))
+                     _) ;
+           refine (concat_globe_over
+                     (Yap_mod n nn)
+                     _) ;
+           refine (inv_globe_over _) ;
+           apply globe_over_id_left]).
+  Defined.  
 
   Variable (HX : is_HIT mod2_signature X).
 
