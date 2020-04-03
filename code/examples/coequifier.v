@@ -1,4 +1,20 @@
-(** Here we define the signature for the integers modulo 2 *)
+(**
+Here we define the signature for the coequifier.
+We also show that the HIT on that signature is indeed the coequifier.
+
+Suppose that we have:
+- 1-types `A` and `B`
+- functions `f, g : A → B`
+- homotopies `p, q : f ==> g`
+Then we define the coequifier to be the following HIT:
+
+HIT coequifier(p, q) :=
+| inc : B → coequifier(p, q)
+| homot : ∏ (a : A), ap inc (p a) = ap inc (q a)
+
+This HIT satisfies the desired universal property. See
+https://ncatlab.org/nlab/show/equifier
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
