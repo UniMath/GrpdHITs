@@ -9,7 +9,9 @@ Require Import UniMath.Combinatorics.Lists.
 
 Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.Bicategories.Core.Bicat.
+Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -717,6 +719,348 @@ Section MonoidalAlgebraProjections.
   Qed.
 End MonoidalAlgebraProjections.
 
+(** Projections for algebra homomorphisms *)
+Section MonoidalPreAlgMorphismProjections.
+  Context {X Y : hit_algebra_one_types monoidal_signature}
+          (f : pr11 X --> pr11 Y).
+
+  Definition monoidal_map_carrier_PA
+    := pr1 f.
+
+  Definition monoidal_map_unit_PA
+    := pr1 (pr2 f) (inl tt).
+
+  Definition monoidal_map_mult_PA
+             (x y : alg_carrier X)
+    := pr1 (pr2 f) (inr (x ,, y)).
+
+  Definition monoidal_map_lunit_r
+             (x : alg_carrier X)
+    : ((pr12 f) (inr ((pr211 X) (inl tt),, x))
+      @ maponpaths
+          (pr211 Y)
+          (maponpaths
+             inr
+             (pathsdirprod
+                ((pr12 f) (inl tt) @ idpath ((pr211 Y) (inl tt)))
+                (idpath ((pr1 f) x))))) @ (pr21 Y) lunit ((pr1 f) x)
+      =
+      monoidal_map_mult_PA (monoidal_unit X) x
+      @ maponpaths
+          (λ z, monoidal_mult Y z (monoidal_map_carrier_PA x))
+          monoidal_map_unit_PA
+      @ monoidal_lunit Y (monoidal_map_carrier_PA x).
+  Proof.
+    refine (!(path_assoc _ _ _) @ _).
+    apply maponpaths.
+    apply maponpaths_2.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          refine (!_).
+          apply ap_pair_l.
+        }
+        apply maponpaths.
+        apply pathscomp0rid.
+      }
+      apply (maponpathscomp (λ z, z ,, _) inr).
+    }
+    apply (maponpathscomp (λ z, inr (z ,, _)) (pr211 Y)).
+  Qed.
+
+  Definition monoidal_map_runit_r
+             (x : alg_carrier X)
+    : ((pr12 f) (inr (x,, (pr211 X) (inl tt)))
+      @ maponpaths
+          (pr211 Y)
+          (maponpaths
+             inr
+             (pathsdirprod
+                (idpath (pr1 f x))
+                ((pr12 f) (inl tt) @ idpath ((pr211 Y) (inl tt))))))
+      @ (pr21 Y) runit (pr1 f x)
+      =
+      monoidal_map_mult_PA x (monoidal_unit X)
+      @ maponpaths
+          (λ z, monoidal_mult Y (monoidal_map_carrier_PA x) z)
+          monoidal_map_unit_PA
+      @ monoidal_runit Y (monoidal_map_carrier_PA x).
+  Proof.
+    refine (!(path_assoc _ _ _) @ _).
+    apply maponpaths.
+    apply maponpaths_2.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          refine (!_).
+          apply ap_pair_r.
+        }
+        apply maponpaths.
+        apply pathscomp0rid.
+      }
+      exact (maponpathscomp (λ z, pr1 f x ,, z) inr (pr12 f (inl tt))).
+    }
+    apply (maponpathscomp (λ z, inr (_ ,, z)) (pr211 Y)).
+  Qed.
+
+  Definition monoidal_map_assoc_l
+             (x y z : monoidal_carrier X)
+    : maponpaths
+        monoidal_map_carrier_PA
+        (monoidal_assoc X x y z)
+      @ monoidal_map_mult_PA (monoidal_mult X x y) z
+      @ maponpaths
+          (λ q, monoidal_mult Y q (monoidal_map_carrier_PA z))
+          (monoidal_map_mult_PA x y)
+      =
+      maponpaths
+        (pr1 f)
+        (monoidal_assoc X x y z)
+      @ monoidal_map_mult_PA (monoidal_mult _ x y) z
+      @ maponpaths
+          (pr211 Y)
+          (maponpaths
+             inr
+             (pathsdirprod
+                (monoidal_map_mult_PA x y
+                 @ maponpaths
+                     (pr211 Y)
+                     (maponpaths
+                        inr
+                        (pathsdirprod (idpath _) (idpath _))))
+                (idpath _))).
+  Proof.
+    do 2 apply maponpaths.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          refine (!_).
+          apply ap_pair_l.
+        }
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpaths.
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_r.
+        }
+        simpl.
+        apply pathscomp0rid.
+      }
+      simpl.
+      exact (maponpathscomp (λ q, q ,, pr1 f z) inr _).
+    }
+    exact (maponpathscomp (λ q, inr (q ,, pr1 f z)) (pr211 Y) _).
+  Qed.
+
+  Definition monoidal_map_assoc_r
+             (x y z : monoidal_carrier X)
+    : monoidal_map_mult_PA x (monoidal_mult _ y z)
+      @ maponpaths
+          (pr211 Y)
+          (maponpaths
+             inr
+             (pathsdirprod
+                (idpath _)
+                (monoidal_map_mult_PA y z
+                 @ maponpaths
+                     (pr211 Y)
+                     (maponpaths
+                        inr
+                        (pathsdirprod (idpath _) (idpath _))))))
+      @ monoidal_assoc
+          _
+          (monoidal_map_carrier_PA x)
+          (monoidal_map_carrier_PA y)
+          (monoidal_map_carrier_PA z)
+      =
+      monoidal_map_mult_PA x (monoidal_mult _ y z)
+      @ maponpaths
+          (λ q, monoidal_mult Y (monoidal_map_carrier_PA x) q)
+          (monoidal_map_mult_PA y z)
+      @ monoidal_assoc
+          _
+          (monoidal_map_carrier_PA x)
+          (monoidal_map_carrier_PA y)
+          (monoidal_map_carrier_PA z).
+  Proof.
+    apply maponpaths.
+    apply maponpaths_2.
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          refine (!_).
+          apply ap_pair_r.
+        }
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpaths.
+          apply maponpaths.
+          refine (!_).
+          apply ap_pair_l.
+        }
+        simpl.
+        apply pathscomp0rid.
+      }
+      simpl.
+      exact (maponpathscomp (λ q, pr1 f x ,, q) inr _).
+    }
+    exact (maponpathscomp (λ q, inr (pr1 f x ,, q)) (pr211 Y) _).
+  Qed.
+End MonoidalPreAlgMorphismProjections.
+
+Section MonoidalMorphismProjections.
+  Context {X Y : hit_algebra_one_types monoidal_signature}
+          (f : X --> Y).
+
+  Definition monoidal_map_carrier
+    : monoidal_carrier X → monoidal_carrier Y
+    := monoidal_map_carrier_PA (pr11 f).
+
+  Definition monoidal_map_unit
+    : monoidal_map_carrier (monoidal_unit X)
+      =
+      monoidal_unit Y
+    := monoidal_map_unit_PA (pr11 f).
+
+  Definition monoidal_map_mult
+             (x y : monoidal_carrier X)
+    : monoidal_map_carrier (monoidal_mult _ x y)
+      =
+      monoidal_mult
+        _
+        (monoidal_map_carrier x)
+        (monoidal_map_carrier y)
+    := monoidal_map_mult_PA (pr11 f) x y.
+
+  Definition monoidal_map_lunit
+             (x : monoidal_carrier X)
+    : maponpaths
+        monoidal_map_carrier
+        (monoidal_lunit _ x)
+      =
+      monoidal_map_mult (monoidal_unit _) x
+      @ maponpaths
+          (λ z, monoidal_mult Y z _)
+          monoidal_map_unit
+      @ monoidal_lunit _ (monoidal_map_carrier x).
+  Proof.
+    refine (_ @ eqtohomot (pr21 f lunit) x @ _).
+    - exact (!(pathscomp0rid _)).
+    - exact (monoidal_map_lunit_r _ x).
+  Qed.
+
+  Definition monoidal_map_runit
+             (x : monoidal_carrier X)
+    : maponpaths
+        monoidal_map_carrier
+        (monoidal_runit _ x)
+      =
+      monoidal_map_mult x (monoidal_unit _)
+      @ maponpaths
+          (λ z, monoidal_mult Y _ z)
+          monoidal_map_unit
+      @ monoidal_runit _ (monoidal_map_carrier x).
+  Proof.
+    refine (_ @ eqtohomot (pr21 f runit) x @ _).
+    - exact (!(pathscomp0rid _)).
+    - exact (monoidal_map_runit_r _ x).
+  Qed.
+
+  Definition monoidal_map_assoc
+             (x y z : monoidal_carrier X)
+    : maponpaths
+          monoidal_map_carrier
+          (monoidal_assoc _ x y z)
+      @ monoidal_map_mult (monoidal_mult _ x y) z
+      @ maponpaths
+          (λ q, monoidal_mult Y q _)
+          (monoidal_map_mult x y)
+      =
+      monoidal_map_mult x (monoidal_mult _ y z)
+      @ maponpaths
+          (λ q, monoidal_mult Y _ q)
+          (monoidal_map_mult y z)
+      @ monoidal_assoc
+          _
+          (monoidal_map_carrier x)
+          (monoidal_map_carrier y)
+          (monoidal_map_carrier z).
+  Proof.
+    refine (_ @ eqtohomot (pr21 f massoc) ((x ,, y) ,, z) @ _).
+    - exact (monoidal_map_assoc_l _ x y z).
+    - exact (!(path_assoc _ _ _) @ monoidal_map_assoc_r (pr11 f) x y z).
+  Qed.
+End MonoidalMorphismProjections.
+
+(** Projections of 2-cells of monoidal algebras *)
+Section MonoidalCellProjections.
+  Context {X Y : hit_algebra_one_types monoidal_signature}
+          {f g : X --> Y}
+          (α : f ==> g).
+
+  Definition monoidal_cell_carrier
+             (x : monoidal_carrier X)
+    : monoidal_map_carrier f x = monoidal_map_carrier g x
+    := pr111 α x.
+
+  Definition monoidal_cell_unit
+    : monoidal_cell_carrier (monoidal_unit X) @ monoidal_map_unit g
+      =
+      monoidal_map_unit f.
+  Proof.
+    exact (eqtohomot (pr211 α) (inl tt) @ pathscomp0rid _).
+  Qed.
+
+  Definition monoidal_cell_comp
+             (x y : monoidal_carrier X)
+    : monoidal_cell_carrier
+        (monoidal_mult _ x y)
+      @ monoidal_map_mult g x y
+      =
+      monoidal_map_mult f x y
+      @ maponpaths
+          (λ z, monoidal_mult Y z _)
+          (monoidal_cell_carrier x)
+      @ maponpaths
+          (λ z, monoidal_mult Y _ z)
+          (monoidal_cell_carrier y).
+  Proof.
+    refine (eqtohomot (pr211 α) (inr (x ,, y)) @ _).
+    refine (maponpaths (λ p, _ @ p) _).
+    refine (_ @ uncurry_ap
+                  (monoidal_mult Y)
+                  (monoidal_cell_carrier x)
+                  (monoidal_cell_carrier y)).
+    apply (maponpathscomp inr (pr211 Y)).
+  Qed.
+End MonoidalCellProjections.
+
 (** The builder *)
 Section MonoidalAlgebraBuilder.
   Variable (A : one_type)
@@ -794,6 +1138,123 @@ Section MonoidalAlgebraBuilder.
     - exact build_monoidal_path_is_algebra.
   Defined.
 End MonoidalAlgebraBuilder.
+
+(** Builder for 1-cells in the bicategory of monoidal algebras in 1-types *)
+Section MonoidalMapBuilder.
+  Context {X Y : hit_algebra_one_types monoidal_signature}
+          (f_comp : monoidal_carrier X → monoidal_carrier Y)
+          (f_unit : f_comp (monoidal_unit X) = monoidal_unit Y)
+          (f_mult : ∏ (x y : monoidal_carrier X),
+                    f_comp (monoidal_mult _ x y)
+                    =
+                    monoidal_mult _ (f_comp x) (f_comp y))
+          (f_lunit : ∏ (x : monoidal_carrier X),
+                     maponpaths f_comp (monoidal_lunit _ x)
+                     =
+                     f_mult (monoidal_unit _) x
+                     @ maponpaths (λ z, monoidal_mult Y z _) f_unit
+                     @ monoidal_lunit _ (f_comp x))
+          (f_runit : ∏ (x : monoidal_carrier X),
+                     maponpaths f_comp (monoidal_runit _ x)
+                     =
+                     f_mult x (monoidal_unit _)
+                     @ maponpaths (λ z, monoidal_mult Y _ z) f_unit
+                     @ monoidal_runit _ (f_comp x))
+          (f_assoc : ∏ (x y z : monoidal_carrier X),
+                     maponpaths
+                       f_comp
+                       (monoidal_assoc _ x y z)
+                     @ f_mult (monoidal_mult _ x y) z
+                     @ maponpaths
+                         (λ q, monoidal_mult Y q _)
+                         (f_mult x y)
+                     =
+                     f_mult x (monoidal_mult _ y z)
+                     @ maponpaths
+                         (λ q, monoidal_mult Y _ q)
+                         (f_mult y z)
+                     @ monoidal_assoc
+                         _
+                         (f_comp x) (f_comp y) (f_comp z)).
+
+  Definition make_monoidal_prealg_map
+    : pr11 X --> pr11 Y.
+  Proof.
+    use make_hit_prealgebra_mor.
+    - exact f_comp.
+    - intro x ; induction x as [x | x].
+      + induction x.
+        exact f_unit.
+      + exact (f_mult (pr1 x) (pr2 x)).
+  Defined.
+  
+  Definition make_monoidal_map
+    : X --> Y.
+  Proof.
+    use make_algebra_map.
+    use make_hit_path_alg_map.
+    - exact make_monoidal_prealg_map.
+    - intros i x.
+      induction i.
+      + refine (pathscomp0rid _ @ f_lunit x @ _).
+        exact (!(monoidal_map_lunit_r make_monoidal_prealg_map x)).
+      + refine (pathscomp0rid _ @ f_runit x @ _).
+        exact (!(monoidal_map_runit_r make_monoidal_prealg_map x)).
+      + refine (_ @ f_assoc (pr11 x) (pr21 x) (pr2 x) @ _).
+        * exact (!(monoidal_map_assoc_l make_monoidal_prealg_map _ _ _)).
+        * exact (!(monoidal_map_assoc_r make_monoidal_prealg_map _ _ _)
+                  @ path_assoc _ _ _).
+  Qed.
+End MonoidalMapBuilder.
+
+(** Builder for 2-cells in the bicategory of monoidal algebras in 1-types *)
+Section MonoidalCellBuilder.
+  Context {X Y : hit_algebra_one_types monoidal_signature}
+          {f g : X --> Y}
+          (α_comp : ∏ (x : monoidal_carrier X),
+                    monoidal_map_carrier f x
+                    =
+                    monoidal_map_carrier g x)
+          (α_unit : α_comp (monoidal_unit X) @ monoidal_map_unit g
+                    =
+                    monoidal_map_unit f)
+          (α_compose : ∏ (x y : monoidal_carrier X),
+                       α_comp (monoidal_mult _ x y)
+                       @ monoidal_map_mult g x y
+                       =
+                       monoidal_map_mult f x y
+                       @ maponpaths
+                           (λ z, monoidal_mult Y z _)
+                           (α_comp x)
+                       @ maponpaths
+                           (λ z, monoidal_mult Y _ z)
+                           (α_comp y)).
+
+  Definition make_monoidal_cell_is_2cell
+    : disp_2cells
+        (α_comp : prebicat_cells one_types (pr111 f) (pr111 g))
+        (pr211 f)
+        (pr211 g).
+  Proof.
+    use funextsec.
+    intro z.
+    induction z as [a | a].
+    - induction a.
+      exact (α_unit @ !(pathscomp0rid _)).
+    - refine (α_compose (pr1 a) (pr2 a) @ _).
+      refine (maponpaths (λ p, _ @ p) _).
+      refine (!_).
+      refine (_ @ uncurry_ap
+                    (monoidal_mult Y)
+                    (α_comp (pr1 a))
+                    (α_comp (pr2 a))).
+      apply (maponpathscomp inr (pr211 Y)).
+  Qed.
+  
+  Definition make_monoidal_cell
+    : f ==> g
+    := ((α_comp ,, make_monoidal_cell_is_2cell) ,, (λ _, tt)) ,, tt.
+End MonoidalCellBuilder.
 
 (** Lists form an algebra for this signature *)
 Definition concatenate_assoc
@@ -893,3 +1354,8 @@ Proof.
   - exact list_triangle.
   - exact list_pentagon.
 Defined.
+
+Definition incl_list_monoidal_algebra
+           (A : one_type)
+  : A → alg_carrier (list_monoidal_algebra A)
+  := λ a, cons a nil.
