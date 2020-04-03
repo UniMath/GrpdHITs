@@ -1258,3 +1258,480 @@ Proof.
     intro p ; induction p.
     exact (λ _ _, idpath _).
 Defined.
+
+(**
+The automorphism 2-group of `X`.
+Assuming univalence, this is just the loopspace of the type of 1-types with basepoint `X`.
+Here we construct it without assuming univalence.
+ *)
+Local Open Scope weq.
+
+(**
+We first give some principles to construct equalities between weak equivalences.
+In addition, we prove some properties about them.
+ *)
+Definition path_isweq
+           {X Y : UU}
+           {f : X → Y}
+           (Hf₁ Hf₂ : isweq f)
+  : Hf₁ = Hf₂.
+Proof.
+  apply isapropisweq.
+Defined.
+
+Definition path_weq'
+           {X Y : UU}
+           {f g : X ≃ Y}
+           (p : pr1 f = pr1 g)
+  : f = g.
+Proof.
+  induction f as [f Hf], g as [g Hg] ; simpl in *.
+  induction p.
+  refine (maponpaths (λ z, f ,, z) _).
+  apply path_isweq.
+Defined.
+
+Definition path_weq
+           {X Y : UU}
+           {f g : X ≃ Y}
+           (p : ∏ (x : X), f x = g x)
+  : f = g.
+Proof.
+  apply path_weq'.
+  use funextsec.
+  exact p.
+Defined.
+
+Definition inv_path_weq'
+           {X Y : UU}
+           {f g : X ≃ Y}
+           (p : pr1 f = pr1 g)
+  : !(path_weq' p) = path_weq' (!p).
+Proof.
+  induction f as [f Hf] ; induction g as [g Hg] ; simpl in *.
+  induction p.
+  simpl.
+  etrans.
+  {
+    refine (!_).
+    apply maponpathsinv0.
+  }
+  apply maponpaths.
+  apply isapropisweq.
+Defined.
+
+Definition comp_path_weq'
+           {X Y : UU}
+           {f g h : X ≃ Y}
+           (p : pr1 f = pr1 g)
+           (q : pr1 g = pr1 h)
+  : path_weq' p @ path_weq' q = path_weq' (p @ q).
+Proof.
+  induction f as [f Hf]
+  ; induction g as [g Hg]
+  ; induction h as [h Hh]
+  ; simpl in *.
+  induction p ; induction q ; simpl.
+  etrans.
+  {
+    refine (!_).
+    apply maponpathscomp0.
+  }
+  apply maponpaths.
+  apply isapropisweq.
+Defined.
+
+Definition precomp_path_weq'
+           {X Y Z : UU}
+           (f : X ≃ Y)
+           {g h : Y ≃ Z}
+           (p : pr1 g = pr1 h)
+  : maponpaths
+      (λ z, z ∘ f)
+      (path_weq' p)
+    =
+    @path_weq' X Z (g ∘ f) (h ∘ f) (maponpaths (λ z, z ∘ pr1 f)%functions p).
+Proof.
+  induction g as [g Hg]
+  ; induction h as [h Hh]
+  ; simpl in *.
+  induction p ; simpl.
+  etrans.
+  {
+    apply maponpathscomp.
+  }
+  etrans.
+  {
+    refine (!_).
+    exact (maponpathscomp _ (λ z, _ ,, z) _).
+  }
+  simpl.
+  apply maponpaths.
+  apply isapropisweq.
+Qed.
+
+Definition postcomp_path_weq'
+           {X Y Z : UU}
+           {f g : X ≃ Y}
+           (h : Y ≃ Z)
+           (p : pr1 f = pr1 g)
+  : maponpaths
+      (λ z, h ∘ z)
+      (path_weq' p)
+    =
+    @path_weq' X Z (h ∘ f) (h ∘ g) (maponpaths (λ z, (λ x, h(z x))) p).
+Proof.
+  induction f as [f Hf]
+  ; induction g as [g Hg]
+  ; simpl in *.
+  induction p ; simpl.
+  etrans.
+  {
+    apply (maponpathscomp _ (λ z, h ∘ z)).
+  }
+  unfold funcomp, weqcomp, make_weq ; simpl.
+  etrans.
+  {
+    refine (!_).
+    exact (maponpathscomp
+             (λ z, twooutof3c f h z (pr2 h))
+             (λ z, (λ q, h(f q)) ,, z)
+             _).
+  }
+  simpl.
+  apply maponpaths.
+  apply isapropisweq.
+Qed.
+
+Definition TODO {A : UU} : A.
+Admitted.
+
+Definition inv_path_weq
+           {X Y : UU}
+           {f g : X ≃ Y}
+           (p : ∏ (x : X), f x = g x)
+  : !(path_weq p) = path_weq (λ x, !(p x)).
+Proof.
+  refine (inv_path_weq' _ @ _).
+  unfold path_weq ; apply maponpaths.
+  apply TODO.
+Qed.
+
+Definition comp_path_weq
+           {X Y : UU}
+           {f g h : X ≃ Y}
+           (p : ∏ (x : X), f x = g x)
+           (q : ∏ (x : X), g x = h x)
+  : path_weq p @ path_weq q
+    =
+    path_weq (λ x, p x @ q x).
+Proof.
+  refine (comp_path_weq' _ _ @ _).
+  unfold path_weq ; apply maponpaths.
+  apply TODO.
+Qed.
+
+Definition precomp_path_weq
+           {X Y Z : UU}
+           (f : X ≃ Y)
+           {g h : Y ≃ Z}
+           (p : ∏ (y : Y), g y = h y)
+  : maponpaths
+      (λ z, z ∘ f)
+      (path_weq p)
+    =
+    @path_weq X Z (g ∘ f) (h ∘ f) (λ x, p (f x)).
+Proof.
+  refine (precomp_path_weq' _ _ @ _).
+  unfold path_weq.
+  apply maponpaths.
+  apply TODO.
+Qed.
+
+Definition postcomp_path_weq
+           {X Y Z : UU}
+           {f g : X ≃ Y}
+           (h : Y ≃ Z)
+           (p : ∏ (x : X), f x = g x)
+  : maponpaths
+      (λ z, h ∘ z)
+      (path_weq p)
+    =
+    @path_weq X Z (h ∘ f) (h ∘ g) (λ x, maponpaths h (p x)).
+Proof.
+  refine (postcomp_path_weq' _ _ @ _).
+  unfold path_weq.
+  apply maponpaths.
+  apply TODO.
+Qed.
+           
+Definition homotweq
+           {X Y : UU}
+           {f g : X ≃ Y}
+           {p q : ∏ (x : X), f x = g x}
+           (r : ∏ (x : X), p x = q x)
+  : path_weq p = path_weq q.
+Proof.
+  assert (p = q) as H.
+  {
+    use funextsec.
+    exact r.
+  }
+  induction H.
+  apply idpath.
+Defined.
+
+(**
+The laws to show that weak equivalences on `X` form a coherent weak 2-group.
+ *)
+Definition weq_id_l
+           {X : UU}
+           (f : X ≃ X)
+  : f ∘ idweq X = f.
+Proof.
+  use path_weq.
+  exact (λ _, idpath _).
+Defined.
+
+Definition weq_id_r
+           {X : UU}
+           (f : X ≃ X)
+  : idweq X ∘ f = f.
+Proof.
+  use path_weq.
+  exact (λ _, idpath _).
+Defined.
+
+Definition weq_inv_l
+           {X : UU}
+           (f : X ≃ X)
+  : f ∘ invweq f = idweq X.
+Proof.
+  use path_weq.
+  intro x ; simpl.
+  exact (homotweqinvweq f x).
+Defined.
+
+Definition weq_inv_r
+           {X : UU}
+           (f : X ≃ X)
+  : idweq X = invweq f ∘ f.
+Proof.
+  use path_weq.
+  intro x ; simpl.
+  exact (!(homotinvweqweq f x)).
+Defined.
+
+Definition weq_assoc
+           {X : UU}
+           (f g h : X ≃ X)
+  : (h ∘ g) ∘ f = h ∘ (g ∘ f).
+Proof.
+  use path_weq.
+  exact (λ _, idpath _).
+Defined.
+
+Definition weq_inv_triangle_l
+           {X : UU}
+           (f : X ≃ X)
+  : maponpaths
+      (λ z : X ≃ X, f ∘ z)
+      (weq_inv_r f)
+    @ !(weq_assoc f (invweq f) f)
+    @ maponpaths (λ z : X ≃ X, z ∘ f) (weq_inv_l f)
+    =
+    weq_id_l f @ ! weq_id_r f.
+Proof.
+  unfold weq_inv_r, weq_assoc, weq_inv_l.
+  etrans.
+  {
+    etrans.
+    {
+      apply maponpaths_2.
+      apply postcomp_path_weq.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply inv_path_weq.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        apply precomp_path_weq.
+      }
+      apply comp_path_weq.
+    }
+    apply comp_path_weq.
+  }
+  unfold weq_id_l, weq_id_r.
+  refine (!_).
+  etrans.
+  {
+    apply maponpaths.
+    apply inv_path_weq.
+  }
+  etrans.
+  {
+    apply comp_path_weq.
+  }
+  apply homotweq.
+  intros x ; simpl.
+  refine (!_).
+  etrans.
+  {
+    apply maponpaths.
+    exact (!(homotweqinvweqweq f x)).
+  }
+  etrans.
+  {
+    refine (!_).
+    apply maponpathscomp0.
+  }
+  etrans.
+  {
+    apply maponpaths.
+    apply pathsinv0l.
+  }
+  apply idpath.
+Qed.
+
+Definition weq_inv_triangle_r
+           {X : UU}
+           (f : X ≃ X)
+  : maponpaths (λ z : X ≃ X, z ∘ invweq f) (weq_inv_r f)
+    @ weq_assoc (invweq f) f (invweq f)
+    @ maponpaths (λ z : X ≃ X, invweq f ∘ z) (weq_inv_l f)
+    =
+    weq_id_r (invweq f) @ ! weq_id_l (invweq f).
+Proof.
+  unfold weq_inv_r, weq_assoc, weq_inv_l.
+  etrans.
+  {
+    etrans.
+    {
+      apply maponpaths_2.
+      apply precomp_path_weq.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        apply postcomp_path_weq.
+      }
+      apply comp_path_weq.
+    }
+    apply comp_path_weq.
+  }
+  unfold weq_id_l, weq_id_r.
+  refine (!_).
+  etrans.
+  {
+    apply maponpaths.
+    apply inv_path_weq.
+  }
+  etrans.
+  {
+    apply comp_path_weq.
+  }
+  apply homotweq.
+  intros x ; simpl.
+  refine (!_).
+  etrans.
+  {
+    apply maponpaths.
+    apply homotweqweqinvweq.
+  }
+  apply pathsinv0l.
+Qed.
+
+Definition weq_triangle
+           {X : UU}
+           (f g : X ≃ X)
+  : maponpaths (λ z : X ≃ X, z ∘ f) (weq_id_l g) =
+    weq_assoc f (idweq X) g
+    @ maponpaths (λ z : X ≃ X, g ∘ z) (weq_id_r f).
+Proof.
+  etrans.
+  {
+    apply precomp_path_weq.
+  }
+  refine (!_).
+  etrans.
+  {
+    apply maponpaths.
+    apply postcomp_path_weq.
+  }
+  etrans.
+  {
+    apply comp_path_weq.
+  }
+  apply homotweq.
+  exact (λ _, idpath _).
+Qed.
+
+Definition weq_pentagon
+           {X : UU}
+           (f₁ f₂ f₃ f₄ : X ≃ X)
+  : weq_assoc f₁ f₂ (f₄ ∘ f₃) @ weq_assoc (f₂ ∘ f₁) f₃ f₄
+    =
+    maponpaths (λ q : X ≃ X, q ∘ f₁) (weq_assoc f₂ f₃ f₄)
+    @ weq_assoc f₁ (f₃ ∘ f₂) f₄
+    @ maponpaths (λ q : X ≃ X, f₄ ∘ q) (weq_assoc f₁ f₂ f₃).
+Proof.
+  etrans.
+  {
+    apply comp_path_weq.
+  }
+  refine (!_).
+  etrans.
+  {
+    etrans.
+    {
+      apply maponpaths_2.
+      apply precomp_path_weq.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        apply postcomp_path_weq.
+      }
+      apply comp_path_weq.
+    }
+    apply comp_path_weq.
+  }
+  apply homotweq.
+  exact (λ _, idpath _).
+Qed.
+  
+Definition aut_2gr
+           (X : UU)
+           (HX : isofhlevel 3 X)
+  : hit_algebra_one_types coh_2gr_signature.
+Proof.
+  use make_2gr_algebra.
+  - use make_one_type.
+    + exact (X ≃ X).
+    + use isofhlevelsnweqtohlevelsn.
+      exact HX.
+  - exact (idweq X).
+  - exact invweq.
+  - exact weqcomp.
+  - exact weq_id_l.
+  - exact weq_id_r.
+  - exact weq_inv_l.
+  - exact weq_inv_r.
+  - exact weq_assoc.
+  - exact weq_inv_triangle_l.
+  - exact weq_inv_triangle_r.
+  - exact weq_triangle.
+  - exact weq_pentagon.
+Defined.
