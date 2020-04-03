@@ -197,9 +197,6 @@ Section Mod2AlgebraProjections.
   Defined.
 End Mod2AlgebraProjections.
 
-
-(** Fixed until here *)
-
 Section Mod2Induction.
   Context {X : hit_algebra_one_types mod2_signature}
           (Y : alg_carrier X → one_type)
