@@ -1,4 +1,18 @@
-(** Here we define the signature for the set truncation *)
+(**
+Here we define the signature for the set truncation
+
+Given a 1-type `A`, we define its set truncation as the following HIT
+
+HIT ∥A∥₀ :=
+| inc : A → ∥A∥₀
+| trunc : ∏ (x y : ∥A∥₀) (p q : x = y), p = q
+
+To encode the fact that we have two path variables, we rewrite it as follows
+
+HIT ∥A∥₀ :=
+| inc : A → ∥A∥₀
+| trunc : ∏ (x y : ∥A∥₀) (p : (x , x) = (y , y)), ap π₁ p = ap π₂ p
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 

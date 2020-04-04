@@ -1,4 +1,12 @@
-(** Here we define the signature for the circle *)
+(**
+Here we define the signature for the circle
+
+The circle is the following HIT:
+HIT circle :=
+| base : circle
+| loop : base = base
+We look at the 1-truncation.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
@@ -27,10 +35,8 @@ Definition circle_point_constr
   : poly_code
   := C unit_one_type.
 
-Inductive circle_paths : Type :=
+Inductive circle_paths : UU :=
 | loop : circle_paths.
-
-Inductive circle_homots : Type := .
 
 Definition circle_signature
   : hit_signature.
@@ -41,7 +47,7 @@ Proof.
   - exact (λ _, C unit_one_type).
   - exact (λ _, constr).
   - exact (λ _, constr).
-  - exact circle_homots.
+  - exact empty.
   - intro x ; induction x.
   - intro x ; induction x.
   - intro x ; induction x.

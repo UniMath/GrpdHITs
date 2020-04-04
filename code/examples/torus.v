@@ -1,4 +1,14 @@
-(** Here we define the signature for the torus *)
+(**
+Here we define the signature for the torus
+
+It is defined as the following HIT
+
+HIT torus :=
+| base : torus
+| l, r : base = base
+| surf : l @ r = r @ l
+We look at its 1-truncation.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 

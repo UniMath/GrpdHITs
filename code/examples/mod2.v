@@ -1,4 +1,14 @@
-(** Here we define the signature for the integers modulo 2 *)
+(**
+Here we define the signature for the integers modulo 2.
+
+These are defined as the following HIT:
+HIT mod2 :=
+| 0 : mod2
+| S : mod2 → mod2
+| mod : ∏ (n : mod2), S(S n) = n
+| ap_mod : ∏ (n : mod2), ap S (mod n) = mod (S n)
+We study the 1-truncation.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
