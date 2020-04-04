@@ -1,4 +1,15 @@
-(** Here we define the signature for the circle *)
+(**
+Here we define the signature for the group quotient.
+We also derive its usual elimination principle.
+
+Given a group `G`, we define the group quotient as follows
+HIT group_quot G :=
+| base : group_quot G
+| loop : ∏ (g : G), base = base
+| loop_e : loop e = idpath base
+| loop_m : ∏ (g₁ g₂ : G), loop (g₁ · g₂) = loop g₁ @ loop g₂
+In addition, this type is 1-truncated.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
@@ -17,7 +28,7 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
-Require Import initial_grpd_alg.W_poly.
+Require Import displayed_algebras.globe_over_lem.
 
 Local Open Scope cat.
 
@@ -202,56 +213,238 @@ Section GroupQuotient.
                (g : G)
       : group_quot_base = group_quot_base
       := alg_path X tt g.
+
+    Definition group_quot_loop_unit
+      : group_quot_loop (unel G) = idpath group_quot_base.
+    Proof.
+      exact (!(pathscomp0rid _) @ alg_homot X group_quot_ident tt (idpath tt)).
+    Qed.
+
+    Definition group_quot_loop_mult
+               (g₁ g₂ : G)
+      : group_quot_loop (op g₁ g₂)
+        =
+        group_quot_loop g₁ @ group_quot_loop g₂.
+    Proof.
+      refine (!(pathscomp0rid _) @ alg_homot X group_quot_comp (g₁ ,, g₂) (idpath tt) @ _).
+      simpl.
+      etrans.
+      {
+        apply maponpaths.
+        apply pathscomp0rid.
+      }
+      apply maponpaths_2.
+      apply pathscomp0rid.
+    Qed.
     End AlgebraProjections.
-  (*
+
   Section GroupQuotInduction.
     Context {X : hit_algebra_one_types group_quot_signature}
             (Y : alg_carrier X → one_type)
             (Ybase : Y (group_quot_base X))
-            (* (Yloop : @PathOver _ _ _ Y Ybase Ybase (circle_loop X)) *).
+            (Yloop : ∏ (g : G),
+                     @PathOver _ _ _ Y Ybase Ybase (group_quot_loop X g))
+            (Yunit : globe_over
+                       Y
+                       (group_quot_loop_unit X)
+                       (Yloop (unel G))
+                       (identityPathOver Ybase))
+            (Ycomp : ∏ (g₁ g₂ : G),
+                     globe_over
+                       Y
+                       (group_quot_loop_mult X g₁ g₂)
+                       (Yloop (op g₁ g₂))
+                       (composePathOver (Yloop g₁) (Yloop g₂))).
 
-    (*
-    Definition make_circle_disp_algebra
+    Local Definition make_group_quot_disp_algebra_op
+      : ∏ (x : unit), unit → Y (alg_constr X x).
+    Proof.
+      intros x xx.
+      induction x.
+      exact Ybase.
+    Defined.
+
+    Local Definition make_group_quot_disp_algebra_path
+      : ∏ (j : path_label group_quot_signature)
+          (x : pr1 G),
+        pr1 G
+        →
+        @PathOver _ _ _ Y Ybase Ybase (alg_path X j x).
+    Proof.
+      intros j x y.
+      induction j.
+      exact (Yloop x).
+    Defined.
+    
+    Local Definition make_group_quot_disp_algebra_unit
+          (z : unit)
+          (p : tt = tt)
+      : globe_over
+          Y
+          (alg_homot X group_quot_ident z p)
+          (composePathOver
+             (composePathOver
+                (identityPathOver _)
+                (identityPathOver _))
+             (composePathOver
+                (Yloop 1%multmonoid)
+                (composePathOver
+                   (identityPathOver _)
+                   (identityPathOver _)))) 
+          (identityPathOver _).
+    Proof.
+      refine (globe_over_move_globe_one_type _ _).
+      { apply (pr111 X). }
+      exact
+      (concat_globe_over
+         (globe_over_compose_left'
+            _
+            (concat_globe_over
+               (globe_over_compose_left'
+                  _
+                  (globe_over_id_left _))
+               (globe_over_id_right _)))
+         (concat_globe_over
+            (globe_over_compose_right
+               _
+               (globe_over_id_left _))
+            (concat_globe_over
+               (globe_over_id_left _)
+               Yunit))).
+    Qed.
+
+    Definition make_group_quot_disp_algebra_comp
+               (g₁ g₂ : G)
+               (p : tt = tt)
+      : globe_over
+          Y
+          (pr2 X group_quot_comp (g₁ ,, g₂) p)
+          (composePathOver
+             (composePathOver
+                (identityPathOver _)
+                (identityPathOver _))
+             (composePathOver
+                (Yloop (op g₁ g₂))
+                (composePathOver
+                   (identityPathOver _)
+                   (identityPathOver _))))
+          (composePathOver
+             (composePathOver
+                (composePathOver
+                   (identityPathOver _)
+                   (identityPathOver _))
+                (composePathOver
+                   (Yloop g₁)
+                   (composePathOver
+                      (identityPathOver _)
+                      (identityPathOver _))))
+             (composePathOver
+                (composePathOver
+                   (identityPathOver _)
+                   (identityPathOver _))
+                (composePathOver
+                   (Yloop g₂)
+                   (composePathOver
+                      (identityPathOver _)
+                      (identityPathOver _))))).
+    Proof.
+      refine (globe_over_move_globe_one_type _ _).
+      { apply (pr111 X). }
+      refine
+      (concat_globe_over
+         (globe_over_compose_left'
+            _
+            (concat_globe_over
+               (globe_over_compose_left'
+                  _
+                  (globe_over_id_right _))
+               (globe_over_id_right _)))
+         (concat_globe_over
+            (globe_over_compose_right
+               _
+               (globe_over_id_right _))
+            (concat_globe_over
+               (globe_over_id_left _)
+               (concat_globe_over
+                  (Ycomp g₁ g₂)
+                  (inv_globe_over
+                     (concat_globe_over
+                        (globe_over_compose_left'
+                           _
+                           (concat_globe_over
+                              (globe_over_compose_left'
+                                 _
+                                 (concat_globe_over
+                                    (globe_over_compose_left'
+                                       _
+                                       (globe_over_id_right _))
+                                    (globe_over_id_right _)))
+                              (concat_globe_over
+                                 (globe_over_compose_right
+                                    _
+                                    (globe_over_id_right _))
+                                 (globe_over_id_left _))))
+                        (globe_over_compose_right
+                           _
+                           (concat_globe_over
+                              (globe_over_compose_left'
+                                 _
+                                 (concat_globe_over
+                                    (globe_over_compose_left'
+                                       _
+                                       (globe_over_id_right _))
+                                    (globe_over_id_right _)))
+                              (concat_globe_over
+                                 (globe_over_compose_right
+                                    _
+                                    (globe_over_id_right _))
+                                 (globe_over_id_left _)))))))))).
+    Qed.
+
+    Definition make_group_quot_disp_algebra
       : disp_algebra X.
     Proof.
       use make_disp_algebra.
       - exact Y.
-      - intros x xx.
-        induction x.
-        exact Ybase.
-      - intros j x y.
+      - exact make_group_quot_disp_algebra_op.
+      - exact make_group_quot_disp_algebra_path.
+      - intros j z zz p_arg pp_arg.
         induction j.
-        induction x.
-        exact Yloop.
-      - intro j.
-        induction j.
+        + apply make_group_quot_disp_algebra_unit.
+        + apply make_group_quot_disp_algebra_comp.
     Defined.
-     *)
     
-  Variable (HX : is_HIT circle_signature X).
+    Variable (HX : is_HIT group_quot_signature X).
 
-  (** Induction principle *)
-  Definition circle_ind_disp_algebra_map
-    : disp_algebra_map make_circle_disp_algebra
-    := HX make_circle_disp_algebra.
+    (** Induction principle *)
+    Definition group_quot_ind_disp_algebra_map
+      : disp_algebra_map make_group_quot_disp_algebra
+      := HX make_group_quot_disp_algebra.
 
-  Definition circle_ind
-    : ∏ (x : alg_carrier X), Y x
-    := pr1 circle_ind_disp_algebra_map.
+    Definition group_quot_ind
+      : ∏ (x : alg_carrier X), Y x
+      := pr1 group_quot_ind_disp_algebra_map.
 
-  Definition circle_ind_base
-    : circle_ind (circle_base X) = Ybase
-    := pr12 circle_ind_disp_algebra_map tt.
+    Definition group_quot_ind_base
+      : group_quot_ind (group_quot_base X) = Ybase
+      := pr12 group_quot_ind_disp_algebra_map tt.
 
-  Definition circle_ind_loop
-    : PathOver_square
-        _
-        _
-        (apd (pr1 circle_ind_disp_algebra_map) (circle_loop X))
-        Yloop
-        circle_ind_base
-        circle_ind_base
-        := pr22 circle_ind_disp_algebra_map loop tt.
-    End CircleInduction.
-   *)
+    Definition group_quot_ind_loop
+               (g : G)
+      : PathOver_square
+          _
+          (idpath _)
+          (apd
+             (pr1 group_quot_ind_disp_algebra_map)
+             (group_quot_loop X g))
+          (Yloop g)
+          group_quot_ind_base
+          group_quot_ind_base.
+    Proof.
+      pose (pr22 group_quot_ind_disp_algebra_map tt g).
+      simpl in p.
+      rewrite pathscomp0rid in p.
+      exact p.
+    Qed.
+  End GroupQuotInduction.
 End GroupQuotient.
