@@ -19,12 +19,31 @@ Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.globe_over_lem.
 Require Import displayed_algebras.displayed_algebra.
-Require Import displayed_algebras.total_algebra_map.
+Require Import displayed_algebras.total_algebra.
 Require Import existence.hit_existence.
 Require Import existence.initial_algebra.
 
 Local Open Scope cat.
-      
+
+Section Equalizer.
+  Context {Σ : hit_signature}
+          {A B : hit_algebra_one_types Σ}
+          (f g : A --> B).
+
+  Definition equalizer_disp_alg
+    : disp_algebra A.
+  Proof.
+    use set_disp_algebra.
+    - exact (λ z, pr111 f z = pr111 g z).
+    - abstract
+        (intro x ;
+         exact (one_type_isofhlevel (pr111 B) (pr111 f x) (pr111 g x))).
+    - admit.
+    - admit.
+  Admitted.
+End Equalizer.
+
+(*
 Section Equalizer.
   Context {A B : one_types}
           (f g : A --> B).
@@ -179,3 +198,4 @@ Section Equalizer.
     Admitted.
   End EqualizerUMP2.
 End Equalizer.
+*)

@@ -19,12 +19,36 @@ Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.globe_over_lem.
 Require Import displayed_algebras.displayed_algebra.
-Require Import displayed_algebras.total_algebra_map.
+Require Import displayed_algebras.total_algebra.
 Require Import existence.hit_existence.
 Require Import existence.initial_algebra.
 
 Local Open Scope cat.
 
+Section Equifier.
+  Context {Σ : hit_signature}
+          {A B : hit_algebra_one_types Σ}
+          {f g : A --> B}
+          (p q : f ==> g).
+
+  Definition equifier_disp_alg
+    : disp_algebra A.
+  Proof.
+    use prop_disp_algebra.
+    - exact (λ a, pr111 p a = pr111 q a).
+    - abstract
+        (intro a ;
+         exact (one_type_isofhlevel
+                  (pr111 B)
+                  (pr111 f a) (pr111 g a)
+                  (pr111 p a) (pr111 q a))).
+    - simpl.
+      admit.
+  Admitted.
+End Equifier.
+
+
+(*
 Section Equifier.
   Context {A B : one_types}
           {f g : A --> B}
@@ -203,3 +227,4 @@ Section Equifier.
     Qed.
   End EquifierUMPEq.
 End Equifier.
+*)
