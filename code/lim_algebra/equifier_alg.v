@@ -30,27 +30,88 @@ Section Equifier.
           {f g : A --> B}
           (p q : f ==> g).
 
+  (** General constructors for equifiers *)
+  Definition equifier_UU
+    : UU
+    := ∑ a, p a = q a.
+
+  Definition pr_equifier
+    : equifier_UU → (A : one_type)
+    := λ a, pr1 a.
+
+  Definition homot_equifier
+    : ∏ (x : equifier_UU),
+      p (pr_equifier x) = q (pr_equifier x)
+    := λ x, pr2 x.
+
+  Definition path_equifier
+             {x y : equifier_UU}
+             (r : pr_equifier x = pr_equifier y)
+    : x = y.
+  Proof.
+    induction x as [x px] ; induction y as [y py]
+    ; simpl in *.
+    induction r.
+    apply maponpaths.
+    exact (proofirrelevance
+             _
+             (pr2 B _ _ _ _)
+             px py).
+  Defined.
+
+  Definition pr_path_equifier
+             {x y : equifier_UU}
+             (r : pr_equifier x = pr_equifier y)
+    : maponpaths pr_equifier (path_equifier r) = r.
+  Proof.
+    induction x as [x px] ; induction y as [y py]
+    ; simpl in *.
+    induction r ; simpl.
+    etrans.
+    {
+      apply (maponpathscomp (λ z, _ ,, z) pr_equifier).
+    }
+    unfold funcomp.
+    simpl.
+    apply maponpaths_for_constant_function.
+  Qed.
+
+  Definition path_equifier_eta
+             {x y : equifier_UU}
+             (r : x = y)
+    : r = path_equifier (maponpaths pr_equifier r).
+  Proof.
+    induction r ; simpl.
+    refine (!_).
+    refine (_ @ @maponpaths_idpath _ _ (λ z, _ ,, z) _).
+    apply maponpaths.
+    apply proofirrelevance.
+    apply hlevelntosn.
+    apply B.
+  Qed.
+
+  (** Equifiers in 1-types *)
   Definition equifier_one_types
     : one_types.
   Proof.
-    refine (make_one_type (∑ a, p a = q a) _).
+    refine (make_one_type equifier_UU _).
     apply isofhleveltotal2.
     - apply one_type_isofhlevel.
-    - intro x.
-      do 2 apply hlevelntosn.
-      exact (one_type_isofhlevel B (f x) (g x) (p x) (q x)).
+    - abstract
+        (intro x ;
+         do 2 apply hlevelntosn ;
+         exact (one_type_isofhlevel B (f x) (g x) (p x) (q x))).
   Defined.
 
   Definition equifier_inc
     : equifier_one_types --> A
-    := λ a, pr1 a.
+    := pr_equifier.
 
   Definition equifier_homot
     : equifier_inc ◃ p = equifier_inc ◃ q.
   Proof.
     use funextsec.
-    intro a.
-    exact (pr2 a).
+    exact homot_equifier.
   Qed.
 
   Section EquifierUMP1.
@@ -79,9 +140,8 @@ Section Equifier.
       : φ ==> ψ.
     Proof.
       intro c.
-      use total2_paths_f.
-      - exact (φinc c @ !(ψinc c)).
-      - apply B.
+      use path_equifier.
+      exact (φinc c @ !(ψinc c)).
     Defined.
 
     Definition equifier_ump_2_inc
@@ -92,7 +152,7 @@ Section Equifier.
       etrans.
       {
         apply maponpaths_2.
-        apply base_total2_paths.
+        apply pr_path_equifier.
       }
       refine (!(path_assoc _ _ _) @ _).
       etrans.
@@ -119,9 +179,27 @@ Section Equifier.
       : ρ = τ.
     Proof.
       use funextsec ; intro c.
-      pose (eqtohomot ρinc c) as r₁.
-      pose (eqtohomot τinc c) as r₂.
+      pose (maponpaths (λ z, z @ !(ψinc c)) (eqtohomot ρinc c)) as r₁.
+      pose (maponpaths (λ z, z @ !(ψinc c)) (eqtohomot τinc c)) as r₂.
+      refine (path_equifier_eta _ @ _ @ !(path_equifier_eta _)).
+      apply maponpaths.
       cbn in r₁, r₂ ; unfold homotcomp, homotfun in r₁, r₂.
-    Admitted.
+      refine (_ @ r₁ @ !r₂ @ _).
+      - refine (!_).
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0r.
+        }
+        apply pathscomp0rid.
+      - refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0r.
+        }
+        apply pathscomp0rid.
+    Qed.
   End EquifierUMPEq.
 End Equifier.
