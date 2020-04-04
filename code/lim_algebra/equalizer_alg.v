@@ -24,10 +24,85 @@ Require Import existence.hit_existence.
 Require Import existence.initial_algebra.
 
 Local Open Scope cat.
-
+      
 Section Equalizer.
   Context {A B : one_types}
           (f g : A --> B).
+
+  (** Equalizers in types *)
+  Definition equalizer_UU
+    : UU
+    := ∑ a, f a = g a.
+
+  Definition pr_equalizer_UU
+    : equalizer_UU → (A : one_type)
+    := λ a, pr1 a.
+
+  Definition path_equalizer_UU
+             (x : equalizer_UU)
+    : f (pr_equalizer_UU x) = g (pr_equalizer_UU x)
+    := pr2 x.
+
+  Definition path_equalizer_to_path
+             {x y : equalizer_UU}
+             (p : x = y)
+    : path_equalizer_UU x @ maponpaths g (maponpaths pr_equalizer_UU p)
+      =
+      maponpaths f (maponpaths pr_equalizer_UU p) @ path_equalizer_UU y.
+  Proof.
+    induction p ; simpl.
+    apply pathscomp0rid.
+  Qed.
+
+  Definition path_equalizer
+             {x y : equalizer_UU}
+             (p : pr_equalizer_UU x = pr_equalizer_UU y)
+             (s : path_equalizer_UU x @ maponpaths g p
+                  =
+                  maponpaths f p @ path_equalizer_UU y)
+    : x = y.
+  Proof.
+    induction x as [x px] ; induction y as [y py]
+    ; simpl in *.    
+    induction p ; simpl in *.
+    apply maponpaths.
+    exact (!(pathscomp0rid _) @ s).
+  Defined.
+
+  Definition pr_path_equalizer
+             {x y : equalizer_UU}
+             (p : pr_equalizer_UU x = pr_equalizer_UU y)
+             (s : path_equalizer_UU x @ maponpaths g p
+                  =
+                  maponpaths f p @ path_equalizer_UU y)
+    : maponpaths pr_equalizer_UU (path_equalizer p s)
+      =
+      p.
+  Proof.
+    induction x as [x px] ; induction y as [y py]
+    ; simpl in *.    
+    induction p ; simpl in *.
+    etrans.
+    {
+      apply (maponpathscomp (λ z, _ ,, z) pr_equalizer_UU).
+    }
+    apply maponpaths_for_constant_function.
+  Qed.
+
+  Definition test
+             {x y : equalizer_UU}
+             (p : pr_equalizer_UU x = pr_equalizer_UU y)
+             (s : path_equalizer_UU x @ maponpaths g p
+                  =
+                  maponpaths f p @ path_equalizer_UU y)
+    : UU.
+  Proof.
+    refine (path_equalizer_to_path (path_equalizer p s)
+            =
+            _).
+    simpl.
+  
+
 
   Definition equalizer : one_types.
   Proof.
