@@ -7,6 +7,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.Colimits.Initial.
 
 Require Import UniMath.Algebra.Monoids.
 Require Import UniMath.Algebra.Groups.
@@ -112,7 +113,21 @@ Section HomotopyCoeq.
     Definition coeq_map_base
                (b : B)
       : coeq_map (coeq_base X b) = coeq_base Y b
-      := pr1 (pr211 φ) b.    
+      := pr1 (pr211 φ) b.
+
+    Definition coeq_map_loop
+               (a : A)
+      : maponpaths coeq_map (coeq_loop X a) @ coeq_map_base (g a)
+        =
+        coeq_map_base (f a) @ coeq_loop Y a.
+    Proof.
+      refine (_ @ eqtohomot (pr21 φ tt) a @ _)
+      ; simpl ; cbn ; unfold homotcomp, homotfun, funhomotsec.
+      - apply maponpaths.
+        exact (!(pathscomp0rid _)).
+      - apply maponpaths_2.
+        apply pathscomp0rid.
+    Qed.
   End CoeqMapProjections.
 
   (** Builder for the 1-cells *)
@@ -247,24 +262,30 @@ Section HomotopyCoeq.
              (h : one_types ⟦ B , C ⟧)
              (hcom : φ · h ==> χ · h).
 
-    Definition coeq_ump1
-      : coeq_one_types --> C.
+    Definition coeq_ump1_alg_map
+      : coeq_one_types_algebra --> make_coeq_algebra h hcom.
     Proof.
-      apply TODO.
-    Defined.
+      exact (biinitial_1cell
+               _
+               coeq_one_types_is_initial
+               (make_coeq_algebra h hcom)).
+    Qed.
 
+    Definition coeq_ump1
+      : coeq_one_types --> C
+      := coeq_map coeq_ump1_alg_map.
+    
     Definition coeq_ump1_base
-      : coeq_one_types_base · coeq_ump1 ==> h.
-    Proof.
-      apply TODO.
-    Defined.
+      : coeq_one_types_base · coeq_ump1 ==> h
+      := coeq_map_base coeq_ump1_alg_map.
 
     Definition coeq_ump1_loop
       : coeq_one_types_loop ▹ coeq_ump1 • (_ ◃ coeq_ump1_base)
         =
         lassociator _ _ _ • (φ ◃ coeq_ump1_base) • hcom.
     Proof.
-      apply TODO.
+      use funextsec.
+      exact (coeq_map_loop coeq_ump1_alg_map).
     Qed.
   End CoeqUMPMap.
 
@@ -285,6 +306,18 @@ Section HomotopyCoeq.
     Definition coeq_ump2
       : m₁ ==> m₂.
     Proof.
+      Check (@make_coeq_map
+                  coeq_one_types_algebra
+                  (make_coeq_algebra h hcom)
+                  m₁
+                  m₁base
+                  (eqtohomot m₁loop)).
+      Check (@make_coeq_map
+                  coeq_one_types_algebra
+                  (make_coeq_algebra h hcom)
+                  m₂
+                  m₂base
+                  (eqtohomot m₂loop)).
       apply TODO.
     Defined.
 
