@@ -1,4 +1,12 @@
-(** Here we define the signature for the circle *)
+(**
+Here we define the signature for the coequalizer.
+Given 1-types `A` and `B` together with maps `f, g : A → B`, the coequalizer is defined as the following HIT
+
+HIT Coeq(f, g) :=
+| base : B → Coeq(f, g)
+| glue : ∏ (a : A), base (f a) = base (g a)
+In addition, this type is required to be 1-truncated.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
@@ -62,7 +70,7 @@ Section HomotopyCoeq.
       : B → alg_carrier X
       := alg_constr X.
 
-    Definition coeq_loop
+    Definition coeq_glue
                (a : A)
       : coeq_base (f a) = coeq_base (g a)
       := alg_path X tt a.
@@ -72,7 +80,7 @@ Section HomotopyCoeq.
   Section CoeqAlgebraBuilder.
     Context {X : one_type}
             (base : B → X)
-            (loop : ∏ (a : A), base (f a) = base (g a)).
+            (glue : ∏ (a : A), base (f a) = base (g a)).
 
     Local Definition make_coeq_path_algebra
       : hit_path_algebra_one_types coeq_signature.
@@ -83,7 +91,7 @@ Section HomotopyCoeq.
         + apply one_type_isofhlevel.
         + exact base.
       - intro j.
-        exact loop.
+        exact glue.
     Defined.
 
     Local Definition make_coeq_is_algebra
@@ -115,11 +123,11 @@ Section HomotopyCoeq.
       : coeq_map (coeq_base X b) = coeq_base Y b
       := pr1 (pr211 φ) b.
 
-    Definition coeq_map_loop
+    Definition coeq_map_glue
                (a : A)
-      : maponpaths coeq_map (coeq_loop X a) @ coeq_map_base (g a)
+      : maponpaths coeq_map (coeq_glue X a) @ coeq_map_base (g a)
         =
-        coeq_map_base (f a) @ coeq_loop Y a.
+        coeq_map_base (f a) @ coeq_glue Y a.
     Proof.
       refine (_ @ eqtohomot (pr21 φ tt) a @ _)
       ; simpl ; cbn ; unfold homotcomp, homotfun, funhomotsec.
@@ -135,10 +143,10 @@ Section HomotopyCoeq.
     Context {X Y : hit_algebra_one_types coeq_signature}
             (φ : alg_carrier X → alg_carrier Y)
             (φ_base : ∏ (b : B), φ (coeq_base X b) = coeq_base Y b)
-            (φ_loop : ∏ (a : A),
-                      maponpaths φ (coeq_loop X a) @ φ_base (g a)
+            (φ_glue : ∏ (a : A),
+                      maponpaths φ (coeq_glue X a) @ φ_base (g a)
                       =
-                      φ_base (f a) @ coeq_loop Y a).
+                      φ_base (f a) @ coeq_glue Y a).
     
     Definition make_coeq_map
       : X --> Y.
@@ -153,7 +161,7 @@ Section HomotopyCoeq.
         refine (path_assoc _ _ _ @ _).
         refine (pathscomp0rid _ @ _).
         refine (_ @ maponpaths (λ x, x @ (pr21 Y) tt a) (!(pathscomp0rid _))).
-        exact (φ_loop a).
+        exact (φ_glue a).
     Defined.
   End CoeqMapBuilder.
   
@@ -171,12 +179,12 @@ Section HomotopyCoeq.
     Context {X : hit_algebra_one_types coeq_signature}
             (Y : alg_carrier X → one_type)
             (Ybase : ∏ (b : B), Y (coeq_base X b))
-            (Yloop : ∏ (a : A),
+            (Yglue : ∏ (a : A),
                      @PathOver
                        _ _ _
                        Y
                        (Ybase (f a)) (Ybase (g a))
-                       (coeq_loop X a)).
+                       (coeq_glue X a)).
     
     Definition make_coeq_disp_algebra
       : disp_algebra X.
@@ -187,7 +195,7 @@ Section HomotopyCoeq.
         exact (Ybase x).
       - intros j x y.
         induction j.
-        exact (Yloop x).
+        exact (Yglue x).
       - intro j.
         induction j.
     Defined.
@@ -208,13 +216,13 @@ Section HomotopyCoeq.
       : coeq_ind (coeq_base X b) = Ybase b
       := pr12 coeq_ind_disp_algebra_map b.
 
-    Definition coeq_ind_loop
+    Definition coeq_ind_glue
                (a : A)
       : PathOver_square
           _
           (idpath _)
-          (apd (pr1 coeq_ind_disp_algebra_map) (coeq_loop X a))
-          (Yloop a)
+          (apd (pr1 coeq_ind_disp_algebra_map) (coeq_glue X a))
+          (Yglue a)
           (coeq_ind_base (f a))
           (coeq_ind_base (g a)).
     Proof.
@@ -249,9 +257,9 @@ Section HomotopyCoeq.
     : one_types ⟦ B , coeq_one_types ⟧
     := coeq_base coeq_one_types_algebra.
 
-  Definition coeq_one_types_loop
+  Definition coeq_one_types_glue
     : φ · coeq_one_types_base ==> χ · coeq_one_types_base
-    := coeq_loop coeq_one_types_algebra.
+    := coeq_glue coeq_one_types_algebra.
 
   Definition TODO {Z : UU} : Z.
   Admitted.
@@ -279,13 +287,13 @@ Section HomotopyCoeq.
       : coeq_one_types_base · coeq_ump1 ==> h
       := coeq_map_base coeq_ump1_alg_map.
 
-    Definition coeq_ump1_loop
-      : coeq_one_types_loop ▹ coeq_ump1 • (_ ◃ coeq_ump1_base)
+    Definition coeq_ump1_glue
+      : coeq_one_types_glue ▹ coeq_ump1 • (_ ◃ coeq_ump1_base)
         =
         lassociator _ _ _ • (φ ◃ coeq_ump1_base) • hcom.
     Proof.
       use funextsec.
-      exact (coeq_map_loop coeq_ump1_alg_map).
+      exact (coeq_map_glue coeq_ump1_alg_map).
     Qed.
   End CoeqUMPMap.
 
@@ -296,10 +304,10 @@ Section HomotopyCoeq.
              (m₁ m₂ : coeq_one_types --> C)
              (m₁base : coeq_one_types_base · m₁ ==> h)
              (m₂base : coeq_one_types_base · m₂ ==> h)
-             (m₁loop : coeq_one_types_loop ▹ m₁ • (_ ◃ m₁base)
+             (m₁glue : coeq_one_types_glue ▹ m₁ • (_ ◃ m₁base)
                        =
                        lassociator _ _ _ • (φ ◃ m₁base) • hcom)
-             (m₂loop : coeq_one_types_loop ▹ m₂ • (_ ◃ m₂base)
+             (m₂glue : coeq_one_types_glue ▹ m₂ • (_ ◃ m₂base)
                        =
                        lassociator _ _ _ • (φ ◃ m₂base) • hcom).
 
@@ -311,13 +319,13 @@ Section HomotopyCoeq.
                   (make_coeq_algebra h hcom)
                   m₁
                   m₁base
-                  (eqtohomot m₁loop)).
+                  (eqtohomot m₁glue)).
       Check (@make_coeq_map
                   coeq_one_types_algebra
                   (make_coeq_algebra h hcom)
                   m₂
                   m₂base
-                  (eqtohomot m₂loop)).
+                  (eqtohomot m₂glue)).
       apply TODO.
     Defined.
 
@@ -335,10 +343,10 @@ Section HomotopyCoeq.
              (m₁ m₂ : coeq_one_types --> C)
              (m₁base : coeq_one_types_base · m₁ ==> h)
              (m₂base : coeq_one_types_base · m₂ ==> h)
-             (m₁loop : coeq_one_types_loop ▹ m₁ • (_ ◃ m₁base)
+             (m₁glue : coeq_one_types_glue ▹ m₁ • (_ ◃ m₁base)
                        =
                        lassociator _ _ _ • (φ ◃ m₁base) • hcom)
-             (m₂loop : coeq_one_types_loop ▹ m₂ • (_ ◃ m₂base)
+             (m₂glue : coeq_one_types_glue ▹ m₂ • (_ ◃ m₂base)
                        =
                        lassociator _ _ _ • (φ ◃ m₂base) • hcom)
              (τ₁ τ₂ : m₁ ==> m₂)
