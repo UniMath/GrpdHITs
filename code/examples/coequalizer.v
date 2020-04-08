@@ -65,7 +65,32 @@ Section HomotopyCoeq.
       := alg_path X tt a.
   End CoeqProjections.
 
-  Section CircleInduction.
+  (** Builder for coequalizer algebra *)
+  Section CoeqAlgebraBuilder.
+
+  End CoeqAlgebraBuilder.
+
+  (** Projections for the 1-cells *)
+  Section CoeqMapProjections.
+
+  End CoeqMapProjections.
+
+  (** Builder for the 1-cells *)
+  Section CoeqMapBuilder.
+
+  End CoeqMapBuilder.
+  
+  (** Projections for the 2-cells *)
+  Section CoeqCellProjections.
+  End CoeqCellProjections.
+
+  (** Builder for the 2-cells *)
+  Section CoeqCellBuilder.
+
+  End CoeqCellBuilder.
+  
+  (** Coeq induction *)
+  Section CoeqInduction.
     Context {X : hit_algebra_one_types circle_signature}
             (Y : alg_carrier X → one_type)
             (Ybase : Y (circle_base X))
@@ -113,20 +138,8 @@ Section HomotopyCoeq.
       := pr22 circle_ind_disp_algebra_map loop tt.
   End CircleInduction.
 
+  (** The coequalizer *)
   Definition circle
     := pr1 (hit_existence circle_signature).
 
-  Definition circle_path_space_base
-    : UU
-    := ((pr111 (initial_groupoid_algebra circle_signature) : groupoid)
-          ⟦ poly_initial_alg circle_point_constr tt
-            , poly_initial_alg circle_point_constr tt ⟧).
-
-  Definition circle_is_path_space
-    : circle_base circle = circle_base circle
-                                       ≃
-                                       circle_path_space_base
-    := hit_path_space
-         circle_signature
-         (poly_initial_alg circle_point_constr tt)
-         (poly_initial_alg circle_point_constr tt).
+  (** Mapping principle for coequalizer *)
