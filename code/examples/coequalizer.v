@@ -67,17 +67,77 @@ Section HomotopyCoeq.
 
   (** Builder for coequalizer algebra *)
   Section CoeqAlgebraBuilder.
+    Context {X : one_type}
+            (base : B → X)
+            (loop : ∏ (a : A), base (f a) = base (g a)).
 
+    Local Definition make_coeq_path_algebra
+      : hit_path_algebra_one_types coeq_signature.
+    Proof.
+      use make_hit_path_algebra.
+      - use make_hit_prealgebra.
+        + exact X.
+        + apply one_type_isofhlevel.
+        + exact base.
+      - intro j.
+        exact loop.
+    Defined.
+
+    Local Definition make_coeq_is_algebra
+      : is_hit_algebra_one_types coeq_signature make_coeq_path_algebra.
+    Proof.
+      intros j; induction j.
+    Qed.
+    
+    Definition make_coeq_algebra
+      : hit_algebra_one_types coeq_signature.
+    Proof.
+      use make_algebra.
+      - exact make_coeq_path_algebra.
+      - exact make_coeq_is_algebra.
+    Defined.
   End CoeqAlgebraBuilder.
 
   (** Projections for the 1-cells *)
   Section CoeqMapProjections.
+    Context {X Y : hit_algebra_one_types coeq_signature}
+            (φ : X --> Y).
 
+    Definition coeq_map
+      : alg_carrier X → alg_carrier Y
+      := pr111 φ.
+
+    Definition coeq_map_base
+               (b : B)
+      : coeq_map (coeq_base X b) = coeq_base Y b
+      := pr1 (pr211 φ) b.    
   End CoeqMapProjections.
 
   (** Builder for the 1-cells *)
   Section CoeqMapBuilder.
-
+    Context {X Y : hit_algebra_one_types coeq_signature}
+            (φ : alg_carrier X → alg_carrier Y)
+            (φ_base : ∏ (b : B), φ (coeq_base X b) = coeq_base Y b)
+            (φ_loop : ∏ (a : A),
+                      maponpaths φ (coeq_loop X a) @ φ_base (g a)
+                      =
+                      φ_base (f a) @ coeq_loop Y a).
+    
+    Definition make_coeq_map
+      : X --> Y.
+    Proof.
+      use make_algebra_map.
+      use make_hit_path_alg_map.
+      - use make_hit_prealgebra_mor.
+        + exact φ.
+        + exact φ_base.
+      - intros j a.
+        induction j.
+        refine (path_assoc _ _ _ @ _).
+        refine (pathscomp0rid _ @ _).
+        refine (_ @ maponpaths (λ x, x @ (pr21 Y) tt a) (!(pathscomp0rid _))).
+        exact (φ_loop a).
+    Defined.
   End CoeqMapBuilder.
   
   (** Projections for the 2-cells *)
