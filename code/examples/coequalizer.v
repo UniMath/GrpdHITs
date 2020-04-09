@@ -16,6 +16,7 @@ Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 Require Import UniMath.Bicategories.Colimits.Initial.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 
 Require Import UniMath.Algebra.Monoids.
 Require Import UniMath.Algebra.Groups.
@@ -164,14 +165,45 @@ Section HomotopyCoeq.
         exact (φ_glue a).
     Defined.
   End CoeqMapBuilder.
-  
+
   (** Projections for the 2-cells *)
   Section CoeqCellProjections.
+    Context {X Y : hit_algebra_one_types coeq_signature}
+            {φ ψ : X --> Y}
+            (α : φ ==> ψ).
+
+    Definition coeq_cell
+      : coeq_map φ ~ coeq_map ψ
+      := pr111 α.
+
+    Definition coeq_cell_base
+               (b : B)
+      : coeq_cell (coeq_base X b) @ coeq_map_base ψ b
+        =
+        coeq_map_base φ b.
+    Proof.
+      exact (eqtohomot (pr211 α) _ @ pathscomp0rid _).
+    Qed.
   End CoeqCellProjections.
 
   (** Builder for the 2-cells *)
   Section CoeqCellBuilder.
+    Context {X Y : hit_algebra_one_types coeq_signature}
+            {φ ψ : X --> Y}
+            (α : coeq_map φ ~ coeq_map ψ)
+            (α_base : ∏ (b : B),
+                      α (coeq_base X b) @ coeq_map_base ψ b
+                      =
+                      coeq_map_base φ b).
 
+    Definition make_coeq_cell
+      : φ ==> ψ.
+    Proof.
+      simple refine (((α ,, _) ,, λ _, tt) ,, tt).
+      abstract
+        (use funextsec ; intro b;
+         exact (α_base b @ !(pathscomp0rid _))).
+    Defined.
   End CoeqCellBuilder.
   
   (** Coeq induction *)
