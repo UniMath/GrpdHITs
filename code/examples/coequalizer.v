@@ -293,9 +293,6 @@ Section HomotopyCoeq.
     : φ · coeq_one_types_base ==> χ · coeq_one_types_base
     := coeq_glue coeq_one_types_algebra.
 
-  Definition TODO {Z : UU} : Z.
-  Admitted.
-
   (** Mapping principles for coequalizer *)  
   Section CoeqUMPMap.
     Variable (C : one_types)
@@ -343,28 +340,36 @@ Section HomotopyCoeq.
                        =
                        lassociator _ _ _ • (φ ◃ m₂base) • hcom).
 
-    Definition coeq_ump2
-      : m₁ ==> m₂.
+    Definition coeq_ump2_alg_map
+      : @make_coeq_map
+          coeq_one_types_algebra
+          (make_coeq_algebra h hcom)
+          m₁
+          m₁base
+          (eqtohomot m₁glue)
+        ==>
+        @make_coeq_map
+          coeq_one_types_algebra
+          (make_coeq_algebra h hcom)
+          m₂
+          m₂base
+          (eqtohomot m₂glue).
     Proof.
-      Check (@make_coeq_map
-                  coeq_one_types_algebra
-                  (make_coeq_algebra h hcom)
-                  m₁
-                  m₁base
-                  (eqtohomot m₁glue)).
-      Check (@make_coeq_map
-                  coeq_one_types_algebra
-                  (make_coeq_algebra h hcom)
-                  m₂
-                  m₂base
-                  (eqtohomot m₂glue)).
-      apply TODO.
-    Defined.
+      exact (biinitial_2cell
+               _
+               coeq_one_types_is_initial
+               _ _).
+    Qed.
+    
+    Definition coeq_ump2
+      : m₁ ==> m₂
+      := coeq_cell coeq_ump2_alg_map.
 
     Definition coeq_ump2_base
       : (coeq_one_types_base ◃ coeq_ump2) • m₂base = m₁base.
     Proof.
-      apply TODO.
+      use funextsec.
+      exact (coeq_cell_base coeq_ump2_alg_map).
     Qed.
   End CoeqUMPCell.
 
@@ -388,7 +393,43 @@ Section HomotopyCoeq.
     Definition coeq_ump_eq
       : τ₁ = τ₂.
     Proof.
-      apply TODO.
+      pose (biinitial_eq
+                _
+                coeq_one_types_is_initial
+                _ _
+                (@make_coeq_cell
+                   _ _
+                   (@make_coeq_map
+                      coeq_one_types_algebra
+                      (make_coeq_algebra h hcom)
+                      m₁
+                      m₁base
+                      (eqtohomot m₁glue))
+                   (@make_coeq_map
+                      coeq_one_types_algebra
+                      (make_coeq_algebra h hcom)
+                      m₂
+                      m₂base
+                      (eqtohomot m₂glue))
+                   τ₁
+                   (eqtohomot τ₁base))
+                (@make_coeq_cell
+                   _ _
+                   (@make_coeq_map
+                      coeq_one_types_algebra
+                      (make_coeq_algebra h hcom)
+                      m₁
+                      m₁base
+                      (eqtohomot m₁glue))
+                   (@make_coeq_map
+                      coeq_one_types_algebra
+                      (make_coeq_algebra h hcom)
+                      m₂
+                      m₂base
+                      (eqtohomot m₂glue))
+                   τ₂
+                   (eqtohomot τ₂base))).
+      exact (maponpaths (λ z, pr111 z) p).
     Qed.
   End CoeqUMPEq.
 End HomotopyCoeq.
