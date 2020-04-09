@@ -10,6 +10,13 @@ Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.Colimits.Initial.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -60,7 +67,7 @@ Defined.
 
 
 
-Section ProductsAlg.
+Section ProductAlg.
   Context {Σ : hit_signature}
           (X Y : hit_algebra_one_types Σ).
 
@@ -151,10 +158,46 @@ Section ProductsAlg.
     - exact prod_path_constr.
   Defined.
 
+  Definition prod_homot_endpoint
+             {Q TR : poly_code}
+             {al ar : endpoint (point_constr Σ) Q TR}
+             {sl sr : endpoint (point_constr Σ) Q I}
+             (h : homot_endpoint (path_left Σ) (path_right Σ) al ar sl sr)
+             (x : poly_act Q P)
+             (p : sem_endpoint_UU al prod_point_constr x
+                  =
+                  sem_endpoint_UU ar prod_point_constr x)
+    : sem_homot_endpoint_one_types
+         h
+         prod_prealg prod_path_constr
+         x p
+       =
+       pathsdirprod
+         (!(prod_endpoint_pr1 sl x)
+           @ sem_homot_endpoint_one_types
+               h
+               _ (alg_path X)
+               (poly_map Q pr1 x)
+               (prod_endpoint_pr1 _ _
+                @ maponpaths (poly_map TR pr1) p
+                @ !(prod_endpoint_pr1 _ _))
+           @ prod_endpoint_pr1 sr x)
+         (!(prod_endpoint_pr2 sl x)
+           @ sem_homot_endpoint_one_types
+               h
+               _ (alg_path Y)
+               (poly_map Q (λ (z : P), pr2 z) x)
+               (prod_endpoint_pr2 _ _
+                @ maponpaths (poly_map TR (λ (z : P), pr2 z)) p
+                @ !(prod_endpoint_pr2 _ _))
+           @ prod_endpoint_pr2 sr x).
+  Proof.
+    apply TODO.
+  Qed.
+
   Definition prod_is_alg
     : is_hit_algebra_one_types Σ prod_path_alg.
   Proof.
-    (*
     intros j x p ; simpl in j, x, p ; cbn in p.
     cbn.
     pose (alg_homot
@@ -169,13 +212,18 @@ Section ProductsAlg.
             (prod_endpoint_pr2 _ _
              @ maponpaths (poly_map _ (λ (z : P), pr2 z)) p
              @ !(prod_endpoint_pr2 _ _))) as r.
-    refine (_
+    simple refine
+           (prod_homot_endpoint (homot_left_path Σ j) x p
             @ paths_pathsdirprod
                 _
                 _
-            @ _).
-     *)
-    apply TODO.
+            @ !(prod_homot_endpoint (homot_right_path Σ j) x p)).
+    - apply maponpaths.
+      apply maponpaths_2.
+      exact q.
+    - apply maponpaths.
+      apply maponpaths_2.
+      exact r.
   Qed.
     
   Definition prod_alg
@@ -194,18 +242,21 @@ Section ProductsAlg.
     - use make_hit_prealgebra_mor.
       + exact (λ z, pr1 z).
       + intro ; apply idpath.
-    - simpl.
-      intros i x.
-      etrans.
-      {
-        apply maponpaths_2.
-        unfold prod_path_constr.
-        exact (maponpaths_pr1_pathsdirprod _ _).
-      }
-      cbn.
-      
-        
-      apply TODO.
+    - abstract
+        (simpl ;
+         intros i x ;
+         etrans ;
+           [ apply maponpaths_2 ;
+             unfold prod_path_constr ;
+             exact (maponpaths_pr1_pathsdirprod _ _)
+           | unfold prod_endpoint_pr1 ;
+             cbn ;
+             rewrite pathsinv0inv0 ;
+             rewrite <- path_assoc ;
+             apply maponpaths ;
+             rewrite <- path_assoc ;
+             rewrite pathsinv0l ;
+             apply pathscomp0rid]).
   Defined.
 
   Definition prod_alg_pr2
@@ -216,7 +267,21 @@ Section ProductsAlg.
     - use make_hit_prealgebra_mor.
       + exact (λ z, pr2 z).
       + intro ; apply idpath.
-    - apply TODO.
+    - abstract
+        (simpl ;
+         intros i x ;
+         etrans ;
+           [ apply maponpaths_2 ;
+             unfold prod_path_constr ;
+             exact (maponpaths_pr2_pathsdirprod _ _)
+           | unfold prod_endpoint_pr2 ;
+             cbn ;
+             rewrite pathsinv0inv0 ;
+             rewrite <- path_assoc ;
+             apply maponpaths ;
+             rewrite <- path_assoc ;
+             rewrite pathsinv0l ;
+             apply pathscomp0rid]).
   Defined.
 
   Section ProdUMPMap.
@@ -224,105 +289,153 @@ Section ProductsAlg.
              (pr1Z : Z --> X)
              (pr2Z : Z --> Y).
 
-    Definition prod_alg_ump_1
-      : Z --> prod_alg.
+    Definition prod_alg_ump_1_constr
+               (x : poly_act (point_constr Σ) (prealg_carrier (pr11 Z)))
+      : (pr111 pr1Z) (prealg_constr x)
+        ,,
+        (pr111 pr2Z) (prealg_constr x)
+        =
+        prod_point_constr
+          (poly_map
+             (point_constr Σ)
+             (λ z : prealg_carrier (pr11 Z), (pr111 pr1Z) z,, (pr111 pr2Z) z)
+             x).
     Proof.
-      use make_algebra_map.
-      use make_hit_path_alg_map.
-      - use make_hit_prealgebra_mor.
-        + exact (λ z, pr111 pr1Z z ,, pr111 pr2Z z).
-        + simpl.
-          intro.
-          unfold prod_point_constr.
-          use pathsdirprod.
-          * refine (pr1 (pr211 pr1Z) x @ _).
-            cbn.
-            apply TODO.
-          * refine (pr1 (pr211 pr2Z) x @ _).
-            cbn.
-            apply TODO.
-      - simpl ; cbn.
-        apply TODO.
+      use pathsdirprod.
+      - refine (pr1 (pr211 pr1Z) x @ maponpaths (alg_constr X) _).
+        cbn.
+        exact (!(poly_comp
+                   (point_constr Σ)
+                   (λ z : prealg_carrier (pr11 Z), (pr111 pr1Z) z,, (pr111 pr2Z) z)
+                   (λ z, pr1 z)
+                   x)).
+      - refine (pr1 (pr211 pr2Z) x @ maponpaths (alg_constr Y) _).
+        cbn.
+        exact (!(poly_comp
+                   (point_constr Σ)
+                   (λ z : prealg_carrier (pr11 Z), (pr111 pr1Z) z,, (pr111 pr2Z) z)
+                   (λ (z : P), pr2 z)
+                   x)).
     Defined.
-    
 
-  
-
-
-
-
-
-Section ProductsAlg.
-  Context {Σ : hit_signature}
-          (X Y : hit_algebra_one_types Σ).
-
-  Local Notation "'P'" := (alg_carrier X × alg_carrier Y).
-
-  Definition prod_alg
-    : hit_algebra_one_types Σ
-    := total_algebra (const_disp_algebra X Y).
-
-  Definition prod_alg_pr1
-    : prod_alg --> X
-    := projection _.
-
-  Definition prod_alg_pr2_point_constr
-             (x : poly_act (point_constr Σ) P)
-    : prealg_constr
-        (poly_dact_const
-           (point_constr Σ)
-           (poly_pr1 (point_constr Σ) x)
-           (poly_pr2 (point_constr Σ) x))
-      =
-      prealg_constr
-        (poly_map
-           (point_constr Σ)
-           (λ z : P, pr2 z)
-           x).
-  Proof.
-    apply TODO.
-  Defined.
-
-  Definition prod_alg_pr2_path_constr_type
-             (i : path_label Σ)
-             (x : poly_act (path_source Σ i) P)
-    : UU.
-  Proof.
-    refine
-      (maponpaths
-        (λ z : P, pr2 z)
-        (total_algebra.paths (const_disp_algebra X Y) i x)
-      @ sem_endpoint_UU_natural (path_right Σ i) prod_alg_pr2_point_constr x
-      =
-      sem_endpoint_UU_natural (path_left Σ i) prod_alg_pr2_point_constr x
-      @ _).
-    exact (alg_path Y i (poly_map (path_source Σ i) (λ (z : P), pr2 z) x)).
-  Defined.
-
-  Definition prod_alg_pr2_path_constr
-             (i : path_label Σ)
-             (x : poly_act (path_source Σ i) P)
-    : prod_alg_pr2_path_constr_type i x.
-  Proof.
-    unfold prod_alg_pr2_path_constr_type.
-    apply TODO.
-  Qed.
-
-  Definition prod_alg_pr2
-    : prod_alg --> Y.
-  Proof.
-    use make_algebra_map.
-    use make_hit_path_alg_map.
-    - use make_hit_prealgebra_mor.
-      + exact (λ z, pr2 z).
-      + exact prod_alg_pr2_point_constr.
-    - exact prod_alg_pr2_path_constr.
-  Defined.
-  
-  Section ProdUMPMap.
-    Variable (Z : hit_algebra_one_types Σ)
-             (pr1Z : Z --> X)
-             (pr2Z : Z --> Y).
+    Definition prod_alg_ump_1_path
+               (i : path_label Σ)
+               (x : poly_act (path_source Σ i) (path_alg_carrier (pr1 Z)))
+      : maponpaths
+          (λ z, (pr111 pr1Z) z,, (pr111 pr2Z) z)
+          ((pr21 Z) i x)
+        @ sem_endpoint_UU_natural (path_right Σ i) prod_alg_ump_1_constr x
+        =
+        sem_endpoint_UU_natural (path_left Σ i) prod_alg_ump_1_constr x
+        @ prod_path_constr
+            i
+            (poly_map
+               (path_source Σ i)
+               (λ z, (pr111 pr1Z) z,, (pr111 pr2Z) z) x).
+    Proof.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths_prod_path.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsdirprod_eta.
+      }
+      etrans.
+      {
+        exact (pathsdirprod_concat _ _ _ _).
+      }      
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply pathsdirprod_eta.
+      }
+      etrans.
+      {
+        exact (pathsdirprod_concat _ _ _ _).
+      }
+      use paths_pathsdirprod.
+      - (*simpl.
+        unfold prod_endpoint_pr1.
+        rewrite pathsinv0inv0.
+        pose (eqtohomot (pr21 pr1Z i) x) as m.
+        cbn in m.
+        unfold homotcomp, homotfun, funhomotsec in m.
+        refine (!_).
+        assert (maponpaths
+                 pr1
+                 (sem_endpoint_UU_natural (path_right Σ i) prod_alg_ump_1_constr x)
+               =
+               sem_endpoint_UU_natural (path_right Σ i) (pr121 (pr1 pr1Z)) x
+               @ maponpaths
+                   (sem_endpoint_UU (path_right Σ i) (pr211 X))
+                   (!(poly_comp
+                       (path_source Σ i)
+                       (λ z : prealg_carrier (pr11 Z), (pr111 pr1Z) z,, (pr111 pr2Z) z)
+                       (λ (z : P), pr1 z)
+                       x))
+               @ prod_endpoint_pr1 _ _)
+          as Hr.
+        {
+          apply TODO.
+        }
+        assert (maponpaths
+                 pr1
+                 (sem_endpoint_UU_natural (path_left Σ i) prod_alg_ump_1_constr x)
+               =
+               sem_endpoint_UU_natural (path_left Σ i) (pr121 (pr1 pr1Z)) x
+               @ maponpaths
+                   (sem_endpoint_UU (path_left Σ i) (pr211 X))
+                   (!(poly_comp
+                       (path_source Σ i)
+                       (λ z : prealg_carrier (pr11 Z), (pr111 pr1Z) z,, (pr111 pr2Z) z)
+                       (λ (z : P), pr1 z)
+                       x))
+               @ prod_endpoint_pr1 _ _)
+          as Hl.
+        {
+          apply TODO.
+        }
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths.
+            exact Hr.
+          }
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          exact m.
+        }
+        rewrite <- !path_assoc.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          exact Hl.
+        }
+        rewrite <- !path_assoc.
+        apply maponpaths.
+        rewrite !path_assoc.
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths_2.
+          rewrite <- path_assoc.
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsinv0l.
+          }
+          apply pathscomp0rid.
+        }
+        apply (homotsec_natural' (alg_path X i)).*)
+        apply TODO.
+      - apply TODO.
+    Qed.
 
     Definition prod_alg_ump_1
       : Z --> prod_alg.
@@ -331,57 +444,184 @@ Section ProductsAlg.
       use make_hit_path_alg_map.
       - use make_hit_prealgebra_mor.
         + exact (λ z, pr111 pr1Z z ,, pr111 pr2Z z).
-        + simpl.
-          cbn.
-          unfold total_algebra.operation.
-          simpl.
-          cbn.
-          unfold const_disp_algebra_constr.
-          intro.
-          use pathsdirprod.
-          * pose (pr1 (pr211 pr1Z)) as p.
-            cbn in p.
-            refine (p _ @ _).
-            apply maponpaths.
-            exact (poly_pr1_poly_map (pr111 pr1Z) (pr111 pr2Z) x).
-          * pose (pr1 (pr211 pr2Z)) as p.
-            cbn in p.
-            refine (p _ @ _).
-            apply maponpaths.
-            apply TODO.
-      - apply TODO.
+        + exact prod_alg_ump_1_constr.
+      - exact prod_alg_ump_1_path.
     Defined.
 
     Definition prod_alg_ump_1_pr1
-      : prod_alg_ump_1 · prod_alg_pr1
-        ==>
-        pr1Z.
+      : prod_alg_ump_1 · prod_alg_pr1 ==> pr1Z.
     Proof.
       simple refine (((_ ,, _) ,, λ _, tt) ,, tt).
-      - intro x ; apply idpath.
-      - (*
-        use funextsec.
+      - exact (λ _, idpath _).
+      - (*use funextsec.
         intro z ; cbn.
-        unfold homotcomp, homotfun, funhomotsec ; cbn.
+        unfold homotcomp, funhomotsec, homotfun.
+        cbn.
         rewrite !pathscomp0rid.
-         *)
+        refine (!_).
+        etrans.
+        {
+          do 2 apply maponpaths_2.
+          apply maponpaths_pr1_pathsdirprod.
+        }
+        rewrite <- !path_assoc.
+        etrans.
+        {
+          apply maponpaths.
+          rewrite path_assoc.
+          apply maponpaths_2.
+          etrans.
+          {
+            refine (!_).
+            apply (maponpathscomp0 (alg_constr X)).
+          }
+          apply maponpaths.
+          apply pathsinv0l.
+        }
+        simpl.
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply (eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) (pr111 pr1Z))).
+        }
+        apply pathscomp0rid.*)
         apply TODO.
     Defined.
 
     Definition prod_alg_ump_1_pr2
-      : prod_alg_ump_1 · prod_alg_pr2
-        ==>
-        pr2Z.
+      : prod_alg_ump_1 · prod_alg_pr2 ==> pr2Z.
     Proof.
       simple refine (((_ ,, _) ,, λ _, tt) ,, tt).
-      - intro x ; apply idpath.
-      - (*
-        use funextsec.
+      - exact (λ _, idpath _).
+      - (*use funextsec.
         intro z ; cbn.
-        unfold homotcomp, homotfun, funhomotsec ; cbn.
-        rewrite !pathscomp0rid.
-         *)
+        unfold homotcomp, funhomotsec, homotfun.
+        cbn.
+        rewrite !pathscomp0rid.*)
         apply TODO.
     Defined.
   End ProdUMPMap.
-End ProductsAlg.
+
+  Section ProdUMPCell.
+    Context {Z : hit_algebra_one_types Σ}
+            {pr1Z : Z --> X}
+            {pr2Z : Z --> Y}
+            (φ ψ : Z --> prod_alg)
+            (φpr1 : φ · prod_alg_pr1 ==> pr1Z)
+            (φpr2 : φ · prod_alg_pr2 ==> pr2Z)
+            (ψpr1 : ψ · prod_alg_pr1 ==> pr1Z)
+            (ψpr2 : ψ · prod_alg_pr2 ==> pr2Z).
+
+    Definition prod_alg_ump_2
+      : φ ==> ψ.
+    Proof.
+      simple refine (((_ ,, _) ,, λ _, tt) ,, tt).
+      - intro x.
+        cbn.
+        use pathsdirprod.
+        + exact (pr111 φpr1 x @ !(pr111 ψpr1 x)).
+        + exact (pr111 φpr2 x @ !(pr111 ψpr2 x)).
+      - (*use funextsec.
+        intro x ; cbn ; cbn in x.
+        unfold homotcomp, funhomotsec, homotfun.
+        refine (_ @ !(pathsdirprod_eta _)).*)
+        apply TODO.
+    Defined.
+
+    Definition prod_alg_ump_2_pr1
+      : (prod_alg_ump_2 ▹ prod_alg_pr1) • ψpr1 = φpr1.
+    Proof.
+      use subtypePath.
+      { intro ; apply isapropunit. }
+      use subtypePath.
+      { intro ; use impred ; intro ; apply isapropunit. }
+      use subtypePath.
+      { intro ; apply one_types. }
+      simpl ; cbn ; unfold homotcomp, homotfun.
+      use funextsec.
+      intro x ; cbn.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths_pr1_pathsdirprod.
+      }
+      rewrite <- path_assoc.
+      rewrite pathsinv0l.
+      apply pathscomp0rid.
+    Qed.
+
+    Definition prod_alg_ump_2_pr2
+      : (prod_alg_ump_2 ▹ prod_alg_pr2) • ψpr2 = φpr2.
+    Proof.
+      use subtypePath.
+      { intro ; apply isapropunit. }
+      use subtypePath.
+      { intro ; use impred ; intro ; apply isapropunit. }
+      use subtypePath.
+      { intro ; apply one_types. }
+      simpl ; cbn ; unfold homotcomp, homotfun.
+      use funextsec.
+      intro x ; cbn.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths_pr2_pathsdirprod.
+      }
+      rewrite <- path_assoc.
+      rewrite pathsinv0l.
+      apply pathscomp0rid.
+    Qed.
+  End ProdUMPCell.
+    
+  Section ProdUMPEq.
+    Context {Z : hit_algebra_one_types Σ}
+            {pr1Z : Z --> X}
+            {pr2Z : Z --> Y}
+            {φ ψ : Z --> prod_alg}
+            {φpr1 : φ · prod_alg_pr1 ==> pr1Z}
+            {φpr2 : φ · prod_alg_pr2 ==> pr2Z}
+            {ψpr1 : ψ · prod_alg_pr1 ==> pr1Z}
+            {ψpr2 : ψ · prod_alg_pr2 ==> pr2Z}
+            (τ θ : φ ==> ψ)
+            (τpr1 : (τ ▹ prod_alg_pr1) • ψpr1 = φpr1)
+            (τpr2 : (τ ▹ prod_alg_pr2) • ψpr2 = φpr2)
+            (θpr1 : (θ ▹ prod_alg_pr1) • ψpr1 = φpr1)
+            (θpr2 : (θ ▹ prod_alg_pr2) • ψpr2 = φpr2).
+
+    Definition prod_ump_eq
+      : τ = θ.
+    Proof.
+      use subtypePath.
+      { intro ; apply isapropunit. }
+      use subtypePath.
+      { intro ; use impred ; intro ; apply isapropunit. }
+      use subtypePath.
+      { intro ; apply one_types. }
+      simpl ; cbn ; unfold homotcomp, homotfun.
+      use funextsec.
+      intro x ; cbn.
+      refine (pathsdirprod_eta _ @ _ @ !(pathsdirprod_eta _)).
+      apply paths_pathsdirprod.
+      - refine (!(maponpaths _ (pathsinv0r _) @ pathscomp0rid _) @ path_assoc _ _ _
+                @ maponpaths
+                    (λ z, z @ !(pr111 ψpr1 x))
+                    (eqtohomot (maponpaths (λ z, pr111 z) τpr1) x)
+                @ maponpaths
+                    (λ z, z @ !(pr111 ψpr1 x))
+                    (!(eqtohomot (maponpaths (λ z, pr111 z) θpr1) x))
+                @ _).
+        cbn ; unfold homotcomp, homotfun.
+        exact (!(path_assoc _ _ _) @ maponpaths _ (pathsinv0r _) @ pathscomp0rid _).
+      - refine (!(maponpaths _ (pathsinv0r _) @ pathscomp0rid _) @ path_assoc _ _ _
+                @ maponpaths
+                    (λ z, z @ !(pr111 ψpr2 x))
+                    (eqtohomot (maponpaths (λ z, pr111 z) τpr2) x)
+                @ maponpaths
+                    (λ z, z @ !(pr111 ψpr2 x))
+                    (!(eqtohomot (maponpaths (λ z, pr111 z) θpr2) x))
+                @ _).
+        cbn ; unfold homotcomp, homotfun.
+        exact (!(path_assoc _ _ _) @ maponpaths _ (pathsinv0r _) @ pathscomp0rid _).
+    Qed.
+  End ProdUMPEq.  
+End ProductAlg.
