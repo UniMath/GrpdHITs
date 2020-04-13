@@ -961,43 +961,6 @@ Section ProductAlg.
       }
       apply pathscomp0rid.
   Qed.
-  
-  Definition prod_homot_endpoint
-             {Q TR : poly_code}
-             {al ar : endpoint (point_constr Σ) Q TR}
-             {sl sr : endpoint (point_constr Σ) Q I}
-             (h : homot_endpoint (path_left Σ) (path_right Σ) al ar sl sr)
-             (x : poly_act Q P)
-             (p : sem_endpoint_UU al prod_point_constr x
-                  =
-                  sem_endpoint_UU ar prod_point_constr x)
-    : sem_homot_endpoint_one_types
-         h
-         prod_prealg prod_path_constr
-         x p
-       =
-       pathsdirprod
-         (!(prod_endpoint_pr1 sl x)
-           @ sem_homot_endpoint_one_types
-               h
-               _ (alg_path X)
-               (poly_map Q pr1 x)
-               (prod_endpoint_pr1 _ _
-                @ maponpaths (poly_map TR pr1) p
-                @ !(prod_endpoint_pr1 _ _))
-           @ prod_endpoint_pr1 sr x)
-         (!(prod_endpoint_pr2 sl x)
-           @ sem_homot_endpoint_one_types
-               h
-               _ (alg_path Y)
-               (poly_map Q (λ (z : P), pr2 z) x)
-               (prod_endpoint_pr2 _ _
-                @ maponpaths (poly_map TR (λ (z : P), pr2 z)) p
-                @ !(prod_endpoint_pr2 _ _))
-           @ prod_endpoint_pr2 sr x).
-  Proof.
-    apply TODO.
-  Qed.
 
   Definition prod_is_alg
     : is_hit_algebra_one_types Σ prod_path_alg.
@@ -1029,20 +992,6 @@ Section ProductAlg.
       apply maponpaths_2.
       exact r.
   Qed.
-(*    -
-    simple refine
-           (prod_homot_endpoint (homot_left_path Σ j) x p
-            @ paths_pathsdirprod
-                _
-                _
-            @ !(prod_homot_endpoint (homot_right_path Σ j) x p)).
-    - apply maponpaths.
-      apply maponpaths_2.
-      exact q.
-    - apply maponpaths.
-      apply maponpaths_2.
-      exact r.
-  Qed.*)
     
   Definition prod_alg
     : hit_algebra_one_types Σ.
