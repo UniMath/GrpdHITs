@@ -303,9 +303,6 @@ Proof.
     exact (paths_pathsdirprod (IHP₁ _) (IHP₂ _)).
 Qed.
 
-Definition TODO {A : UU} : A.
-Admitted.
-
 Definition poly_pr1_poly_map
            {P : poly_code}
            {X Y Z : one_type}
@@ -423,6 +420,548 @@ Section ProductAlg.
     - exact prod_path_constr.
   Defined.
 
+  Definition prod_homot_endpoint_pr1
+             {Q TR T : poly_code}
+             {al ar : endpoint (point_constr Σ) Q TR}
+             {sl sr : endpoint (point_constr Σ) Q T}
+             (h : homot_endpoint (path_left Σ) (path_right Σ) al ar sl sr)
+             (x : poly_act Q P)
+             (p : sem_endpoint_UU al prod_point_constr x
+                  =
+                  sem_endpoint_UU ar prod_point_constr x)
+    : maponpaths
+        (poly_map T pr1)
+        (sem_homot_endpoint_one_types
+           h
+           prod_prealg prod_path_constr
+           x p)
+      =
+      !(prod_endpoint_pr1 _ _)
+      @ sem_homot_endpoint_one_types
+          h
+          _ (alg_path X)
+          (poly_map Q pr1 x)
+          (prod_endpoint_pr1 _ _
+           @ maponpaths (poly_map TR pr1) p
+           @ !(prod_endpoint_pr1 _ _))
+      @ prod_endpoint_pr1 _ _.
+  Proof.
+    induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                    | T₁ T₂ e₁ e₂ e₃ h IHh
+                    | R₁ R₂ T e₁ e₂ e₃ | T e | T e
+                    | R₁ R₂ e₁ e₂ | R₁ R₂ e₁ e₂
+                    | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | Z z T e | j e | ].
+    - exact (!(pathsinv0l _)).
+    - simpl.
+      etrans.
+      {
+        apply maponpathsinv0.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        exact IHh.
+      }
+      etrans.
+      {
+        etrans.
+        {
+          apply pathscomp_inv.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0inv0.
+        }
+        apply maponpaths_2.
+        apply pathscomp_inv.
+      }
+      exact (!(path_assoc _ _ _)).
+    - simpl.
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      etrans.
+      {
+        apply maponpaths_2.
+        exact IHh₁.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        exact IHh₂.
+      }
+      clear IHh₁ IHh₂.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _ @ (path_assoc _ _ _)).
+      apply maponpaths_2.
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      apply pathscomp0rid.
+    - simpl.
+      unfold prod_endpoint_pr1 ; simpl.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths_2.
+          apply pathsinv0inv0.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply pathscomp_inv.
+        }
+        do 2 refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply (maponpathsinv0 (sem_endpoint_UU e₃ (alg_constr X))).
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply (maponpathscomp0 (sem_endpoint_UU e₃ (alg_constr X))).
+        }
+        etrans.
+        {
+          refine (!_).
+          apply (maponpathscomp0 (sem_endpoint_UU e₃ (alg_constr X))).
+        }
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        refine (_ @ !IHh).
+        apply maponpaths_2.
+        refine (!_).
+        apply pathsinv0inv0.
+      }
+      etrans.
+      {
+        apply maponpaths ; apply maponpaths_2.
+        apply maponpathscomp.
+      }
+      refine (path_assoc _ _ _ @ _).
+      use path_inv_rotate_lr.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply (maponpathscomp (sem_endpoint_UU e₃ prod_point_constr) (poly_map T₂ pr1)).
+      }
+      apply (homotsec_natural' (sem_endpoint_UU_natural e₃ _)).
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr1 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr1.
+      apply maponpaths.
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      apply maponpaths.
+      apply maponpathscomp.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr1 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr1.
+      apply maponpaths.
+      simpl.
+      apply pathscomp0rid.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr1 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr1.
+      apply maponpaths.
+      apply maponpathsidfun.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr1 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr1.
+      apply maponpaths.
+      apply maponpaths_pr1_pathsdirprod.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr1 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr1.
+      apply maponpaths.
+      apply maponpaths_pr2_pathsdirprod.
+    - simpl.
+      etrans.
+      {
+        refine (!_).
+        apply maponpaths_pathsdirprod.
+      }
+      refine (paths_pathsdirprod IHh₁ IHh₂ @ _).
+      unfold prod_endpoint_pr1.
+      rewrite !pathsinv0inv0.
+      etrans.
+      {
+        refine (!_).
+        apply pathsdirprod_concat.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply pathsdirprod_concat.
+      }
+      simpl.
+      do 2 apply maponpaths.
+      refine (!_).
+      apply pathsdirprod_inv.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr1 (comp e₁ (pair e₂ e₃)) x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr1.
+      simpl.
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        apply maponpaths_prod_path.
+      }
+      apply pathsdirprod_concat.
+    - simpl.
+      unfold prod_endpoint_pr1 ; simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply pathsinv0inv0.
+        }
+        apply maponpaths_for_constant_function.
+      }
+      apply idpath.
+    - simpl.
+      unfold prod_path_constr.
+      etrans.
+      {
+        exact (maponpaths_pr1_pathsdirprod _ _).
+      }
+      unfold prod_endpoint_pr1.
+      simpl.
+      rewrite !pathsinv0inv0.
+      refine (_ @ path_assoc _ _ _).
+      apply maponpaths.
+      rewrite pathscomp_inv.
+      do 2 refine (_ @ !(path_assoc _ _ _)).
+      apply maponpaths_2.
+      refine (_ @ path_assoc _ _ _).
+      refine (homotsec_natural (alg_path X j) (prod_endpoint_pr1 _ _) @ _).
+      unfold prod_endpoint_pr1.
+      rewrite pathsinv0inv0.
+      do 2 apply maponpaths.
+      apply maponpathsinv0.
+    - simpl.
+      refine (!_).
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (path_assoc _ _ _ @ _) ; apply maponpaths_2.
+        apply pathsinv0l.
+      }
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0l.
+      }
+      apply pathscomp0rid.
+  Qed.
+
+  Definition prod_homot_endpoint_pr2
+             {Q TR T : poly_code}
+             {al ar : endpoint (point_constr Σ) Q TR}
+             {sl sr : endpoint (point_constr Σ) Q T}
+             (h : homot_endpoint (path_left Σ) (path_right Σ) al ar sl sr)
+             (x : poly_act Q P)
+             (p : sem_endpoint_UU al prod_point_constr x
+                  =
+                  sem_endpoint_UU ar prod_point_constr x)
+    : maponpaths
+        (poly_map T dirprod_pr2)
+        (sem_homot_endpoint_one_types
+           h
+           prod_prealg prod_path_constr
+           x p)
+      =
+      !(prod_endpoint_pr2 _ _)
+      @ sem_homot_endpoint_one_types
+          h
+          _ (alg_path Y)
+          (poly_map Q dirprod_pr2 x)
+          (prod_endpoint_pr2 _ _
+           @ maponpaths (poly_map TR dirprod_pr2) p
+           @ !(prod_endpoint_pr2 _ _))
+      @ prod_endpoint_pr2 _ _.
+  Proof.
+    induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                    | T₁ T₂ e₁ e₂ e₃ h IHh
+                    | R₁ R₂ T e₁ e₂ e₃ | T e | T e
+                    | R₁ R₂ e₁ e₂ | R₁ R₂ e₁ e₂
+                    | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | Z z T e | j e | ].
+    - exact (!(pathsinv0l _)).
+    - simpl.
+      etrans.
+      {
+        apply maponpathsinv0.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        exact IHh.
+      }
+      etrans.
+      {
+        etrans.
+        {
+          apply pathscomp_inv.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0inv0.
+        }
+        apply maponpaths_2.
+        apply pathscomp_inv.
+      }
+      exact (!(path_assoc _ _ _)).
+    - simpl.
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      etrans.
+      {
+        apply maponpaths_2.
+        exact IHh₁.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        exact IHh₂.
+      }
+      clear IHh₁ IHh₂.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _ @ (path_assoc _ _ _)).
+      apply maponpaths_2.
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      apply pathscomp0rid.
+    - simpl.
+      unfold prod_endpoint_pr1 ; simpl.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths_2.
+          apply pathsinv0inv0.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply pathscomp_inv.
+        }
+        do 2 refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply (maponpathsinv0 (sem_endpoint_UU e₃ (alg_constr Y))).
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply (maponpathscomp0 (sem_endpoint_UU e₃ (alg_constr Y))).
+        }
+        etrans.
+        {
+          refine (!_).
+          apply (maponpathscomp0 (sem_endpoint_UU e₃ (alg_constr Y))).
+        }
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        refine (_ @ !IHh).
+        apply maponpaths_2.
+        refine (!_).
+        apply pathsinv0inv0.
+      }
+      etrans.
+      {
+        apply maponpaths ; apply maponpaths_2.
+        apply maponpathscomp.
+      }
+      refine (path_assoc _ _ _ @ _).
+      use path_inv_rotate_lr.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply (maponpathscomp (sem_endpoint_UU e₃ prod_point_constr) (poly_map T₂ _)).
+      }
+      apply (homotsec_natural' (sem_endpoint_UU_natural e₃ _)).
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr2 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr2.
+      apply maponpaths.
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      apply maponpaths.
+      apply maponpathscomp.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr2 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr2.
+      apply maponpaths.
+      simpl.
+      apply pathscomp0rid.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr2 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr2.
+      apply maponpaths.
+      apply maponpathsidfun.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr2 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr2.
+      apply maponpaths.
+      apply maponpaths_pr1_pathsdirprod.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr2 _ x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr2.
+      apply maponpaths.
+      apply maponpaths_pr2_pathsdirprod.
+    - simpl.
+      etrans.
+      {
+        refine (!_).
+        apply maponpaths_pathsdirprod.
+      }
+      refine (paths_pathsdirprod IHh₁ IHh₂ @ _).
+      unfold prod_endpoint_pr2.
+      rewrite !pathsinv0inv0.
+      etrans.
+      {
+        refine (!_).
+        apply pathsdirprod_concat.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply pathsdirprod_concat.
+      }
+      simpl.
+      do 2 apply maponpaths.
+      refine (!_).
+      apply pathsdirprod_inv.
+    - simpl.
+      refine (!(pathsinv0l (prod_endpoint_pr2 (comp e₁ (pair e₂ e₃)) x)) @ _).
+      apply maponpaths.
+      unfold prod_endpoint_pr2.
+      simpl.
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        apply maponpaths_prod_path.
+      }
+      apply pathsdirprod_concat.
+    - simpl.
+      unfold prod_endpoint_pr2 ; simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply pathsinv0inv0.
+        }
+        apply maponpaths_for_constant_function.
+      }
+      apply idpath.
+    - simpl.
+      unfold prod_path_constr.
+      etrans.
+      {
+        exact (maponpaths_pr2_pathsdirprod _ _).
+      }
+      unfold prod_endpoint_pr2.
+      simpl.
+      rewrite !pathsinv0inv0.
+      refine (_ @ path_assoc _ _ _).
+      apply maponpaths.
+      rewrite pathscomp_inv.
+      do 2 refine (_ @ !(path_assoc _ _ _)).
+      apply maponpaths_2.
+      refine (_ @ path_assoc _ _ _).
+      refine (homotsec_natural (alg_path Y j) (prod_endpoint_pr2 _ _) @ _).
+      unfold prod_endpoint_pr2.
+      rewrite pathsinv0inv0.
+      do 2 apply maponpaths.
+      apply maponpathsinv0.
+    - simpl.
+      refine (!_).
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (path_assoc _ _ _ @ _) ; apply maponpaths_2.
+        apply pathsinv0l.
+      }
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0l.
+      }
+      apply pathscomp0rid.
+  Qed.
+  
   Definition prod_homot_endpoint
              {Q TR : poly_code}
              {al ar : endpoint (point_constr Σ) Q TR}
@@ -477,6 +1016,20 @@ Section ProductAlg.
             (prod_endpoint_pr2 _ _
              @ maponpaths (poly_map _ (λ (z : P), pr2 z)) p
              @ !(prod_endpoint_pr2 _ _))) as r.
+    refine (pathsdirprod_eta _ @ _ @ !(pathsdirprod_eta _)).
+    use paths_pathsdirprod.
+    - refine (prod_homot_endpoint_pr1 (homot_left_path Σ j) x p @ _).
+      refine (_ @ !(prod_homot_endpoint_pr1 (homot_right_path Σ j) x p)).
+      apply maponpaths.
+      apply maponpaths_2.
+      exact q.
+    - refine (prod_homot_endpoint_pr2 (homot_left_path Σ j) x p @ _).
+      refine (_ @ !(prod_homot_endpoint_pr2 (homot_right_path Σ j) x p)).
+      apply maponpaths.
+      apply maponpaths_2.
+      exact r.
+  Qed.
+(*    -
     simple refine
            (prod_homot_endpoint (homot_left_path Σ j) x p
             @ paths_pathsdirprod
@@ -489,7 +1042,7 @@ Section ProductAlg.
     - apply maponpaths.
       apply maponpaths_2.
       exact r.
-  Qed.
+  Qed.*)
     
   Definition prod_alg
     : hit_algebra_one_types Σ.
