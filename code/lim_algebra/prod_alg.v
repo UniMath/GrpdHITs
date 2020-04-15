@@ -33,49 +33,6 @@ Require Import existence.initial_algebra.
 
 Local Open Scope cat.
 
-Definition alg_map_carrier
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           (f : X --> Y)
-  : alg_carrier X → alg_carrier Y
-  := pr111 f.
-
-Definition alg_map_commute
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           (f : X --> Y)
-  : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
-    alg_map_carrier f (alg_constr X x)
-    =
-    alg_constr Y (poly_map (point_constr Σ) (alg_map_carrier f) x)
-  := pr1 (pr211 f).
-
-Definition is_algebra_2cell
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           {f g : X --> Y}
-           (α : alg_map_carrier f ~ alg_map_carrier g)
-  : UU
-  := ∏ (z : poly_act (point_constr Σ) (alg_carrier X)),
-     α (alg_constr X z)
-     @ alg_map_commute g z
-     =
-     alg_map_commute f z
-     @ maponpaths (alg_constr Y) (poly_homot (point_constr Σ) α z).
-           
-Definition make_algebra_2cell
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           {f g : X --> Y}
-           (α : alg_map_carrier f ~ alg_map_carrier g)
-           (Hα : is_algebra_2cell α)
-  : f ==> g.
-Proof.
-  simple refine (((α ,, _) ,, λ _, tt) ,, tt).
-  use funextsec.
-  exact Hα.
-Defined.
-
 Definition poly_homot_pathsdirprod_pr1
            {P : poly_code}
            {X Y₁ Y₂ : UU}

@@ -56,49 +56,6 @@ Proof.
 Defined.
 
 
-Definition alg_map_carrier
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           (f : X --> Y)
-  : alg_carrier X → alg_carrier Y
-  := pr111 f.
-
-Definition alg_map_commute
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           (f : X --> Y)
-  : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
-    alg_map_carrier f (alg_constr X x)
-    =
-    alg_constr Y (poly_map (point_constr Σ) (alg_map_carrier f) x)
-  := pr1 (pr211 f).
-
-Definition is_algebra_2cell
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           {f g : X --> Y}
-           (α : alg_map_carrier f ~ alg_map_carrier g)
-  : UU
-  := ∏ (z : poly_act (point_constr Σ) (alg_carrier X)),
-     α (alg_constr X z)
-     @ alg_map_commute g z
-     =
-     alg_map_commute f z
-     @ maponpaths (alg_constr Y) (poly_homot (point_constr Σ) α z).
-           
-Definition make_algebra_2cell
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           {f g : X --> Y}
-           (α : alg_map_carrier f ~ alg_map_carrier g)
-           (Hα : is_algebra_2cell α)
-  : f ==> g.
-Proof.
-  simple refine (((α ,, _) ,, λ _, tt) ,, tt).
-  use funextsec.
-  exact Hα.
-Defined.
-
 Definition poly_dact_UU_on_eq
            {P : poly_code}
            {A B : UU}
@@ -115,43 +72,6 @@ Proof.
     + exact (maponpaths inr (IHP₂ x Hx)).
   - exact (pathsdirprod (IHP₁ _ (pr1 Hx)) (IHP₂ _ (pr2 Hx))).
 Defined.
-
-Definition alg_2cell_carrier
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           {f g : X --> Y}
-           (α : f ==> g)
-  : alg_map_carrier f ~ alg_map_carrier g
-  := pr111 α.
-
-Definition algebra_2cell_eq
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           {f g : X --> Y}
-           {α β : f ==> g}
-           (p : alg_2cell_carrier α ~ alg_2cell_carrier β)
-  : α = β.
-Proof.
-  use subtypePath.
-  { intro ; apply isapropunit. }
-  use subtypePath.
-  { intro ; use impred ; intro ; apply isapropunit. }
-  use subtypePath.
-  { intro ; apply one_types. }
-  use funextsec.
-  exact p.
-Qed.
-
-Definition alg_2cell_eq_component
-           {Σ : hit_signature}
-           {X Y : hit_algebra_one_types Σ}
-           {f g : X --> Y}
-           {α β : f ==> g}
-           (p : α = β)
-  : alg_2cell_carrier α ~ alg_2cell_carrier β.
-Proof.
-  exact (eqtohomot (maponpaths (λ z, pr111 z) p)).
-Qed.
 
 Definition TODO {A : UU} : A.
 Admitted.
