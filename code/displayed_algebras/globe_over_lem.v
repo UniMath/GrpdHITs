@@ -424,6 +424,35 @@ Proof.
   induction p.
   apply idpath.
 Defined.
+
+Definition PathOverToTotalPath'_eta
+           {X : UU}
+           {Y : X → UU}
+           {x₁ x₂ : X}
+           {y₁ : Y x₁} {y₂ : Y x₂}
+           (p : x₁ ,, y₁ = x₂ ,, y₂)
+  : p = PathOverToTotalPath' (maponpaths pr1 p) (TotalPathToPathOver p).
+Proof.
+  induction p.
+  apply idpath.
+Defined.
+
+Definition PathOverToTotalPath'_comp
+           {X : UU}
+           {Y : X → UU}
+           {x₁ x₂ x₃ : X}
+           {y₁ : Y x₁} {y₂ : Y x₂} {y₃ : Y x₃}
+           {p₁ : x₁ = x₂} {p₂ : x₂ = x₃}
+           (q₁ : PathOver y₁ y₂ p₁)
+           (q₂ : PathOver y₂ y₃ p₂)
+  : @PathOverToTotalPath' _ _ (x₁ ,, y₁) (x₂ ,, y₂) p₁ q₁
+    @ @PathOverToTotalPath' _ _ (x₂ ,, y₂) (x₃ ,, y₃) p₂ q₂
+    =
+    @PathOverToTotalPath' _ _ (x₁ ,, y₁) (x₃ ,, y₃) (p₁ @ p₂) (composePathOver q₁ q₂).
+Proof.
+  induction p₁, p₂, q₁, q₂.
+  apply idpath.
+Defined.
   
 Definition maponpaths_pr1_PathOverToTotalPath
            {X : UU}
