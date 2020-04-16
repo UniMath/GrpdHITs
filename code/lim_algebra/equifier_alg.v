@@ -141,11 +141,7 @@ Section Equifier.
     Proof.
       apply PathOver_path_hprop.
       intro a.
-      exact (one_type_isofhlevel (pr111 B)
-                                 (alg_map_carrier f a)
-                                 (alg_map_carrier g a)
-                                 (alg_2cell_carrier p a)
-                                 (alg_2cell_carrier q a)).
+      exact (one_type_isofhlevel (pr111 B) _ _ _ _).
     Qed.
       
     Definition equifier_ump_1_preserves_point
@@ -199,10 +195,7 @@ Section Equifier.
       cbn.
       unfold homotcomp, homotfun, funhomotsec.
       rewrite !pathscomp0rid, pathscomp0lid.
-      unfold equifier_ump_1_preserves_point.
-      unfold equifier_ump_1_preserves_point_pr1.
-      Search maponpaths.
-      Check maponpaths_pr1_PathOverToTotalPath.
+      unfold equifier_ump_1_preserves_point, equifier_ump_1_preserves_point_pr1.
       refine (! (maponpaths (λ x, x @ _) _ @ _)).
       - apply maponpaths_pr1_PathOverToTotalPath.
       - refine (! path_assoc _ _ _ @ _ @ pathscomp0rid _).
