@@ -129,9 +129,7 @@ Section Equifier.
       refine (alg_map_commute Cpr x @ _).
       apply maponpaths.
       refine (! _).
-      refine (poly_comp _ _ _ _ @ _).
-      apply poly_homot.
-      intro; apply idpath.
+      apply poly_comp.
     Defined.
 
     Definition equifier_ump_1_preserves_point_pr2
@@ -191,16 +189,29 @@ Section Equifier.
       : is_algebra_2cell equifier_ump_pr1_component.
     Proof.
       intro.
-      Check (eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) _) _).
       unfold equifier_ump_pr1_component.
-      Search pathscomp0.
       refine (pathscomp0lid _ @ _).      
       refine (_ @
                 maponpaths (λ x, _ @ maponpaths (alg_constr A) x)
                 (! eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) _) _)).
       refine (_ @ ! pathscomp0rid _).
-      apply (maponpaths (λ f, f z)).
-      apply TODO.
+      unfold equifier_ump_1, equifier_pr.
+      cbn.
+      unfold homotcomp, homotfun, funhomotsec.
+      rewrite !pathscomp0rid, pathscomp0lid.
+      unfold equifier_ump_1_preserves_point.
+      unfold equifier_ump_1_preserves_point_pr1.
+      Search maponpaths.
+      Check maponpaths_pr1_PathOverToTotalPath.
+      refine (! (maponpaths (λ x, x @ _) _ @ _)).
+      - apply maponpaths_pr1_PathOverToTotalPath.
+      - refine (! path_assoc _ _ _ @ _ @ pathscomp0rid _).
+        apply (maponpaths (λ x, _ @ x)).
+        refine (! maponpathscomp0 (alg_constr A) _ _ @ _).
+        refine (_@_).
+        + apply maponpaths.
+          exact (pathsinv0l _).
+        + apply idpath.
     Qed.
     
     Definition equifier_ump_1_pr
