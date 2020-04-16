@@ -220,6 +220,31 @@ Proof.
   - exact (dirprodf_path IHP₁ IHP₂).
 Defined.
 
+Definition poly_homot_inv
+           {P : poly_code}
+           {X Y : UU}
+           {f g : X → Y}
+           (p : f ~ g)
+           (x : poly_act P X)
+  : poly_homot P (invhomot p) x
+    =
+    !(poly_homot P p x).
+Proof.
+  induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
+  - apply idpath.
+  - apply idpath.
+  - induction x as [x | x].
+    + simpl.
+      refine (maponpaths (maponpaths inl) (IHP₁ x) @ _).
+      apply maponpathsinv0.
+    + simpl.
+      refine (maponpaths (maponpaths inr) (IHP₂ x) @ _).
+      apply maponpathsinv0.
+  - simpl.
+    refine (_ @ !(pathsdirprod_inv _ _)).
+    exact (paths_pathsdirprod (IHP₁ _) (IHP₂ _)).
+Qed.
+
 Definition poly_id
            (P : poly_code)
            (X : UU)
