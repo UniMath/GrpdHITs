@@ -575,10 +575,7 @@ Section Equalizer.
       refine (alg_map_commute Cpr x @ _).
       apply maponpaths.
       refine (!_).
-      refine (poly_comp _ _ _ _ @ _).
-      apply poly_homot.
-      intro.
-      apply idpath.
+      apply poly_comp.
     Defined.
 
     Definition equalizer_ump_1_preserves_point_pr2
@@ -660,28 +657,7 @@ Section Equalizer.
       }
       rewrite <- !maponpathscomp0.
       apply maponpaths.
-      etrans.
-      {
-        do 5 apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          apply (eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) _)).
-        }
-        apply pathscomp0rid.
-      }
       refine (!_).
-      etrans.
-      {
-        apply maponpaths_2.
-        do 2 apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          apply (eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) _)).
-        }
-        apply pathscomp0rid.
-      }
       etrans.
       {
         apply maponpaths_2.
@@ -860,11 +836,7 @@ Section Equalizer.
         }
         unfold equalizer_ump_1_preserves_point_pr1.
         apply maponpaths.
-        refine (maponpathsinv0 _ _ @ _).
-        do 2 apply maponpaths.
-        refine (_ @ pathscomp0rid _).
-        apply maponpaths.
-        exact (eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) (alg_map_carrier Cpr)) x).
+        exact (maponpathsinv0 _ _).
     Qed.
 
     Definition equalizer_ump_1_preserves_path
@@ -979,7 +951,14 @@ Section Equalizer.
       }
       refine (_ @ maponpaths_idpath).
       apply maponpaths.
-      apply pathsinv0l.
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply pathsinv0l.
+      }
+      simpl.
+      exact (eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) _) _).
     Qed.
 
     Definition equalizer_ump_1_pr
