@@ -395,7 +395,10 @@ Section Equifier.
         }
         refine (maponpaths (λ q, _ @ q) _).
         apply poly_homot_inv.
-      - apply TODO.
+      - apply path_globe_over_hset.
+        intro.
+        apply isofhlevelsnprop.
+        exact (one_type_isofhlevel (pr111 B) _ _ _ _).
     Qed.
 
     Definition equifier_ump_2
@@ -411,19 +414,27 @@ Section Equifier.
     Proof.
       use algebra_2cell_eq.
       intro c.
-      cbn.
-      unfold homotcomp, homotfun, equifier_ump_2_component.
-      etrans.
+      assert (maponpaths
+                pr1
+                (PathOverToTotalPath'
+                   (equifier_ump_2_on_pr1 c)
+                   (equifier_ump_2_component_subproof c))
+              @ (pr111 ψpr) c
+              = alg_2cell_carrier φpr c)
+        as X.
       {
-        apply maponpaths_2.
-        unfold PathOverToTotalPath' ; apply maponpaths_pr1_PathOverToTotalPath.
+        etrans.
+        {
+          apply maponpaths_2.
+          unfold PathOverToTotalPath' ; apply maponpaths_pr1_PathOverToTotalPath.
+        }
+        unfold equifier_ump_2_on_pr1.
+        refine (!(path_assoc _ _ _) @ _ @ pathscomp0rid _).
+        apply maponpaths.
+        apply pathsinv0l.
       }
-      unfold equifier_ump_2_on_pr1.
-      refine (!(path_assoc _ _ _) @ _ @ pathscomp0rid _).
-      apply maponpaths.
-      apply pathsinv0l.
+      exact X.
     Qed.
-
   End EquifierUMP2.
 
   Section EquifierUMPEq.
@@ -473,11 +484,12 @@ Section Equifier.
       refine (PathOverToTotalPath'_eta _ @ _ @ !(PathOverToTotalPath'_eta _)).
       use globe_over_to_homot.
       - exact (r @ !s).
-      - apply TODO.
-    Qed.
-      
+      - apply path_globe_over_hset.
+        intro.
+        apply isofhlevelsnprop.
+        exact (one_type_isofhlevel (pr111 B) _ _ _ _).
+    Qed.      
   End EquifierUMPEq.
-  
 End Equifier.
 
 
