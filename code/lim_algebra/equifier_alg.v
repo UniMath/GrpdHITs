@@ -10,6 +10,7 @@ Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.Colimits.Initial.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -108,7 +109,109 @@ Section Equifier.
     use algebra_2cell_eq.
     exact equifier_homot_component.
   Qed.
-  
+
+  Section EquifierUMP1.
+    Variable (C : hit_algebra_one_types Σ)
+             (Cpr : C --> A)
+             (Chomot : Cpr ◃ p = Cpr ◃ q).
+    
+    Definition equifier_ump_1_comp
+      : alg_carrier C → alg_carrier equifier
+      := λ c, alg_map_carrier Cpr c ,, maponpaths (λ z, alg_2cell_carrier z c) Chomot.
+
+    Definition equifier_ump_1_preserves_point_pr1
+               (x : poly_act (point_constr Σ) (alg_carrier C))
+      : pr1 (equifier_ump_1_comp (alg_constr C x))
+        =
+        pr1 (prealg_constr (poly_map (point_constr Σ) equifier_ump_1_comp x)).
+    Proof.
+      cbn; unfold poly_pr1.      
+      refine (alg_map_commute Cpr x @ _).
+      apply maponpaths.
+      refine (! _).
+      refine (poly_comp _ _ _ _ @ _).
+      apply poly_homot.
+      intro; apply idpath.
+    Defined.
+
+    Definition equifier_ump_1_preserves_point_pr2
+               (x : poly_act (point_constr Σ) (alg_carrier C))
+      : PathOver
+          (pr2 (equifier_ump_1_comp (prealg_constr x)))
+          (pr2 (prealg_constr (poly_map (point_constr Σ) equifier_ump_1_comp x)))
+          (equifier_ump_1_preserves_point_pr1 x).
+    Proof.
+      apply PathOver_path_hprop.
+      intro a.
+      exact (one_type_isofhlevel (pr111 B)
+                                 (alg_map_carrier f a)
+                                 (alg_map_carrier g a)
+                                 (alg_2cell_carrier p a)
+                                 (alg_2cell_carrier q a)).
+    Qed.
+      
+    Definition equifier_ump_1_preserves_point
+      : preserves_point equifier_ump_1_comp.
+    Proof.
+      intro x.
+      use PathOverToTotalPath'.
+      - exact (equifier_ump_1_preserves_point_pr1 x).
+      - exact (equifier_ump_1_preserves_point_pr2 x).
+    Defined.
+      
+    Definition equifier_ump_1_prealg
+      : pr11 C --> pr11 equifier.
+    Proof.
+      use make_hit_prealgebra_mor.
+      - exact equifier_ump_1_comp.
+      - exact equifier_ump_1_preserves_point.
+    Defined.
+
+    Definition equifier_ump_1_preserves_path
+      : preserves_path _ (prealg_map_commute equifier_ump_1_prealg).
+    Proof.
+      intros j x.
+      apply TODO.
+    Qed.
+    
+    Definition equifier_ump_1
+      : C --> equifier.
+    Proof.
+      use make_algebra_map.
+      use make_hit_path_alg_map.
+      - exact equifier_ump_1_prealg.
+      - exact equifier_ump_1_preserves_path.
+    Defined.
+
+    Definition equifier_ump_pr1_component
+      : alg_map_carrier (equifier_ump_1 · equifier_pr) ~ alg_map_carrier Cpr
+      := λ _, idpath _.
+
+    Definition equifier_ump_1_is_algebra_2cell
+      : is_algebra_2cell equifier_ump_pr1_component.
+    Proof.
+      intro.
+      Check (eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) _) _).
+      unfold equifier_ump_pr1_component.
+      Search pathscomp0.
+      refine (pathscomp0lid _ @ _).      
+      refine (_ @
+                maponpaths (λ x, _ @ maponpaths (alg_constr A) x)
+                (! eqtohomot (psfunctor_id2 (⟦ point_constr Σ ⟧) _) _)).
+      refine (_ @ ! pathscomp0rid _).
+      apply (maponpaths (λ f, f z)).
+      apply TODO.
+    Qed.
+    
+    Definition equifier_ump_1_pr
+      : equifier_ump_1 · equifier_pr ==> Cpr.
+    Proof.
+      use make_algebra_2cell.
+      - exact equifier_ump_pr1_component.
+      - exact equifier_ump_1_is_algebra_2cell.
+    Defined.
+    
+  End EquifierUMP1.
 End Equifier.
 
 
