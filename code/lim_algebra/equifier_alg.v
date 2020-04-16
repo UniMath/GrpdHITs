@@ -45,6 +45,50 @@ Proof.
     exact (maponpaths (λ z,  pathsdirprod z (poly_homot P₂ q (pr2 x))) (IHP₁ _ (pr1 Hx))). 
 Defined.
 
+Definition maponpaths_poly_homot
+           {P : poly_code}
+           {X Y Z : UU}
+           {f g : X → Y}
+           (h : Y → Z)
+           (p : f ~ g)
+           (x : poly_act P X)
+  : maponpaths
+      (poly_map P h)
+      (poly_homot P p x)
+    =
+    poly_comp _ _ _ _
+    @ poly_homot P (λ z, maponpaths h (p z)) x
+    @ !(poly_comp _ _ _ _).
+Proof.
+  induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - exact (!(pathscomp0rid _)).
+  - induction x as [x | x] ; simpl.
+    + refine (maponpathscomp inl (coprodf _ _) _ @ _).
+      refine (!(maponpathscomp (poly_map _ _) inl _) @ _).
+      refine (maponpaths (maponpaths inl) (IHP₁ x) @ _).
+      refine (maponpathscomp0 _ _ _ @ _).
+      apply maponpaths.
+      refine (maponpathscomp0 _ _ _ @ _).
+      apply maponpaths.
+      apply (maponpathsinv0 inl).
+    + refine (maponpathscomp inr (coprodf _ _) _ @ _).
+      refine (!(maponpathscomp (poly_map _ _) inr _) @ _).
+      refine (maponpaths (maponpaths inr) (IHP₂ x) @ _).
+      refine (maponpathscomp0 _ _ _ @ _).
+      apply maponpaths.
+      refine (maponpathscomp0 _ _ _ @ _).
+      apply maponpaths.
+      apply (maponpathsinv0 inr).
+  - simpl.
+    refine (!(maponpaths_pathsdirprod _ _ _ _) @ _).
+    refine (paths_pathsdirprod (IHP₁ _) (IHP₂ _) @ _).
+    refine (!_).
+    refine (maponpaths (λ z, _ @ (_ @ z)) (pathsdirprod_inv _ _) @ _).
+    refine (maponpaths (λ z, _ @ z) (pathsdirprod_concat _ _ _ _) @ _).
+    exact (pathsdirprod_concat _ _ _ _).
+Qed.
+
 Definition TODO {A : UU} : A.
 Admitted.
 
@@ -132,25 +176,15 @@ Section Equifier.
       apply poly_comp.
     Defined.
 
-    Definition equifier_ump_1_preserves_point_pr2
-               (x : poly_act (point_constr Σ) (alg_carrier C))
-      : PathOver
-          (pr2 (equifier_ump_1_comp (prealg_constr x)))
-          (pr2 (prealg_constr (poly_map (point_constr Σ) equifier_ump_1_comp x)))
-          (equifier_ump_1_preserves_point_pr1 x).
-    Proof.
-      apply PathOver_path_hprop.
-      intro a.
-      exact (one_type_isofhlevel (pr111 B) _ _ _ _).
-    Qed.
-      
     Definition equifier_ump_1_preserves_point
       : preserves_point equifier_ump_1_comp.
     Proof.
       intro x.
       use PathOverToTotalPath'.
       - exact (equifier_ump_1_preserves_point_pr1 x).
-      - exact (equifier_ump_1_preserves_point_pr2 x).
+      - abstract
+          (apply PathOver_path_hprop; intro a;
+           exact (one_type_isofhlevel (pr111 B) _ _ _ _)).
     Defined.
       
     Definition equifier_ump_1_prealg
@@ -216,6 +250,234 @@ Section Equifier.
     Defined.
     
   End EquifierUMP1.
+
+  Section EquifierUMP2.
+    Context {C : hit_algebra_one_types Σ}
+            {Cpr : C --> A}
+            {Chomot : Cpr ◃ p = Cpr ◃ q}
+            (φ ψ : C --> equifier)
+            (φpr : φ · equifier_pr ==> Cpr)
+            (ψpr : ψ · equifier_pr ==> Cpr).
+
+    Definition equifier_ump_2_on_pr1
+               (c : alg_carrier C)
+      : pr1 (alg_map_carrier φ c) = pr1 (alg_map_carrier ψ c)
+      := pr111 φpr c @ !(pr111 ψpr c).
+
+    Definition equifier_ump_2_component
+      : alg_map_carrier φ ~ alg_map_carrier ψ.
+    Proof.
+      intro c.
+      use PathOverToTotalPath'.
+      - exact (equifier_ump_2_on_pr1 c).
+      - abstract
+          (apply PathOver_path_hprop; intro a;
+           exact (one_type_isofhlevel (pr111 B) _ _ _ _)).
+    Defined.
+
+    Definition equifier_ump_2_is_algebra_2cell
+      : is_algebra_2cell equifier_ump_2_component.
+    Proof.
+      intro z.
+      etrans.
+      {
+        apply maponpaths.
+        apply PathOverToTotalPath'_eta.
+      }
+      unfold equifier_ump_2_component.
+      etrans.
+      {
+        apply PathOverToTotalPath'_comp.
+      }
+      refine (_ @ !(PathOverToTotalPath'_eta _)).
+      use globe_over_to_homot.
+      - unfold globe ; simpl.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            exact (maponpathscomp0 pr1 (alg_map_commute φ z) (maponpaths _ _)).
+          }
+          etrans.
+          {
+            apply maponpaths.
+            apply maponpathscomp.
+          }
+          unfold funcomp.
+          simpl.
+          apply idpath.
+        }
+        refine (!_).
+        unfold  equifier_ump_2_on_pr1.
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              exact (!(pathscomp0rid _)).
+            }
+            apply maponpaths.
+            exact (!(pathsinv0r (alg_map_commute Cpr z))).
+          }
+          etrans.
+          {
+            etrans.
+            {
+              apply maponpaths_2.
+              exact (path_assoc _ _ _).
+            }
+            exact (!(path_assoc _ _ _)).
+          }
+          etrans.
+          {
+            apply maponpaths_2.
+            pose (eqtohomot (pr211 φpr) z) as r.
+            cbn in r.
+            unfold homotcomp, funhomotsec, homotfun in r.
+            cbn in r.
+            rewrite !pathscomp0rid in r.
+            exact r.
+          }
+          apply maponpaths.
+          etrans.
+          {
+            refine (!_).
+            apply pathscomp_inv.
+          }
+          pose (eqtohomot (pr211 ψpr) z) as r.
+          cbn in r.
+          unfold homotcomp, funhomotsec, homotfun in r.
+          cbn in r.
+          rewrite !pathscomp0rid in r.
+          apply maponpaths.
+          exact r.
+        }
+        rewrite !pathscomp_inv.
+        rewrite <- !path_assoc.
+        apply maponpaths.
+        rewrite pathsinv0l, pathscomp0rid.
+        rewrite <- !maponpathsinv0.
+        rewrite <- !maponpathscomp0.
+        refine (!_).
+        etrans.
+        {
+          refine (!_).
+          apply maponpathscomp.
+        }
+        apply maponpaths.
+        unfold poly_pr1.
+        etrans.
+        {
+          apply maponpaths_poly_homot.
+        }
+        apply maponpaths.
+        refine (_ @ !(path_assoc _ _ _)).
+        apply maponpaths_2.
+        etrans.
+        {
+          refine (maponpaths (λ q, poly_homot _ q z) _).
+          use funextsec.
+          intro.
+          apply maponpaths_pr1_PathOverToTotalPath'.
+        }
+        etrans.
+        {
+          exact (eqtohomot
+                   (psfunctor_vcomp
+                      (⟦ point_constr Σ ⟧)
+                      (alg_2cell_carrier φpr)
+                      (invhomot (alg_2cell_carrier ψpr)))
+                   z).
+        }
+        refine (maponpaths (λ q, _ @ q) _).
+        apply poly_homot_inv.
+      - apply TODO.
+    Qed.
+
+    Definition equifier_ump_2
+      : φ ==> ψ.
+    Proof.
+      use make_algebra_2cell.
+      - exact equifier_ump_2_component.
+      - exact equifier_ump_2_is_algebra_2cell.
+    Defined.
+
+    Definition equifier_ump_2_pr
+      : equifier_ump_2 ▹ equifier_pr • ψpr = φpr.
+    Proof.
+      use algebra_2cell_eq.
+      intro c.
+      cbn.
+      unfold homotcomp, homotfun, equifier_ump_2_component.
+      etrans.
+      {
+        apply maponpaths_2.
+        unfold PathOverToTotalPath' ; apply maponpaths_pr1_PathOverToTotalPath.
+      }
+      unfold equifier_ump_2_on_pr1.
+      refine (!(path_assoc _ _ _) @ _ @ pathscomp0rid _).
+      apply maponpaths.
+      apply pathsinv0l.
+    Qed.
+
+  End EquifierUMP2.
+
+  Section EquifierUMPEq.
+    Context {C : hit_algebra_one_types Σ}
+            {Cpr : C --> A}
+            {Chomot : Cpr ◃ p = Cpr ◃ q}
+            (φ ψ : C --> equifier)
+            (φpr : φ · equifier_pr ==> Cpr)
+            (ψpr : ψ · equifier_pr ==> Cpr)
+            (τ θ : φ ==> ψ)
+            (τpr : τ ▹ equifier_pr • ψpr = φpr)
+            (θpr : θ ▹ equifier_pr • ψpr = φpr).
+
+    Definition equifier_ump_eq
+      : τ = θ.
+    Proof.
+      use algebra_2cell_eq.
+      intro z.
+      assert (maponpaths pr1 ((pr111 τ) z)
+              =
+              alg_2cell_carrier φpr z @ !(pr111 ψpr z)) as r.
+      {
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (!(alg_2cell_eq_component τpr z)).
+        }
+        refine (!(path_assoc _ _ _) @ _ @ pathscomp0rid _).
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      assert (maponpaths pr1 ((pr111 θ) z)
+              =
+              alg_2cell_carrier φpr z @ !(pr111 ψpr z)) as s.
+      {
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (!(alg_2cell_eq_component θpr z)).
+        }
+        refine (!(path_assoc _ _ _) @ _ @ pathscomp0rid _).
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      refine (PathOverToTotalPath'_eta _ @ _ @ !(PathOverToTotalPath'_eta _)).
+      use globe_over_to_homot.
+      - exact (r @ !s).
+      - apply TODO.
+    Qed.
+      
+  End EquifierUMPEq.
+  
 End Equifier.
 
 
