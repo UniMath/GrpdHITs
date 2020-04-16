@@ -77,7 +77,7 @@ Section Equifier.
     refine (maponpaths (λ z, alg_2cell_carrier q (alg_constr A x) @ z)
                        (pathsinv0r (alg_map_commute g x)) @ _).
     exact (pathscomp0rid _).
-  Defined.
+  Qed.
   
   Definition equifier_disp_alg
     : disp_algebra A.
@@ -96,10 +96,19 @@ Section Equifier.
     : equifier --> A
     := projection _.
 
-  Definition equifier_path_component
-    : alg_2cell_carrier (equifier_pr ◃ p) ~ alg_2cell_carrier (equifier_pr ◃ q)
-    := pr2.
+  Definition equifier_homot_component
+    : alg_2cell_carrier (equifier_pr ◃ p) ~ alg_2cell_carrier (equifier_pr ◃ q).
+  Proof.
+    exact pr2.
+  Qed.
 
+  Definition equifier_homot
+    : equifier_pr ◃ p = equifier_pr ◃ q.
+  Proof.
+    use algebra_2cell_eq.
+    exact equifier_homot_component.
+  Qed.
+  
 End Equifier.
 
 
