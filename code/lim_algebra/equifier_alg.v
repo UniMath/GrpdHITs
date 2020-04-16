@@ -25,206 +25,81 @@ Require Import existence.initial_algebra.
 
 Local Open Scope cat.
 
+Definition poly_dact_UU_on_homot
+           {P : poly_code}
+           {A B : UU}
+           {f g : A → B}
+           {p q : f ~ g}
+           (x : poly_act P A)
+           (Hx : poly_dact_UU P (λ z, p z = q z) x)
+  : poly_homot P p x = poly_homot P q x.
+Proof.
+  induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - exact Hx.
+  - induction x as [x | x].
+    + exact (maponpaths (maponpaths inl) (IHP₁ x Hx)).
+    + exact (maponpaths (maponpaths inr) (IHP₂ x Hx)).
+  - refine (maponpaths (pathsdirprod (poly_homot P₁ p (pr1 x))) (IHP₂ _ (pr2 Hx)) @ _).
+    exact (maponpaths (λ z,  pathsdirprod z (poly_homot P₂ q (pr2 x))) (IHP₁ _ (pr1 Hx))). 
+Defined.
+
+Definition TODO {A : UU} : A.
+Admitted.
+
 Section Equifier.
   Context {Σ : hit_signature}
           {A B : hit_algebra_one_types Σ}
           {f g : A --> B}
           (p q : f ==> g).
 
+  Definition equifier_disp_alg_constr
+             (x : poly_act (point_constr Σ) (alg_carrier A))
+             (Hx : poly_dact_UU
+                     (point_constr Σ)
+                     (λ a : alg_carrier A, alg_2cell_carrier p a = alg_2cell_carrier q a)
+                     x)
+    : alg_2cell_carrier p (alg_constr A x) = alg_2cell_carrier q (alg_constr A x).
+  Proof.
+    refine (!(pathscomp0rid _) @ _).
+    refine (maponpaths (λ z, alg_2cell_carrier p (alg_constr A x) @ z)
+                       (!(pathsinv0r (alg_map_commute g x))) @ _).
+    refine (path_assoc _ _ _ @ _).
+    refine (maponpaths (λ z, z @ ! alg_map_commute g x) (alg_2cell_commute p x) @ _).
+    refine (! path_assoc _ _ _ @ _).
+    refine (maponpaths (λ z, alg_map_commute f x
+                                             @ maponpaths (alg_constr B) z
+                                             @ ! alg_map_commute g x)
+                       (poly_dact_UU_on_homot x Hx) @ _).
+    refine (path_assoc _ _ _ @ _).
+    refine (maponpaths (λ z, z @ ! alg_map_commute g x) (! alg_2cell_commute q x) @ _).
+    refine (! path_assoc _ _ _ @ _).
+    refine (maponpaths (λ z, alg_2cell_carrier q (alg_constr A x) @ z)
+                       (pathsinv0r (alg_map_commute g x)) @ _).
+    exact (pathscomp0rid _).
+  Defined.
+  
   Definition equifier_disp_alg
     : disp_algebra A.
   Proof.
     use prop_disp_algebra.
-    - exact (λ a, pr111 p a = pr111 q a).
-    - abstract
-        (intro a ;
-         exact (one_type_isofhlevel
-                  (pr111 B)
-                  (pr111 f a) (pr111 g a)
-                  (pr111 p a) (pr111 q a))).
-    - simpl.
-      admit.
-  Admitted.
+    - exact (λ a, alg_2cell_carrier p a = alg_2cell_carrier q a).
+    - abstract (intro a ; exact (one_type_isofhlevel _ _ _ _ _)).
+    - exact equifier_disp_alg_constr.
+  Defined.
+
+  Definition equifier
+    : hit_algebra_one_types Σ
+    := total_algebra equifier_disp_alg.
+
+  Definition equifier_pr
+    : equifier --> A
+    := projection _.
+
+  Definition equifier_path_component
+    : alg_2cell_carrier (equifier_pr ◃ p) ~ alg_2cell_carrier (equifier_pr ◃ q)
+    := pr2.
+
 End Equifier.
 
 
-(*
-Section Equifier.
-  Context {A B : one_types}
-          {f g : A --> B}
-          (p q : f ==> g).
-
-  (** General constructors for equifiers *)
-  Definition equifier_UU
-    : UU
-    := ∑ a, p a = q a.
-
-  Definition pr_equifier
-    : equifier_UU → (A : one_type)
-    := λ a, pr1 a.
-
-  Definition homot_equifier
-    : ∏ (x : equifier_UU),
-      p (pr_equifier x) = q (pr_equifier x)
-    := λ x, pr2 x.
-
-  Definition path_equifier
-             {x y : equifier_UU}
-             (r : pr_equifier x = pr_equifier y)
-    : x = y.
-  Proof.
-    induction x as [x px] ; induction y as [y py]
-    ; simpl in *.
-    induction r.
-    apply maponpaths.
-    exact (proofirrelevance
-             _
-             (pr2 B _ _ _ _)
-             px py).
-  Defined.
-
-  Definition pr_path_equifier
-             {x y : equifier_UU}
-             (r : pr_equifier x = pr_equifier y)
-    : maponpaths pr_equifier (path_equifier r) = r.
-  Proof.
-    induction x as [x px] ; induction y as [y py]
-    ; simpl in *.
-    induction r ; simpl.
-    etrans.
-    {
-      apply (maponpathscomp (λ z, _ ,, z) pr_equifier).
-    }
-    unfold funcomp.
-    simpl.
-    apply maponpaths_for_constant_function.
-  Qed.
-
-  Definition path_equifier_eta
-             {x y : equifier_UU}
-             (r : x = y)
-    : r = path_equifier (maponpaths pr_equifier r).
-  Proof.
-    induction r ; simpl.
-    refine (!_).
-    refine (_ @ @maponpaths_idpath _ _ (λ z, _ ,, z) _).
-    apply maponpaths.
-    apply proofirrelevance.
-    apply hlevelntosn.
-    apply B.
-  Qed.
-
-  (** Equifiers in 1-types *)
-  Definition equifier_one_types
-    : one_types.
-  Proof.
-    refine (make_one_type equifier_UU _).
-    apply isofhleveltotal2.
-    - apply one_type_isofhlevel.
-    - abstract
-        (intro x ;
-         do 2 apply hlevelntosn ;
-         exact (one_type_isofhlevel B (f x) (g x) (p x) (q x))).
-  Defined.
-
-  Definition equifier_inc
-    : equifier_one_types --> A
-    := pr_equifier.
-
-  Definition equifier_homot
-    : equifier_inc ◃ p = equifier_inc ◃ q.
-  Proof.
-    use funextsec.
-    exact homot_equifier.
-  Qed.
-
-  Section EquifierUMP1.
-    Variable (C : one_types)
-             (Cinc : C --> A)
-             (Chomot : Cinc ◃ p = Cinc ◃ q).
-
-    Definition equifier_ump_1
-      : C --> equifier_one_types
-      := λ c, Cinc c ,, eqtohomot Chomot c.
-
-    Definition equifier_ump_1_inc
-      : equifier_ump_1 · equifier_inc ==> Cinc
-      := λ _, idpath _.
-  End EquifierUMP1.
-
-  Section EquifierUMP2.
-    Context {C : one_types}
-            {Cinc : C --> A}
-            {Chomot : Cinc ◃ p = Cinc ◃ q}
-            (φ ψ : C --> equifier_one_types)
-            (φinc : φ · equifier_inc ==> Cinc)
-            (ψinc : ψ · equifier_inc ==> Cinc).
-
-    Definition equifier_ump_2
-      : φ ==> ψ.
-    Proof.
-      intro c.
-      use path_equifier.
-      exact (φinc c @ !(ψinc c)).
-    Defined.
-
-    Definition equifier_ump_2_inc
-      : (equifier_ump_2 ▹ equifier_inc) • ψinc = φinc.
-    Proof.
-      use funextsec ; intro c.
-      cbn ; unfold homotcomp, homotfun ; cbn.
-      etrans.
-      {
-        apply maponpaths_2.
-        apply pr_path_equifier.
-      }
-      refine (!(path_assoc _ _ _) @ _).
-      etrans.
-      {
-        apply maponpaths.
-        apply pathsinv0l.
-      }
-      apply pathscomp0rid.
-    Qed.
-  End EquifierUMP2.
-
-  Section EquifierUMPEq.
-    Context {C : one_types}
-            {Cinc : C --> A}
-            {Chomot : Cinc ◃ p = Cinc ◃ q}
-            {φ ψ : C --> equifier_one_types}
-            {φinc : φ · equifier_inc ==> Cinc}
-            {ψinc : ψ · equifier_inc ==> Cinc}
-            (ρ τ : φ ==> ψ)
-            (ρinc : (ρ ▹ equifier_inc) • ψinc = φinc)
-            (τinc : (τ ▹ equifier_inc) • ψinc = φinc).
-
-    Definition equifier_ump_eq
-      : ρ = τ.
-    Proof.
-      use funextsec ; intro c.
-      pose (maponpaths (λ z, z @ !(ψinc c)) (eqtohomot ρinc c)) as r₁.
-      pose (maponpaths (λ z, z @ !(ψinc c)) (eqtohomot τinc c)) as r₂.
-      refine (path_equifier_eta _ @ _ @ !(path_equifier_eta _)).
-      apply maponpaths.
-      cbn in r₁, r₂ ; unfold homotcomp, homotfun in r₁, r₂.
-      refine (_ @ r₁ @ !r₂ @ _).
-      - refine (!_).
-        refine (!(path_assoc _ _ _) @ _).
-        etrans.
-        {
-          apply maponpaths.
-          apply pathsinv0r.
-        }
-        apply pathscomp0rid.
-      - refine (!(path_assoc _ _ _) @ _).
-        etrans.
-        {
-          apply maponpaths.
-          apply pathsinv0r.
-        }
-        apply pathscomp0rid.
-    Qed.
-  End EquifierUMPEq.
-End Equifier.
-*)
