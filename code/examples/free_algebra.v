@@ -7,6 +7,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.Colimits.Initial.
 
 Require Import UniMath.Algebra.Monoids.
 Require Import UniMath.Algebra.Groups.
@@ -474,12 +475,19 @@ Section FreeAlg.
                @ !(free_alg_sem_endpoint_UU _ _ _)).
     Defined.
 
+    Definition free_alg_is_alg_homot
+      : is_hit_algebra_one_types Σ free_alg_is_path_alg.
+    Proof.
+      intros j x p.
+      apply TODO.
+    Qed.
+
     Definition free_alg_is_alg
       : hit_algebra_one_types Σ.
     Proof.
       use make_algebra.
       - exact free_alg_is_path_alg.
-      - apply TODO.
+      - exact free_alg_is_alg_homot.
     Defined.
 
     Definition free_alg_inc
@@ -523,6 +531,22 @@ Section FreeAlg.
       - apply TODO.
     Defined.
   End FreeAlgBuilder.
+
+  Definition free_alg_is_alg_make_free_alg_algebra
+             (X : hit_algebra_one_types Σ)
+             (inc : A → alg_carrier X)
+    : free_alg_is_alg (make_free_alg_algebra X inc) --> X.
+  Proof.
+    use make_algebra_map.
+    use make_hit_path_alg_map.
+    - use make_hit_prealgebra_mor.
+      + exact (λ z, z).
+      + intros z ; simpl.
+        cbn.
+        refine (maponpaths (alg_constr X) _).
+        apply TODO.
+    - apply TODO.
+  Defined.
 
   (** Projections of 1-cells *)
   Definition preserves_A
@@ -626,6 +650,7 @@ Section FreeAlg.
       := λ a, alg_map_commute f (inr a).
   End FreeAlgMapProjections.
 
+  (*
   Section FreeAlgMapBuilder.
     Context {X Y : hit_algebra_one_types free_alg_signature}
             (f : free_alg_is_alg X --> free_alg_is_alg Y)
@@ -709,6 +734,119 @@ Section FreeAlg.
       - exact make_free_alg_preserves_path.
     Defined.
   End FreeAlgMapBuilder.
+   *)
+
+  Section FreeAlgMapBuilder.
+    Context {X : hit_algebra_one_types free_alg_signature}
+            {Y : hit_algebra_one_types Σ}
+            (incY : A → alg_carrier Y)
+            (f : free_alg_is_alg X --> Y)
+            (Hf : preserves_A f (free_alg_inc X) incY).
+    (*
+    Definition make_free_alg_prealg_mor
+      : pr11 X --> pr11 Y.
+    Proof.
+      use make_hit_prealgebra_mor.
+      - exact (alg_map_carrier f).
+      - intro x.
+        induction x as [x | x].
+        + exact (alg_map_commute f x).
+        + exact (Hf x).
+    Defined.
+
+    Definition make_free_alg_preserves_path
+      : preserves_path _ (prealg_map_commute make_free_alg_prealg_mor).
+    Proof.
+      intros j x ; simpl.
+      etrans.
+      {
+        apply maponpaths.
+        apply (free_alg_sem_endpoint_UU_natural (path_right _ _)).
+      }
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply (free_alg_sem_endpoint_UU_natural (path_left _ _)).
+      }
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpathsinv0.
+      }
+      use path_inv_rotate_ll.
+      refine (!_).
+      do 2 refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply maponpathscomp0.
+        }
+        etrans.
+        {
+          refine (!_).
+          apply maponpathscomp0.
+        }
+        apply maponpaths.
+        exact (!(path_assoc _ _ _)).
+      }
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (alg_map_path f j x).
+      }
+      refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+      apply maponpaths.
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _ @ pathscomp0rid _).
+      apply maponpaths.
+      apply pathsinv0l.
+    Qed.
+     *)
+    Definition make_free_alg_mor
+      : X --> make_free_alg_algebra Y incY.
+    Proof.
+      pose Hf.
+      use make_algebra_map.
+      use make_hit_path_alg_map.
+      - use make_hit_prealgebra_mor.
+        + exact (alg_map_carrier f).
+        + apply TODO.
+      - apply TODO.
+      (*
+      use make_algebra_map.
+      use make_hit_path_alg_map.
+      - exact make_free_alg_prealg_mor.
+      - exact make_free_alg_preserves_path.
+       *)
+    Defined.
+  End FreeAlgMapBuilder.
+
+  Definition test
+             {X : hit_algebra_one_types free_alg_signature}
+             {Y : hit_algebra_one_types Σ}
+             (Yinc : A → alg_carrier Y)
+             (f : free_alg_is_alg X --> Y)
+             (Hf : preserves_A f (free_alg_inc X) Yinc)
+    : f
+      ==>
+      free_alg_map_alg_mor (make_free_alg_mor Yinc f Hf)
+      · free_alg_is_alg_make_free_alg_algebra Y Yinc.
+  Proof.
+    use make_algebra_2cell.
+    - intro x.
+      apply idpath.
+    - apply TODO.
+  Defined.
 
   (** Projections of 2-cells *)
   Section FreeAlgCellProjections.
@@ -772,48 +910,121 @@ Section FreeAlg.
              (HX : is_initial _ X).
 
     (** Mapping principle for 1-cells *)
-    Section FreeAlgMapOne.
+    Section FreeAlgMapUMPOne.
       Variable (Y : hit_algebra_one_types Σ)
                (Yinc : A → alg_carrier Y).
+
+      Definition free_alg_ump_1_free_alg_map
+        : X --> make_free_alg_algebra Y Yinc
+        := biinitial_1cell
+             _
+             HX
+             (make_free_alg_algebra Y Yinc).
       
-      Definition free_alg_one_cell
-        : free_alg_is_alg X --> Y.
-      Proof.
-        apply TODO.
-      Defined.
+      Definition free_ump_1
+        : free_alg_is_alg X --> Y
+        := free_alg_map_alg_mor free_alg_ump_1_free_alg_map
+           · free_alg_is_alg_make_free_alg_algebra Y Yinc.
 
       Definition free_alg_one_cell_on_A
                  (a : A)
-        : pr111 free_alg_one_cell (free_alg_inc X a) = Yinc a.
-      Proof.
-        apply TODO.
-      Defined.
-    End FreeAlgMapOne.
+        : alg_map_carrier free_alg_ump_1_free_alg_map (free_alg_inc X a)
+          =
+          Yinc a
+        := free_alg_map_on_A free_alg_ump_1_free_alg_map a.
+    End FreeAlgMapUMPOne.
 
     (** Mapping principle for 2-cells. *)
-    Section FreeAlgMapTwo.
+    Section FreeAlgMapUMPTwo.
       Variable (Y : hit_algebra_one_types Σ)
                (Yinc : A → alg_carrier Y)
                (f g : free_alg_is_alg X --> Y)
                (Hf : preserves_A f (free_alg_inc X) Yinc)
                (Hg : preserves_A g (free_alg_inc X) Yinc).
 
-      Definition free_alg_two_cell
-        : f ==> g.
+      Definition free_alg_ump_2_alg_cell
+        : make_free_alg_mor Yinc f Hf ==> make_free_alg_mor Yinc g Hg
+        := pr1 (@biinitial_2cell
+                  _ _
+                  X
+                  HX
+                  (make_free_alg_algebra Y Yinc)
+                  (make_free_alg_mor Yinc f Hf)
+                  (make_free_alg_mor Yinc g Hg)).
+
+      Definition free_alg_ump_2
+        : f ==> g
+        := test Yinc f Hf
+           • (free_alg_cell_alg_cell free_alg_ump_2_alg_cell
+              ▹ free_alg_is_alg_make_free_alg_algebra Y Yinc)
+           • (hit_alg_is_invertible_2cell_one_type Σ (test Yinc g Hg))^-1.
+
+      Definition free_alg_ump_2_on_A
+                 (a : A)
+        : alg_2cell_carrier free_alg_ump_2 (alg_constr X (inr a))
+          @ Hg a
+          =
+          Hf a.
       Proof.
-        pose Hf. pose Hg.
         apply TODO.
-      Defined.
-    End FreeAlgMapTwo.
+      Qed.
+    End FreeAlgMapUMPTwo.
 
     (** Mapping principles for equalities *)
-    Section FreeAlgMapEq.
+    Section FreeAlgMapUMPEq.
       Variable (Y : hit_algebra_one_types Σ)
                (Yinc : A → alg_carrier Y)
                (f g : free_alg_is_alg X --> Y)
                (Hf : preserves_A f (free_alg_inc X) Yinc)
-               (Hg : preserves_A g (free_alg_inc X) Yinc).
+               (Hg : preserves_A g (free_alg_inc X) Yinc)
+               (τ θ : f ==> g)
+               (Hτ : ∏ (a : A),
+                     alg_2cell_carrier τ (alg_constr X (inr a)) @ Hg a
+                     =
+                     Hf a)
+               (Hθ : ∏ (a : A),
+                     alg_2cell_carrier θ (alg_constr X (inr a)) @ Hg a
+                     =
+                     Hf a).
 
-    End FreeAlgMapEq.
+      Definition free_alg_ump_eq
+        : τ = θ.
+      Proof.
+        use algebra_2cell_eq.
+        intro x.
+        assert UU.
+        {
+          refine (free_alg_map_alg_mor (make_free_alg_mor Yinc f Hf) ==> f · _).
+          cbn.
+        pose (alg_2cell_eq_component
+                (@biinitial_eq
+                   _ _ X HX
+                   (make_free_alg_algebra Y Yinc)
+                   (make_free_alg_mor Yinc f Hf)
+                   (make_free_alg_mor Yinc g Hg)
+                   (@make_free_alg_cell
+                      X
+                      (make_free_alg_algebra Y Yinc)
+                      (make_free_alg_mor Yinc f Hf)
+                      (make_free_alg_mor Yinc g Hg)
+                      _
+                      TODO)
+                   (@make_free_alg_cell
+                      X
+                      (make_free_alg_algebra Y Yinc)
+                      (make_free_alg_mor Yinc f Hf)
+                      (make_free_alg_mor Yinc g Hg)
+                      (TODO • (θ ▹ TODO) • TODO)
+                      TODO))
+                x).
+        apply TODO.
+      Qed.
+    End FreeAlgMapUMPEq.
   End FreeAlgMapping.
 End FreeAlg.
+
+(*
+λ : free_alg_is_alg (make_free_alg_algebra Y Yinc) --> Y
+
+f ==> free_alg_map_alg_mor (make_free_alg_mor Yinc f Hf) · λ
+*)
