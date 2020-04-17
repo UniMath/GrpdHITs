@@ -89,9 +89,6 @@ Proof.
     exact (pathsdirprod_concat _ _ _ _).
 Qed.
 
-Definition TODO {A : UU} : A.
-Admitted.
-
 Section Equifier.
   Context {Σ : hit_signature}
           {A B : hit_algebra_one_types Σ}
@@ -195,11 +192,231 @@ Section Equifier.
       - exact equifier_ump_1_preserves_point.
     Defined.
 
+
+    Definition equifier_endpoint_natural
+               {P Q : poly_code}
+               (e : endpoint (point_constr Σ) P Q)
+               (x : poly_act P (alg_carrier C))
+      : maponpaths
+          (poly_map Q pr1)
+          (sem_endpoint_UU_natural
+             e
+             (prealg_map_commute equifier_ump_1_prealg)
+             x)
+        @ !(total_algebra.pr1_endpoint equifier_disp_alg e _)
+        =
+        poly_comp _ _ _ _
+        @ sem_endpoint_UU_natural e (alg_map_commute Cpr) x
+        @ !(maponpaths (sem_endpoint_UU e (alg_constr A)) (poly_comp _ _ _ _)).
+    Proof.
+      use path_inv_rotate_lr.
+      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q
+                      | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P T t | C₁ C₂ h | ] ; simpl.
+      - refine (!_).
+        refine (pathscomp0rid _ @ _ @ pathsinv0r (poly_comp P _ _ _)).
+        do 2 apply maponpaths.
+        apply maponpathsidfun.
+      - refine (maponpathscomp0 _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply IHe₂.
+        }
+        clear IHe₂.
+        do 2 refine (!(path_assoc _ _ _) @ _).
+        refine (_ @ path_assoc _ _ _).
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        do 2 refine (_ @ path_assoc _ _ _).
+        apply maponpaths.
+        do 2 refine (_ @ !(path_assoc _ _ _)).
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply maponpathscomp.
+          }
+          unfold funcomp.
+          exact (!(homotsec_natural'
+                     (total_algebra.pr1_endpoint equifier_disp_alg e₂)
+                     (sem_endpoint_UU_natural
+                        e₁ (prealg_map_commute equifier_ump_1_prealg) x))).
+        }
+        refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                apply maponpaths.
+                refine (!_).
+                apply maponpathscomp.
+              }
+              refine (!_).
+              apply maponpathsinv0.
+            }
+            refine (!_).
+            apply maponpathscomp0.
+          }
+          refine (!_).
+          apply maponpathscomp0.
+        }
+        use path_inv_rotate_rl.
+        refine (!(maponpathscomp0 _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          refine (path_assoc _ _ _ @ !_).
+          apply IHe₁.
+        }
+        clear IHe₁.
+        apply maponpathscomp.
+      - exact (!(pathscomp0rid _ @ pathsinv0r _)).
+      - exact (!(pathscomp0rid _ @ pathsinv0r _)).
+      - refine (!(pathscomp0rid _ @ _)).
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply maponpaths_pr1_pathsdirprod.
+        }
+        apply pathsinv0r.
+      - refine (!(pathscomp0rid _ @ _)).
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply maponpaths_pr2_pathsdirprod.
+        }
+        apply pathsinv0r.
+      - refine (!(maponpaths_pathsdirprod _ _ _ _) @ _).
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                apply maponpaths.
+                etrans.
+                {
+                  apply maponpaths.
+                  apply maponpaths_prod_path.
+                }
+                apply pathsdirprod_inv.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply pathsdirprod_concat.
+        }
+        refine (!_).
+        exact (paths_pathsdirprod (IHe₁ _) (IHe₂ _)).
+      - refine (!(pathscomp0rid _ @ _)).
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpaths_for_constant_function.
+        }
+        apply idpath.
+      - apply idpath.
+      - refine (_ @ !(pathscomp0rid _)).
+        etrans.
+        {
+          unfold prealg_map_commute ; simpl.
+          unfold equifier_ump_1_preserves_point.
+          exact (maponpaths_pr1_PathOverToTotalPath'
+                   (equifier_ump_1_preserves_point_pr1 x)
+                   _).
+        }
+        unfold equifier_ump_1_preserves_point_pr1.
+        apply maponpaths.
+        exact (maponpathsinv0 _ _).
+    Qed.
+
+    
     Definition equifier_ump_1_preserves_path
       : preserves_path _ (prealg_map_commute equifier_ump_1_prealg).
     Proof.
       intros j x.
-      apply TODO.
+      refine (PathOverToTotalPath'_eta _ @ _ @ !(PathOverToTotalPath'_eta _)).
+      use globe_over_to_homot.
+      - unfold globe ; simpl.
+        refine (maponpathscomp0
+                  pr1
+                  (maponpaths equifier_ump_1_comp (alg_path C j x))
+                  _
+                @ _).
+        refine (_ @ !(maponpathscomp0 _ _ _)).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpathscomp.
+        }
+        unfold funcomp ; simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          unfold total_algebra.paths.
+          apply maponpaths_pr1_PathOverToTotalPath'.
+        }
+        etrans.
+        {
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          exact (equifier_endpoint_natural (path_left Σ j) x).
+        }
+        simpl.
+        refine (path_assoc _ _ _ @ !_).
+        use path_rotate_lr.
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          exact (equifier_endpoint_natural (path_right Σ j) x).
+        }
+        simpl.
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (alg_map_path Cpr j x).
+        }
+        refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply maponpathsinv0.
+        }
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply maponpathsinv0.
+        }
+        apply homotsec_natural'.
+      - apply path_globe_over_hset.
+        intro.
+        apply isofhlevelsnprop.
+        exact (one_type_isofhlevel (pr111 B) _ _ _ _).
     Qed.
     
     Definition equifier_ump_1
