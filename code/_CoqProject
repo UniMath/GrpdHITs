@@ -83,7 +83,18 @@ hit_biadjunction/hit_algebra_biadj.v
 existence/initial_algebra.v
 existence/hit_existence.v
 
+lim_algebra/terminal.v
+lim_algebra/prod_alg.v
+lim_algebra/equalizer_alg.v
+lim_algebra/equifier_alg.v
+
 examples/circle.v
-examples/torus.v
-examples/set_trunc.v
+examples/coequalizer.v
+examples/coequifier.v
+examples/coherent_group.v
+examples/free_algebra.v
+examples/group_quotient.v
 examples/mod2.v
+examples/monoidal.v
+examples/set_trunc.v
+examples/torus.v
