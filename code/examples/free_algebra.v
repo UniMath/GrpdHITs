@@ -1398,3 +1398,13 @@ Section FreeAlg.
     End FreeAlgMapUMPEq.
   End FreeAlgMapping.
 End FreeAlg.
+
+Arguments free_ump_1 {_ _ _} _ _ _.
+Arguments free_alg_ump_2 {_ _ _} _ _ _ _ _ _.
+Arguments free_alg_ump_eq {_ _ _} _ _ _ _ _ _ _ _ _ _ _.
+
+Arguments preserves_A {_ _ _ _} _ _ _.
+Arguments free_alg_is_alg {_ _} _.
+Arguments free_alg_inc {_ _} _ _.
+Arguments free_alg_one_cell_on_A {_ _ _} _ _ _ _.
+Arguments free_alg_ump_2_on_A {_ _ _} _ _ _ {_ _} _ _ _.

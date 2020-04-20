@@ -35,21 +35,6 @@ Opaque free_ump_1.
 Opaque free_alg_ump_2.
 Opaque free_alg_ump_eq.
 
-Arguments free_ump_1 {_ _ _} _ _ _.
-Arguments free_alg_ump_2 {_ _ _} _ _ _ _ _ _.
-Arguments free_alg_ump_eq {_ _ _} _ _ _ _ _ _ _ _ _ _ _.
-
-Arguments preserves_A {_ _ _ _} _ _ _.
-Arguments free_alg_is_alg {_ _} _.
-Arguments free_alg_inc {_ _} _ _.
-Arguments free_alg_one_cell_on_A {_ _ _} _ _ _ _.
-Arguments free_alg_ump_2_on_A {_ _ _} _ _ _ {_ _} _ _ _.
-
-(**
-- set the right implicit arguments
-- make the right functions opaque
- *)
-
 Section FreeAlgebraFunctor.
   Variable (Σ : hit_signature).
   
