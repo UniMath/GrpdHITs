@@ -9,6 +9,8 @@ Require Import UniMath.CategoryTheory.whiskering.
 
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
+Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
+Import DispBicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 Require Import UniMath.Bicategories.Colimits.Initial.
 Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
@@ -22,12 +24,28 @@ Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
 Require Import existence.hit_existence.
+Require Import existence.initial_algebra.
 Require Import examples.free_algebra.
 
 Definition TODO {A : UU} : A.
 Admitted.
 
 Local Open Scope cat.
+
+Opaque hit_existence.
+Opaque make_free_alg_algebra.
+Opaque free_ump_1.
+Opaque free_alg_ump_2.
+Opaque free_alg_ump_eq.
+
+Arguments free_ump_1 {_ _ _} _ _ _.
+Arguments free_alg_ump_2 {_ _ _} _ _ _ _ _ _.
+Arguments free_alg_ump_eq {_ _ _} _ _ _ _ _ _ _ _ _ _ _.
+
+Arguments free_alg_is_alg {_ _} _.
+Arguments free_alg_inc {_ _} _ _.
+Arguments free_alg_one_cell_on_A {_ _ _} _ _ _ _.
+Arguments free_alg_ump_2_on_A {_ _ _} _ _ _ {_ _} _ _ _.
 
 (**
 - set the right implicit arguments
@@ -39,11 +57,20 @@ Section FreeAlgebraFunctor.
   
   Local Definition free_alg
         (X : one_type)
-    := hit_existence (free_alg_signature Σ X).
+    : hit_algebra_one_types (free_alg_signature Σ X)
+    := pr1 (hit_existence (free_alg_signature Σ X)).
+
+  Local Definition free_alg_is_initial
+        (X : one_type)
+    : is_initial _ (free_alg X).
+  Proof.
+    apply initial_algebra.HIT_is_initial.
+    exact (pr2 (hit_existence (free_alg_signature Σ X))).
+  Qed.
 
   Definition free_alg_psfunctor_obj
     : one_types → hit_algebra_one_types Σ
-    := λ X, free_alg_is_alg _ _ (pr1 (free_alg X)).
+    := λ X, free_alg_is_alg (free_alg X).
 
   Definition free_alg_psfunctor_mor
              {X Y : one_type}
@@ -51,9 +78,8 @@ Section FreeAlgebraFunctor.
     : free_alg_psfunctor_obj X --> free_alg_psfunctor_obj Y.
   Proof.
     use free_ump_1.
-    - pose (pr2 (free_alg X)). 
-      apply TODO.
-    - exact (λ x, free_alg_inc Σ Y _ (f x)).
+    - apply free_alg_is_initial.
+    - exact (λ x, free_alg_inc _ (f x)).
   Defined.
 
   Definition free_alg_psfunctor_cell
@@ -63,15 +89,19 @@ Section FreeAlgebraFunctor.
     : free_alg_psfunctor_mor f ==> free_alg_psfunctor_mor g.
   Proof.
     use free_alg_ump_2.
-    - apply TODO.
-    - exact (λ x, free_alg_inc Σ Y _ (f x)).
-    - intro a.
+    - apply free_alg_is_initial.
+    - exact (λ x, free_alg_inc _ (g x)).
+    - intro x.
       exact (free_alg_one_cell_on_A
-               Σ X
-               (pr1 (free_alg X)) _
-               (free_alg_is_alg _ _ (pr1 (free_alg Y)))
-               _ a).
-    - apply TODO.
+               (free_alg_is_initial X)
+               (free_alg_psfunctor_obj Y)
+               (λ z, free_alg_inc _ (f z))
+               x
+             @ maponpaths (free_alg_inc (free_alg Y)) (p x)).
+    - exact (free_alg_one_cell_on_A
+               (free_alg_is_initial X)
+               (free_alg_psfunctor_obj Y)
+               (λ x, free_alg_inc _ (g x))).
   Defined.
 
   Definition free_alg_psfunctor_id
@@ -79,10 +109,13 @@ Section FreeAlgebraFunctor.
     : id₁ (free_alg_psfunctor_obj X) ==> free_alg_psfunctor_mor (id₁ X).
   Proof.
     use free_alg_ump_2.
-    - apply TODO.
-    - exact (free_alg_inc Σ X _).
-    - exact (λ a, idpath _).
-    - apply TODO.
+    - apply free_alg_is_initial.
+    - exact (free_alg_inc _).
+    - exact (λ x, idpath _).
+    - exact (free_alg_one_cell_on_A
+               (free_alg_is_initial X)
+               (free_alg_psfunctor_obj X)
+               (free_alg_inc _)).
   Defined.
 
   Definition free_alg_psfunctor_comp
@@ -94,10 +127,25 @@ Section FreeAlgebraFunctor.
       free_alg_psfunctor_mor (λ z, g(f z)).
   Proof.
     use free_alg_ump_2.
-    - apply TODO.
-    - exact (λ x, free_alg_inc Σ Z _ (g(f x))).
-    - apply TODO.
-    - apply TODO.
+    - apply free_alg_is_initial.
+    - exact (λ x, free_alg_inc _ (g(f x))).
+    - intro x.
+      refine (_ @ _).
+      + refine (maponpaths (alg_map_carrier (free_alg_psfunctor_mor g)) _).
+        exact (free_alg_one_cell_on_A
+                 (free_alg_is_initial X)
+                 (free_alg_psfunctor_obj Y)
+                 (λ z, free_alg_inc _ (f z))
+                 x).
+      + exact (free_alg_one_cell_on_A
+                 (free_alg_is_initial Y)
+                 (free_alg_psfunctor_obj Z)
+                 (λ z, free_alg_inc _ (g z))
+                 _).
+    - exact (free_alg_one_cell_on_A
+               (free_alg_is_initial X)
+               (free_alg_psfunctor_obj Z)
+               (λ z, free_alg_inc _ (g(f z)))).
   Defined.
 
   Definition free_alg_psfunctor_data
@@ -117,19 +165,83 @@ Section FreeAlgebraFunctor.
     refine (_ ,, _ ,, _ ,, _ ,, _ ,, _ ,, _).
     - intros X Y f.
       use free_alg_ump_eq.
+      + apply free_alg_is_initial.
+      + exact (λ x, free_alg_inc _ (f x)).
+      + exact (λ x,
+               free_alg_one_cell_on_A
+                 (free_alg_is_initial X)
+                 (free_alg_psfunctor_obj Y)
+                 (λ z, free_alg_inc _ (f z))
+                 x
+               @ maponpaths (free_alg_inc (free_alg Y)) (idpath _)).
+      + exact (free_alg_one_cell_on_A
+                 (free_alg_is_initial X)
+                 (free_alg_psfunctor_obj Y)
+                 (λ z, free_alg_inc _ (f z))).
+      + intro x ; cbn.
+        exact (free_alg_ump_2_on_A
+                 (free_alg_is_initial X)
+                 (free_alg_psfunctor_obj Y)
+                 (λ z, free_alg_inc _ (f z))
+                 _
+                 _
+                 x).
+      + intro x ; cbn.
+        exact (!(pathscomp0rid _)).
+    - intros X Y f g h τ θ.
+      use free_alg_ump_eq.
+      + apply free_alg_is_initial.
+      + exact (λ x, free_alg_inc _ (f x)).
+      + exact (λ x,
+               free_alg_one_cell_on_A
+                 (free_alg_is_initial X)
+                 (free_alg_psfunctor_obj Y)
+                 (λ z, free_alg_inc _ (f z))
+                 x
+                 @ maponpaths (free_alg_inc (free_alg Y)) (idpath _)).
       + apply TODO.
-      + exact (λ x, free_alg_inc Σ Y _ (f x)).
-      + intro a.
-        apply TODO.
+      + apply TODO.
+      + apply TODO.
+    - intros X Y f.
+      use free_alg_ump_eq.
+      + apply free_alg_is_initial.
+      + exact (λ x, free_alg_inc _ (f x)).
       + apply TODO.
       + apply TODO.
       + apply TODO.
-    - apply TODO.
-    - apply TODO.
-    - apply TODO.
-    - apply TODO.
-    - apply TODO.
-    - apply TODO.
+      + apply TODO.
+    - intros X Y f.
+      use free_alg_ump_eq.
+      + apply free_alg_is_initial.
+      + exact (λ x, free_alg_inc _ (f x)).
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+    - intros W X Y Z f g h.
+      use free_alg_ump_eq.
+      + apply free_alg_is_initial.
+      + exact (λ x, free_alg_inc _ (h(g(f x)))).
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+    - intros X Y Z f g₁ g₂ τ.
+      use free_alg_ump_eq.
+      + apply free_alg_is_initial.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+    - intros X Y Z f₁ f₂ g τ.
+      use free_alg_ump_eq.
+      + apply free_alg_is_initial.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
+      + apply TODO.
   Qed.
 
   Definition free_alg_psfunctor_invertible_cells
