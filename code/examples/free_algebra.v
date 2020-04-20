@@ -10,9 +10,6 @@ Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 Require Import UniMath.Bicategories.Colimits.Initial.
 Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
 
-Require Import UniMath.Algebra.Monoids.
-Require Import UniMath.Algebra.Groups.
-
 Require Import prelude.all.
 Require Import signature.hit_signature.
 Require Import signature.hit.
@@ -20,9 +17,6 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
-Require Import initial_grpd_alg.W_poly.
-Require Import initial_grpd_alg.initial_groupoid_algebra.
-Require Import existence.hit_existence.
 
 Local Open Scope cat.
 
