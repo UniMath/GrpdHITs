@@ -98,3 +98,5 @@ examples/mod2.v
 examples/monoidal.v
 examples/set_trunc.v
 examples/torus.v
+
+free_alg_biadj/free_alg_functor.v

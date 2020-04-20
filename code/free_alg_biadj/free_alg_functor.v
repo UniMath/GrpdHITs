@@ -27,9 +27,6 @@ Require Import existence.hit_existence.
 Require Import existence.initial_algebra.
 Require Import examples.free_algebra.
 
-Definition TODO {A : UU} : A.
-Admitted.
-
 Local Open Scope cat.
 
 Opaque hit_existence.
@@ -372,7 +369,7 @@ Section FreeAlgebraFunctor.
       + intro x.
         simpl ; cbn.
         apply idpath.
-      + (*intro x.
+      + intro x.
         cbn ; unfold homotcomp, funhomotsec ; cbn.
         do 2 refine (!(path_assoc _ _ _) @ _).
         etrans.
@@ -393,26 +390,167 @@ Section FreeAlgebraFunctor.
           apply maponpaths.
           exact (free_alg_psfunctor_comp_on_A _ _ _).
         }
+        refine (path_assoc _ _ _ @ _).
         etrans.
         {
           apply maponpaths_2.
+          refine (!_).
+          apply (homotsec_natural'
+                   (alg_2cell_carrier (free_alg_psfunctor_id Y))).
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
           etrans.
           {
-            apply maponpaths.
-          exact (free_alg_psfunctor_id_on_A _ x).
+            apply maponpaths_2.
+            apply free_alg_psfunctor_id_on_A.
           }
-          apply maponpathsinv0.
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          apply pathsinv0l.
         }
-        apply pathsinv0l.*)
-        apply TODO.
+        simpl.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpathsidfun.
+        }
+        apply pathsinv0r.
     - intros W X Y Z f g h.
       use free_alg_ump_eq.
       + apply free_alg_is_initial.
       + exact (λ x, free_alg_inc _ (h(g(f x)))).
-      + apply TODO.
-      + apply TODO.
-      + apply TODO.
-      + apply TODO.
+      + intro x ; cbn.
+        exact (maponpaths
+                 (alg_map_carrier
+                    (free_alg_psfunctor_mor g
+                     · free_alg_psfunctor_mor h))
+                 (free_alg_one_cell_on_A
+                    (free_alg_is_initial W)
+                    (free_alg_psfunctor_obj X)
+                    (λ z, free_alg_inc (free_alg X) (f z)) x)
+               @ maponpaths
+                   (alg_map_carrier (free_alg_psfunctor_mor h))
+                   (free_alg_one_cell_on_A
+                      (free_alg_is_initial X)
+                      (free_alg_psfunctor_obj Y)
+                      (λ z, free_alg_inc (free_alg Y) (g z)) (f x))
+               @ free_alg_one_cell_on_A
+                   (free_alg_is_initial Y)
+                   (free_alg_psfunctor_obj Z)
+                   (λ z, free_alg_inc (free_alg Z) (h z)) (g (f x))).
+      + exact (free_alg_one_cell_on_A
+                 (free_alg_is_initial W)
+                 (free_alg_psfunctor_obj Z)
+                 (λ z, free_alg_inc
+                         (free_alg Z)
+                         (h(g(f z))))).
+      + intro x ; cbn ; unfold homotcomp, funhomotsec.
+        do 2 refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          do 2 apply maponpaths.
+          etrans.
+          {
+            exact (free_alg_psfunctor_cell_on_A
+                     (homotrefl (λ z, h(g(f z))))
+                     x).
+          }
+          apply pathscomp0rid.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpaths_2.
+          exact (free_alg_psfunctor_comp_on_A _ _ x).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          refine (!(path_assoc _ _ _) @ _).
+          apply maponpaths.
+          refine (!(path_assoc _ _ _) @ _).
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsinv0l.
+          }
+          apply pathscomp0rid.
+        }
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          exact (homotsec_natural'
+                   (alg_2cell_carrier (free_alg_psfunctor_comp g h))
+                   _).
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths.
+          exact (free_alg_psfunctor_comp_on_A _ _ (f x)).
+        }
+        etrans.
+        {
+          do 2 (refine (!(path_assoc _ _ _) @ _) ; apply maponpaths).
+          refine (!(path_assoc _ _ _) @ _).
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsinv0l.
+          }
+          apply pathscomp0rid.
+        }
+        apply idpath.
+      + intro x ; cbn ; unfold homotcomp, homotfun, funhomotsec ; cbn.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths.
+          exact (free_alg_psfunctor_comp_on_A _ _ x).
+        }
+        etrans.
+        {
+          do 2 (refine (!(path_assoc _ _ _) @ _) ; apply maponpaths).
+          refine (!(path_assoc _ _ _) @ _).
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsinv0l.
+          }
+          apply pathscomp0rid.
+        }
+        refine (path_assoc _ _ _ @ _ @ !(path_assoc _ _ _)).
+        apply maponpaths_2.
+        refine (!(maponpathscomp0 _ _ _) @ _).
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply maponpathscomp.
+        }
+        refine (!(maponpathscomp0 _ _ _) @ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (free_alg_psfunctor_comp_on_A _ _ x).
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0l.
+        }
+        apply pathscomp0rid.
     - intros X Y Z f g₁ g₂ τ.
       use free_alg_ump_eq.
       + apply free_alg_is_initial.
