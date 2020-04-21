@@ -680,14 +680,3 @@ Section UnderlyingFunctor.
     - exact hit_algebra_invertible_cells.
   Defined.
 End UnderlyingFunctor.
-
-(*
-Definition hit_algebra_underlying
-           (Σ : hit_signature)
-  : psfunctor (hit_algebra_one_types Σ) one_types
-  := comp_psfunctor
-       (pr1_psfunctor _)
-       (comp_psfunctor
-          (pr1_psfunctor _)
-          (pr1_psfunctor _)).
-*)
