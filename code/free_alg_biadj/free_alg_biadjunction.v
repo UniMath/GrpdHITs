@@ -186,7 +186,7 @@ Defined.
 
 Definition is_coherent_biadj
            {B₁ B₂ : bicat}
-           (L : psfunctor B₁ B₂)
+           {L : psfunctor B₁ B₂}
            (R : left_biadj_data L)
   : UU
   := (∏ (x : B₁), test2 L R x = id₂ _)
@@ -198,4 +198,239 @@ Definition coherent_biadj
   : UU
   := ∑ (L : psfunctor B₁ B₂)
        (R : left_biadj_data L),
-     is_coherent_biadj L R.
+     is_coherent_biadj R.
+
+Opaque hit_existence.
+Opaque make_free_alg_algebra.
+Opaque free_ump_1.
+Opaque free_alg_ump_2.
+Opaque free_alg_ump_eq.
+
+Definition free_alg_biadj_is_coherent
+           (Σ : hit_signature)
+  : is_coherent_biadj (free_alg_biadj Σ).
+Proof.
+  split.
+  - intro X.
+    use funextsec.
+    intro x.
+    cbn ; unfold homotcomp, funhomotsec, homotfun, invhomot, homotrefl ; cbn.
+    rewrite !pathscomp0rid.
+    etrans.
+    {
+      apply maponpaths.
+      exact (free_alg_left_triangle_comp_on_A _ X x).
+    }
+    refine (!(path_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpathsinv0.
+      }
+      apply pathsinv0l.
+    }
+    cbn.
+    apply pathsinv0l.
+  - intro X.
+    use free_alg_ump_eq.
+    + apply free_alg_is_initial.
+    + exact (λ z, z).
+    + exact (free_alg_counit_comp_on_A Σ X).
+    + exact (free_alg_counit_comp_on_A Σ X).
+    + intro x.
+      cbn ; unfold homotcomp, funhomotsec, homotfun, invhomot, homotrefl ; cbn.
+      rewrite !pathscomp0rid.
+      refine (_ @ pathscomp0lid _).
+      apply maponpaths_2.
+      etrans.
+      {
+        do 2 apply maponpaths.
+        exact (free_alg_left_triangle_comp_on_A _ (pr111 X) x).
+      }
+      etrans.
+      {
+        do 2 apply maponpaths_2.
+        apply maponpaths.
+        etrans.
+        {
+          do 2 apply maponpaths_2.
+          exact (free_alg_psfunctor_id_on_A _ (pr111 X) x).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            exact (free_alg_psfunctor_comp_on_A
+                     _
+                     (free_alg_unit_comp Σ (pr111 X))
+                     (alg_map_carrier (free_alg_counit_comp Σ X))
+                     x).
+          }
+          refine (pathscomp_inv _ _ @ _).
+          apply maponpaths_2.
+          refine (pathscomp_inv _ _ @ _).
+          apply maponpaths_2.
+          apply pathsinv0inv0.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          do 2 (refine (path_assoc _ _ _ @ _) ; apply maponpaths_2).
+          etrans.
+          {
+            exact (free_alg_psfunctor_cell_on_A Σ _ x).
+          }
+          cbn.
+          do 2 apply maponpaths.
+          apply pathscomp0rid.
+        }
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          do 2 (apply maponpaths_2 ; refine (path_assoc _ _ _ @ _)).
+          apply maponpaths_2.
+          apply pathsinv0l.
+        }
+        cbn.
+        apply idpath.
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpathscomp0.
+        }
+        refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpathscomp.
+        }
+        etrans.
+        {
+          exact (!(homotsec_natural'
+                     (invhomot
+                        (alg_2cell_carrier
+                           (free_alg_counit_natural Σ (free_alg_counit_comp Σ X))))
+                     (free_alg_mor_on_A (free_alg_unit_comp Σ (pr111 X)) x))).
+        }
+        unfold invhomot.
+        apply maponpaths_2.
+        refine (!_).
+        refine (maponpathscomp
+                  (alg_map_carrier
+                     (free_alg_psfunctor_mor Σ (alg_map_carrier (free_alg_counit_comp Σ X))))
+                  _
+                  _).
+      }
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        etrans.
+        {
+          refine (!_).
+          apply (maponpathscomp0 (alg_map_carrier (free_alg_counit_comp Σ X))).
+        }
+        apply maponpaths.
+        do 2 refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0l.
+        }
+        apply pathscomp0rid.
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply (maponpathscomp0 (alg_map_carrier (free_alg_counit_comp Σ X))).
+        }
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths.
+          exact (maponpathsinv0
+                   (free_alg_inc _)
+                   (free_alg_counit_comp_on_A Σ X x)).
+        }
+        apply maponpathsinv0.
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      use path_inv_rotate_ll.
+      refine (_ @ !(pathscomp0rid _)).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply (maponpathsinv0 (alg_map_carrier (free_alg_counit_comp Σ X))).
+      }
+      do 2 use path_inv_rotate_ll.
+      refine (!_).
+      etrans.
+      {
+        do 2 apply maponpaths.
+        etrans.
+        {
+          apply (maponpathscomp
+                   (free_alg_inc _)
+                   (alg_map_carrier (free_alg_counit_comp Σ X))).
+        }
+        refine (_
+                @ maponpaths
+                    (λ z, z @ !(free_alg_counit_comp_on_A Σ X x))
+                    (maponpaths_homotsec
+                       (free_alg_counit_comp_on_A Σ X)
+                       (free_alg_counit_comp_on_A Σ X x))).
+        refine (!_).
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0r.
+        }
+        apply pathscomp0rid.
+      }
+      etrans.
+      {
+        do 2 apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths_2.
+            apply maponpathsidfun.
+          }
+          apply pathsinv0r.
+        }
+        apply pathscomp0rid.
+      }
+      pose (p := free_alg_counit_natural_on_A
+                   Σ
+                   (free_alg_counit_comp Σ X)
+                   (free_alg_unit_comp Σ _ x)).
+      unfold free_alg_counit_natural_on_A_type in p.
+      refine (p @ _).
+      apply idpath.
+    + intro x.
+      apply idpath.
+Qed.
