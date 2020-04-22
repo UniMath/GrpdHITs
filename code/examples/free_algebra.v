@@ -839,47 +839,6 @@ Section FreeAlg.
       - exact free_alg_point_constr.
     Defined.
 
-    (** Lemma to show it is an algebra *)
-    (*
-    Definition free_alg_sem_endpoint_UU'
-               {P Q : poly_code}
-               (e : endpoint (point_constr Σ) P Q)
-               (x : poly_act P (alg_carrier X))
-      : sem_endpoint_UU e (alg_constr X) x
-        =
-        sem_endpoint_UU (to_free_alg_endpoint e) free_alg_point_constr x.
-    Proof.
-      exact ().
-      Show Proof.
-      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                      | P Q | P Q | P Q | P Q
-                      | P Q R e₁ IHe₁ e₂ IHe₂
-                      | P T t | C₁ C₂ g | ].
-      - (* identity *)
-        apply idpath.
-      - (* composition *)
-        exact (IHe₂ _
-               @ maponpaths
-                   (sem_endpoint_UU (to_free_alg_endpoint e₂) free_alg_point_constr)
-                   (IHe₁ _)).
-      - (* left inclusion *)
-        apply idpath.
-      - (* right inclusion *)
-        apply idpath.
-      - (* left projection *)
-        apply idpath.
-      - (* right projection *)
-        apply idpath.
-      - (* pair *)
-        exact (pathsdirprod (IHe₁ _) (IHe₂ _)).
-      - (* constant element *)
-        apply idpath.
-      - (* constant map *)
-        apply idpath.
-      - (* constructor *)
-        apply idpath.
-    Defined.
-     *)
     Definition make_free_alg_path_algebra
       : hit_path_algebra_one_types free_alg_signature.
     Proof.
