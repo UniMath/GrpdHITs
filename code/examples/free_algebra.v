@@ -20,9 +20,6 @@ Require Import displayed_algebras.displayed_algebra.
 
 Local Open Scope cat.
 
-Definition TODO {A : UU} : A.
-Admitted.
-
 Definition poly_id_comp
            (P : poly_code)
            {X Y : UU}
@@ -499,6 +496,271 @@ Section FreeAlg.
     apply idpath.
   Qed.
 
+  Definition free_alg_sem_homot_endpoint_UU
+             {Q TR T : poly_code}
+             {al ar : endpoint (point_constr Σ) Q TR}
+             {sl sr : endpoint (point_constr Σ) Q T}
+             (h : homot_endpoint
+                    (path_left Σ) (path_right Σ)
+                    al ar
+                    sl sr)
+             (X : UU)
+             (c : poly_act free_alg_signature_point_constr X → X)
+             (pX : ∏ (i : path_label Σ),
+                   sem_endpoint_UU (free_alg_signature_path_left i) c
+                   ~
+                   sem_endpoint_UU (free_alg_signature_path_right i) c)
+             (z : poly_act Q X)
+             (p_arg : sem_endpoint_UU al (λ w, c (inl w)) z
+                      =
+                      sem_endpoint_UU ar (λ w, c (inl w)) z)
+    : sem_homot_endpoint_UU
+        h
+        X (λ z, c(inl z))
+        (λ i x,
+         free_alg_sem_endpoint_UU _ _ _
+         @ pX i x
+         @ !(free_alg_sem_endpoint_UU _ _ _))
+        z
+        p_arg
+      =
+      free_alg_sem_endpoint_UU _ _ _
+      @ sem_homot_endpoint_UU
+          (free_alg_signature_homot_endpoint h)
+          X
+          c
+          pX
+          z
+          (!(free_alg_sem_endpoint_UU _ _ _)
+           @ p_arg
+           @ free_alg_sem_endpoint_UU _ _ _)
+      @ !(free_alg_sem_endpoint_UU _ _ _).
+  Proof.
+    induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                    | T₁ T₂ e₁ e₂ e₃ h IHh
+                    | R₁ R₂ T e₁ e₂ e₃ | T e | T e
+                    | P R e₁ e₂ | P R e₁ e₂
+                    | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | Z x T e | j e | ].
+    - (** identity path *)
+      simpl.
+      exact (!(pathsinv0r _)).
+    - (** inverse path *)
+      simpl.
+      etrans.
+      {
+        apply maponpaths.
+        exact IHh.
+      }
+      etrans.
+      {
+        refine (pathscomp_inv _ _ @ _).
+        apply maponpaths_2.
+        apply pathscomp_inv.
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths_2.
+      apply pathsinv0inv0.
+    - (** concatenation of paths *)
+      simpl.
+      etrans.
+      {
+        apply maponpaths_2.
+        exact IHh₁.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        exact IHh₂.
+      }
+      clear IHh₁ IHh₂.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+      apply maponpaths.
+      do 2 refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      refine (_ @ pathscomp0lid _).
+      apply maponpaths_2.
+      apply pathsinv0l.
+    - (** ap on paths *)
+      simpl.
+      etrans.
+      {
+        apply maponpaths.
+        exact IHh.
+      }
+      clear IHh.
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      refine (_ @ path_assoc _ _ _).
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        do 2 apply maponpaths.
+        refine (pathscomp_inv _ _ @ _).
+        apply maponpaths.
+        refine (!_).
+        apply maponpathsinv0.
+      }
+      refine (!_).
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      do 2 refine (_ @ !(path_assoc _ _ _)).
+      apply maponpaths_2.
+      use path_inv_rotate_rr.
+      apply homotsec_natural'.
+    - (** associator *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        do 2 apply maponpaths.
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpathscomp0.
+        }
+        apply maponpaths_2.
+        apply maponpathscomp.
+      }
+      unfold funcomp.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply path_assoc.
+      }
+      apply pathsinv0r.
+    - (** left unitor *)
+      simpl.
+      exact (!(pathsinv0r _)).
+    - (** right unitor *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (pathscomp0rid _ @ _).
+        apply maponpathsidfun.
+      }
+      exact (pathsinv0r _).
+    - (** first projection *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (pathscomp0rid _ @ _).
+        apply maponpaths_pr1_pathsdirprod.
+      }
+      exact (pathsinv0r _).
+    - (** second projection *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (pathscomp0rid _ @ _).
+        apply maponpaths_pr2_pathsdirprod.
+      }
+      exact (pathsinv0r _).
+    - (** pairing *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply pathsdirprod_concat.
+      }
+      refine (!_).
+      exact (paths_pathsdirprod IHh₁ IHh₂).
+    - (** composition before pair *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsdirprod_inv.
+        }
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            apply maponpaths_prod_path.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply pathsdirprod_concat.
+      }
+      exact (paths_pathsdirprod (pathsinv0r _) (pathsinv0r _)).
+    - (** composition with constant *)
+      simpl.
+      refine (!_).
+      do 2 refine (pathscomp0rid _ @ _).
+      apply maponpaths_for_constant_function.
+    - (** path constructor *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply homotsec_natural'.
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      etrans.
+      {
+        do 2 apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply homotsec_natural'.
+        }
+        apply pathscomp_inv.
+      }
+      do 2 refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      use path_inv_rotate_lr.
+      apply homotsec_natural'.
+    - (** path argument *)
+      simpl.
+      refine (!_).
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2 ; refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        apply pathsinv0r.
+      }
+      simpl.
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      apply pathscomp0rid.
+  Qed.
+
   (** Projections of an algebra *)             
   Section FreeAlgProjections.
     Variable (X : hit_algebra_one_types free_alg_signature).
@@ -527,7 +789,16 @@ Section FreeAlg.
       : is_hit_algebra_one_types Σ free_alg_is_path_alg.
     Proof.
       intros j x p.
-      apply TODO.
+      unfold sem_homot_endpoint_one_types.
+      cbn in p.
+      refine (free_alg_sem_homot_endpoint_UU
+                (homot_left_path Σ j) _ _ _ _ _
+              @ _
+              @ !(free_alg_sem_homot_endpoint_UU
+                    (homot_right_path Σ j) _ _ _ _ _)).
+      apply maponpaths.
+      apply maponpaths_2.
+      apply (alg_homot X).
     Qed.
 
     Definition free_alg_is_alg
@@ -568,23 +839,347 @@ Section FreeAlg.
       - exact free_alg_point_constr.
     Defined.
 
+    (** Lemma to show it is an algebra *)
+    Definition free_alg_sem_endpoint_UU'
+               {P Q : poly_code}
+               (e : endpoint (point_constr Σ) P Q)
+               (x : poly_act P (alg_carrier X))
+      : sem_endpoint_UU e (alg_constr X) x
+        =
+        sem_endpoint_UU (to_free_alg_endpoint e) free_alg_point_constr x.
+    Proof.
+      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q
+                      | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P T t | C₁ C₂ g | ].
+      - (* identity *)
+        apply idpath.
+      - (* composition *)
+        exact (IHe₂ _
+               @ maponpaths
+                   (sem_endpoint_UU (to_free_alg_endpoint e₂) free_alg_point_constr)
+                   (IHe₁ _)).
+      - (* left inclusion *)
+        apply idpath.
+      - (* right inclusion *)
+        apply idpath.
+      - (* left projection *)
+        apply idpath.
+      - (* right projection *)
+        apply idpath.
+      - (* pair *)
+        exact (pathsdirprod (IHe₁ _) (IHe₂ _)).
+      - (* constant element *)
+        apply idpath.
+      - (* constant map *)
+        apply idpath.
+      - (* constructor *)
+        apply idpath.
+    Defined.
+    
     Definition make_free_alg_path_algebra
       : hit_path_algebra_one_types free_alg_signature.
     Proof.
       use make_hit_path_algebra.
       - exact make_free_alg_prealgebra.
       - exact (λ j x,
-               !(free_alg_sem_endpoint_UU _ _ _)
+               !(free_alg_sem_endpoint_UU' _ _)
                @ alg_path X j x
-               @ free_alg_sem_endpoint_UU _ _ _).
+               @ free_alg_sem_endpoint_UU' _ _).
     Defined.
+    
+    Definition free_alg_sem_homot_endpoint_UU'
+               {Q TR T : poly_code}
+               {al ar : endpoint (point_constr Σ) Q TR}
+               {sl sr : endpoint (point_constr Σ) Q T}
+               (h : homot_endpoint
+                      (path_left Σ) (path_right Σ)
+                      al ar
+                      sl sr)
+               (z : poly_act Q (alg_carrier X))
+               (p_arg : sem_endpoint_UU
+                          (to_free_alg_endpoint al)
+                          free_alg_point_constr
+                          z
+                        =
+                        sem_endpoint_UU
+                          (to_free_alg_endpoint ar)
+                          free_alg_point_constr
+                          z)
+      : sem_homot_endpoint_UU
+          (free_alg_signature_homot_endpoint h)
+          _
+          free_alg_point_constr
+          (path_alg_path make_free_alg_path_algebra)
+          z
+          p_arg
+        =
+        !(free_alg_sem_endpoint_UU' _ _)
+        @ sem_homot_endpoint_UU
+            h
+            (alg_carrier X)
+            (alg_constr X)
+            (alg_path X)
+            z
+            (free_alg_sem_endpoint_UU' _ _
+             @ p_arg
+             @ !(free_alg_sem_endpoint_UU' _ _))
+        @ free_alg_sem_endpoint_UU' _ _.
+    Proof.
+      induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                      | T₁ T₂ e₁ e₂ e₃ h IHh
+                      | R₁ R₂ T e₁ e₂ e₃ | T e | T e
+                      | P R e₁ e₂ | P R e₁ e₂
+                      | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                      | P₁ P₂ P₃ e₁ e₂ e₃
+                      | Z x T e | j e | ].
+      - (** identity path *)
+        simpl.
+        exact (!(pathsinv0l _)).
+      - (** inverse path *)
+        simpl.
+        etrans.
+        {
+          apply maponpaths.
+          exact IHh.
+        }
+        etrans.
+        {
+          refine (pathscomp_inv _ _ @ _).
+          apply maponpaths_2.
+          apply pathscomp_inv.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        do 2 apply maponpaths.
+        apply pathsinv0inv0.
+      - (** concatenation of paths *)
+        simpl.
+        etrans.
+        {
+          apply maponpaths_2.
+          exact IHh₁.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          exact IHh₂.
+        }
+        clear IHh₁ IHh₂.
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+        apply maponpaths.
+        do 2 refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        refine (_ @ pathscomp0lid _).
+        apply maponpaths_2.
+        apply pathsinv0r.
+      - (** ap on paths *)
+        simpl.
+        etrans.
+        {
+          apply maponpaths.
+          exact IHh.
+        }
+        clear IHh.
+        etrans.
+        {
+          apply maponpathscomp0.
+        }
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply pathscomp_inv.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpathsinv0.
+        }
+        apply maponpaths.
+        refine (maponpathscomp0 _ _ _ @ _).
+        do 2 refine (_ @ !(path_assoc _ _ _)).
+        apply maponpaths_2.
+        refine (_ @ path_assoc _ _ _).
+        use path_inv_rotate_rl.
+        refine (!_).
+        apply homotsec_natural'.
+      - (** associator *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            refine (maponpathscomp0 _ _ _ @ _).
+            apply maponpaths.
+            apply maponpathscomp.
+          }
+          apply path_assoc.
+        }
+        apply pathsinv0l.
+      - (** left unitor *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths.
+          apply pathscomp0rid.
+        }
+        apply pathsinv0l.
+      - (** right unitor *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths.
+          apply maponpathsidfun.
+        }
+        exact (pathsinv0l _).
+      - (** first projection *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2 ; apply maponpaths.
+          apply maponpaths_pr1_pathsdirprod.
+        }
+        exact (pathsinv0l _).
+      - (** second projection *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2 ; apply maponpaths.
+          apply maponpaths_pr2_pathsdirprod.
+        }
+        exact (pathsinv0l _).
+      - (** pairing *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsdirprod_concat.
+          }
+          etrans.
+          {
+            apply maponpaths_2.
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        refine (!_).
+        exact (paths_pathsdirprod IHh₁ IHh₂).
+      - (** composition before pair *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                apply maponpaths.
+                apply maponpaths_prod_path.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        exact (paths_pathsdirprod (pathsinv0l _) (pathsinv0l _)).
+      - (** composition with constant *)
+        simpl.
+        refine (!_).
+        refine (pathscomp0rid _ @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpaths_for_constant_function.
+        }
+        apply idpath.
+      - (** path constructor *)
+        simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths.
+            refine (!_).
+            apply homotsec_natural'.
+          }
+          apply pathscomp_inv.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          do 2 apply maponpaths.
+          refine (!_).
+          apply homotsec_natural'.
+        }
+        do 2 refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        refine (!(path_assoc _ _ _) @ _).
+        use path_inv_rotate_ll.
+        refine (!_).
+        apply homotsec_natural'.
+      - (** path argument *)
+        simpl.
+        refine (!_).
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2 ; refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          apply pathsinv0l.
+        }
+        simpl.
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0l.
+        }
+        apply pathscomp0rid.
+    Qed.
+
+    Definition make_free_alg_is_hit_algebra
+      : is_hit_algebra_one_types free_alg_signature make_free_alg_path_algebra.
+    Proof.
+      intros j x p.
+      simpl in p.
+      refine (free_alg_sem_homot_endpoint_UU' _ _ _
+              @ _
+              @ !(free_alg_sem_homot_endpoint_UU' _ _ _)).
+      apply maponpaths.
+      apply maponpaths_2.
+      apply (alg_homot X j x).
+    Qed.
     
     Definition make_free_alg_algebra
       : hit_algebra_one_types free_alg_signature.
     Proof.
       use make_algebra.
       - exact make_free_alg_path_algebra.
-      - apply TODO.
+      - exact make_free_alg_is_hit_algebra.
     Defined.
   End FreeAlgBuilder.
 
