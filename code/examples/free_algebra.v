@@ -840,6 +840,7 @@ Section FreeAlg.
     Defined.
 
     (** Lemma to show it is an algebra *)
+    (*
     Definition free_alg_sem_endpoint_UU'
                {P Q : poly_code}
                (e : endpoint (point_constr Σ) P Q)
@@ -848,6 +849,8 @@ Section FreeAlg.
         =
         sem_endpoint_UU (to_free_alg_endpoint e) free_alg_point_constr x.
     Proof.
+      exact ().
+      Show Proof.
       induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
                       | P Q | P Q | P Q | P Q
                       | P Q R e₁ IHe₁ e₂ IHe₂
@@ -876,16 +879,16 @@ Section FreeAlg.
       - (* constructor *)
         apply idpath.
     Defined.
-    
+     *)
     Definition make_free_alg_path_algebra
       : hit_path_algebra_one_types free_alg_signature.
     Proof.
       use make_hit_path_algebra.
       - exact make_free_alg_prealgebra.
       - exact (λ j x,
-               !(free_alg_sem_endpoint_UU' _ _)
+               !(free_alg_sem_endpoint_UU _ free_alg_point_constr x)
                @ alg_path X j x
-               @ free_alg_sem_endpoint_UU' _ _).
+               @ free_alg_sem_endpoint_UU _ free_alg_point_constr x).
     Defined.
     
     Definition free_alg_sem_homot_endpoint_UU'
@@ -914,17 +917,17 @@ Section FreeAlg.
           z
           p_arg
         =
-        !(free_alg_sem_endpoint_UU' _ _)
+        !(free_alg_sem_endpoint_UU _ free_alg_point_constr z)
         @ sem_homot_endpoint_UU
             h
             (alg_carrier X)
             (alg_constr X)
             (alg_path X)
             z
-            (free_alg_sem_endpoint_UU' _ _
+            (free_alg_sem_endpoint_UU _ free_alg_point_constr _
              @ p_arg
-             @ !(free_alg_sem_endpoint_UU' _ _))
-        @ free_alg_sem_endpoint_UU' _ _.
+             @ !(free_alg_sem_endpoint_UU _ free_alg_point_constr _))
+        @ free_alg_sem_endpoint_UU _ free_alg_point_constr _.
     Proof.
       induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
                       | T₁ T₂ e₁ e₂ e₃ h IHh
@@ -990,6 +993,11 @@ Section FreeAlg.
         etrans.
         {
           apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths.
+            apply homotsec_natural'.
+          }
           apply pathscomp_inv.
         }
         refine (!(path_assoc _ _ _) @ _).
@@ -1001,6 +1009,13 @@ Section FreeAlg.
         }
         apply maponpaths.
         refine (maponpathscomp0 _ _ _ @ _).
+        refine (!_).
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply homotsec_natural'.
+        }
+        refine (!_).
         do 2 refine (_ @ !(path_assoc _ _ _)).
         apply maponpaths_2.
         refine (_ @ path_assoc _ _ _).
@@ -1015,24 +1030,17 @@ Section FreeAlg.
           apply maponpaths.
           etrans.
           {
-            apply maponpaths.
+            apply maponpaths_2.
             refine (maponpathscomp0 _ _ _ @ _).
-            apply maponpaths.
+            apply maponpaths_2.
             apply maponpathscomp.
           }
-          apply path_assoc.
+          exact (!(path_assoc _ _ _)).
         }
         apply pathsinv0l.
       - (** left unitor *)
         simpl.
-        refine (!_).
-        etrans.
-        {
-          apply maponpaths_2.
-          apply maponpaths.
-          apply pathscomp0rid.
-        }
-        apply pathsinv0l.
+        exact (!(pathsinv0l _)).
       - (** right unitor *)
         simpl.
         refine (!_).
@@ -1040,6 +1048,7 @@ Section FreeAlg.
         {
           apply maponpaths_2.
           apply maponpaths.
+          refine (pathscomp0rid _ @_ ).
           apply maponpathsidfun.
         }
         exact (pathsinv0l _).
@@ -1049,6 +1058,7 @@ Section FreeAlg.
         etrans.
         {
           apply maponpaths_2 ; apply maponpaths.
+          refine (pathscomp0rid _ @ _).
           apply maponpaths_pr1_pathsdirprod.
         }
         exact (pathsinv0l _).
@@ -1058,6 +1068,7 @@ Section FreeAlg.
         etrans.
         {
           apply maponpaths_2 ; apply maponpaths.
+          refine (pathscomp0rid _ @ _).
           apply maponpaths_pr2_pathsdirprod.
         }
         exact (pathsinv0l _).
@@ -1093,7 +1104,7 @@ Section FreeAlg.
               apply maponpaths.
               etrans.
               {
-                apply maponpaths.
+                apply maponpaths_2.
                 apply maponpaths_prod_path.
               }
               apply pathsdirprod_concat.
@@ -1110,6 +1121,7 @@ Section FreeAlg.
         etrans.
         {
           apply maponpaths.
+          refine (pathscomp0rid _ @ _).
           apply maponpaths_for_constant_function.
         }
         apply idpath.
@@ -1119,22 +1131,10 @@ Section FreeAlg.
         etrans.
         {
           apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            refine (!_).
-            apply homotsec_natural'.
-          }
           apply pathscomp_inv.
         }
         refine (!(path_assoc _ _ _) @ _).
         apply maponpaths.
-        etrans.
-        {
-          do 2 apply maponpaths.
-          refine (!_).
-          apply homotsec_natural'.
-        }
         do 2 refine (path_assoc _ _ _ @ _).
         apply maponpaths_2.
         refine (!(path_assoc _ _ _) @ _).
