@@ -7,6 +7,7 @@ Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
+Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
@@ -14,9 +15,11 @@ Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Unitors.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
+Import DispBicat.Notations.
 Require Import UniMath.Bicategories.DisplayedBicats.DispUnivalence.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.DisplayedCatToBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.FullSub.
 Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
