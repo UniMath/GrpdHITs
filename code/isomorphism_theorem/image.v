@@ -31,3 +31,31 @@ Require Import displayed_algebras.displayed_algebra.
 Require Import displayed_algebras.total_algebra.
 
 Local Open Scope cat.
+
+Definition TODO (A : UU) : A.
+Admitted.
+
+Section Image.
+  Context {Σ : hit_signature}
+          {A B : hit_algebra_one_types Σ}
+          (f : A --> B).
+
+  Definition image_disp_alg : disp_algebra B. 
+  Proof.
+    apply TODO.
+  Defined.
+
+  Definition image : hit_algebra_one_types Σ
+    :=  total_algebra image_disp_alg.
+
+  Definition image_pr
+    : image --> B
+    := projection _.
+
+  Definition image_inj
+    : A --> image.
+  Proof.
+    apply TODO.
+  Defined.
+    
+End Image.
