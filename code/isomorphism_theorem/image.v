@@ -32,10 +32,6 @@ Require Import displayed_algebras.total_algebra.
 
 Local Open Scope cat.
 
-
-Definition TODO (A : UU) : A.
-Admitted.
-
 Definition poly_dact_UU_image
            {P : poly_code}
            {A B : UU}
@@ -92,7 +88,7 @@ Section Image.
 
 
   Definition image : hit_algebra_one_types Σ
-    :=  total_algebra image_disp_alg.
+    := total_algebra image_disp_alg.
 
   Definition image_pr
     : image --> B
@@ -356,7 +352,7 @@ Section Image.
         exact (isapropishinh _).
     Qed.
 
-    Definition image_inj
+  Definition image_inj
     : A --> image.
   Proof.
     use make_algebra_map.
@@ -364,5 +360,4 @@ Section Image.
     - exact image_inj_prealg.
     - exact image_inj_preserves_path.
   Defined.
-
 End Image.
