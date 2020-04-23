@@ -28,6 +28,7 @@ Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
 Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
 Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
 Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -38,7 +39,10 @@ Require Import algebra.one_types_homotopies.
 Require Import algebra.groupoid_polynomials.
 Require Import algebra.groupoid_endpoints.
 Require Import algebra.groupoid_homotopies.
+Require Import hit_biadjunction.gquot_commute.
+Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_algebra_biadj.lift_gquot.
+Require Import hit_biadjunction.hit_path_algebra_biadj.lift_gquot.
 Require Import hit_biadjunction.hit_algebra_biadj.lift_path_groupoid.
 Require Import hit_biadjunction.hit_algebra_biadj.
 
@@ -59,139 +63,93 @@ Section CongruenceRelation.
   Defined.
 
   (** Projections *)
-  Section Projections.
+  Section ProjectionsCarrier.
     Variable (R : congruence_relation).
 
-    (** Projections involving the carrier (groupoid structure *)
-    Section ProjectionsCarrier.
+    Definition cong_rel_carrier : alg_carrier X → alg_carrier X → hSet.
+    Proof.
+      pose R.
+      apply TODO.
+    Defined.
+    
+    Definition cong_rel_id
+               (x : alg_carrier X)
+      : cong_rel_carrier x x.
+    Proof.
+      apply TODO.
+    Defined.
 
-      Definition cong_rel_carrier : alg_carrier X → alg_carrier X → hSet.
-      Proof.
-        pose R.
-        apply TODO.
-      Defined.
-       
-      Definition cong_rel_id
-                 (x : alg_carrier X)
-        : cong_rel_carrier x x.
-      Proof.
-        apply TODO.
-      Defined.
+    Definition eq_to_cong_rel
+               {x y : alg_carrier X}
+               (p : x = y)
+      : cong_rel_carrier x y.
+    Proof.
+      induction p.
+      exact (cong_rel_id x).
+    Defined.
 
-      Definition eq_to_cong_rel
-                 {x y : alg_carrier X}
-                 (p : x = y)
-        : cong_rel_carrier x y.
-      Proof.
-        induction p.
-        exact (cong_rel_id x).
-      Defined.
+    Definition cong_rel_inv
+               {x y : alg_carrier X}
+               (r : cong_rel_carrier x y)
+      : cong_rel_carrier y x.
+    Proof.
+      apply TODO.
+    Defined.
 
-      Definition cong_rel_inv
-                 {x y : alg_carrier X}
-                 (r : cong_rel_carrier x y)
-        : cong_rel_carrier y x.
-      Proof.
-        apply TODO.
-      Defined.
+    Definition cong_rel_comp
+               {x y z : alg_carrier X}
+               (r1 : cong_rel_carrier x y)
+               (r2 : cong_rel_carrier y z)
+      : cong_rel_carrier x z.
+    Proof.
+      apply TODO.
+    Defined.
 
-      Definition cong_rel_comp
-                 {x y z : alg_carrier X}
-                 (r1 : cong_rel_carrier x y)
-                 (r2 : cong_rel_carrier y z)
-        : cong_rel_carrier x z.
-      Proof.
-        apply TODO.
-      Defined.
+    Definition cong_rel_lid
+               {x y : alg_carrier X}
+               (r : cong_rel_carrier x y)
+      : cong_rel_comp (cong_rel_id x) r = r.
+    Proof.
+      apply TODO.
+    Defined.
 
-      Definition cong_rel_lid
-                 {x y : alg_carrier X}
-                 (r : cong_rel_carrier x y)
-        : cong_rel_comp (cong_rel_id x) r = r.
-      Proof.
-        apply TODO.
-      Defined.
+    Definition cong_rel_rid
+               {x y : alg_carrier X}
+               (r : cong_rel_carrier x y)
+      : cong_rel_comp r (cong_rel_id y) = r.
+    Proof.
+      apply TODO.
+    Defined.
+    
+    Definition cong_rel_assoc
+               {x y z w : alg_carrier X}
+               (r1 : cong_rel_carrier x y)
+               (r2 : cong_rel_carrier y z)
+               (r3 : cong_rel_carrier z w)
+      : cong_rel_comp r1 (cong_rel_comp r2 r3)
+        = cong_rel_comp (cong_rel_comp r1 r2) r3.
+    Proof.
+      apply TODO.
+    Defined.
 
-      Definition cong_rel_rid
-                 {x y : alg_carrier X}
-                 (r : cong_rel_carrier x y)
-        : cong_rel_comp r (cong_rel_id y) = r.
-      Proof.
-        apply TODO.
-      Defined.
-      
-      Definition cong_rel_assoc
-                 {x y z w : alg_carrier X}
-                 (r1 : cong_rel_carrier x y)
-                 (r2 : cong_rel_carrier y z)
-                 (r3 : cong_rel_carrier z w)
-        : cong_rel_comp r1 (cong_rel_comp r2 r3)
-          = cong_rel_comp (cong_rel_comp r1 r2) r3.
-      Proof.
-        apply TODO.
-      Defined.
+    Definition cong_rel_linv
+               {x y : alg_carrier X}
+               (r : cong_rel_carrier x y)
+      : cong_rel_comp (cong_rel_inv r) r = cong_rel_id y.
+    Proof.
+      apply TODO.
+    Defined.
 
-      Definition cong_rel_linv
-                 {x y : alg_carrier X}
-                 (r : cong_rel_carrier x y)
-        : cong_rel_comp (cong_rel_inv r) r = cong_rel_id y.
-      Proof.
-        apply TODO.
-      Defined.
+    Definition cong_rel_rinv
+               {x y : alg_carrier X}
+               (r : cong_rel_carrier x y)
+      : cong_rel_comp r (cong_rel_inv r) = cong_rel_id x.
+    Proof.
+      apply TODO.
+    Defined.
+  End ProjectionsCarrier.
 
-      Definition cong_rel_rinv
-                 {x y : alg_carrier X}
-                 (r : cong_rel_carrier x y)
-        : cong_rel_comp r (cong_rel_inv r) = cong_rel_id x.
-      Proof.
-        apply TODO.
-      Defined.
-      
-    End ProjectionsCarrier.
-
-    (** Projections involving the operation (functor) *)
-    Section ProjectionsOperation.
-
-      Definition cong_rel_ops
-                 (x y : poly_act (point_constr Σ) (alg_carrier X))
-                 (r : poly_act_rel (point_constr Σ) cong_rel_carrier x y)
-      : cong_rel_carrier (alg_constr X x) (alg_constr X y).
-      Proof.
-        apply TODO.
-      Defined.
-
-      Definition cong_rel_ops_idax
-                 (x : poly_act (point_constr Σ) (alg_carrier X))
-        : cong_rel_ops x x (poly_act_rel_identity _ _ cong_rel_id x)
-          = cong_rel_id (alg_constr X x).
-      Proof.
-        apply TODO.
-      Qed.
-
-      Definition cong_rel_ops_compax
-                 (x y z : poly_act (point_constr Σ) (alg_carrier X))
-                 (r1 : poly_act_rel (point_constr Σ) cong_rel_carrier x y)
-                 (r2 : poly_act_rel (point_constr Σ) cong_rel_carrier y z)
-        : cong_rel_ops
-            x z
-            (poly_act_rel_comp (point_constr Σ) _ (λ x y z r1 r2, cong_rel_comp r1 r2) r1 r2)
-          = cong_rel_comp (cong_rel_ops x y r1) (cong_rel_ops y z r2).
-      Proof.
-        apply TODO.
-      Qed.
-
-    End ProjectionsOperation.
-
-    (** Projections involving the path (natural transformation) *)
-    Section ProjectionsPath.
-    End ProjectionsPath.
-
-    (** Projections involving the 2-paths (equality) *)
-    Section ProjectionsHomot.
-    End ProjectionsHomot.
-  End Projections.
-
-  Section MakeGroupoidAlgebraFromCongruence.
+  Section MakeGroupoidFromCongruence.
     Variable (R : congruence_relation).
 
     Definition make_groupoid_algebra_carrier_precategory_data
@@ -258,11 +216,55 @@ Section CongruenceRelation.
       - exact make_groupoid_algebra_carrier_category.
       - exact make_groupoid_algebra_carrier_is_pregroupoid.
     Defined.
+  End MakeGroupoidFromCongruence.
+  
+  (** Projections involving the operation (functor) *)
+  Section ProjectionsOperation.
+    Variable (R : congruence_relation).
 
+    Definition cong_rel_ops
+               (x y : poly_act (point_constr Σ) (alg_carrier X))
+               (r : poly_act_rel (point_constr Σ) (cong_rel_carrier R) x y)
+    : cong_rel_carrier R (alg_constr X x) (alg_constr X y).
+    Proof.
+      apply TODO.
+    Defined.
+
+    Definition cong_rel_ops_idax
+               (x : poly_act (point_constr Σ) (alg_carrier X))
+      : cong_rel_ops x x (poly_act_rel_identity _ _ (cong_rel_id R) x)
+        =
+        cong_rel_id R (alg_constr X x).
+    Proof.
+      apply TODO.
+    Qed.
+
+    Definition cong_rel_ops_compax
+               (x y z : poly_act (point_constr Σ) (alg_carrier X))
+               (r1 : poly_act_rel (point_constr Σ) (cong_rel_carrier R) x y)
+               (r2 : poly_act_rel (point_constr Σ) (cong_rel_carrier R) y z)
+      : cong_rel_ops
+          x z
+          (poly_act_rel_comp
+             (point_constr Σ)
+             _
+             (λ x y z r1 r2, cong_rel_comp R r1 r2) r1 r2)
+        = cong_rel_comp
+            R
+            (cong_rel_ops x y r1)
+            (cong_rel_ops y z r2).
+    Proof.
+      apply TODO.
+    Qed.
+  End ProjectionsOperation.
+
+  Section MakeGroupoidPrealgebraFromCongruence.
+    Variable (R : congruence_relation).
+    
     Definition make_groupoid_algebra_operations_functor_data
       : functor_data
-          (⦃ point_constr Σ ⦄ make_groupoid_algebra_carrier : groupoid)
-          make_groupoid_algebra_carrier.
+          (⦃ point_constr Σ ⦄ (make_groupoid_algebra_carrier R) : groupoid)
+          (make_groupoid_algebra_carrier R).
     Proof.
       use make_functor_data.
       - exact (alg_constr X).
@@ -278,9 +280,9 @@ Section CongruenceRelation.
     Qed.
     
     Definition make_groupoid_algebra_operations
-      : (⦃ point_constr Σ ⦄ make_groupoid_algebra_carrier : groupoid)
+      : (⦃ point_constr Σ ⦄ (make_groupoid_algebra_carrier R) : groupoid)
         ⟶
-        make_groupoid_algebra_carrier.
+        make_groupoid_algebra_carrier R.
     Proof.
       use make_functor.
       - exact make_groupoid_algebra_operations_functor_data.
@@ -291,15 +293,23 @@ Section CongruenceRelation.
       : hit_prealgebra_grpd Σ.
     Proof.
       use make_hit_prealgebra_grpd.
-      - exact make_groupoid_algebra_carrier.
+      - exact (make_groupoid_algebra_carrier R).
       - exact make_groupoid_algebra_operations.
     Defined.
-
+  End MakeGroupoidPrealgebraFromCongruence.
+    
+  Section MakeGroupoidPathalgebraFromCongruence.
+    Variable (R : congruence_relation).
+  
     Definition make_groupoid_path_algebra_nat_trans_data
                (j : path_label Σ)
       : nat_trans_data
-          (sem_endpoint_grpd_data_functor (path_left Σ j) make_groupoid_prealgebra)
-          (sem_endpoint_grpd_data_functor (path_right Σ j) make_groupoid_prealgebra).
+          (sem_endpoint_grpd_data_functor
+             (path_left Σ j)
+             (make_groupoid_prealgebra R))
+          (sem_endpoint_grpd_data_functor
+             (path_right Σ j)
+             (make_groupoid_prealgebra R)).
     Proof.
       intro x ; cbn.
       apply eq_to_cong_rel.
@@ -322,11 +332,11 @@ Section CongruenceRelation.
                (j : path_label Σ)
       : sem_endpoint_grpd_data_functor
           (path_left Σ j)
-          make_groupoid_prealgebra
+          (make_groupoid_prealgebra R)
         ⟹
         sem_endpoint_grpd_data_functor
           (path_right Σ j)
-          make_groupoid_prealgebra.
+          (make_groupoid_prealgebra R).
     Proof.
       use make_nat_trans.
       - exact (make_groupoid_path_algebra_nat_trans_data j).
@@ -337,12 +347,16 @@ Section CongruenceRelation.
       : hit_path_algebra_grpd Σ.
     Proof.
       use make_hit_path_algebra_grpd.
-      - exact make_groupoid_prealgebra.
+      - exact (make_groupoid_prealgebra R).
       - exact make_groupoid_path_algebra_path.
     Defined.
+  End MakeGroupoidPathalgebraFromCongruence.
+
+  Section MakeGroupoidAlgebraFromCongruence.
+    Variable (R : congruence_relation).
 
     Definition make_groupoid_algebra_is_hit_algebra
-      : is_hit_algebra_grpd Σ make_groupoid_path_algebra.
+      : is_hit_algebra_grpd Σ (make_groupoid_path_algebra R).
     Proof.
       intros j x p.
       cbn in p.
@@ -350,8 +364,8 @@ Section CongruenceRelation.
       cbn.
       cbn in q.
       unfold sem_homot_endpoint_one_types in q.
-      unfold sem_homot_endpoint_grpd.
-      refine ( _ @ p0 _ @ _).
+      unfold poly_act_morphism in p.
+      cbn in p.
       apply TODO.
     Qed.
     
@@ -359,7 +373,7 @@ Section CongruenceRelation.
       : hit_algebra_grpd Σ.
     Proof.
       use make_algebra_grpd.
-      - exact make_groupoid_path_algebra.
+      - exact (make_groupoid_path_algebra R).
       - exact make_groupoid_algebra_is_hit_algebra.
     Defined.
   End MakeGroupoidAlgebraFromCongruence.
@@ -369,18 +383,67 @@ Section CongruenceRelation.
     : hit_algebra_one_types Σ
     := _ ,, gquot_is_hit_algebra Σ _ (pr2 (make_groupoid_algebra R)).
 
-  Definition quotient_of_congruence_map
-             (R : congruence_relation)
-             (Y : hit_algebra_one_types Σ)
-             (F : make_groupoid_algebra R
-                  -->
-                  hit_algebra_biadjunction Σ Y)
-    : quotient_of_congruence R --> Y
-    := biadj_left_hom
-         (hit_algebra_biadjunction Σ)
-         (make_groupoid_algebra R)
-         Y
-         F.
+  (** Inclusion from `X` into the quotient of `R` *)
+  Section MapToCongruence.
+    Variable (R : congruence_relation).
+
+    Definition congruence_gcl_map
+      : alg_carrier X → alg_carrier (quotient_of_congruence R)
+      := gcl (make_groupoid_algebra_carrier R).
+
+    Definition congruence_gcl_preserves_point
+      : preserves_point congruence_gcl_map.
+    Proof.
+      intro x.
+      cbn ; unfold congruence_gcl_map.
+      apply TODO.
+    Defined.
+
+    Definition congruence_gcl_prealg
+      : pr11 X --> pr11 (quotient_of_congruence R).
+    Proof.
+      use one_types_homotopies.make_hit_prealgebra_mor.
+      - exact congruence_gcl_map.
+      - exact congruence_gcl_preserves_point.
+    Defined.
+
+    Definition congruence_gcl_preserves_path
+      : preserves_path _ (prealg_map_commute congruence_gcl_prealg).
+    Proof.
+      intros i x.
+      cbn.
+      (*unfold lift_gquot_add2cell_obj, congruence_gcl_map.
+      cbn.*)
+      apply TODO.
+    Qed.
+        
+    Definition congruence_gcl
+      : X --> quotient_of_congruence R.
+    Proof.
+      use make_algebra_map.
+      use make_hit_path_alg_map.
+      - exact congruence_gcl_prealg.
+      - exact congruence_gcl_preserves_path.
+    Defined.
+  End MapToCongruence.
+
+  (** Mapping principle for the quotient *)
+  Section MapToQuotientFromCongruence.
+    Context (R : congruence_relation)
+            (Y : hit_algebra_one_types Σ)
+            (F : make_groupoid_algebra R
+                 -->
+                 hit_algebra_biadjunction Σ Y).
+
+    Definition quotient_of_congruence_map
+      : quotient_of_congruence R --> Y
+      := biadj_left_hom
+           (hit_algebra_biadjunction Σ)
+           (make_groupoid_algebra R)
+           Y
+           F.
+
+  End MapToQuotientFromCongruence.
   (*
   Definition test
              (R : congruence_relation)
