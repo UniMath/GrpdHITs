@@ -52,8 +52,143 @@ Require Import existence.initial_algebra.
 
 Local Open Scope cat.
 
-Definition TODO {A : UU} : A.
-Admitted.
+Definition unit_lemma
+           {P : poly_code}
+           {X Y : UU}
+           {L : X → Y} {R : Y → X}
+           (η : ∏ (x : X), x = R(L x))
+           (ε : ∏ (y : Y), L(R y) = y)
+           (t : ∏ (x : X), maponpaths L (η x) = !(ε(L x)))
+           (x : poly_act P X)
+  : maponpaths
+      (poly_map P L)
+      (poly_id P X x
+    @ poly_homot P η x
+    @ !(poly_comp P L R x))
+    =
+    poly_id P Y (poly_map P L x)
+    @ poly_homot P (invhomot ε) (poly_map P L x)
+    @ !(poly_comp P R L (poly_map P L x)).
+Proof.
+  induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - simpl.
+    etrans.
+    {
+      apply maponpaths.
+      apply pathscomp0rid.
+    }
+    refine (_ @ !(pathscomp0rid _)).
+    exact (t x).
+  - induction x as [x | x].
+    + simpl.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0 inl _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      refine (maponpathscomp inl (coprodf _ _) _ @ _).
+      refine (!(maponpathscomp _ inl _) @ _).
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0 inl _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      apply maponpaths.
+      exact (!(IHP₁ x)).
+    + simpl.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0 inr _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      refine (maponpathscomp inr (coprodf _ _) _ @ _).
+      refine (!(maponpathscomp _ inr _) @ _).
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0 inr _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      apply maponpaths.
+      exact (!(IHP₂ x)).
+  - simpl.
+    etrans.
+    {
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply pathsdirprod_concat.
+      }
+      refine (!_).
+      apply maponpaths_pathsdirprod.
+    }
+    refine (!_).
+    etrans.
+    {
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsdirprod_inv.
+        }
+        apply pathsdirprod_concat.
+      }
+      apply pathsdirprod_concat.
+    }
+    exact (!(paths_pathsdirprod (IHP₁ _) (IHP₂ _))).
+Qed.        
 
 Section HITAlgebraAdjEquiv.
   Context {Σ : hit_signature}
@@ -122,7 +257,26 @@ Section HITAlgebraAdjEquiv.
     }
     cbn.
     apply pathsinv0r.
-  Qed.      
+  Qed.
+
+  Local Definition LR_triangle
+        (x : alg_carrier X)
+    : maponpaths L (η x)
+      =
+      !(ε (L x)).
+  Proof.
+    pose (eqtohomot
+            (pr1 (axioms_of_left_adjoint Hf))
+            x)
+      as H.
+    cbn in H.
+    unfold homotcomp, homotfun, funhomotsec, homotrefl in H.
+    cbn in H.
+    rewrite !pathscomp0rid in H.
+    refine (_ @ pathscomp0lid _).
+    use path_inv_rotate_rr.
+    exact H.
+  Qed.    
 
   Local Definition sem_endpoint_UU_natural_for_R
         {P Q : poly_code}
@@ -435,23 +589,7 @@ Section HITAlgebraAdjEquiv.
         apply maponpaths.
         refine (maponpathsinv0 _ _ @ _).
         apply maponpaths.
-        pose (eqtohomot
-                (pr1 (axioms_of_left_adjoint Hf))
-                (prealg_constr (poly_map (point_constr Σ) (left_adjoint_right_adjoint Hf) x)))
-          as H.
-        cbn in H.
-        unfold homotcomp, homotfun, funhomotsec, homotrefl in H.
-        cbn in H.
-        rewrite !pathscomp0rid in H.
-        refine (!(pathscomp0rid _) @ _).
-        etrans.
-        {
-          apply maponpaths.
-          exact (!(pathsinv0r (ε _))).
-        }
-        refine (path_assoc _ _ _ @ _).
-        apply maponpaths_2.
-        exact H.
+        apply LR_triangle.
       }
       cbn.
       etrans.
@@ -577,7 +715,84 @@ Section HITAlgebraAdjEquiv.
       apply pathscomp0rid.
     }
     unfold R_preserves_point.
-    apply TODO.
+    refine (path_assoc _ _ _ @ _).
+    refine (!_).
+    refine (!(maponpathscomp0 _ _ _) @ _).
+    refine (!(pathscomp0rid _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      exact (!(pathsinv0l
+                 (maponpaths
+                    (alg_constr X)
+                    (poly_comp _ _ _ _)))).
+    }
+    refine (path_assoc _ _ _ @ _).
+    apply maponpaths_2.
+    etrans.
+    {
+      apply maponpaths.
+      exact (!(maponpathsinv0 _ _)).
+    }
+    refine (!(maponpathscomp0 _ _ _) @ _).
+    do 3 refine (_ @ !(path_assoc _ _ _)).
+    use path_inv_rotate_rr.
+    refine (!_).
+    do 2 refine (!(path_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply maponpathscomp.
+        }
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      exact (!(maponpathscomp0 _ _ _)).
+    }
+    refine (!_).
+    etrans.
+    {
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (!(maponpathsidfun _)).
+      }
+      apply (homotsec_natural' η).
+    }
+    apply maponpaths.
+    refine (!(maponpathscomp L R _) @ _).
+    apply maponpaths.
+    refine (_ @ !(path_assoc _ _ _)).
+    use path_inv_rotate_rr.
+    etrans.
+    {
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpathscomp.
+      }
+      apply (homotsec_natural' (alg_map_commute f)).
+    }
+    apply maponpaths.
+    refine (!(maponpathscomp _ _ _) @ _).
+    apply maponpaths.
+    etrans.
+    {
+      apply maponpaths.
+      exact (!(path_assoc _ _ _)).
+    }
+    refine (unit_lemma
+              _
+              _
+              _
+              x).
+    apply LR_triangle.
   Qed.
 
   Local Definition hit_algebra_is_adjequiv_unit
@@ -604,7 +819,94 @@ Section HITAlgebraAdjEquiv.
       apply maponpaths_2.
       apply pathscomp0rid.
     }
-    apply TODO.
+    unfold R_preserves_point.
+    do 2 refine (!(path_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      apply maponpaths.
+      exact (!(maponpathscomp0 (alg_constr Y) _ _)).
+    }
+
+
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths.
+        apply path_assoc.
+      }
+      etrans.
+      {        
+        apply maponpathscomp0.
+      }
+      apply maponpaths.
+      refine (maponpathsinv0 _ _ @ _).
+      etrans.
+      {
+        apply maponpaths.
+        apply LR_triangle.
+      }
+      apply pathsinv0inv0.
+    }
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (!(maponpathscomp _ R _)).
+          }
+          exact (!(maponpathscomp0 R _ _)).
+        }
+        apply (maponpathscomp R L).
+      }
+      apply (homotsec_natural' ε).
+    }
+    refine (!(path_assoc _ _ _) @ _).
+    apply maponpaths.
+    etrans.
+    {
+      apply maponpaths_2.
+      apply maponpathsidfun.
+    }
+    etrans.
+    {
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      apply pathsinv0l.
+    }
+    cbn.
+    refine (!(maponpathscomp0 (alg_constr Y) _ _) @ _).
+    apply maponpaths.
+    refine (!(path_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      apply pathsinv0l.
+    }
+    simpl.
+    refine (_ @ pathscomp0rid _).
+    apply maponpaths.
+    etrans.
+    {
+      apply maponpaths_2.
+      apply poly_homot_inv.
+    }
+    apply pathsinv0l.
   Qed.
 
   Local Definition hit_algebra_is_adjequiv_counit
@@ -649,3 +951,14 @@ Section HITAlgebraAdjEquiv.
     - exact hit_algebra_is_adjequiv_equivalence_axioms.
   Qed.
 End HITAlgebraAdjEquiv.
+
+Definition isweq_to_hit_algebra_adjequiv
+           {Σ : hit_signature}
+           {X Y : hit_algebra_one_types Σ}
+           (f : X --> Y)
+           (Hf : isweq (alg_map_carrier f))
+  : left_adjoint_equivalence f.
+Proof.
+  use hit_algebra_is_adjequiv.
+  exact (adjequiv_to_weq _ _ (make_weq _ Hf)).
+Defined.
