@@ -43,6 +43,7 @@ Require Import hit_biadjunction.gquot_commute.
 Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_algebra_biadj.lift_gquot.
 Require Import hit_biadjunction.hit_path_algebra_biadj.lift_gquot.
+Require Import hit_biadjunction.hit_path_algebra_biadj.counit.
 Require Import hit_biadjunction.hit_algebra_biadj.lift_path_groupoid.
 Require Import hit_biadjunction.hit_algebra_biadj.
 
@@ -50,6 +51,30 @@ Local Open Scope cat.
 
 Definition TODO {A : UU} : A.
 Admitted.
+
+Definition poly_gquot_poly_map
+           {P : poly_code}
+           {G : groupoid}
+           (x : poly_act P G)
+  : gcl (poly_act_groupoid P G) (x)
+    =
+    poly_gquot
+      P
+      _
+      (poly_map
+         P
+         (gcl G)
+         x).
+Proof.
+  induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - apply idpath.
+  - induction x as [x | x].
+    + exact (maponpaths gquot_inl_grpd (IHP₁ x)).
+    + exact (maponpaths gquot_inr_grpd (IHP₂ x)).
+  - apply TODO.
+Defined.
+
 
 Section CongruenceRelation.
   Context {Σ : hit_signature}
@@ -395,8 +420,10 @@ Section CongruenceRelation.
       : preserves_point congruence_gcl_map.
     Proof.
       intro x.
-      cbn ; unfold congruence_gcl_map.
-      apply TODO.
+      exact (maponpaths
+               (gquot_functor_map
+                  (make_groupoid_algebra_operations R))
+               (@poly_gquot_poly_map (point_constr Σ) (alg_carrier_grpd (make_groupoid_algebra R)) x)).
     Defined.
 
     Definition congruence_gcl_prealg
@@ -412,8 +439,96 @@ Section CongruenceRelation.
     Proof.
       intros i x.
       cbn.
-      (*unfold lift_gquot_add2cell_obj, congruence_gcl_map.
-      cbn.*)
+
+      unfold lift_gquot_add2cell_obj, congruence_gcl_map.
+
+
+      assert (sem_endpoint_UU_natural (path_right Σ i) congruence_gcl_preserves_point x
+              =
+              maponpaths
+                _
+                (maponpaths
+                   _
+                   (@poly_gquot_poly_map (path_source Σ i) (make_groupoid_algebra_carrier R) x))
+                @ !(@gquot_endpoint
+                      _ _ _
+                      (path_right Σ i)
+                      (make_groupoid_prealgebra R)
+                      (poly_map (path_source Σ i) (gcl (make_groupoid_algebra_carrier R)) x))).
+      {
+        apply TODO.
+      }
+      assert (sem_endpoint_UU_natural (path_left Σ i) congruence_gcl_preserves_point x
+              =
+              maponpaths
+                _
+                (maponpaths
+                   _
+                   (@poly_gquot_poly_map (path_source Σ i) (make_groupoid_algebra_carrier R) x))
+                @ !(@gquot_endpoint
+                      _ _ _
+                      (path_left Σ i)
+                      (make_groupoid_prealgebra R)
+                      (poly_map (path_source Σ i) (gcl (make_groupoid_algebra_carrier R)) x))).
+      {
+        apply TODO.
+      }
+      etrans.
+      {
+        apply maponpaths.
+        exact X0.
+      }
+      refine (path_assoc _ _ _ @ _).
+      do 2 refine (_ @ !(path_assoc _ _ _)).
+      apply maponpaths_2.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths_2.
+          exact X1.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0l.
+        }
+        apply pathscomp0rid.
+      }
+      clear X0 X1.
+      etrans.
+      {
+        refine (!_).
+        exact (maponpathscomp0
+                 gquot_poly
+                 (maponpaths
+                    (gquot_functor_map (sem_endpoint_grpd (path_left Σ i) (make_groupoid_prealgebra R)))
+                    (poly_gquot_poly_map _))
+                 _).
+      }
+      etrans.
+      {
+        apply maponpaths.
+        apply homotsec_natural'.
+      }
+      simpl.
+      etrans.
+      {
+        exact (maponpathscomp0
+                 (gquot_id _)
+                 (gcleq (poly_act_groupoid I (make_groupoid_algebra_carrier R)) (make_groupoid_path_algebra_nat_trans_data R i x))
+                 _).
+      }
+      apply maponpaths_2.
+      etrans.
+      {
+        apply gquot_rec_beta_gcleq.
+      }
+      unfold make_groupoid_path_algebra_nat_trans_data.
+      unfold alg_path.
       apply TODO.
     Qed.
         
