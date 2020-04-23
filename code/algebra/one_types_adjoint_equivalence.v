@@ -827,8 +827,6 @@ Section HITAlgebraAdjEquiv.
       apply maponpaths.
       exact (!(maponpathscomp0 (alg_constr Y) _ _)).
     }
-
-
     etrans.
     {
       apply maponpaths_2.
