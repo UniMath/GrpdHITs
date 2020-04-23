@@ -131,7 +131,16 @@ Section CongruenceRelation.
         : cong_rel_comp r (cong_rel_inv r) = cong_rel_id x.
       Proof.
         apply TODO.
-      Defined.      
+      Defined.
+
+      Definition cong_rel_ops
+                 (x y : poly_act (point_constr Σ) (alg_carrier X))
+                 (r : poly_act_rel (point_constr Σ) cong_rel_carrier x y)
+        : cong_rel_carrier (alg_constr X x) (alg_constr X y).
+      Proof.
+        apply TODO.
+      Defined.
+        
     End ProjectionsCarrier.
 
     (** Projections involving the operation (functor) *)
@@ -222,7 +231,7 @@ Section CongruenceRelation.
     Proof.
       use make_functor_data.
       - exact (alg_constr X).
-      - apply TODO.
+      - exact (cong_rel_ops R).
     Defined.
 
     Definition make_groupoid_algebra_operations_is_functor
