@@ -78,6 +78,15 @@ Section CongruenceRelation.
         apply TODO.
       Defined.
 
+      Definition eq_to_cong_rel
+                 {x y : alg_carrier X}
+                 (p : x = y)
+        : cong_rel_carrier x y.
+      Proof.
+        induction p.
+        exact (cong_rel_id x).
+      Defined.
+
       Definition cong_rel_inv
                  {x y : alg_carrier X}
                  (r : cong_rel_carrier x y)
@@ -292,13 +301,9 @@ Section CongruenceRelation.
           (sem_endpoint_grpd_data_functor (path_left Σ j) make_groupoid_prealgebra)
           (sem_endpoint_grpd_data_functor (path_right Σ j) make_groupoid_prealgebra).
     Proof.
-      intro x.
-      (*cbn.
-      pose (alg_path X j x).
-      cbn in p.
-      apply idtoiso.
-      exact (alg_path X j x).*)
-      apply TODO.
+      intro x ; cbn.
+      apply eq_to_cong_rel.
+      exact (alg_path X j x).
     Defined.
 
     Definition make_groupoid_path_algebra_is_nat_trans
