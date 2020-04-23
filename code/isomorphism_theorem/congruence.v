@@ -6,6 +6,7 @@ Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
+Require Import UniMath.CategoryTheory.Core.Univalence.
 Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.whiskering.
 
@@ -267,9 +268,11 @@ Section CongruenceRelation.
           (sem_endpoint_grpd_data_functor (path_right Σ j) make_groupoid_prealgebra).
     Proof.
       intro x.
-      pose (alg_path X j x) as p.
-      cbn in p ; cbn.
-      apply TODO.
+      cbn.
+      pose (alg_path X j x).
+      cbn in p.
+      apply idtoiso.
+      exact (alg_path X j x).
     Defined.
 
     Definition make_groupoid_path_algebra_is_nat_trans
@@ -278,6 +281,8 @@ Section CongruenceRelation.
           _ _
           (make_groupoid_path_algebra_nat_trans_data j).
     Proof.
+      intros x y f.
+      simpl ; cbn ; cbn in x, y, f.
       apply TODO.
     Qed.
 
