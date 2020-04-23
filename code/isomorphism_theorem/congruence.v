@@ -62,17 +62,18 @@ Section CongruenceRelation.
 
       Definition cong_rel_carrier : alg_carrier X → alg_carrier X → hSet.
       Proof.
+        pose R.
         apply TODO.
       Defined.
        
-      Definition cong_rel_refl
+      Definition cong_rel_id
                  (x : alg_carrier X)
         : cong_rel_carrier x x.
       Proof.
         apply TODO.
       Defined.
 
-      Definition cong_rel_sym
+      Definition cong_rel_inv
                  {x y : alg_carrier X}
                  (r : cong_rel_carrier x y)
         : cong_rel_carrier y x.
@@ -80,7 +81,7 @@ Section CongruenceRelation.
         apply TODO.
       Defined.
 
-      Definition cong_rel_trans
+      Definition cong_rel_comp
                  {x y z : alg_carrier X}
                  (r1 : cong_rel_carrier x y)
                  (r2 : cong_rel_carrier y z)
@@ -92,7 +93,7 @@ Section CongruenceRelation.
       Definition cong_rel_lid
                  {x y : alg_carrier X}
                  (r : cong_rel_carrier x y)
-        : cong_rel_trans (cong_rel_refl x) r = r.
+        : cong_rel_comp (cong_rel_id x) r = r.
       Proof.
         apply TODO.
       Defined.
@@ -100,7 +101,7 @@ Section CongruenceRelation.
       Definition cong_rel_rid
                  {x y : alg_carrier X}
                  (r : cong_rel_carrier x y)
-        : cong_rel_trans r (cong_rel_refl y) = r.
+        : cong_rel_comp r (cong_rel_id y) = r.
       Proof.
         apply TODO.
       Defined.
@@ -110,8 +111,8 @@ Section CongruenceRelation.
                  (r1 : cong_rel_carrier x y)
                  (r2 : cong_rel_carrier y z)
                  (r3 : cong_rel_carrier z w)
-        : cong_rel_trans r1 (cong_rel_trans r2 r3)
-          = cong_rel_trans (cong_rel_trans r1 r2) r3.
+        : cong_rel_comp r1 (cong_rel_comp r2 r3)
+          = cong_rel_comp (cong_rel_comp r1 r2) r3.
       Proof.
         apply TODO.
       Defined.
@@ -119,7 +120,7 @@ Section CongruenceRelation.
       Definition cong_rel_linv
                  {x y : alg_carrier X}
                  (r : cong_rel_carrier x y)
-        : cong_rel_trans (cong_rel_sym r) r = cong_rel_refl y.
+        : cong_rel_comp (cong_rel_inv r) r = cong_rel_id y.
       Proof.
         apply TODO.
       Defined.
@@ -127,11 +128,10 @@ Section CongruenceRelation.
       Definition cong_rel_rinv
                  {x y : alg_carrier X}
                  (r : cong_rel_carrier x y)
-        : cong_rel_trans r (cong_rel_sym r) = cong_rel_refl x.
+        : cong_rel_comp r (cong_rel_inv r) = cong_rel_id x.
       Proof.
         apply TODO.
-      Defined.
-      
+      Defined.      
     End ProjectionsCarrier.
 
     (** Projections involving the operation (functor) *)
@@ -156,19 +156,21 @@ Section CongruenceRelation.
       use make_precategory_data.
       - use make_precategory_ob_mor.
         + exact (alg_carrier X).
-        + apply TODO.
-      - apply TODO.
-      - apply TODO.
+        + exact (cong_rel_carrier R).
+      - exact (cong_rel_id R).
+      - exact (@cong_rel_comp R).
     Defined.
 
     Definition make_groupoid_algebra_carrier_is_precategory
       : is_precategory make_groupoid_algebra_carrier_precategory_data.
     Proof.
       use make_is_precategory.
-      - apply TODO.
-      - apply TODO.
-      - apply TODO.
-      - apply TODO.
+      - exact (@cong_rel_lid R).
+      - exact (@cong_rel_rid R).
+      - exact (@cong_rel_assoc R).
+      - intros.
+        refine (!_).
+        apply cong_rel_assoc.
     Qed.
     
     Definition make_groupoid_algebra_carrier_precategory
@@ -182,7 +184,8 @@ Section CongruenceRelation.
     Definition make_groupoid_algebra_carrier_has_homsets
       : has_homsets make_groupoid_algebra_carrier_precategory.
     Proof.
-      apply TODO.
+      intros x y.
+      apply (cong_rel_carrier R).
     Qed.
     
     Definition make_groupoid_algebra_carrier_category
@@ -196,7 +199,12 @@ Section CongruenceRelation.
     Definition make_groupoid_algebra_carrier_is_pregroupoid
       : is_pregroupoid make_groupoid_algebra_carrier_category.
     Proof.
-      apply TODO.
+      intros x y f.
+      use is_iso_qinv.
+      - exact (cong_rel_inv R f).
+      - split.
+        + exact (cong_rel_rinv R f).
+        + exact (cong_rel_linv R f).
     Defined.
     
     Definition make_groupoid_algebra_carrier
