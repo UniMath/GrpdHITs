@@ -18,6 +18,7 @@ Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
+Require Import UniMath.Bicategories.PseudoFunctors.Biadjunction.
 Require Import UniMath.Bicategories.Colimits.Initial.
 
 Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
@@ -37,6 +38,9 @@ Require Import algebra.one_types_homotopies.
 Require Import algebra.groupoid_polynomials.
 Require Import algebra.groupoid_endpoints.
 Require Import algebra.groupoid_homotopies.
+Require Import hit_biadjunction.hit_algebra_biadj.lift_gquot.
+Require Import hit_biadjunction.hit_algebra_biadj.lift_path_groupoid.
+Require Import hit_biadjunction.hit_algebra_biadj.
 
 Local Open Scope cat.
 
@@ -268,11 +272,12 @@ Section CongruenceRelation.
           (sem_endpoint_grpd_data_functor (path_right Σ j) make_groupoid_prealgebra).
     Proof.
       intro x.
-      cbn.
+      (*cbn.
       pose (alg_path X j x).
       cbn in p.
       apply idtoiso.
-      exact (alg_path X j x).
+      exact (alg_path X j x).*)
+      apply TODO.
     Defined.
 
     Definition make_groupoid_path_algebra_is_nat_trans
@@ -323,4 +328,38 @@ Section CongruenceRelation.
       - exact make_groupoid_algebra_is_hit_algebra.
     Defined.
   End MakeGroupoidAlgebraFromCongruence.
+
+  Definition quotient_of_congruence
+             (R : congruence_relation)
+    : hit_algebra_one_types Σ
+    := _ ,, gquot_is_hit_algebra Σ _ (pr2 (make_groupoid_algebra R)).
+
+  Definition quotient_of_congruence_map
+             (R : congruence_relation)
+             (Y : hit_algebra_one_types Σ)
+             (F : make_groupoid_algebra R
+                  -->
+                  hit_algebra_biadjunction Σ Y)
+    : quotient_of_congruence R --> Y
+    := biadj_left_hom
+         (hit_algebra_biadjunction Σ)
+         (make_groupoid_algebra R)
+         Y
+         F.
+  (*
+  Definition test
+             (R : congruence_relation)
+             (Y : hit_algebra_one_types Σ)
+    : make_groupoid_algebra R
+      -->
+      hit_algebra_biadjunction Σ Y.
+  Proof.
+    use make_algebra_map_grpd.
+    use make_hit_path_alg_map_grpd.
+    - use make_hit_prealgebra_mor.
+      + apply TODO.
+      + apply TODO.
+    - apply TODO.
+  Defined.
+   *)
 End CongruenceRelation.
