@@ -59,6 +59,79 @@ Section CongruenceRelation.
 
     (** Projections involving the carrier (groupoid structure *)
     Section ProjectionsCarrier.
+
+      Definition cong_rel_carrier : alg_carrier X → alg_carrier X → hSet.
+      Proof.
+        apply TODO.
+      Defined.
+       
+      Definition cong_rel_refl
+                 (x : alg_carrier X)
+        : cong_rel_carrier x x.
+      Proof.
+        apply TODO.
+      Defined.
+
+      Definition cong_rel_sym
+                 {x y : alg_carrier X}
+                 (r : cong_rel_carrier x y)
+        : cong_rel_carrier y x.
+      Proof.
+        apply TODO.
+      Defined.
+
+      Definition cong_rel_trans
+                 {x y z : alg_carrier X}
+                 (r1 : cong_rel_carrier x y)
+                 (r2 : cong_rel_carrier y z)
+        : cong_rel_carrier x z.
+      Proof.
+        apply TODO.
+      Defined.
+
+      Definition cong_rel_lid
+                 {x y : alg_carrier X}
+                 (r : cong_rel_carrier x y)
+        : cong_rel_trans (cong_rel_refl x) r = r.
+      Proof.
+        apply TODO.
+      Defined.
+
+      Definition cong_rel_rid
+                 {x y : alg_carrier X}
+                 (r : cong_rel_carrier x y)
+        : cong_rel_trans r (cong_rel_refl y) = r.
+      Proof.
+        apply TODO.
+      Defined.
+      
+      Definition cong_rel_assoc
+                 {x y z w : alg_carrier X}
+                 (r1 : cong_rel_carrier x y)
+                 (r2 : cong_rel_carrier y z)
+                 (r3 : cong_rel_carrier z w)
+        : cong_rel_trans r1 (cong_rel_trans r2 r3)
+          = cong_rel_trans (cong_rel_trans r1 r2) r3.
+      Proof.
+        apply TODO.
+      Defined.
+
+      Definition cong_rel_linv
+                 {x y : alg_carrier X}
+                 (r : cong_rel_carrier x y)
+        : cong_rel_trans (cong_rel_sym r) r = cong_rel_refl y.
+      Proof.
+        apply TODO.
+      Defined.
+
+      Definition cong_rel_rinv
+                 {x y : alg_carrier X}
+                 (r : cong_rel_carrier x y)
+        : cong_rel_trans r (cong_rel_sym r) = cong_rel_refl x.
+      Proof.
+        apply TODO.
+      Defined.
+      
     End ProjectionsCarrier.
 
     (** Projections involving the operation (functor) *)
