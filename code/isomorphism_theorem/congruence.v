@@ -170,19 +170,62 @@ Section CongruenceRelation.
       - exact make_groupoid_algebra_operations.
     Defined.
 
+    Definition make_groupoid_path_algebra_nat_trans_data
+               (j : path_label Σ)
+      : nat_trans_data
+          (sem_endpoint_grpd_data_functor (path_left Σ j) make_groupoid_prealgebra)
+          (sem_endpoint_grpd_data_functor (path_right Σ j) make_groupoid_prealgebra).
+    Proof.
+      intro x.
+      pose (alg_path X j x) as p.
+      cbn in p ; cbn.
+      apply TODO.
+    Defined.
+
+    Definition make_groupoid_path_algebra_is_nat_trans
+               (j : path_label Σ)
+      : is_nat_trans
+          _ _
+          (make_groupoid_path_algebra_nat_trans_data j).
+    Proof.
+      apply TODO.
+    Qed.
+
+    Definition make_groupoid_path_algebra_path
+               (j : path_label Σ)
+      : sem_endpoint_grpd_data_functor
+          (path_left Σ j)
+          make_groupoid_prealgebra
+        ⟹
+        sem_endpoint_grpd_data_functor
+          (path_right Σ j)
+          make_groupoid_prealgebra.
+    Proof.
+      use make_nat_trans.
+      - exact (make_groupoid_path_algebra_nat_trans_data j).
+      - exact (make_groupoid_path_algebra_is_nat_trans j).
+    Defined.
+
     Definition make_groupoid_path_algebra
       : hit_path_algebra_grpd Σ.
     Proof.
       use make_hit_path_algebra_grpd.
       - exact make_groupoid_prealgebra.
-      - simpl.
+      - exact make_groupoid_path_algebra_path.
+    Defined.
+
+    Definition make_groupoid_algebra_is_hit_algebra
+      : is_hit_algebra_grpd Σ make_groupoid_path_algebra.
+    Proof.
+      apply TODO.
+    Qed.
     
     Definition make_groupoid_algebra
       : hit_algebra_grpd Σ.
     Proof.
       use make_algebra_grpd.
-      - 
-      apply TODO.
+      - exact make_groupoid_path_algebra.
+      - exact make_groupoid_algebra_is_hit_algebra.
     Defined.
   End MakeGroupoidAlgebraFromCongruence.
 End CongruenceRelation.
