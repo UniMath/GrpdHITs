@@ -40,10 +40,25 @@ Section Image.
           {A B : hit_algebra_one_types Σ}
           (f : A --> B).
 
-  Definition image_disp_alg : disp_algebra B. 
+  Definition image_disp_alg_constr
+             (x : poly_act (point_constr Σ) (alg_carrier B))
+             (Hx : poly_dact_UU
+                     (point_constr Σ)
+                     (λ b : alg_carrier B, ∃ a : alg_carrier A, alg_map_carrier f a = b)
+                     x)
+    : ∃ a : alg_carrier A, alg_map_carrier f a = alg_constr B x.
   Proof.
     apply TODO.
+  Qed.
+  
+  Definition image_disp_alg : disp_algebra B. 
+  Proof.
+    use prop_disp_algebra.
+    - exact (λ b, ∃ a : alg_carrier A, alg_map_carrier f a = b).
+    - abstract (intro b; exact (isapropishinh _)).
+    - exact image_disp_alg_constr.
   Defined.
+
 
   Definition image : hit_algebra_one_types Σ
     :=  total_algebra image_disp_alg.
