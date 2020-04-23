@@ -137,19 +137,40 @@ Section CongruenceRelation.
       Proof.
         apply TODO.
       Defined.
-
-      Definition cong_rel_ops
-                 (x y : poly_act (point_constr Σ) (alg_carrier X))
-                 (r : poly_act_rel (point_constr Σ) cong_rel_carrier x y)
-        : cong_rel_carrier (alg_constr X x) (alg_constr X y).
-      Proof.
-        apply TODO.
-      Defined.
-        
+      
     End ProjectionsCarrier.
 
     (** Projections involving the operation (functor) *)
     Section ProjectionsOperation.
+
+      Definition cong_rel_ops
+                 (x y : poly_act (point_constr Σ) (alg_carrier X))
+                 (r : poly_act_rel (point_constr Σ) cong_rel_carrier x y)
+      : cong_rel_carrier (alg_constr X x) (alg_constr X y).
+      Proof.
+        apply TODO.
+      Defined.
+
+      Definition cong_rel_ops_idax
+                 (x : poly_act (point_constr Σ) (alg_carrier X))
+        : cong_rel_ops x x (poly_act_rel_identity _ _ cong_rel_id x)
+          = cong_rel_id (alg_constr X x).
+      Proof.
+        apply TODO.
+      Qed.
+
+      Definition cong_rel_ops_compax
+                 (x y z : poly_act (point_constr Σ) (alg_carrier X))
+                 (r1 : poly_act_rel (point_constr Σ) cong_rel_carrier x y)
+                 (r2 : poly_act_rel (point_constr Σ) cong_rel_carrier y z)
+        : cong_rel_ops
+            x z
+            (poly_act_rel_comp (point_constr Σ) _ (λ x y z r1 r2, cong_rel_comp r1 r2) r1 r2)
+          = cong_rel_comp (cong_rel_ops x y r1) (cong_rel_ops y z r2).
+      Proof.
+        apply TODO.
+      Qed.
+
     End ProjectionsOperation.
 
     (** Projections involving the path (natural transformation) *)
@@ -243,8 +264,8 @@ Section CongruenceRelation.
       : is_functor make_groupoid_algebra_operations_functor_data.
     Proof.
       split.
-      - apply TODO.
-      - apply TODO.
+      - exact (cong_rel_ops_idax R).
+      - exact (cong_rel_ops_compax R).
     Qed.
     
     Definition make_groupoid_algebra_operations
