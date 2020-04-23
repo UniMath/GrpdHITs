@@ -313,7 +313,8 @@ Section CongruenceRelation.
           (make_groupoid_path_algebra_nat_trans_data j).
     Proof.
       intros x y f.
-      simpl ; cbn ; cbn in x, y, f.
+      simpl ; cbn ; cbn in x, y, f
+      ; unfold make_groupoid_path_algebra_nat_trans_data.
       apply TODO.
     Qed.
 
@@ -343,6 +344,14 @@ Section CongruenceRelation.
     Definition make_groupoid_algebra_is_hit_algebra
       : is_hit_algebra_grpd Σ make_groupoid_path_algebra.
     Proof.
+      intros j x p.
+      cbn in p.
+      pose (alg_homot X j x) as q.
+      cbn.
+      cbn in q.
+      unfold sem_homot_endpoint_one_types in q.
+      unfold sem_homot_endpoint_grpd.
+      refine ( _ @ p0 _ @ _).
       apply TODO.
     Qed.
     
