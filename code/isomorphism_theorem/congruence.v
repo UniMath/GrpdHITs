@@ -444,20 +444,65 @@ Section CongruenceRelation.
            F.
 
   End MapToQuotientFromCongruence.
-  (*
-  Definition test
-             (R : congruence_relation)
-             (Y : hit_algebra_one_types Σ)
-    : make_groupoid_algebra R
-      -->
-      hit_algebra_biadjunction Σ Y.
-  Proof.
-    use make_algebra_map_grpd.
-    use make_hit_path_alg_map_grpd.
-    - use make_hit_prealgebra_mor.
-      + apply TODO.
-      + apply TODO.
-    - apply TODO.
-  Defined.
-   *)
+
+  Section MakeMapToQuotientFromCongruence.
+    Variable (R : congruence_relation)
+             (Y : hit_algebra_one_types Σ).
+
+    Variable (f : alg_carrier X → alg_carrier Y)
+             (fR : ∏ (a b : alg_carrier X),
+                   cong_rel_carrier R a b → f a = f b).
+
+    Definition test_prealg_carrier_data
+      : functor_data
+          (alg_carrier_grpd (make_groupoid_algebra R))
+          (alg_carrier_grpd (hit_algebra_biadjunction Σ Y)).
+    Proof.
+      use make_functor_data.
+      - exact f.
+      - exact fR.
+    Defined.
+
+    Definition test_prealg_carrier_is_functor
+      : is_functor test_prealg_carrier_data.
+    Proof.
+      apply TODO.
+    Qed.
+    
+    Definition test_prealg_carrier
+      : alg_carrier_grpd (make_groupoid_algebra R)
+        ⟶
+        alg_carrier_grpd (hit_algebra_biadjunction Σ Y).
+    Proof.
+      use make_functor.
+      - exact test_prealg_carrier_data.
+      - exact test_prealg_carrier_is_functor.
+    Defined.
+
+    Definition test_prealg
+      : pr11 (make_groupoid_algebra R) --> pr11 (hit_algebra_biadjunction Σ Y).
+    Proof.
+      use make_hit_prealgebra_mor.
+      - exact test_prealg_carrier.
+      - apply TODO.
+    Defined.
+
+    Definition test
+      : make_groupoid_algebra R
+        -->
+        hit_algebra_biadjunction Σ Y.
+    Proof.
+      use make_algebra_map_grpd.
+      use make_hit_path_alg_map_grpd.
+      - exact test_prealg.
+      - apply TODO.
+    Defined.
+
+    Definition test_map
+      : quotient_of_congruence R --> Y.
+    Proof.
+      use quotient_of_congruence_map.
+      exact test.
+    Defined.
+  End MakeMapToQuotientFromCongruence.
 End CongruenceRelation.
