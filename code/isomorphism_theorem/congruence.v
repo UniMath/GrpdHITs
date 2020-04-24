@@ -427,23 +427,23 @@ Section CongruenceRelation.
   End MakeGroupoidFromCongruence.
   
   Definition is_congruence_relation_ops
-             (Rg : congruence_relation_groupoid)
+             (R : congruence_relation_groupoid)
     : UU
     := ∑ (R_ops : ∏ x y : poly_act (point_constr Σ) (alg_carrier X),
-            poly_act_rel (point_constr Σ) (pr1 Rg) x y →
-            pr1 Rg (alg_constr X x) (alg_constr X y)), 
+            poly_act_rel (point_constr Σ) (pr1 R) x y →
+            pr1 R (alg_constr X x) (alg_constr X y)), 
        (∏ x : poly_act (point_constr Σ) (alg_carrier X),
-          R_ops x x (poly_act_rel_identity _ _ (pr12 Rg) x)
+          R_ops x x (poly_act_rel_identity _ _ (pr12 R) x)
           =
-          pr12 Rg (alg_constr X x))
+          pr12 R (alg_constr X x))
         × 
        (∏ x y z : poly_act (point_constr Σ) (alg_carrier X),
-          ∏ (r1 : poly_act_rel (point_constr Σ) (pr1 Rg) x y),
-          ∏ (r2 : poly_act_rel (point_constr Σ) (pr1 Rg) y z),
+          ∏ (r1 : poly_act_rel (point_constr Σ) (pr1 R) x y),
+          ∏ (r2 : poly_act_rel (point_constr Σ) (pr1 R) y z),
           R_ops x z
-               (poly_act_rel_comp (point_constr Σ) _ (pr1 (pr222 Rg)) r1 r2)
+               (poly_act_rel_comp (point_constr Σ) _ (pr1 (pr222 R)) r1 r2)
           =
-          pr1 (pr222 Rg) (alg_constr X x) (alg_constr X y) (alg_constr X z)
+          pr1 (pr222 R) (alg_constr X x) (alg_constr X y) (alg_constr X z)
               (R_ops x y r1) (R_ops y z r2)).
 
   Definition congruence_relation_ops
@@ -538,15 +538,40 @@ Section CongruenceRelation.
     Defined.
   End MakeGroupoidPrealgebraFromCongruence.
 
+  Definition is_congruence_relation_nat
+             (R : congruence_relation_ops)
+    := ∏ (j : path_label Σ)
+         (x y : poly_act (path_source Σ j) (alg_carrier X))
+         (f : poly_act_rel (path_source Σ j) (cong_rel_carrier R) x y),
+       cong_rel_comp
+         R
+         (sem_endpoint_grpd_data_functor_morphism
+            (path_left Σ j)
+            (make_groupoid_algebra_operations R)
+            f)
+         (eq_to_cong_rel R (alg_path X j y))
+       = cong_rel_comp
+           R
+           (eq_to_cong_rel R (alg_path X j x))
+           (sem_endpoint_grpd_data_functor_morphism
+              (path_right Σ j)
+              (make_groupoid_algebra_operations R)
+              f).
   
-  Definition congruence_relation
-    : UU.
-  Proof.
-    apply TODO.
-  Defined.
-  
+  Definition congruence_relation_nat
+    : UU
+    := ∑ (R : congruence_relation_ops),
+       is_congruence_relation_nat R.
+
+  Definition congruence_relation_nat_to_congruence_relation_ops
+    : congruence_relation_nat → congruence_relation_ops
+    := λ z, pr1 z.
+
+  Coercion congruence_relation_nat_to_congruence_relation_ops
+    : congruence_relation_nat >-> congruence_relation_ops.
+    
   Section ProjectionsNatTrans.
-    Variable (R : congruence_relation).
+    Variable (R : congruence_relation_nat).
 
     Definition cong_rel_nat 
                (j : path_label Σ)
@@ -567,13 +592,13 @@ Section CongruenceRelation.
                (make_groupoid_algebra_operations R)
                f).
     Proof.
-      apply TODO.
+      exact (pr2 R j x y f).
     Qed.
 
   End ProjectionsNatTrans.
 
   Section MakeGroupoidPathalgebraFromCongruence.
-    Variable (R : congruence_relation).
+    Variable (R : congruence_relation_nat).
   
     Definition make_groupoid_path_algebra_nat_trans_data
                (j : path_label Σ)
@@ -623,6 +648,44 @@ Section CongruenceRelation.
     Defined.
   End MakeGroupoidPathalgebraFromCongruence.
 
+  Definition is_congruence_relation
+             (R : congruence_relation_nat)
+    : UU
+    := ∏ (j : homot_label Σ)
+         (x : poly_act (homot_point_arg Σ j) (pr111 (make_groupoid_path_algebra R)))
+         (p : poly_act_rel
+                (homot_path_arg_target Σ j)
+                (cong_rel_carrier R)
+                (sem_endpoint_UU
+                   (homot_path_arg_left Σ j)
+                   (alg_constr X)
+                   x)
+                (sem_endpoint_UU
+                   (homot_path_arg_right Σ j)
+                   (alg_constr X)
+                   x)),
+       sem_homot_endpoint_grpd
+         (homot_left_path Σ j)
+         (make_groupoid_prealgebra R)
+         (make_groupoid_path_algebra_path R) x p
+       =
+       sem_homot_endpoint_grpd
+         (homot_right_path Σ j)
+         (make_groupoid_prealgebra R)
+         (make_groupoid_path_algebra_path R) x p.
+
+  Definition congruence_relation
+    : UU
+    := ∑ (R : congruence_relation_nat),
+       is_congruence_relation R.
+
+  Definition congruence_relation_to_congruence_relation_nat
+    : congruence_relation → congruence_relation_nat
+    := λ z, pr1 z.
+
+  Coercion congruence_relation_to_congruence_relation_nat
+    : congruence_relation >-> congruence_relation_nat.
+  
   Section ProjectionsIsAlgebra.
     Variable (R : congruence_relation).
 
