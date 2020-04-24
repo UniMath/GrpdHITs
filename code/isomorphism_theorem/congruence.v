@@ -105,12 +105,143 @@ Proof.
       refine (maponpathscomp0 _ _ _ @ _).
       refine (_ @ !(path_assoc _ _ _)).
       apply maponpaths_2.
-      apply TODO.
-    + apply TODO.
-  - simpl.
-    apply TODO.
-Qed.
-
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (maponpathscomp
+                 gquot_inl_grpd
+                 (gquot_sum gquot_poly gquot_poly)
+                 (poly_gquot_poly_map _)).
+      }
+      unfold funcomp.
+      etrans.
+      {
+        exact (homotsec_natural'
+                 (inl_gquot_poly P₁ P₂)
+                 (poly_gquot_poly_map _)).
+      }
+      simpl.
+      refine (!_).
+      apply maponpathscomp.
+    + simpl.
+      refine (_ @ maponpaths_idpath).
+      refine (_ @ maponpaths (maponpaths inr) (IHP₂ x)).
+      refine (!_).
+      refine (maponpathscomp0 _ _ _ @ _).
+      apply maponpaths.
+      refine (maponpathscomp0 _ _ _ @ _).
+      refine (_ @ !(path_assoc _ _ _)).
+      apply maponpaths_2.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (maponpathscomp
+                 gquot_inr_grpd
+                 (gquot_sum gquot_poly gquot_poly)
+                 (poly_gquot_poly_map _)).
+      }
+      unfold funcomp.
+      etrans.
+      {
+        exact (homotsec_natural'
+                 (inr_gquot_poly P₁ P₂)
+                 (poly_gquot_poly_map _)).
+      }
+      simpl.
+      refine (!_).
+      apply maponpathscomp.
+  - refine (_ @ paths_pathsdirprod (IHP₁ _) (IHP₂ _)).
+    refine (_ @ pathsdirprod_concat _ _ _ _).
+    apply maponpaths.
+    refine (_ @ pathsdirprod_concat _ _ _ _).
+    refine (path_assoc _ _ _ @ _).
+    apply maponpaths_2.
+    etrans.
+    {
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (maponpathscomp0
+                 (gquot_prod gquot_poly gquot_poly)
+                 (maponpaths
+                    (λ z, prod_gquot_comp z (gcl (poly_act_groupoid P₂ G) (pr2 x)))
+                    (poly_gquot_poly_map (pr1 x)))
+                 (maponpaths
+                    (prod_gquot_comp (poly_gquot P₁ G (poly_map P₁ (gcl G) (pr1 x))))
+                    (poly_gquot_poly_map (pr2 x)))).
+      }
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      apply maponpaths_2.
+      exact (maponpathscomp
+               (prod_gquot_comp (poly_gquot P₁ G (poly_map P₁ (gcl G) (pr1 x))))
+               (gquot_prod gquot_poly gquot_poly)
+               (poly_gquot_poly_map _)).
+    }
+    unfold funcomp.
+    etrans.
+    {
+      apply maponpaths.
+      exact (homotsec_natural'
+               (λ z, gquot_poly_pair
+                       P₁ P₂
+                       (poly_gquot P₁ G (poly_map P₁ (gcl G) (pr1 x)))
+                       z)
+               (poly_gquot_poly_map _)).
+    }
+    refine (path_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (maponpathscomp
+                 (λ z, prod_gquot_comp z (gcl (poly_act_groupoid P₂ G) (pr2 x)))
+                 (gquot_prod gquot_poly gquot_poly)
+                 (poly_gquot_poly_map _)).
+      }
+      unfold funcomp.
+      exact (homotsec_natural'
+               (λ z, gquot_poly_pair
+                       P₁ P₂
+                       z
+                       (gcl (poly_act_groupoid P₂ G) (pr2 x)))
+               (poly_gquot_poly_map _)).
+    }
+    simpl.
+    etrans.
+    {
+      apply maponpaths.
+      refine (!_).
+      apply maponpathscomp.
+    }
+    etrans.
+    {
+      apply maponpaths_2.
+      refine (!_).
+      exact (maponpathscomp
+               gquot_poly
+               (λ z, z ,, gquot_poly (gcl (poly_act_groupoid P₂ G) (pr2 x)))
+               (poly_gquot_poly_map (pr1 x))).
+    }
+    etrans.
+    {
+      apply maponpaths_2.
+      apply maponpaths_make_dirprod_right.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      apply maponpaths_make_dirprod_left.
+    }
+    refine (pathsdirprod_concat _ _ _ _ @ _).
+    simpl.
+    apply maponpaths_2.
+    apply pathscomp0rid.
+Time Qed.
     
 Section CongruenceRelation.
   Context {Σ : hit_signature}
