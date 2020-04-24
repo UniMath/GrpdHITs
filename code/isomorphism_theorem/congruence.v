@@ -269,34 +269,10 @@ Section CongruenceRelation.
        (∏ x y : alg_carrier X, ∏ r : R x y,
           R_comp x y x r (R_inv x y r) = R_id x).
 
-  Definition congrurence_relation_ops (Rg : congruence_relation_groupoid)
-    : UU
-    := ∑ (R_ops : ∏ x y : poly_act (point_constr Σ) (alg_carrier X),
-            poly_act_rel (point_constr Σ) (pr1 Rg) x y →
-            pr1 Rg (alg_constr X x) (alg_constr X y)), 
-       (∏ x : poly_act (point_constr Σ) (alg_carrier X),
-          R_ops x x (poly_act_rel_identity _ _ (pr12 Rg) x)
-          =
-          pr12 Rg (alg_constr X x))
-        × 
-       (∏ x y z : poly_act (point_constr Σ) (alg_carrier X),
-          ∏ (r1 : poly_act_rel (point_constr Σ) (pr1 Rg) x y),
-          ∏ (r2 : poly_act_rel (point_constr Σ) (pr1 Rg) y z),
-          R_ops x z
-               (poly_act_rel_comp (point_constr Σ) _ (pr1 (pr222 Rg)) r1 r2)
-          =
-          pr1 (pr222 Rg) (alg_constr X x) (alg_constr X y) (alg_constr X z)
-              (R_ops x y r1) (R_ops y z r2)).
   
-  Definition congruence_relation
-    : UU.
-  Proof.
-    apply TODO.
-  Defined.
-
   (** Projections *)
   Section ProjectionsCarrier.
-    Variable (R : congruence_relation).
+    Variable (R : congruence_relation_groupoid).
 
     Definition cong_rel_carrier : alg_carrier X → alg_carrier X → hSet.
     Proof.
@@ -382,7 +358,7 @@ Section CongruenceRelation.
   End ProjectionsCarrier.
 
   Section MakeGroupoidFromCongruence.
-    Variable (R : congruence_relation).
+    Variable (R : congruence_relation_groupoid).
 
     Definition make_groupoid_algebra_carrier_precategory_data
       : precategory_data.
@@ -450,14 +426,46 @@ Section CongruenceRelation.
     Defined.
   End MakeGroupoidFromCongruence.
   
+  Definition is_congruence_relation_ops
+             (Rg : congruence_relation_groupoid)
+    : UU
+    := ∑ (R_ops : ∏ x y : poly_act (point_constr Σ) (alg_carrier X),
+            poly_act_rel (point_constr Σ) (pr1 Rg) x y →
+            pr1 Rg (alg_constr X x) (alg_constr X y)), 
+       (∏ x : poly_act (point_constr Σ) (alg_carrier X),
+          R_ops x x (poly_act_rel_identity _ _ (pr12 Rg) x)
+          =
+          pr12 Rg (alg_constr X x))
+        × 
+       (∏ x y z : poly_act (point_constr Σ) (alg_carrier X),
+          ∏ (r1 : poly_act_rel (point_constr Σ) (pr1 Rg) x y),
+          ∏ (r2 : poly_act_rel (point_constr Σ) (pr1 Rg) y z),
+          R_ops x z
+               (poly_act_rel_comp (point_constr Σ) _ (pr1 (pr222 Rg)) r1 r2)
+          =
+          pr1 (pr222 Rg) (alg_constr X x) (alg_constr X y) (alg_constr X z)
+              (R_ops x y r1) (R_ops y z r2)).
+
+  Definition congruence_relation_ops
+    : UU
+    := ∑ (R : congruence_relation_groupoid),
+       is_congruence_relation_ops R.
+
+  Definition congruence_relation_ops_to_congruence_relation_groupoid
+    : congruence_relation_ops → congruence_relation_groupoid
+    := λ z, pr1 z.
+
+  Coercion congruence_relation_ops_to_congruence_relation_groupoid
+    : congruence_relation_ops >-> congruence_relation_groupoid.
+  
   (** Projections involving the operation (functor) *)
   Section ProjectionsOperation.
-    Variable (R : congruence_relation).
+    Variable (R : congruence_relation_ops).
 
     Definition cong_rel_ops
                (x y : poly_act (point_constr Σ) (alg_carrier X))
                (r : poly_act_rel (point_constr Σ) (cong_rel_carrier R) x y)
-    : cong_rel_carrier R (alg_constr X x) (alg_constr X y).
+      : cong_rel_carrier R (alg_constr X x) (alg_constr X y).
     Proof.
       apply TODO.
     Defined.
@@ -491,7 +499,7 @@ Section CongruenceRelation.
   End ProjectionsOperation.
 
   Section MakeGroupoidPrealgebraFromCongruence.
-    Variable (R : congruence_relation).
+    Variable (R : congruence_relation_ops).
     
     Definition make_groupoid_algebra_operations_functor_data
       : functor_data
@@ -513,8 +521,8 @@ Section CongruenceRelation.
     
     Definition make_groupoid_algebra_operations
       : (⦃ point_constr Σ ⦄ (make_groupoid_algebra_carrier R) : groupoid)
-        ⟶
-        make_groupoid_algebra_carrier R.
+          ⟶
+          make_groupoid_algebra_carrier R.
     Proof.
       use make_functor.
       - exact make_groupoid_algebra_operations_functor_data.
@@ -530,6 +538,13 @@ Section CongruenceRelation.
     Defined.
   End MakeGroupoidPrealgebraFromCongruence.
 
+  
+  Definition congruence_relation
+    : UU.
+  Proof.
+    apply TODO.
+  Defined.
+  
   Section ProjectionsNatTrans.
     Variable (R : congruence_relation).
 
@@ -555,7 +570,7 @@ Section CongruenceRelation.
       apply TODO.
     Qed.
 
-    End ProjectionsNatTrans.
+  End ProjectionsNatTrans.
 
   Section MakeGroupoidPathalgebraFromCongruence.
     Variable (R : congruence_relation).
