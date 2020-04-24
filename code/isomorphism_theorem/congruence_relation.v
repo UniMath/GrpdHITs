@@ -85,18 +85,13 @@ Section CongruenceRelation.
   Section ProjectionsCarrier.
     Variable (R : congruence_relation_groupoid).
 
-    Definition cong_rel_carrier : alg_carrier X → alg_carrier X → hSet.
-    Proof.
-      pose R.
-      apply TODO.
-    Defined.
+    Definition cong_rel_carrier : alg_carrier X → alg_carrier X → hSet
+      := pr1 R.
     
     Definition cong_rel_id
                (x : alg_carrier X)
-      : cong_rel_carrier x x.
-    Proof.
-      apply TODO.
-    Defined.
+      : cong_rel_carrier x x
+      := pr12 R x.
 
     Definition eq_to_cong_rel
                {x y : alg_carrier X}
@@ -110,35 +105,31 @@ Section CongruenceRelation.
     Definition cong_rel_inv
                {x y : alg_carrier X}
                (r : cong_rel_carrier x y)
-      : cong_rel_carrier y x.
-    Proof.
-      apply TODO.
-    Defined.
+      : cong_rel_carrier y x
+      := pr122 R x y r.
 
     Definition cong_rel_comp
                {x y z : alg_carrier X}
                (r1 : cong_rel_carrier x y)
                (r2 : cong_rel_carrier y z)
-      : cong_rel_carrier x z.
-    Proof.
-      apply TODO.
-    Defined.
+      : cong_rel_carrier x z
+      := pr1 (pr222 R) x y z r1 r2.
 
     Definition cong_rel_lid
                {x y : alg_carrier X}
                (r : cong_rel_carrier x y)
       : cong_rel_comp (cong_rel_id x) r = r.
     Proof.
-      apply TODO.
-    Defined.
+      exact (pr12 (pr222 R) x y r).      
+    Qed.
 
     Definition cong_rel_rid
                {x y : alg_carrier X}
                (r : cong_rel_carrier x y)
       : cong_rel_comp r (cong_rel_id y) = r.
     Proof.
-      apply TODO.
-    Defined.
+      exact (pr122 (pr222 R) x y r).      
+    Qed.
     
     Definition cong_rel_assoc
                {x y z w : alg_carrier X}
@@ -148,24 +139,25 @@ Section CongruenceRelation.
       : cong_rel_comp r1 (cong_rel_comp r2 r3)
         = cong_rel_comp (cong_rel_comp r1 r2) r3.
     Proof.
-      apply TODO.
-    Defined.
+      exact (pr1 (pr222 (pr222 R)) x y z w r1 r2 r3).      
+    Qed.
 
     Definition cong_rel_linv
                {x y : alg_carrier X}
                (r : cong_rel_carrier x y)
       : cong_rel_comp (cong_rel_inv r) r = cong_rel_id y.
     Proof.
-      apply TODO.
-    Defined.
+      exact (pr12 (pr222 (pr222 R)) x y r).
+    Qed.
+
 
     Definition cong_rel_rinv
                {x y : alg_carrier X}
                (r : cong_rel_carrier x y)
       : cong_rel_comp r (cong_rel_inv r) = cong_rel_id x.
     Proof.
-      apply TODO.
-    Defined.
+      exact (pr22 (pr222 (pr222 R)) x y r).      
+    Qed.
   End ProjectionsCarrier.
 
   Section MakeGroupoidFromCongruence.
@@ -276,10 +268,8 @@ Section CongruenceRelation.
     Definition cong_rel_ops
                (x y : poly_act (point_constr Σ) (alg_carrier X))
                (r : poly_act_rel (point_constr Σ) (cong_rel_carrier R) x y)
-      : cong_rel_carrier R (alg_constr X x) (alg_constr X y).
-    Proof.
-      apply TODO.
-    Defined.
+      : cong_rel_carrier R (alg_constr X x) (alg_constr X y)
+      := pr12 R x y r.
 
     Definition cong_rel_ops_idax
                (x : poly_act (point_constr Σ) (alg_carrier X))
@@ -287,7 +277,7 @@ Section CongruenceRelation.
         =
         cong_rel_id R (alg_constr X x).
     Proof.
-      apply TODO.
+      exact (pr122 R x).
     Qed.
 
     Definition cong_rel_ops_compax
@@ -305,7 +295,7 @@ Section CongruenceRelation.
             (cong_rel_ops x y r1)
             (cong_rel_ops y z r2).
     Proof.
-      apply TODO.
+      exact (pr222 R x y z r1 r2).
     Qed.
   End ProjectionsOperation.
 
@@ -523,7 +513,7 @@ Section CongruenceRelation.
           (make_groupoid_prealgebra R)
           (make_groupoid_path_algebra_path R) x p.
     Proof.
-      apply TODO.
+      exact (pr2 R j x p).
     Qed.
   End ProjectionsIsAlgebra.
   
