@@ -75,12 +75,51 @@ Proof.
   - apply TODO.
 Defined.
 
-
 Section CongruenceRelation.
   Context {Σ : hit_signature}
           (X : hit_algebra_one_types Σ).
 
   (** Definition of congruence relation *)
+  Definition congruence_relation_groupoid
+    : UU
+    := ∑ (R : alg_carrier X → alg_carrier X → hSet), 
+       ∑ (R_id : ∏ x : alg_carrier X, R x x), 
+       ∑ (R_inv : ∏ x y : alg_carrier X, R x y → R y x), 
+       ∑ (R_comp : ∏ x y z : alg_carrier X, R x y → R y z → R x z), 
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp x x y (R_id x) r = r)
+       × 
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp x y y r (R_id y) = r)
+       ×
+       (∏ x y z w : alg_carrier X, ∏ r1 : R x y, ∏ r2 : R y z, ∏ r3 : R z w,
+          R_comp x y w r1 (R_comp y z w r2 r3) = R_comp x z w (R_comp x y z r1 r2) r3)
+       ×
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp y x y (R_inv x y r) r = R_id y)
+       ×
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp x y x r (R_inv x y r) = R_id x).
+
+  Definition congrurence_relation_ops (Rg : congruence_relation_groupoid)
+    : UU
+    := ∑ (R_ops : ∏ x y : poly_act (point_constr Σ) (alg_carrier X),
+            poly_act_rel (point_constr Σ) (pr1 Rg) x y →
+            pr1 Rg (alg_constr X x) (alg_constr X y)), 
+       (∏ x : poly_act (point_constr Σ) (alg_carrier X),
+          R_ops x x (poly_act_rel_identity _ _ (pr12 Rg) x)
+          =
+          pr12 Rg (alg_constr X x))
+        × 
+       (∏ x y z : poly_act (point_constr Σ) (alg_carrier X),
+          ∏ (r1 : poly_act_rel (point_constr Σ) (pr1 Rg) x y),
+          ∏ (r2 : poly_act_rel (point_constr Σ) (pr1 Rg) y z),
+          R_ops x z
+               (poly_act_rel_comp (point_constr Σ) _ (pr1 (pr222 Rg)) r1 r2)
+          =
+          pr1 (pr222 Rg) (alg_constr X x) (alg_constr X y) (alg_constr X z)
+              (R_ops x y r1) (R_ops y z r2)).
+  
   Definition congruence_relation
     : UU.
   Proof.
