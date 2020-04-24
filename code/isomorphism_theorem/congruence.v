@@ -747,8 +747,302 @@ Section CongruenceRelation.
         refine (!(maponpathscomp0 inr _ _) @ _ @ maponpaths_idpath).
         apply maponpaths.
         exact (@poly_gquot_poly_map_lem Q (make_groupoid_algebra_carrier R) x).
-      - apply TODO.
-      - apply TODO.
+      - refine (!(poly_gquot_poly_map_lem _) @ _).
+        apply maponpaths.
+        refine (_ @ !(pathscomp0lid _)).
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          refine (path_assoc
+                    (maponpaths
+                       (gquot_prod gquot_poly gquot_poly)
+                       (maponpaths
+                          (λ z,
+                           prod_gquot_comp
+                             z
+                             (gcl
+                                (poly_act_groupoid Q (make_groupoid_algebra_carrier R))
+                                (pr2 x)))
+                          (poly_gquot_poly_map _)
+                        @ maponpaths
+                            (prod_gquot_comp
+                               (poly_gquot
+                                  P
+                                  (make_groupoid_algebra_carrier R)
+                                  (poly_map
+                                     P
+                                     (gcl (make_groupoid_algebra_carrier R))
+                                     (pr1 x))))
+                            (poly_gquot_poly_map _)))
+                    (gquot_poly_pair
+                       P Q
+                       (poly_gquot
+                          P
+                          (make_groupoid_algebra_carrier R)
+                          (poly_map
+                             P
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr1 x)))
+                       (poly_gquot
+                          Q
+                          (make_groupoid_algebra_carrier R)
+                          (poly_map
+                             Q
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr2 x))))
+                    (pathsdirprod
+                       (gquot_poly_poly_gquot
+                          (poly_map
+                             P
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr1 x)))
+                       (gquot_poly_poly_gquot
+                          (poly_map
+                             Q
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr2 x)))) @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            apply maponpathscomp0.
+          }
+          refine (!(path_assoc _ _ _) @ _).
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths_2.
+              apply maponpathscomp.
+            }
+            unfold funcomp.
+            exact (homotsec_natural'
+                     (gquot_poly_pair
+                        P Q
+                        (poly_gquot
+                           P
+                           (make_groupoid_algebra_carrier R)
+                           (poly_map P (gcl (make_groupoid_algebra_carrier R)) (pr1 x))))
+                     (poly_gquot_poly_map _)).
+          }
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (maponpathscomp
+                     (λ z, prod_gquot_comp z _)
+                     (gquot_prod gquot_poly gquot_poly)
+                     (poly_gquot_poly_map _)).
+          }
+          unfold funcomp.
+          exact (homotsec_natural'
+                   (λ z,
+                    gquot_poly_pair
+                      P Q
+                      z
+                      (gcl (poly_act_groupoid Q (make_groupoid_algebra_carrier R)) (pr2 x)))
+                   (poly_gquot_poly_map _)).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          do 2 refine (!(path_assoc _ _ _) @ _).
+          refine (pathscomp0lid _ @ _).
+          refine (path_assoc _ _ _ @ _).
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              apply maponpaths_2.
+              etrans.
+              {
+                refine (!_).
+                apply (maponpathscomp
+                         gquot_poly
+                         (λ z, z ,, gquot_poly
+                                 (gcl (poly_act_groupoid Q (make_groupoid_algebra_carrier R))
+                                      (pr2 x)))).
+              }
+              apply maponpaths_make_dirprod_right.
+            }
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                refine (!_).
+                apply (maponpathscomp
+                         gquot_poly
+                         (λ z, gquot_poly
+                                 (poly_gquot
+                                    P (make_groupoid_algebra_carrier R)
+                                    (poly_map
+                                       P
+                                       (gcl (make_groupoid_algebra_carrier R))
+                                       (pr1 x)))
+                               ,, z)).
+              }
+              apply maponpaths_make_dirprod_left.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply pathsdirprod_concat.
+        }
+        refine (maponpaths_pr1_pathsdirprod _ _ @ _).
+        refine (!(path_assoc _ _ _) @ _).
+        apply idpath.
+      - refine (!(poly_gquot_poly_map_lem _) @ _).
+        apply maponpaths.
+        refine (_ @ !(pathscomp0lid _)).
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          refine (path_assoc
+                    (maponpaths
+                       (gquot_prod gquot_poly gquot_poly)
+                       (maponpaths
+                          (λ z,
+                           prod_gquot_comp
+                             z
+                             (gcl
+                                (poly_act_groupoid Q (make_groupoid_algebra_carrier R))
+                                (pr2 x)))
+                          (poly_gquot_poly_map _)
+                        @ maponpaths
+                            (prod_gquot_comp
+                               (poly_gquot
+                                  P
+                                  (make_groupoid_algebra_carrier R)
+                                  (poly_map
+                                     P
+                                     (gcl (make_groupoid_algebra_carrier R))
+                                     (pr1 x))))
+                            (poly_gquot_poly_map _)))
+                    (gquot_poly_pair
+                       P Q
+                       (poly_gquot
+                          P
+                          (make_groupoid_algebra_carrier R)
+                          (poly_map
+                             P
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr1 x)))
+                       (poly_gquot
+                          Q
+                          (make_groupoid_algebra_carrier R)
+                          (poly_map
+                             Q
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr2 x))))
+                    (pathsdirprod
+                       (gquot_poly_poly_gquot
+                          (poly_map
+                             P
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr1 x)))
+                       (gquot_poly_poly_gquot
+                          (poly_map
+                             Q
+                             (gcl (make_groupoid_algebra_carrier R))
+                             (pr2 x)))) @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            apply maponpathscomp0.
+          }
+          refine (!(path_assoc _ _ _) @ _).
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths_2.
+              apply maponpathscomp.
+            }
+            unfold funcomp.
+            exact (homotsec_natural'
+                     (gquot_poly_pair
+                        P Q
+                        (poly_gquot
+                           P
+                           (make_groupoid_algebra_carrier R)
+                           (poly_map P (gcl (make_groupoid_algebra_carrier R)) (pr1 x))))
+                     (poly_gquot_poly_map _)).
+          }
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (maponpathscomp
+                     (λ z, prod_gquot_comp z _)
+                     (gquot_prod gquot_poly gquot_poly)
+                     (poly_gquot_poly_map _)).
+          }
+          unfold funcomp.
+          exact (homotsec_natural'
+                   (λ z,
+                    gquot_poly_pair
+                      P Q
+                      z
+                      (gcl (poly_act_groupoid Q (make_groupoid_algebra_carrier R)) (pr2 x)))
+                   (poly_gquot_poly_map _)).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          do 2 refine (!(path_assoc _ _ _) @ _).
+          refine (pathscomp0lid _ @ _).
+          refine (path_assoc _ _ _ @ _).
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              apply maponpaths_2.
+              etrans.
+              {
+                refine (!_).
+                apply (maponpathscomp
+                         gquot_poly
+                         (λ z, z ,, gquot_poly
+                                 (gcl (poly_act_groupoid Q (make_groupoid_algebra_carrier R))
+                                      (pr2 x)))).
+              }
+              apply maponpaths_make_dirprod_right.
+            }
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                refine (!_).
+                apply (maponpathscomp
+                         gquot_poly
+                         (λ z, gquot_poly
+                                 (poly_gquot
+                                    P (make_groupoid_algebra_carrier R)
+                                    (poly_map
+                                       P
+                                       (gcl (make_groupoid_algebra_carrier R))
+                                       (pr1 x)))
+                               ,, z)).
+              }
+              apply maponpaths_make_dirprod_left.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply pathsdirprod_concat.
+        }
+        refine (maponpaths_pr2_pathsdirprod _ _ @ _).
+        refine (!(path_assoc _ _ _) @ _).
+        apply idpath.
       - simpl.
         refine (paths_pathsdirprod (IHe₁ _) (IHe₂ _) @ _).
         refine (!(pathsdirprod_concat _ _ _ _) @ _).
