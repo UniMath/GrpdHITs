@@ -44,6 +44,7 @@ Require Import hit_biadjunction.gquot_natural.
 Require Import hit_biadjunction.hit_algebra_biadj.lift_gquot.
 Require Import hit_biadjunction.hit_path_algebra_biadj.lift_gquot.
 Require Import hit_biadjunction.hit_path_algebra_biadj.counit.
+Require Import hit_biadjunction.hit_path_algebra_biadj.unit.
 Require Import hit_biadjunction.hit_algebra_biadj.lift_path_groupoid.
 Require Import hit_biadjunction.hit_algebra_biadj.
 
@@ -417,14 +418,15 @@ Section CongruenceRelation.
       := gcl (make_groupoid_algebra_carrier R).
 
     Definition congruence_gcl_preserves_point
-      : preserves_point congruence_gcl_map.
-    Proof.
-      intro x.
-      exact (maponpaths
-               (gquot_functor_map
-                  (make_groupoid_algebra_operations R))
-               (@poly_gquot_poly_map (point_constr Σ) (alg_carrier_grpd (make_groupoid_algebra R)) x)).
-    Defined.
+      : preserves_point congruence_gcl_map
+      := λ x,
+         maponpaths
+           (gquot_functor_map
+              (make_groupoid_algebra_operations R))
+           (@poly_gquot_poly_map
+              _
+              (alg_carrier_grpd (make_groupoid_algebra R))
+              x).
 
     Definition congruence_gcl_prealg
       : pr11 X --> pr11 (quotient_of_congruence R).
@@ -434,49 +436,170 @@ Section CongruenceRelation.
       - exact congruence_gcl_preserves_point.
     Defined.
 
+    Definition lem
+               {P Q : poly_code}
+               (e : endpoint (point_constr Σ) P Q)
+               (x : poly_act P (alg_carrier X))
+      : sem_endpoint_UU_natural e congruence_gcl_preserves_point x
+        =
+        @poly_map_gcl_is_gquot_poly
+          Q
+          (make_groupoid_algebra_carrier R)
+          (sem_endpoint_UU e prealg_constr x)
+        @ !(gquot_endpoint_help
+              e
+              (gcl (poly_act_groupoid P (pr1 (make_groupoid_prealgebra R))) x))
+        @ maponpaths
+            _
+            (maponpaths
+               gquot_poly
+               (poly_gquot_poly_map _)
+             @ gquot_poly_poly_gquot
+                 (poly_map P (gcl (make_groupoid_algebra_carrier R)) x)).
+    Proof.
+      induction e as [P | P Q Q' e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q
+                      | P Q Q' e₁ IHe₁ e₂ IHe₂
+                      | P T t | Z₁ Z₂ g | ].
+      - simpl.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpathsidfun.
+        }
+        apply TODO.
+      - apply TODO.
+      - simpl.
+        refine (!_).
+        refine (!(maponpathscomp0 inl _ _) @ _ @ maponpaths_idpath).
+        apply maponpaths.
+        apply TODO.
+      - simpl.
+        refine (!_).
+        refine (!(maponpathscomp0 inr _ _) @ _ @ maponpaths_idpath).
+        apply maponpaths.
+        apply TODO.
+      - apply TODO.
+      - apply TODO.
+      - simpl.
+        refine (paths_pathsdirprod (IHe₁ _) (IHe₂ _) @ _).
+        refine (!(pathsdirprod_concat _ _ _ _) @ _).
+        apply maponpaths.
+        refine (!(pathsdirprod_concat _ _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!_).
+          apply pathsdirprod_inv.
+        }
+        apply maponpaths.
+        refine (!_).
+        apply maponpaths_prod_path.
+      - simpl.
+        refine (!_).
+        apply maponpaths_for_constant_function.
+      - apply idpath.
+      - apply TODO.
+    Qed.        
+
+    Definition gcl_sem_endpoint_UU_natural
+               {P : poly_code}
+               (e : endpoint (point_constr Σ) P I)
+               (x : poly_act P (alg_carrier X))
+      : sem_endpoint_UU_natural e congruence_gcl_preserves_point x
+        =
+        maponpaths
+          gquot_poly
+          (maponpaths
+             (gquot_functor_map (sem_endpoint_grpd e (make_groupoid_prealgebra R)))
+             (@poly_gquot_poly_map P (make_groupoid_algebra_carrier R) x))
+        @ !(@gquot_endpoint
+              _ _ _
+              e
+              (make_groupoid_prealgebra R)
+              (poly_map P (gcl (make_groupoid_algebra_carrier R)) x)).
+    Proof.
+      unfold gquot_endpoint.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathscomp_inv.
+      }
+      refine (path_assoc _ _ _ @ _).
+      use path_inv_rotate_lr.
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (maponpathscomp
+                   (gquot_functor_map
+                      (sem_endpoint_grpd e (make_groupoid_prealgebra R)))
+                   gquot_poly
+                   (poly_gquot_poly_map _)).
+        }
+        unfold funcomp.
+        exact (@homotsec_natural'
+                 _ _ _ _
+                 (invhomot (@gquot_endpoint_help _ _ _ e (make_groupoid_prealgebra R)))
+                 _ _
+                 (@poly_gquot_poly_map P (make_groupoid_algebra_carrier R) x)).
+      }
+      unfold invhomot.
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply maponpathscomp.
+      }
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        apply maponpathsinv0.
+      }
+      use path_inv_rotate_lr.
+      refine (!_).
+      refine (!(path_assoc _ _ _) @ _).
+      etrans.
+      {
+        apply maponpaths.
+        refine (!_).
+        apply maponpathscomp0.
+      }
+      refine (!_).
+      exact (lem e x).
+    Qed.
+
+    Definition maponpaths_gcl_eq_to_cong_rel
+               {x₁ x₂ : alg_carrier X}
+               (p : x₁ = x₂)
+      : gcleq
+          (make_groupoid_algebra_carrier R)
+          (eq_to_cong_rel R p)
+        =
+        maponpaths
+          (gcl (make_groupoid_algebra_carrier R))
+          p.
+    Proof.
+      induction p ; simpl.
+      apply ge.
+    Qed.
+    
     Definition congruence_gcl_preserves_path
       : preserves_path _ (prealg_map_commute congruence_gcl_prealg).
     Proof.
       intros i x.
       cbn.
-
       unfold lift_gquot_add2cell_obj, congruence_gcl_map.
-
-
-      assert (sem_endpoint_UU_natural (path_right Σ i) congruence_gcl_preserves_point x
-              =
-              maponpaths
-                _
-                (maponpaths
-                   _
-                   (@poly_gquot_poly_map (path_source Σ i) (make_groupoid_algebra_carrier R) x))
-                @ !(@gquot_endpoint
-                      _ _ _
-                      (path_right Σ i)
-                      (make_groupoid_prealgebra R)
-                      (poly_map (path_source Σ i) (gcl (make_groupoid_algebra_carrier R)) x))).
-      {
-        apply TODO.
-      }
-      assert (sem_endpoint_UU_natural (path_left Σ i) congruence_gcl_preserves_point x
-              =
-              maponpaths
-                _
-                (maponpaths
-                   _
-                   (@poly_gquot_poly_map (path_source Σ i) (make_groupoid_algebra_carrier R) x))
-                @ !(@gquot_endpoint
-                      _ _ _
-                      (path_left Σ i)
-                      (make_groupoid_prealgebra R)
-                      (poly_map (path_source Σ i) (gcl (make_groupoid_algebra_carrier R)) x))).
-      {
-        apply TODO.
-      }
       etrans.
       {
         apply maponpaths.
-        exact X0.
+        pose (gcl_sem_endpoint_UU_natural (path_right Σ i) x) as p.
+        refine (p @ _).
+        apply pathscomp0lid.
       }
       refine (path_assoc _ _ _ @ _).
       do 2 refine (_ @ !(path_assoc _ _ _)).
@@ -488,7 +611,9 @@ Section CongruenceRelation.
         etrans.
         {
           apply maponpaths_2.
-          exact X1.
+          pose (gcl_sem_endpoint_UU_natural (path_left Σ i) x) as p.
+          refine (p @ _).
+          apply pathscomp0lid.
         }
         refine (!(path_assoc _ _ _) @ _).
         etrans.
@@ -498,14 +623,16 @@ Section CongruenceRelation.
         }
         apply pathscomp0rid.
       }
-      clear X0 X1.
       etrans.
       {
         refine (!_).
         exact (maponpathscomp0
                  gquot_poly
                  (maponpaths
-                    (gquot_functor_map (sem_endpoint_grpd (path_left Σ i) (make_groupoid_prealgebra R)))
+                    (gquot_functor_map
+                       (sem_endpoint_grpd
+                          (path_left Σ i)
+                          (make_groupoid_prealgebra R)))
                     (poly_gquot_poly_map _))
                  _).
       }
@@ -519,7 +646,9 @@ Section CongruenceRelation.
       {
         exact (maponpathscomp0
                  (gquot_id _)
-                 (gcleq (poly_act_groupoid I (make_groupoid_algebra_carrier R)) (make_groupoid_path_algebra_nat_trans_data R i x))
+                 (gcleq
+                    (poly_act_groupoid I (make_groupoid_algebra_carrier R))
+                    (make_groupoid_path_algebra_nat_trans_data R i x))
                  _).
       }
       apply maponpaths_2.
@@ -527,9 +656,7 @@ Section CongruenceRelation.
       {
         apply gquot_rec_beta_gcleq.
       }
-      unfold make_groupoid_path_algebra_nat_trans_data.
-      unfold alg_path.
-      apply TODO.
+      apply maponpaths_gcl_eq_to_cong_rel.
     Qed.
         
     Definition congruence_gcl
