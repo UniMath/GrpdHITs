@@ -529,7 +529,34 @@ Section CongruenceRelation.
       - exact make_groupoid_algebra_operations.
     Defined.
   End MakeGroupoidPrealgebraFromCongruence.
-    
+
+  Section ProjectionsNatTrans.
+    Variable (R : congruence_relation).
+
+    Definition cong_rel_nat 
+               (j : path_label Σ)
+               (x y : poly_act (path_source Σ j) (alg_carrier X))
+               (f : poly_act_rel (path_source Σ j) (cong_rel_carrier R) x y)
+      : cong_rel_comp
+          R
+          (sem_endpoint_grpd_data_functor_morphism
+             (path_left Σ j)
+             (make_groupoid_algebra_operations R)
+             f)
+          (eq_to_cong_rel R (alg_path X j y))
+        = cong_rel_comp
+            R
+            (eq_to_cong_rel R (alg_path X j x))
+            (sem_endpoint_grpd_data_functor_morphism
+               (path_right Σ j)
+               (make_groupoid_algebra_operations R)
+               f).
+    Proof.
+      apply TODO.
+    Qed.
+
+    End ProjectionsNatTrans.
+
   Section MakeGroupoidPathalgebraFromCongruence.
     Variable (R : congruence_relation).
   
@@ -554,10 +581,7 @@ Section CongruenceRelation.
           _ _
           (make_groupoid_path_algebra_nat_trans_data j).
     Proof.
-      intros x y f.
-      simpl ; cbn ; cbn in x, y, f
-      ; unfold make_groupoid_path_algebra_nat_trans_data.
-      apply TODO.
+      exact (cong_rel_nat R j).
     Qed.
 
     Definition make_groupoid_path_algebra_path
@@ -584,21 +608,44 @@ Section CongruenceRelation.
     Defined.
   End MakeGroupoidPathalgebraFromCongruence.
 
+  Section ProjectionsIsAlgebra.
+    Variable (R : congruence_relation).
+
+    Definition cong_rel_is_alg_homot
+               (j : homot_label Σ)
+               (x : poly_act (homot_point_arg Σ j) (pr111 (make_groupoid_path_algebra R)))
+               (p : poly_act_rel
+                      (homot_path_arg_target Σ j)
+                      (cong_rel_carrier R)
+                      (sem_endpoint_UU
+                         (homot_path_arg_left Σ j)
+                         (alg_constr X)
+                         x)
+                      (sem_endpoint_UU
+                         (homot_path_arg_right Σ j)
+                         (alg_constr X)
+                         x))
+      : sem_homot_endpoint_grpd
+          (homot_left_path Σ j)
+          (make_groupoid_prealgebra R)
+          (make_groupoid_path_algebra_path R) x p
+        =
+        sem_homot_endpoint_grpd
+          (homot_right_path Σ j)
+          (make_groupoid_prealgebra R)
+          (make_groupoid_path_algebra_path R) x p.
+    Proof.
+      apply TODO.
+    Qed.
+  End ProjectionsIsAlgebra.
+  
   Section MakeGroupoidAlgebraFromCongruence.
     Variable (R : congruence_relation).
 
     Definition make_groupoid_algebra_is_hit_algebra
       : is_hit_algebra_grpd Σ (make_groupoid_path_algebra R).
     Proof.
-      intros j x p.
-      cbn in p.
-      pose (alg_homot X j x) as q.
-      cbn.
-      cbn in q.
-      unfold sem_homot_endpoint_one_types in q.
-      unfold poly_act_morphism in p.
-      cbn in p.
-      apply TODO.
+      exact (cong_rel_is_alg_homot R).
     Qed.
     
     Definition make_groupoid_algebra
