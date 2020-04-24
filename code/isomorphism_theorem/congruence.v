@@ -47,6 +47,7 @@ Require Import hit_biadjunction.hit_path_algebra_biadj.counit.
 Require Import hit_biadjunction.hit_path_algebra_biadj.unit.
 Require Import hit_biadjunction.hit_algebra_biadj.lift_path_groupoid.
 Require Import hit_biadjunction.hit_algebra_biadj.
+Require Import existence.initial_algebra.
 
 Local Open Scope cat.
 
@@ -73,15 +74,89 @@ Proof.
   - induction x as [x | x].
     + exact (maponpaths gquot_inl_grpd (IHP₁ x)).
     + exact (maponpaths gquot_inr_grpd (IHP₂ x)).
-  - apply TODO.
+  - exact (maponpaths
+             (λ z, prod_gquot_comp z _)
+             (IHP₁ _)
+           @ maponpaths
+               (prod_gquot_comp _)
+               (IHP₂ _)).
 Defined.
 
+Definition poly_gquot_poly_map_lem
+           {P : poly_code}
+           {G : groupoid}
+           (x : poly_act P G)
+  : poly_map_gcl_is_gquot_poly x
+    @ maponpaths gquot_poly (poly_gquot_poly_map x)
+    @ gquot_poly_poly_gquot _
+    =
+    idpath _.
+Proof.
+  induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+  - apply idpath.
+  - apply idpath.
+  - induction x as [x | x].
+    + simpl.
+      refine (_ @ maponpaths_idpath).
+      refine (_ @ maponpaths (maponpaths inl) (IHP₁ x)).
+      refine (!_).
+      refine (maponpathscomp0 _ _ _ @ _).
+      apply maponpaths.
+      refine (maponpathscomp0 _ _ _ @ _).
+      refine (_ @ !(path_assoc _ _ _)).
+      apply maponpaths_2.
+      apply TODO.
+    + apply TODO.
+  - simpl.
+    apply TODO.
+Qed.
 
+    
 Section CongruenceRelation.
   Context {Σ : hit_signature}
           (X : hit_algebra_one_types Σ).
 
   (** Definition of congruence relation *)
+  Definition congruence_relation_groupoid
+    : UU
+    := ∑ (R : alg_carrier X → alg_carrier X → hSet), 
+       ∑ (R_id : ∏ x : alg_carrier X, R x x), 
+       ∑ (R_inv : ∏ x y : alg_carrier X, R x y → R y x), 
+       ∑ (R_comp : ∏ x y z : alg_carrier X, R x y → R y z → R x z), 
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp x x y (R_id x) r = r)
+       × 
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp x y y r (R_id y) = r)
+       ×
+       (∏ x y z w : alg_carrier X, ∏ r1 : R x y, ∏ r2 : R y z, ∏ r3 : R z w,
+          R_comp x y w r1 (R_comp y z w r2 r3) = R_comp x z w (R_comp x y z r1 r2) r3)
+       ×
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp y x y (R_inv x y r) r = R_id y)
+       ×
+       (∏ x y : alg_carrier X, ∏ r : R x y,
+          R_comp x y x r (R_inv x y r) = R_id x).
+
+  Definition congrurence_relation_ops (Rg : congruence_relation_groupoid)
+    : UU
+    := ∑ (R_ops : ∏ x y : poly_act (point_constr Σ) (alg_carrier X),
+            poly_act_rel (point_constr Σ) (pr1 Rg) x y →
+            pr1 Rg (alg_constr X x) (alg_constr X y)), 
+       (∏ x : poly_act (point_constr Σ) (alg_carrier X),
+          R_ops x x (poly_act_rel_identity _ _ (pr12 Rg) x)
+          =
+          pr12 Rg (alg_constr X x))
+        × 
+       (∏ x y z : poly_act (point_constr Σ) (alg_carrier X),
+          ∏ (r1 : poly_act_rel (point_constr Σ) (pr1 Rg) x y),
+          ∏ (r2 : poly_act_rel (point_constr Σ) (pr1 Rg) y z),
+          R_ops x z
+               (poly_act_rel_comp (point_constr Σ) _ (pr1 (pr222 Rg)) r1 r2)
+          =
+          pr1 (pr222 Rg) (alg_constr X x) (alg_constr X y) (alg_constr X z)
+              (R_ops x y r1) (R_ops y z r2)).
+  
   Definition congruence_relation
     : UU.
   Proof.
@@ -436,7 +511,7 @@ Section CongruenceRelation.
       - exact congruence_gcl_preserves_point.
     Defined.
 
-    Definition lem
+    Definition gcl_sem_endpoint_UU_natural_lem
                {P Q : poly_code}
                (e : endpoint (point_constr Σ) P Q)
                (x : poly_act P (alg_carrier X))
@@ -468,18 +543,79 @@ Section CongruenceRelation.
           apply maponpaths.
           apply maponpathsidfun.
         }
-        apply TODO.
-      - apply TODO.
+        exact (@poly_gquot_poly_map_lem P (make_groupoid_algebra_carrier R) x).
+      - simpl.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply IHe₂.
+        }
+        clear IHe₂.
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths_2.
+          apply pathscomp_inv.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          exact (!(maponpathsinv0 _ _)).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          refine (!_).
+          apply (maponpathscomp
+                   (sem_endpoint_UU e₁ _)
+                   (sem_endpoint_UU e₂ _)).
+        }
+        refine (!(maponpathscomp0 (sem_endpoint_UU e₂ _) _ _) @ _).
+        refine (_ @ maponpathscomp0 (sem_endpoint_UU e₂ _) _ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          apply IHe₁.
+        }
+        clear IHe₁.
+        do 2 refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        refine (_ @ pathscomp0lid _).
+        apply maponpaths_2.
+        refine (!(path_assoc _ _ _) @ _).
+        pose (maponpaths
+                (λ z, !(poly_map_gcl_is_gquot_poly _) @ z)
+                (@poly_gquot_poly_map_lem
+                   Q
+                   (make_groupoid_algebra_carrier R)
+                   (sem_endpoint_UU e₁ prealg_constr x))).
+        simpl in p.
+        rewrite !path_assoc, pathsinv0l, pathscomp0rid in p.
+        simpl in p.
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          exact p.
+        }
+        apply pathsinv0l.
       - simpl.
         refine (!_).
         refine (!(maponpathscomp0 inl _ _) @ _ @ maponpaths_idpath).
         apply maponpaths.
-        apply TODO.
+        exact (@poly_gquot_poly_map_lem P (make_groupoid_algebra_carrier R) x).
       - simpl.
         refine (!_).
         refine (!(maponpathscomp0 inr _ _) @ _ @ maponpaths_idpath).
         apply maponpaths.
-        apply TODO.
+        exact (@poly_gquot_poly_map_lem Q (make_groupoid_algebra_carrier R) x).
       - apply TODO.
       - apply TODO.
       - simpl.
@@ -500,7 +636,64 @@ Section CongruenceRelation.
         refine (!_).
         apply maponpaths_for_constant_function.
       - apply idpath.
-      - apply TODO.
+      - simpl ; unfold congruence_gcl_preserves_point.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (!(maponpathsinv0
+                       (gquot_functor_map (make_groupoid_algebra_operations R))
+                       (poly_gquot_gquot_poly_comp (point_constr Σ) _))).
+          }
+          etrans.
+          {
+            apply maponpaths.
+            refine (!_).
+            apply (maponpathscomp
+                     (poly_gquot (point_constr Σ) (make_groupoid_algebra_carrier R))
+                     (gquot_functor_map (make_groupoid_algebra_operations R))).
+          }
+          exact (!(maponpathscomp0
+                     (gquot_functor_map (make_groupoid_algebra_operations R))
+                     (!(poly_gquot_gquot_poly_comp (point_constr Σ) _))
+                     _)).
+        }
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpathscomp0.
+        }
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths.
+            apply maponpathscomp.
+          }
+          etrans.
+          {
+            refine (!_).
+            exact (maponpaths_homotsec
+                     (invhomot (poly_gquot_gquot_poly))
+                     (poly_gquot_poly_map _)).
+          }
+          unfold invhomot.
+          apply maponpaths_2.
+          apply maponpathsidfun.
+        }
+        refine (!(path_assoc _ _ _) @ _ @ pathscomp0rid _).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          apply maponpaths_gquot_poly_poly_gquot.
+        }
+        apply pathsinv0l.
     Qed.        
 
     Definition gcl_sem_endpoint_UU_natural
@@ -570,7 +763,7 @@ Section CongruenceRelation.
         apply maponpathscomp0.
       }
       refine (!_).
-      exact (lem e x).
+      exact (gcl_sem_endpoint_UU_natural_lem e x).
     Qed.
 
     Definition maponpaths_gcl_eq_to_cong_rel
