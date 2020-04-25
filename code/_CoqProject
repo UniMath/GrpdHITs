@@ -113,3 +113,4 @@ isomorphism_theorem/congruence_relation.v
 isomorphism_theorem/image.v
 isomorphism_theorem/gcl_homomorphism.v
 isomorphism_theorem/congruence_mapping.v
+isomorphism_theorem/isomorphism_theorem.v
