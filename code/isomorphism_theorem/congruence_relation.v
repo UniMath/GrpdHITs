@@ -51,9 +51,6 @@ Require Import existence.initial_algebra.
 
 Local Open Scope cat.
 
-Definition TODO {A : UU} : A.
-Admitted.
-    
 Section CongruenceRelation.
   Context {Σ : hit_signature}
           {X : hit_algebra_one_types Σ}.
@@ -80,6 +77,35 @@ Section CongruenceRelation.
        (∏ x y : alg_carrier X, ∏ r : R x y,
           R_comp x y x r (R_inv x y r) = R_id x).
 
+  Definition make_congruence_relation_groupoid
+             (R : alg_carrier X → alg_carrier X → UU)
+             (Risaset : ∏ (x y : alg_carrier X), isaset (R x y))
+             (R_id : ∏ (x : alg_carrier X), R x x) 
+             (R_inv : ∏ (x y : alg_carrier X), R x y → R y x)
+             (R_comp : ∏ (x y z : alg_carrier X), R x y → R y z → R x z)
+             (R_idl : ∏ (x y : alg_carrier X) (r : R x y),
+                      R_comp x x y (R_id x) r = r)
+             (R_idr : ∏ (x y : alg_carrier X) (r : R x y),
+                      R_comp x y y r (R_id y) = r)
+             (R_assoc : ∏ (x y z w : alg_carrier X)
+                          (r1 : R x y) (r2 : R y z) (r3 : R z w),
+                        R_comp x y w r1 (R_comp y z w r2 r3)
+                        =
+                        R_comp x z w (R_comp x y z r1 r2) r3)
+             (R_invl : ∏ (x y : alg_carrier X) (r : R x y),
+                       R_comp y x y (R_inv x y r) r = R_id y)
+             (R_invr : ∏ (x y : alg_carrier X) (r : R x y),
+                       R_comp x y x r (R_inv x y r) = R_id x)
+    : congruence_relation_groupoid
+    := (λ x y, make_hSet (R x y) (Risaset x y))
+       ,, R_id
+       ,, R_inv
+       ,, R_comp
+       ,, R_idl
+       ,, R_idr
+       ,, R_assoc
+       ,, R_invl
+       ,, R_invr.
   
   (** Projections *)
   Section ProjectionsCarrier.
@@ -234,7 +260,7 @@ Section CongruenceRelation.
     : UU
     := ∑ (R_ops : ∏ x y : poly_act (point_constr Σ) (alg_carrier X),
             poly_act_rel (point_constr Σ) (pr1 R) x y →
-            pr1 R (alg_constr X x) (alg_constr X y)), 
+            cong_rel_carrier R (alg_constr X x) (alg_constr X y)), 
        (∏ x : poly_act (point_constr Σ) (alg_carrier X),
           R_ops x x (poly_act_rel_identity _ _ (pr12 R) x)
           =
@@ -254,6 +280,29 @@ Section CongruenceRelation.
     := ∑ (R : congruence_relation_groupoid),
        is_congruence_relation_ops R.
 
+  Definition make_congruence_relation_ops
+             (R : congruence_relation_groupoid)
+             (R_ops : ∏ (x y : poly_act (point_constr Σ) (alg_carrier X)),
+                      poly_act_rel (point_constr Σ) (pr1 R) x y
+                      →
+                      cong_rel_carrier R (alg_constr X x) (alg_constr X y))
+             (R_opsid : ∏ (x : poly_act (point_constr Σ) (alg_carrier X)),
+                        R_ops x x (poly_act_rel_identity _ _ (pr12 R) x)
+                        =
+                        pr12 R (alg_constr X x))
+             (R_opscomp : (∏ (x y z : poly_act (point_constr Σ) (alg_carrier X))
+                             (r1 : poly_act_rel (point_constr Σ) (pr1 R) x y)
+                             (r2 : poly_act_rel (point_constr Σ) (pr1 R) y z),
+                           R_ops
+                             x z
+                             (poly_act_rel_comp (point_constr Σ) _ (pr1 (pr222 R)) r1 r2)
+                           =
+                           pr1 (pr222 R)
+                               (alg_constr X x) (alg_constr X y) (alg_constr X z)
+                               (R_ops x y r1) (R_ops y z r2)))
+    : congruence_relation_ops
+    := (R ,, R_ops ,, R_opsid ,, R_opscomp).
+             
   Definition congruence_relation_ops_to_congruence_relation_groupoid
     : congruence_relation_ops → congruence_relation_groupoid
     := λ z, pr1 z.
@@ -363,6 +412,12 @@ Section CongruenceRelation.
     : UU
     := ∑ (R : congruence_relation_ops),
        is_congruence_relation_nat R.
+
+  Definition make_congruence_relation_nat
+             (R : congruence_relation_ops)
+             (R_nat :  is_congruence_relation_nat R)
+    : congruence_relation_nat
+    := R ,, R_nat.
 
   Definition congruence_relation_nat_to_congruence_relation_ops
     : congruence_relation_nat → congruence_relation_ops
@@ -478,6 +533,12 @@ Section CongruenceRelation.
     : UU
     := ∑ (R : congruence_relation_nat),
        is_congruence_relation R.
+
+  Definition make_congruence_relation
+             (R : congruence_relation_nat)
+             (HR : is_congruence_relation R)
+    : congruence_relation
+    := R ,, HR.
 
   Definition congruence_relation_to_congruence_relation_nat
     : congruence_relation → congruence_relation_nat

@@ -107,6 +107,8 @@ free_alg_biadj/free_alg_left_triangle.v
 free_alg_biadj/free_alg_right_triangle.v
 free_alg_biadj/free_alg_biadjunction.v
 
+algebra/one_types_adjoint_equivalence.v
+
 isomorphism_theorem/congruence_relation.v
 isomorphism_theorem/image.v
 isomorphism_theorem/gcl_homomorphism.v
