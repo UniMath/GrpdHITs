@@ -46,15 +46,13 @@ Require Import algebra.one_types_homotopies.
 Require Import algebra.one_types_adjoint_equivalence.
 Require Import displayed_algebras.globe_over_lem.
 Require Import displayed_algebras.constant_display.
+Require Import displayed_algebras.total_algebra.
 Require Import existence.initial_algebra.
 Require Import isomorphism_theorem.congruence_relation.
 Require Import isomorphism_theorem.congruence_mapping.
 Require Import isomorphism_theorem.image.
 
 Local Open Scope cat.
-
-Definition TODO {A : UU} : A.
-Admitted.
 
 Definition poly_act_rel_to_eq
            {P : poly_code}
@@ -1314,43 +1312,596 @@ Section FirstIsomorphismTheorem.
   (**
      Step 2: Define a map from the quotient to `im f`.
    *)
+  Definition map_gquot_to_image_on_path
+             {a b : alg_carrier X}
+             (p : alg_map_carrier f a = alg_map_carrier f b)
+    : image_inj_comp f a = image_inj_comp f b.
+  Proof.
+    use PathOverToTotalPath'.
+    - exact p.
+    - abstract
+        (simpl ;
+         apply PathOver_path_hprop ;
+         intro ;
+         apply ishinh).
+  Defined.
+
+  Definition map_gquot_to_image_on_identity
+             (a : alg_carrier X)
+    : map_gquot_to_image_on_path (cong_rel_id congruence_relation_for_image a)
+      =
+      idpath _.
+  Proof.
+    refine (_ @ !(PathOverToTotalPath'_eta _)).
+    use globe_over_to_homot.
+    - apply idpath.
+    - apply path_globe_over_hset.
+      intro.
+      apply isasetaprop.
+      apply ishinh.
+  Qed.
+
+  Definition map_gquot_to_image_on_concat
+             {a₁ a₂ a₃ : alg_carrier X}
+             (g₁ : alg_map_carrier f a₁ = alg_map_carrier f a₂)
+             (g₂ : alg_map_carrier f a₂ = alg_map_carrier f a₃)
+    : map_gquot_to_image_on_path
+        (cong_rel_comp congruence_relation_groupoid_for_image g₁ g₂)
+      =
+      map_gquot_to_image_on_path g₁ @ map_gquot_to_image_on_path g₂.
+  Proof.
+    refine (_ @ !(PathOverToTotalPath'_comp _ _)).
+    refine (_ @ !(PathOverToTotalPath'_eta _)).
+    use globe_over_to_homot.
+    - unfold globe.
+      unfold cong_rel_comp.
+      simpl.
+      refine (!_).
+      apply (@maponpaths_pr1_PathOverToTotalPath' _ _ (_ ,, _) (_ ,, _)).
+    - apply path_globe_over_hset.
+      intro.
+      apply isasetaprop.
+      apply ishinh.
+  Qed.
+
+  Definition map_gquot_to_image_on_commute_lem
+             {P : poly_code}
+             {x y : poly_act P (alg_carrier X)}
+             (p : poly_act_rel
+                    P
+                    (λ z₁ z₂, alg_map_carrier f z₁ = alg_map_carrier f z₂)
+                    x y)
+    : !(poly_comp P (image_inj_comp f) pr1 x)
+      @ maponpaths (poly_pr1 P) (poly_rel_to_eq_fun (@map_gquot_to_image_on_path) p)
+      =
+      poly_act_rel_to_eq (alg_map_carrier f) p
+      @ !(poly_comp P (image_inj_comp f) pr1 y).
+  Proof.
+    induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+    - refine (_ @ !(pathscomp0rid _)).
+      apply maponpathsidfun.
+    - refine (_ @ !(pathscomp0rid _)).
+      unfold map_gquot_to_image_on_path.
+      apply (@maponpaths_pr1_PathOverToTotalPath' _ _ (_ ,, _) (_ ,, _)).
+    - induction x as [x | x], y as [y | y].
+      + etrans.
+        {
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (!(maponpathsinv0 inl (poly_comp P₁ (image_inj_comp f) pr1 x))).
+          }
+          etrans.
+          {
+            apply maponpaths.
+            refine (maponpathscomp
+                      inl
+                      (coprodf (poly_pr1 P₁) (poly_pr1 P₂))
+                      _
+                    @ _).
+            exact (!(maponpathscomp (poly_pr1 P₁) inl _)).
+          }
+          exact (!(maponpathscomp0 inl _ _)).
+        }
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0 inl _)).
+          }
+          exact (!(maponpathscomp0 inl _ _)).
+        }
+        apply maponpaths.
+        exact (!(IHP₁ _ _ _)).
+      + induction p.
+      + induction p.
+      + etrans.
+        {
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (!(maponpathsinv0 inr (poly_comp P₂ (image_inj_comp f) pr1 x))).
+          }
+          etrans.
+          {
+            apply maponpaths.
+            refine (maponpathscomp
+                      inr
+                      (coprodf (poly_pr1 P₁) (poly_pr1 P₂))
+                      _
+                    @ _).
+            exact (!(maponpathscomp (poly_pr1 P₂) inr _)).
+          }
+          exact (!(maponpathscomp0 inr _ _)).
+        }
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0 inr _)).
+          }
+          exact (!(maponpathscomp0 inr _ _)).
+        }
+        apply maponpaths.
+        exact (!(IHP₂ _ _ _)).
+    - etrans.
+      {
+        etrans.
+        {
+          apply maponpaths_2.
+          apply pathsdirprod_inv.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          exact (!(maponpaths_pathsdirprod _ _ _ _)).
+        }
+        apply pathsdirprod_concat.
+      }
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsdirprod_inv.
+        }
+        apply pathsdirprod_concat.
+      }
+      refine (!_).
+      exact (paths_pathsdirprod (IHP₁ _ _ _) (IHP₂ _ _ _)).
+  Qed.
+  
+  Definition map_gquot_to_image_on_commute
+             {x y : poly_act (point_constr Σ) (alg_carrier X)}
+             (p : poly_act_rel
+                    (point_constr Σ)
+                    (λ z₁ z₂, alg_map_carrier f z₁ = alg_map_carrier f z₂)
+                    x y)
+    : map_gquot_to_image_on_path (cong_rel_ops congruence_relation_ops_for_image x y p)
+      @ alg_map_commute (image_inj f) y
+      =
+      alg_map_commute (image_inj f) x
+      @ maponpaths
+          (alg_constr (image f))
+          (poly_rel_to_eq_fun (@map_gquot_to_image_on_path) p).
+  Proof.
+    refine (PathOverToTotalPath'_comp _ _ @ _ @ !(PathOverToTotalPath'_eta _)).
+    use globe_over_to_homot
+    ; [
+      | apply path_globe_over_hset ;
+        intro ;
+        apply isasetaprop ;
+        apply ishinh ].
+    refine (!_).
+    etrans.
+    {
+      apply maponpathscomp0.
+    }
+    etrans.
+    {
+      apply maponpaths_2.
+      cbn -[PathOverToTotalPath'].
+      unfold image_inj_preserves_point.
+      apply (@maponpaths_pr1_PathOverToTotalPath' _ _ (_ ,, _) (_ ,, _)).
+    }
+    etrans.
+    {
+      apply maponpaths.
+      apply (maponpathscomp (alg_constr (image f)) pr1).
+    }
+    unfold funcomp, image_inj_preserves_point_pr1.
+    cbn.
+    refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+    apply maponpaths.
+    refine (_ @ path_assoc _ _ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      apply pathsinv0l.
+    }
+    simpl.
+    refine (!(maponpathscomp0 _ _ _) @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      exact (!(maponpathscomp _ _ _)).
+    }
+    refine (!(maponpathscomp0 _ _ _) @ _).
+    apply maponpaths.
+    exact (map_gquot_to_image_on_commute_lem p).
+  Qed.
+
+  Definition maponpaths_pr1_sem_endpoint_UU_natural
+             {P Q : poly_code}
+             (e : endpoint (point_constr Σ) P Q)
+             (x : poly_act P (alg_carrier X))
+    : maponpaths
+         (poly_pr1 Q)
+         (sem_endpoint_UU_natural e (alg_map_commute (image_inj f)) x)
+      =
+      poly_comp _ _ _ _
+      @ sem_endpoint_UU_natural e (alg_map_commute f) x
+      @ maponpaths
+          (sem_endpoint_UU e (alg_constr Y))
+          (!(poly_comp P (image_inj_comp f) pr1 x))
+      @ total_algebra.pr1_endpoint
+          (image_disp_alg f)
+          e
+          (poly_map P (image_inj_comp f) x).
+  Proof.
+    induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                    | P Q | P Q | P Q | P Q
+                    | P Q R e₁ IHe₁ e₂ IHe₂
+                    | P T t | C₁ C₂ g | ].
+    - refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        refine (pathscomp0rid _ @ _).
+        apply maponpathsidfun.
+      }
+      apply pathsinv0r.
+    - refine (maponpathscomp0
+                (poly_pr1 R)
+                (sem_endpoint_UU_natural
+                   e₂
+                   (alg_map_commute (image_inj f))
+                   (sem_endpoint_UU e₁ prealg_constr x))
+                (maponpaths
+                   (sem_endpoint_UU e₂ (total_algebra.operation (image_disp_alg f)))
+                   (sem_endpoint_UU_natural e₁ (alg_map_commute (image_inj f)) x))
+                @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply IHe₂.
+      }
+      clear IHe₂.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
+      refine (!_).
+      refine (!(path_assoc
+                  (sem_endpoint_UU_natural
+                     e₂
+                     (alg_map_commute f)
+                     (sem_endpoint_UU e₁ prealg_constr x))
+                  (maponpaths
+                     (sem_endpoint_UU e₂ prealg_constr)
+                     (sem_endpoint_UU_natural e₁ (alg_map_commute f) x))
+                  _)
+              @ _).
+      apply maponpaths.
+      refine (path_assoc _ _ _ @ _).
+      refine (path_assoc
+                _
+                (maponpaths
+                   (sem_endpoint_UU e₂ (alg_constr Y))
+                   (total_algebra.pr1_endpoint
+                      (image_disp_alg f)
+                      e₁
+                      (poly_map P (image_inj_comp f) x)))
+                (total_algebra.pr1_endpoint
+                   (image_disp_alg f) e₂
+                   (sem_endpoint_UU
+                      e₁
+                      (total_algebra.operation (image_disp_alg f))
+                      (poly_map P (image_inj_comp f) x)))
+                @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathscomp _ _ _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      refine (_ @ path_assoc _ _ _).
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpathsinv0.
+      }
+      refine (!_).
+      use path_inv_rotate_rl.
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (!(maponpathscomp0 _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          exact (!(path_assoc _ _ _)).
+        }
+        exact (!(IHe₁ x)).
+      }
+      clear IHe₁.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply (maponpathscomp
+                 (poly_pr1 Q)
+                 (sem_endpoint_UU e₂ (alg_constr Y))).
+      }
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        apply maponpathscomp.
+      }
+      unfold funcomp.
+      refine (!_).
+      apply (homotsec_natural'
+               (total_algebra.pr1_endpoint (image_disp_alg f) e₂)).
+    - refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          apply pathscomp0rid.
+        }
+        exact (!(maponpathscomp0 inl _ _)).
+      }
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      apply idpath.
+    - refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          apply pathscomp0rid.
+        }
+        exact (!(maponpathscomp0 inr _ _)).
+      }
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      apply idpath.
+    - refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        refine (pathscomp0rid _ @ _).
+        refine (maponpathsinv0
+                  pr1
+                  (pathsdirprod
+                     (poly_comp P (image_inj_comp f) pr1 (pr1 x))
+                     (poly_comp Q (image_inj_comp f) pr1 (pr2 x))) @ _).
+        apply maponpaths.
+        apply maponpaths_pr1_pathsdirprod.
+      }
+      apply pathsinv0r.
+    - refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        refine (pathscomp0rid _ @ _).
+        refine (maponpathsinv0
+                  dirprod_pr2
+                  (pathsdirprod
+                     (poly_comp P (image_inj_comp f) pr1 (pr1 x))
+                     (poly_comp Q (image_inj_comp f) pr1 (pr2 x))) @ _).
+        apply maponpaths.
+        apply maponpaths_pr2_pathsdirprod.
+      }
+      apply pathsinv0r.
+    - refine (!(maponpaths_pathsdirprod
+                  (poly_pr1 Q) (poly_pr1 R)
+                  (sem_endpoint_UU_natural e₁ (alg_map_commute (image_inj f)) x)
+                  (sem_endpoint_UU_natural e₂ (alg_map_commute (image_inj f)) x))
+              @ _).
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          refine (maponpaths (λ z, _ @ z) _).
+          etrans.
+          {
+            refine (maponpaths (λ z, _ @ z) _).
+            etrans.
+            {
+              refine (maponpaths (λ z, z @ _) _).
+              apply (maponpaths_prod_path
+                       (sem_endpoint_UU e₁ (alg_constr Y))
+                       (sem_endpoint_UU e₂ (alg_constr Y))).
+            }
+            exact (pathsdirprod_concat
+                     (maponpaths
+                        (sem_endpoint_UU e₁ (alg_constr Y))
+                        (!(poly_comp P (image_inj_comp f) pr1 x)))
+                     (total_algebra.pr1_endpoint
+                        (image_disp_alg f)
+                        e₁
+                        (poly_map P (image_inj_comp f) x))
+                     (maponpaths
+                        (sem_endpoint_UU e₂ (alg_constr Y))
+                        (!(poly_comp P (image_inj_comp f) pr1 x)))
+                     (total_algebra.pr1_endpoint
+                        (image_disp_alg f)
+                        e₂
+                        (poly_map P (image_inj_comp f) x))).
+          }
+          apply (pathsdirprod_concat
+                   (sem_endpoint_UU_natural e₁ (alg_map_commute f) x)
+                   _
+                   (sem_endpoint_UU_natural e₂ (alg_map_commute f) x)).
+        }
+        apply (pathsdirprod_concat
+                 (poly_comp
+                    Q
+                    (alg_map_carrier (image_inj f)) pr1
+                    (sem_endpoint_UU e₁ prealg_constr x))
+                 _
+                 (poly_comp
+                    R
+                    (alg_map_carrier (image_inj f)) pr1
+                    (sem_endpoint_UU e₂ prealg_constr x))).
+      }
+      refine (!_).
+      exact (paths_pathsdirprod (IHe₁ _) (IHe₂ _)).
+    - refine (!_).
+      refine (pathscomp0rid _ @ _).
+      apply maponpaths_for_constant_function.
+    - apply idpath.
+    - refine (!_).
+      etrans.
+      {
+        refine (maponpaths (λ z, _ @ z) _).
+        apply maponpaths.
+        apply pathscomp0rid.
+      }
+      refine (!_).
+      exact (maponpaths_pr1_PathOverToTotalPath' (image_inj_preserves_point_pr1 f x) _).
+  Qed.
+
+  Definition map_gquot_to_image_path
+             {j : path_label Σ}
+             (x : poly_act (path_source Σ j) (alg_carrier X))
+    : sem_endpoint_UU_natural (path_left Σ j) (alg_map_commute (image_inj f)) x
+      @ alg_path
+          (image f)
+          j
+          (poly_map (path_source Σ j) (alg_map_carrier (image_inj f)) x)
+      =
+      map_gquot_to_image_on_path
+        (make_groupoid_path_algebra_nat_trans_data congruence_relation_nat_for_image j x)
+      @ sem_endpoint_UU_natural (path_right Σ j) (alg_map_commute (image_inj f)) x.
+  Proof.
+    refine (PathOverToTotalPath'_eta _ @ _ @ !(PathOverToTotalPath'_eta _)).
+    use globe_over_to_homot
+    ; [
+      | apply path_globe_over_hset ;
+        intro ;
+        apply isasetaprop ;
+        apply ishinh ]
+    ; unfold globe.
+    refine (maponpathscomp0 _ _ _ @ _ @ !(maponpathscomp0 _ _ _)).
+    etrans.
+    {
+      apply maponpaths.
+      apply (maponpaths_pr1_PathOverToTotalPath'
+               (!(total_algebra.pr1_endpoint
+                    (image_disp_alg f)
+                    (path_left Σ j)
+                    (poly_map (path_source Σ j) (image_inj_comp f) x))
+                @ alg_path
+                    Y j
+                    (poly_pr1
+                       (path_source Σ j)
+                       (poly_map (path_source Σ j) (image_inj_comp f) x))
+                @ total_algebra.pr1_endpoint
+                    (image_disp_alg f)
+                    (path_right Σ j)
+                    (poly_map (path_source Σ j) (image_inj_comp f) x))).
+    }
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      unfold map_gquot_to_image_on_path.
+      apply maponpaths_pr1_PathOverToTotalPath'.
+    }
+    etrans.
+    {
+      apply maponpaths.
+      refine (maponpaths_pr1_sem_endpoint_UU_natural (path_right Σ j) x @ _).
+      apply pathscomp0lid.
+    }
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      refine (maponpaths_pr1_sem_endpoint_UU_natural (path_left Σ j) x @ _).
+      apply pathscomp0lid.
+    }
+    etrans.
+    {
+      do 2 (refine (!(path_assoc _ _ _) @ _) ; apply maponpaths).
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply pathsinv0r.
+      }
+      apply pathscomp0lid.
+    }
+    do 2 refine (path_assoc _ _ _ @ _ @ !(path_assoc _ _ _)).
+    apply maponpaths_2.
+    refine (!_).
+    etrans.
+    {
+      do 2 apply maponpaths_2.
+      apply eq_to_cong_rel_image.
+    }
+    etrans.
+    {
+      apply maponpaths_2.
+      apply (alg_map_path f j x).
+    }
+    refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+    apply maponpaths.
+    refine (!_).
+    apply homotsec_natural'.
+  Qed.
+  
   Definition map_gquot_to_image
     : X/R --> image f.
   Proof.
     use factor_through_gquot.
     - exact (image_inj f).
-    - simpl ; cbn.
-      unfold image_inj_comp.
-      intros a b p.
-      use PathOverToTotalPath'.
-      + exact p.
-      + apply TODO.
-    - (*simpl.
-      intro a.
-      refine (_ @ !(PathOverToTotalPath'_eta _)).
-      use globe_over_to_homot.
-      + apply idpath.
-      + apply TODO.*)
-      apply TODO.
-    - (*simpl.
-      intros a₁ a₂ a₃ g₁ g₂.
-      refine (_ @ !(PathOverToTotalPath'_comp _ _)).
-      refine (_ @ !(PathOverToTotalPath'_eta _)).
-      use globe_over_to_homot.
-      + unfold globe.
-        unfold cong_rel_comp.
-        simpl.
-        refine (!_).
-        (* maponpaths_pr1_PathOverToTotalPath'. *)
-        apply TODO.
-      + apply TODO.*)
-      apply TODO.
-    - simpl.
-      intros x y p.
-      apply TODO.
-    - intros j x.
-      simpl.
-      apply TODO.
+    - exact @map_gquot_to_image_on_path.
+    - exact map_gquot_to_image_on_identity.
+    - exact @map_gquot_to_image_on_concat.
+    - exact @map_gquot_to_image_on_commute.
+    - exact @map_gquot_to_image_path.
   Defined.
 
   (**
