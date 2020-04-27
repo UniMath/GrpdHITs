@@ -45,6 +45,7 @@ Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import algebra.one_types_adjoint_equivalence.
 Require Import displayed_algebras.globe_over_lem.
+Require Import displayed_algebras.constant_display.
 Require Import existence.initial_algebra.
 Require Import isomorphism_theorem.congruence_relation.
 Require Import isomorphism_theorem.congruence_mapping.
@@ -240,6 +241,348 @@ Section FirstIsomorphismTheorem.
              IHP₂ _ _ (maponpaths dirprod_pr2 p)).
   Defined.
 
+  Definition congruence_relation_for_image_morphism_idpath
+             {P : poly_code}
+             (x : poly_act P (alg_carrier X))
+    : congruence_relation_for_image_morphism
+        (idpath (poly_map P (alg_map_carrier f) x))
+      =
+      @poly_act_identity
+        _
+        (make_groupoid_algebra_carrier congruence_relation_groupoid_for_image)
+        x.
+  Proof.
+    induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+    - apply idpath.
+    - apply idpath.
+    - induction x as [x | x].
+      + apply IHP₁.
+      + apply IHP₂.
+    - exact (pathsdirprod (IHP₁ _) (IHP₂ _)).
+  Qed.
+
+  Definition congruence_relation_for_image_morphism_inv
+             {P : poly_code}
+             {x y : poly_act P (alg_carrier X)}
+             (p : poly_map P (alg_map_carrier f) x
+                  =
+                  poly_map P (alg_map_carrier f) y)
+    : congruence_relation_for_image_morphism (!p)
+      =
+      poly_act_inverse (congruence_relation_for_image_morphism p).
+  Proof.
+    induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+    - apply idpath.
+    - exact (!(pathscomp0rid _)).
+    - induction x as [x | x], y as [y | y].
+      + simpl.
+        refine (_ @ IHP₁ _ _ _).
+        apply maponpaths.
+        apply ii1_injectivity_inv.
+      + induction (negpathsii1ii2 _ _ p).
+      + induction (negpathsii2ii1 _ _ p).
+      + simpl.
+        refine (_ @ IHP₂ _ _ _).
+        apply maponpaths.
+        apply ii2_injectivity_inv.
+    - simpl.
+      refine (pathsdirprod (_ @ IHP₁ _ _ _) (_ @ IHP₂ _ _ _))
+      ; apply maponpaths.
+      + exact (maponpathsinv0 pr1 p).
+      + exact (maponpathsinv0 dirprod_pr2 p).
+  Qed.
+
+  Definition congruence_relation_for_image_morphism_concat
+             {P : poly_code}
+             {x y z : poly_act P (alg_carrier X)}
+             (p : poly_map P (alg_map_carrier f) x
+                  =
+                  poly_map P (alg_map_carrier f) y)
+             (q : poly_map P (alg_map_carrier f) y
+                  =
+                  poly_map P (alg_map_carrier f) z)
+    : congruence_relation_for_image_morphism (p @ q)
+      =
+      poly_act_compose
+        (congruence_relation_for_image_morphism p)
+        (congruence_relation_for_image_morphism q).
+  Proof.
+    induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+    - apply idpath.
+    - apply idpath.
+    - induction x as [x | x], y as [y | y].
+      + induction z as [z | z].
+        * simpl.
+          refine (_ @ IHP₁ _ _ _ _ _).
+          apply maponpaths.
+          apply ii1_injectivity_concat.
+        * induction (negpathsii1ii2 _ _ q).
+      + induction (negpathsii1ii2 _ _ p).
+      + induction (negpathsii2ii1 _ _ p).
+      + induction z as [z | z].
+        * induction (negpathsii2ii1 _ _ q).
+        * simpl.
+          refine (_ @ IHP₂ _ _ _ _ _).
+          apply maponpaths.
+          apply ii2_injectivity_concat.
+    - simpl.
+      refine (pathsdirprod (_ @ IHP₁ _ _ _ _ _) (_ @ IHP₂ _ _ _ _ _))
+      ; apply maponpaths.
+      + exact (maponpathscomp0 pr1 p q).
+      + exact (maponpathscomp0 dirprod_pr2 p q).
+  Qed.
+  
+  Definition congruence_relation_for_image_path
+             {P : poly_code}
+             {x y : poly_act P (alg_carrier X)}
+             (p : poly_act_morphism
+                    P
+                    (make_groupoid_algebra_carrier congruence_relation_ops_for_image)
+                    x
+                    y)
+    : poly_map P (alg_map_carrier f) x
+      =
+      poly_map P (alg_map_carrier f) y
+    := poly_act_rel_to_eq _ p.
+
+  Definition congruence_relation_for_image_morphism_path
+             {P : poly_code}
+             {x y : poly_act P (alg_carrier X)}
+             (p : poly_act_morphism
+                    P
+                    (make_groupoid_algebra_carrier congruence_relation_ops_for_image)
+                    x
+                    y)
+    : congruence_relation_for_image_morphism
+        (congruence_relation_for_image_path p)
+      =
+      p.
+  Proof.
+    induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+    - apply idpath.
+    - apply idpath.
+    - induction x as [x | x], y as [y | y].
+      + simpl.
+        etrans.
+        {
+          apply maponpaths.
+          apply ii1_injectivity_inl.
+        }
+        apply IHP₁.
+      + induction p.
+      + induction p.
+      + simpl.
+        etrans.
+        {
+          apply maponpaths.
+          apply ii2_injectivity_inr.
+        }
+        apply IHP₂.
+    - simpl.
+      apply pathsdirprod.
+      + refine (_  @ IHP₁ _ _ _).
+        apply maponpaths.
+        apply maponpaths_pr1_pathsdirprod.
+      + refine (_  @ IHP₂ _ _ _).
+        apply maponpaths.
+        apply maponpaths_pr2_pathsdirprod.
+  Qed.
+
+  Definition congruence_relation_for_image_path_morphism
+             {P : poly_code}
+             {x y : poly_act P (alg_carrier X)}
+             (p : poly_map P (alg_map_carrier f) x
+                  =
+                  poly_map P (alg_map_carrier f) y)
+    : congruence_relation_for_image_path
+        (congruence_relation_for_image_morphism p)
+      =
+      p.
+  Proof.
+    induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
+    - apply idpath.
+    - apply idpath.
+    - induction x as [x | x], y as [y | y].
+      + simpl.
+        etrans.
+        {
+          apply maponpaths.
+          apply IHP₁.
+        }
+        apply inl_ii1_injectivity.
+      + induction (negpathsii1ii2 _ _ p).
+      + induction (negpathsii2ii1 _ _ p).        
+      + simpl.
+        etrans.
+        {
+          apply maponpaths.
+          apply IHP₂.
+        }
+        apply inr_ii2_injectivity.
+    - exact (paths_pathsdirprod (IHP₁ _ _ _) (IHP₂ _ _ _) @ !(pathsdirprod_eta p)).
+  Qed.
+
+  Definition congruence_relation_for_image_morphism_functor
+             {P Q : poly_code}
+             (e : endpoint (point_constr Σ) P Q)
+             {x y : poly_act P (alg_carrier X)}
+             (p : poly_map P (alg_map_carrier f) x
+                  =
+                  poly_map P (alg_map_carrier f) y)
+    : sem_endpoint_grpd_data_functor_morphism
+        e
+        (make_groupoid_algebra_operations congruence_relation_ops_for_image)
+        (congruence_relation_for_image_morphism p)
+      =
+      congruence_relation_for_image_morphism
+        (sem_endpoint_UU_natural e (alg_map_commute f) x
+         @ maponpaths (sem_endpoint_UU e (alg_constr Y)) p
+         @ !(sem_endpoint_UU_natural e (alg_map_commute f) y)).
+  Proof.
+    induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                    | P Q | P Q | P Q | P Q
+                    | P Q R e₁ IHe₁ e₂ IHe₂
+                    | P T t | C₁ C₂ g | ].
+    - simpl.
+      apply maponpaths.
+      refine (!_).
+      refine (pathscomp0rid _ @ _).
+      apply maponpathsidfun.
+    - simpl.
+      etrans.
+      {
+        apply maponpaths.
+        apply IHe₁.
+      }
+      clear IHe₁.
+      refine (IHe₂ _ _ _ @ _).
+      apply maponpaths.
+      refine (_ @ path_assoc _ _ _).
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply pathscomp_inv.
+          }
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0 _ _)).
+          }
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (!(maponpathscomp _ _ _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      apply idpath.
+    - simpl.
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathscomp0rid.
+      }
+      apply ii1_injectivity_inl.
+    - simpl.
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathscomp0rid.
+      }
+      apply ii2_injectivity_inr.
+    - simpl.
+      apply maponpaths.
+      exact (!(pathscomp0rid _)).
+    - simpl.
+      apply maponpaths.
+      exact (!(pathscomp0rid _)).
+    - simpl.
+      apply pathsdirprod.
+      + refine (IHe₁ _ _ _ @ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                apply maponpaths.
+                apply pathsdirprod_inv.
+              }
+              etrans.
+              {
+                apply maponpaths_2.
+                apply maponpaths_prod_path.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply maponpaths_pr1_pathsdirprod.
+        }
+        apply idpath.
+      + refine (IHe₂ _ _ _ @ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths.
+              etrans.
+              {
+                apply maponpaths.
+                apply pathsdirprod_inv.
+              }
+              etrans.
+              {
+                apply maponpaths_2.
+                apply maponpaths_prod_path.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply maponpaths_pr2_pathsdirprod.
+        }
+        apply idpath.
+    - simpl.
+      refine (_ @ !(pathscomp0rid _)).
+      exact (!(maponpaths_for_constant_function _ _)).
+    - simpl.
+      exact (!(pathscomp0rid _)).
+    - simpl ; cbn.
+      apply maponpaths.
+      apply maponpaths_2.
+      apply maponpaths.
+      apply congruence_relation_for_image_path_morphism.
+  Qed.
+      
   Local Lemma lem₁
         {P : poly_code}
         {x y : poly_act P (alg_carrier X)}
@@ -586,10 +929,375 @@ Section FirstIsomorphismTheorem.
     - exact congruence_relation_for_image_is_congruence_is_nat.
   Defined.
 
+  Definition congruence_relation_homot_endpoint
+             {Q T TR : poly_code}
+             {al ar : endpoint (point_constr Σ) Q TR}
+             {sl sr : endpoint (point_constr Σ) Q T}
+             (h : homot_endpoint
+                    (path_left Σ) (path_right Σ)
+                    al ar
+                    sl sr)
+             (x : poly_act Q (alg_carrier X))
+             (p : poly_act_morphism
+                    TR
+                    (make_groupoid_algebra_carrier congruence_relation_groupoid_for_image)
+                    (sem_endpoint_UU al (alg_constr X) x)
+                    (sem_endpoint_UU ar (alg_constr X) x))
+    : sem_homot_endpoint_grpd
+        h
+        (make_groupoid_prealgebra congruence_relation_nat_for_image)
+        (make_groupoid_path_algebra_path congruence_relation_nat_for_image)
+        x
+        p
+      =
+      congruence_relation_for_image_morphism
+        (sem_endpoint_UU_natural sl (alg_map_commute f) x
+         @ sem_homot_endpoint_UU
+             h
+             (alg_carrier Y)
+             (alg_constr Y)
+             (alg_path Y)
+             _
+             (!(sem_endpoint_UU_natural al (alg_map_commute f) x)
+              @ congruence_relation_for_image_path p
+              @ sem_endpoint_UU_natural ar (alg_map_commute f) x)
+         @ !(sem_endpoint_UU_natural sr (alg_map_commute f) x)).
+  Proof.
+    induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                    | T₁ T₂ e₁ e₂ e₃ h IHh
+                    | R₁ R₂ T e₁ e₂ e₃ | T e | T e
+                    | P R e₁ e₂ | P R e₁ e₂
+                    | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | Z z T e | j e | ].
+    - (* identity *)
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        apply pathsinv0r.
+      }
+      apply congruence_relation_for_image_morphism_idpath.
+    - (* symmetry *)
+      refine (maponpaths poly_act_inverse IHh @ _).
+      refine (!(congruence_relation_for_image_morphism_inv _) @ _).
+      apply maponpaths.
+      refine (pathscomp_inv _ _ @ _).
+      refine (_ @ !(path_assoc _ _ _)).
+      apply maponpaths_2.
+      refine (pathscomp_inv _ _ @ _).
+      apply maponpaths_2.
+      apply pathsinv0inv0.
+    - (* transitivity *)
+      refine (maponpaths (poly_act_compose _) IHh₂ @ _).
+      refine (maponpaths (λ z, poly_act_compose z _) IHh₁ @ _).
+      etrans.
+      {
+        refine (!_).
+        apply congruence_relation_for_image_morphism_concat.
+      }
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+      apply maponpaths.
+      etrans.
+      {
+        refine (path_assoc _ _ _ @ _) ; apply maponpaths_2.
+        apply pathsinv0l.
+      }
+      apply idpath.
+    - (* ap with endpoint *)
+      refine (maponpaths
+                (sem_endpoint_grpd_data_functor_morphism
+                   e₃
+                   (make_groupoid_algebra_operations congruence_relation_ops_for_image))
+                IHh
+              @ _).
+      clear IHh.
+      refine (congruence_relation_for_image_morphism_functor _ _ @ _).
+      apply maponpaths.
+      refine (_ @ path_assoc _ _ _).
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            apply pathscomp_inv.
+          }
+          refine (path_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathsinv0
+                       (sem_endpoint_UU e₃ prealg_constr)
+                       (sem_endpoint_UU_natural e₂ (alg_map_commute f) x))).
+          }
+          exact (!(maponpathscomp0
+                     (sem_endpoint_UU e₃ (alg_constr Y))
+                     _
+                     (!(sem_endpoint_UU_natural e₂ (alg_map_commute f) x)))).
+        }
+        refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        exact (!(maponpathscomp0 _ _ _)).
+      }
+      apply idpath.
+    - (* associativity *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (!(path_assoc _ _ _) @ _).
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            exact (!(maponpathscomp _ _ _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        apply pathsinv0r.
+      }
+      apply congruence_relation_for_image_morphism_idpath.
+    - (* left identity *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply pathscomp0rid.
+        }
+        apply pathsinv0r.
+      }
+      apply congruence_relation_for_image_morphism_idpath.
+    - (* right identity *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpathsidfun.
+        }
+        apply pathsinv0r.
+      }
+      apply congruence_relation_for_image_morphism_idpath.
+    - (* first projection *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths_pr1_pathsdirprod.
+        }
+        apply pathsinv0r.
+      }
+      apply congruence_relation_for_image_morphism_idpath.
+    - (* second projection *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpaths_pr2_pathsdirprod.
+        }
+        apply pathsinv0r.
+      }
+      apply congruence_relation_for_image_morphism_idpath.
+    - (* pair of endpoints *)
+      use pathsdirprod.
+      + refine (IHh₁ @ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths.
+              apply pathsdirprod_inv.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply maponpaths_pr1_pathsdirprod.
+      + refine (IHh₂ @ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths.
+              apply pathsdirprod_inv.
+            }
+            apply pathsdirprod_concat.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply maponpaths_pr2_pathsdirprod.
+    - (* composition before pair *)
+      simpl.
+      apply pathsdirprod.
+      + refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths.
+              apply pathsdirprod_inv.
+            }
+            etrans.
+            {
+              apply maponpaths_2.
+              etrans.
+              {
+                apply maponpaths.
+                apply maponpaths_prod_path.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply pathsdirprod_concat.
+          }
+          etrans.
+          {
+            apply maponpaths_pr1_pathsdirprod.
+          }
+          apply pathsinv0r.
+        }
+        apply congruence_relation_for_image_morphism_idpath.
+      + refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths.
+            etrans.
+            {
+              apply maponpaths.
+              apply pathsdirprod_inv.
+            }
+            etrans.
+            {
+              apply maponpaths_2.
+              etrans.
+              {
+                apply maponpaths.
+                apply maponpaths_prod_path.
+              }
+              apply pathsdirprod_concat.
+            }
+            apply pathsdirprod_concat.
+          }
+          etrans.
+          {
+            apply maponpaths_pr2_pathsdirprod.
+          }
+          apply pathsinv0r.
+        }
+        apply congruence_relation_for_image_morphism_idpath.
+    - (* composition with constant *)
+      simpl.
+      refine (!_).
+      refine (pathscomp0rid _ @ _).
+      apply maponpaths_for_constant_function.
+    - (* path constructor *)
+      simpl.
+      cbn.
+      unfold make_groupoid_path_algebra_nat_trans_data.
+      etrans.
+      {
+        apply (eq_to_cong_rel_image (alg_path X j (sem_endpoint_UU e _ x))).
+      }
+      refine (_ @ !(path_assoc _ _ _)).
+      use path_inv_rotate_rr.
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply alg_map_path.
+      }
+      refine (!(path_assoc _ _ _) @ _ @ path_assoc _ _ _).
+      apply maponpaths.
+      refine (!_).
+      apply homotsec_natural'.
+    - (* path argument *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        refine (path_assoc _ _ _ @ _).
+        etrans.
+        {
+          apply maponpaths_2.
+          refine (path_assoc _ _ _ @ _) ; apply maponpaths_2.
+          apply pathsinv0r.
+        }
+        simpl.
+        refine (!(path_assoc _ _ _) @ _).
+        etrans.
+        {
+          apply maponpaths.
+          apply pathsinv0r.
+        }
+        apply pathscomp0rid.
+      }
+      apply congruence_relation_for_image_morphism_path.
+  Qed.
+  
   Definition congruence_relation_for_image_is_congruence
     : is_congruence_relation congruence_relation_nat_for_image.
   Proof.
-    apply TODO.
+    intros j x p.
+    etrans.
+    {
+      apply congruence_relation_homot_endpoint.
+    }
+    refine (!_).
+    etrans.
+    {
+      apply congruence_relation_homot_endpoint.
+    }
+    do 2 apply maponpaths.
+    apply maponpaths_2.
+    refine (!_).
+    apply alg_homot.
   Qed.
   
   Definition congruence_relation_for_image
@@ -614,13 +1322,35 @@ Section FirstIsomorphismTheorem.
     - simpl ; cbn.
       unfold image_inj_comp.
       intros a b p.
-      use PathOverToTotalPath.
+      use PathOverToTotalPath'.
       + exact p.
       + apply TODO.
-    - apply TODO.
-    - apply TODO.
-    - apply TODO.
-    - apply TODO.
+    - (*simpl.
+      intro a.
+      refine (_ @ !(PathOverToTotalPath'_eta _)).
+      use globe_over_to_homot.
+      + apply idpath.
+      + apply TODO.*)
+      apply TODO.
+    - (*simpl.
+      intros a₁ a₂ a₃ g₁ g₂.
+      refine (_ @ !(PathOverToTotalPath'_comp _ _)).
+      refine (_ @ !(PathOverToTotalPath'_eta _)).
+      use globe_over_to_homot.
+      + unfold globe.
+        unfold cong_rel_comp.
+        simpl.
+        refine (!_).
+        (* maponpaths_pr1_PathOverToTotalPath'. *)
+        apply TODO.
+      + apply TODO.*)
+      apply TODO.
+    - simpl.
+      intros x y p.
+      apply TODO.
+    - intros j x.
+      simpl.
+      apply TODO.
   Defined.
 
   (**
