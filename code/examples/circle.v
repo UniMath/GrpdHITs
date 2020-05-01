@@ -301,6 +301,7 @@ Proof.
   - abstract (intro j ; induction j).
 Defined.
 
+
 Definition morph_power_nat
            {C : precategory}
            {x : C}
@@ -312,6 +313,33 @@ Proof.
   intros. induction n as [|n g].
   - exact (identity x).
   - exact (f · g).
+Defined.
+
+(** Induction for integers *)
+Definition hz_ind
+           {Y : hz → UU}
+           (Yz : Y (0%hz))
+           (Yplus : ∏ (n : nat), Y (nattohz n) → Y (nattohz (S n)))
+           (Ymin : ∏ (n : nat), Y (toℤneg n) → Y (toℤneg (S n)))
+           (z : hz)
+  : Y z.
+Proof.
+  pose (hz_to_normal_form z) as znf.
+  induction znf as [zpos | zneg].
+  - induction zpos as [n p].
+    refine (transportf Y p _).
+    clear p z.
+    induction n.
+    + exact Yz.
+    + exact (Yplus _ IHn).
+  - induction zneg as [n p].
+    refine (transportf Y p _).
+    clear p z.
+    induction n.
+    + apply Ymin.
+      apply Yz.
+    + apply Ymin.
+      exact IHn.
 Defined.
 
 (** The UMP for 1-cells *)
@@ -326,21 +354,21 @@ Section CircleInitialAlgUMPOne.
     use make_functor_data.
     - exact (λ _, alg_constr_grpd G tt).
     - intros tt1 tt2 z.
-      assert (m := morph_power_nat (pr1 (alg_path_grpd G loop) tt) (hzabsval z)).
+      assert (f := morph_power_nat (pr1 (alg_path_grpd G loop) tt) (hzabsval z)).
       destruct (hzlthorgeh z 0%hz).
-      + simpl.
-        Locate groupoid.
-        
-      
-      simpl.
+      + exact (grpd_inv f).
+      + exact f.
   Defined.
 
   Definition circle_initial_algebra_ump_1_carrier_is_functor
     : is_functor circle_initial_algebra_ump_1_carrier_data.
   Proof.
     split.
-    - apply TODO.
-    - apply TODO.
+    - exact (λ _, idpath _).
+    - intros ? ? ? z z'.
+      simpl.
+      refine (@hz_ind _ _ _ _).
+      
   Qed.
   
   Definition circle_initial_algebra_ump_1_carrier
@@ -433,13 +461,31 @@ Section CircleInitialAlgUMPTwo.
   Proof.
     intros x y f.
     induction x, y.
+
+
+    
     unfold circle_initial_algebra_ump_2_carrier_data.
+    
+    pose (nat_trans_eq_pointwise (pr21 F₁ loop) tt) as m.
+    simpl in m.
+    unfold circle_initial_algebra_loop_data in m.
+    cbn in m.
+    cbn in m.
+    cbn in m.
+    
+    pose (pr212 (pr211 F₁)) as i.
+    simpl in i.
+    unfold is_nat_trans in i.
+    simpl in i.
 
     pose (pr212 (pr11 F₁) _ _ (idpath tt)) as p.
     simpl in p.
     Opaque hz.
     simpl in f.
-    pose (hz_normal_form f).
+    pose (hz_to_normal_form  f).
+    destruct h.
+    - 
+    simpl in h.
     rewrite (functor_id (pr211 G)) in p.
     rewrite id_right in p.
 
