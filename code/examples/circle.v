@@ -306,7 +306,7 @@ Definition hz_ind
            {Y : hz → UU}
            (Yz : Y (0%hz))
            (Yplus : ∏ (n : nat), Y (nattohz n) → Y (nattohz (S n)))
-           (Ymin : ∏ (n : nat), Y (toℤneg (S n)) → Y (toℤneg (S(S n))))
+           (Ymin : ∏ (n : nat), Y (toℤneg n) → Y (toℤneg (S n)))
            (z : hz)
   : Y z.
 Proof.
@@ -322,8 +322,10 @@ Proof.
     refine (transportf Y p _).
     clear p z.
     induction n.
-    + apply TODO.
-    + apply TODO.
+    + apply Ymin.
+      apply Yz.
+    + apply Ymin.
+      exact IHn.
 Defined.
 
 (** The UMP for 1-cells *)
