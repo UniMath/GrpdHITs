@@ -309,8 +309,12 @@ Section CircleInitialAlgUMPOne.
         (alg_carrier_grpd G).
   Proof.
     use make_functor_data.
-    - apply TODO.
-    - apply TODO.
+    - exact (λ _, alg_constr_grpd G tt).
+    - intros tt1 tt2 z.
+      induction (hz_to_normal_form z) as [ (n , eq) | x ].
+      + 
+      
+      simpl.
   Defined.
 
   Definition circle_initial_algebra_ump_1_carrier_is_functor
