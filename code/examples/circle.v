@@ -299,19 +299,6 @@ Proof.
   - abstract (intro j ; induction j).
 Defined.
 
-Definition morph_power_nat
-           {C : precategory}
-           {x : C}
-           (f : x --> x)
-           (n : nat)
-  : x --> x.
-Proof.
-  Locate loop_power_nat.
-  intros. induction n as [|n g].
-  - exact (identity x).
-  - exact (f · g).
-Defined.
-
 (** Induction for integers *)
 Definition hz_ind
            {Y : hz → UU}
@@ -340,8 +327,171 @@ Proof.
 Defined.
 
 (** The UMP for 1-cells *)
+Definition toℤneg_S
+           (n : nat)
+  : toℤneg (S n) = (toℤneg n - 1)%hz.
+Proof.
+  unfold toℤneg.
+  rewrite <- !hzsign_nattohz.
+  rewrite nattohzandS.
+  rewrite hzminusplus.
+  rewrite hzpluscomm.
+  apply idpath.
+Qed.
+
+Definition morph_power_nat
+           {C : precategory}
+           {x : C}
+           (f : x --> x)
+           (n : nat)
+  : x --> x.
+Proof.
+  induction n as [|n g].
+  - exact (identity x).
+  - exact (f · g).
+Defined.
+
+Definition morph_power
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+           (z : hz)
+  : x --> x.
+Proof.
+  pose (hz_to_normal_form z) as znf.
+  induction znf as [(n , pos) | (n , neg)].
+  - exact (morph_power_nat f n).
+  - exact (morph_power_nat (grpd_inv f) (S n)).
+Defined.
+
+Local Notation "f ^ z" := (morph_power f z).
+
+Definition morph_power_pos
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+           (n : nat)
+  : f ^ (nattohz n) = morph_power_nat f n.
+Proof.
+  induction n ; apply idpath.
+Qed.
+
+Definition morph_power_neg
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+           (n : nat)
+  : f ^ (toℤneg n) = morph_power_nat (grpd_inv f) n.
+Proof.
+  induction n.
+  - apply idpath.
+  - apply TODO.
+Qed.
+
+Definition morph_power_zero
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+  : f ^ (0%hz) = id₁ x.
+Proof.
+  apply idpath.
+Qed.
+
+Definition morp_power_suc
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+           (z : hz)
+  : f ^ (1 + z)%hz = f · f^z.
+Proof.
+  revert z.
+  use hz_ind.
+  - simpl.
+    rewrite hzplusr0, morph_power_zero, id_right.
+    apply id_right.
+  - simpl.
+    intros n IHn.
+    apply idpath.
+  - (*simpl ; intros n IHn.
+    rewrite !toℤneg_S.
+    unfold hzminus.
+    rewrite hzpluscomm.
+    rewrite hzplusassoc.
+    rewrite hzlminus.
+    rewrite hzplusr0.
+    rewrite morph_power_neg.
+    induction n.
+    + simpl.
+      cbn.*)
+    apply TODO.
+Qed.
+
+Definition morph_power_pred
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+           (z : hz)
+  : f ^ (-(1) + z)%hz = grpd_inv f · f^z.
+Proof.
+  revert z.
+  use hz_ind.
+  - simpl.
+    rewrite hzplusr0, morph_power_zero, id_right.
+    apply id_right.
+  - apply TODO.
+  - simpl.
+    intros n IHn.
+    apply TODO.
+Qed.
+
+Definition morph_power_plus
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+           (z₁ z₂ : hz)
+  : f ^ (z₁ + z₂)%hz
+    =
+    f ^ z₁ · f ^ z₂.
+Proof.
+  revert z₁ z₂.
+  use hz_ind.
+  - intro z.
+    simpl.
+    rewrite morph_power_zero, id_left, hzplusl0.
+    apply idpath.
+  - intros n IHn z.
+    cbn -[hz] in IHn ; cbn -[hz].
+    rewrite nattohzandS.
+    rewrite hzplusassoc.
+    cbn -[hz].
+    rewrite !morp_power_suc.
+    rewrite assoc'.
+    apply maponpaths.
+    apply IHn.
+  - intros n IHn z.
+    cbn -[hz] in IHn ; cbn -[hz].
+    rewrite !toℤneg_S.
+    unfold hzminus.
+    rewrite hzplusassoc.
+    rewrite hzpluscomm.
+    rewrite hzplusassoc.
+    rewrite morph_power_pred.
+    rewrite hzpluscomm.
+    rewrite IHn.
+    rewrite assoc.
+    apply maponpaths_2.
+    rewrite hzpluscomm.
+    rewrite morph_power_pred.
+    apply idpath.
+Qed.
+
+    
+
+    
 Section CircleInitialAlgUMPOne.
   Variable (G : hit_algebra_grpd circle_signature).
+
+  Local Notation "'Gloop'" := (pr1 (alg_path_grpd G loop) tt).
 
   Definition circle_initial_algebra_ump_1_carrier_data_0
     : alg_carrier_grpd G
@@ -350,13 +500,8 @@ Section CircleInitialAlgUMPOne.
   Definition circle_initial_algebra_ump_1_carrier_data_1
              (z : hz)
     : alg_carrier_grpd G ⟦ circle_initial_algebra_ump_1_carrier_data_0 ,
-                           circle_initial_algebra_ump_1_carrier_data_0 ⟧.
-  Proof.
-    pose (hz_to_normal_form z) as znf.
-    induction znf as [(n , pos) | (n , neg)].
-    - exact (morph_power_nat (pr1 (alg_path_grpd G loop) tt) n).
-    - exact (grpd_inv (morph_power_nat (pr1 (alg_path_grpd G loop) tt) (S n))).
-  Defined.
+                           circle_initial_algebra_ump_1_carrier_data_0 ⟧
+    := Gloop ^ z.
   
   Definition circle_initial_algebra_ump_1_carrier_data
     : functor_data
@@ -368,40 +513,17 @@ Section CircleInitialAlgUMPOne.
     - exact (λ _ _, circle_initial_algebra_ump_1_carrier_data_1). 
   Defined.
 
-  Definition circle_initial_algebra_ump_1_carrier_data_1_pos_S
-             (n : nat)
-    : circle_initial_algebra_ump_1_carrier_data_1 (nattohz (S n))
-      =
-      compose (pr1 (alg_path_grpd G loop) tt)
-              (circle_initial_algebra_ump_1_carrier_data_1 (nattohz n)).
-  Proof.
-    apply TODO.
-  Qed.
-  
   Definition circle_initial_algebra_ump_1_carrier_is_functor
     : is_functor circle_initial_algebra_ump_1_carrier_data.
   Proof.
     split.
     - exact (λ _, idpath _).
     - intros ? ? ?.
-      simpl.
-      refine (hz_ind _ _ _).
-      + intro z'.
-        exact (maponpaths _ (hzplusl0 _) @ ! id_left _).      
-      + intros n IHn z'.
-        refine (!_).
-        refine (maponpaths (λ x, compose x (circle_initial_algebra_ump_1_carrier_data_1 z'))
-                           (circle_initial_algebra_ump_1_carrier_data_1_pos_S n)
-                           @ _).
-        refine (assoc' _ _ _ @ _).
-        refine (maponpaths (compose (pr1 (alg_path_grpd G loop) tt)) (! IHn z') @ _).
-              
-      
-        apply TODO.
-      + apply TODO.        
+      cbn -[hz] ; unfold circle_initial_algebra_ump_1_carrier_data_1.
+      intros f g.
+      exact (morph_power_plus Gloop f g).
   Qed.
 
-  
   Definition circle_initial_algebra_ump_1_carrier
     : circle_initial_algebra_carrier ⟶ alg_carrier_grpd G.
   Proof.
@@ -421,7 +543,9 @@ Section CircleInitialAlgUMPOne.
               circle_initial_algebra_ump_1_carrier)
            (alg_constr_grpd G)).
   Proof.
-    apply TODO.
+    intros x.
+    induction x ; simpl.
+    apply id₁.
   Defined.
 
   Definition circle_initial_algebra_ump_1_commute_is_nat_trans
@@ -429,7 +553,15 @@ Section CircleInitialAlgUMPOne.
         _ _
         circle_initial_algebra_ump_1_commute_data.
   Proof.
-    apply TODO.
+    intros x y f.
+    induction x, y.
+    simpl.
+    cbn.
+    rewrite !id_left.
+    assert (f = idpath _) as p.
+    { apply isapropunit. }
+    rewrite p.
+    exact (!(functor_id (alg_constr_grpd G : _ ⟶ _) _)).
   Qed.
     
   Definition circle_initial_algebra_ump_1_commute
@@ -478,18 +610,6 @@ Section CircleInitialAlgUMPOne.
     - exact circle_initial_algebra_ump_1_path.
   Defined.
 End CircleInitialAlgUMPOne.
-
-Definition toℤneg_S
-           (n : nat)
-  : toℤneg (S n) = (toℤneg n - 1)%hz.
-Proof.
-  unfold toℤneg.
-  rewrite <- !hzsign_nattohz.
-  rewrite nattohzandS.
-  rewrite hzminusplus.
-  rewrite hzpluscomm.
-  apply idpath.
-Qed.
 
 
 Definition functor_on_min_1
