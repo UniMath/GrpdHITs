@@ -41,6 +41,7 @@ Require Import algebra.groupoid_homotopies.
 Require Import displayed_algebras.displayed_algebra.
 Require Import initial_grpd_alg.W_poly.
 Require Import initial_grpd_alg.initial_groupoid_algebra.
+Require Import initial_grpd_alg.is_initial.
 Require Import existence.hit_existence.
 
 Local Open Scope cat.
@@ -424,14 +425,32 @@ Section CircleInitialAlgUMPTwo.
            (F₁ F₂ : circle_initial_algebra --> G).
 
   Definition circle_initial_algebra_ump_2_carrier_data
-    : nat_trans_data (pr111 (pr1 F₁)) (pr111 (pr1 F₂)).
-  Proof.
-    apply TODO.
-  Defined.
+    : nat_trans_data (pr111 (pr1 F₁)) (pr111 (pr1 F₂))
+    := λ x, pr11 (pr211 F₁) x · grpd_inv (pr11 (pr211 F₂) x).
 
   Definition circle_initial_algebra_ump_2_is_nat_trans
     : is_nat_trans _ _ circle_initial_algebra_ump_2_carrier_data.
   Proof.
+    intros x y f.
+    induction x, y.
+    unfold circle_initial_algebra_ump_2_carrier_data.
+
+    pose (pr212 (pr11 F₁) _ _ (idpath tt)) as p.
+    simpl in p.
+    Opaque hz.
+    simpl in f.
+    pose (hz_normal_form f).
+    rewrite (functor_id (pr211 G)) in p.
+    rewrite id_right in p.
+
+
+    refine (assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths_2.
+      unfold is_nat_trans in p.
+      simpl in p.
+      unfold 
     apply TODO.
   Qed.
   
@@ -448,11 +467,19 @@ Section CircleInitialAlgUMPTwo.
   Proof.
     simple refine (((_ ,, _) ,, λ _, tt) ,, tt).
     - exact circle_initial_algebra_ump_2_carrier.
-    - use nat_trans_eq.
-      { apply (pr1 (pr111 G)). }
-      simpl.
-      intro x.
-      apply TODO.
+    - abstract
+        (use nat_trans_eq ;
+         [ apply (pr1 (pr111 G))
+         | simpl ;
+           intro x ;
+           unfold circle_initial_algebra_ump_2_carrier_data ;
+           rewrite <- assoc ;
+           apply maponpaths ;
+           rewrite (functor_id (pr21 (pr1 G))) ;
+           refine (!_) ;
+           apply move_grpd_inv_right ;
+           rewrite id_right ;
+           apply idpath]).
   Defined.
 End CircleInitialAlgUMPTwo.
 
@@ -473,6 +500,26 @@ Section CircleInitialAlgUMPEq.
     use nat_trans_eq.
     { apply (pr1 (pr111 G)). }
     intro x ; induction x.
-    apply TODO.
-  Defined.
+    pose (nat_trans_eq_pointwise (pr211 τ₁) tt) as p.
+    pose (nat_trans_eq_pointwise (pr211 τ₂) tt) as q.
+    cbn in p, q.
+    rewrite (functor_id (pr21 (pr1 G))), id_right in p.
+    rewrite (functor_id (pr21 (pr1 G))), id_right in q.
+    pose (maponpaths (λ z, z · grpd_inv (pr11 (pr211 F₂) tt)) (p @ !q)) as r.
+    simpl in r.
+    refine (_ @ r @ _).
+    - rewrite <- assoc.
+      refine (!(id_right _) @ _).
+      apply maponpaths.
+      apply move_grpd_inv_left.
+      rewrite id_left.
+      apply idpath.
+    - rewrite <- assoc.
+      refine (!_).
+      refine (!(id_right _) @ _).
+      apply maponpaths.
+      apply move_grpd_inv_left.
+      rewrite id_left.
+      apply idpath.
+  Qed.
 End CircleInitialAlgUMPEq.
