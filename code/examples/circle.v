@@ -229,16 +229,16 @@ Definition circle_initial_algebra_base_data
       (circle_initial_algebra_carrier).
 Proof.
   use make_functor_data.
-  - apply TODO.
-  - apply TODO.
+  - exact (λ x, x).
+  - exact (λ _ _ _, hzzero).
 Defined.
 
 Definition circle_initial_algebra_base_is_functor
   : is_functor circle_initial_algebra_base_data.
 Proof.
   split.
-  - apply TODO.
-  - apply TODO.
+  - exact (λ _, idpath _).
+  - exact (λ _ _ _ _ _, ! hzplusr0 _).
 Qed.
 
 Definition circle_initial_algebra_base
@@ -262,17 +262,15 @@ Defined.
 Definition circle_initial_algebra_loop_data
   : nat_trans_data
       (sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra)
-      (sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra).
-Proof.
-  apply TODO.
-Defined.
+      (sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra)
+  := λ _, hzone.
 
 Definition circle_initial_algebra_loop_is_nat_trans
   : is_nat_trans
       _ _
       circle_initial_algebra_loop_data.
 Proof.
-  apply TODO.
+  exact (λ _ _ _, hzplusl0 _ @ ! hzplusr0 _).
 Qed.
 
 Definition circle_initial_algebra_loop
