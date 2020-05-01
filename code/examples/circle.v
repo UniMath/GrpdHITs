@@ -153,20 +153,20 @@ Definition circle_initial_algebra_precategory_data
 Proof.
   use make_precategory_data.
   - use make_precategory_ob_mor.
-    + apply TODO.
-    + apply TODO.
-  - apply TODO.
-  - apply TODO.
+    + exact unit. 
+    + exact (λ _ _, hz).
+  - exact (λ _, hzzero). 
+  - exact (λ _ _ _, hzplus).
 Defined.
 
 Definition circle_initial_algebra_is_precategory
   : is_precategory circle_initial_algebra_precategory_data.
 Proof.
   use make_is_precategory.
-  - apply TODO.
-  - apply TODO.
-  - apply TODO.
-  - apply TODO.
+  - exact (λ _ _, hzplusl0).
+  - exact (λ _ _, hzplusr0).
+  - exact (λ _ _ _ _ x y z, ! hzplusassoc x y z).
+  - exact (λ _ _ _ _, hzplusassoc).
 Qed.
 
 Definition circle_initial_algebra_precategory
@@ -181,7 +181,7 @@ Definition circle_initial_algebra_homsets
   : has_homsets circle_initial_algebra_precategory.
 Proof.
   intros x y.
-  apply TODO.
+  apply isasetsetquot.
 Qed.
 
 Definition circle_initial_algebra_category
@@ -195,12 +195,12 @@ Defined.
 Definition circle_initial_algebra_is_pregroupoid
   : is_pregroupoid circle_initial_algebra_category.
 Proof.
-  intros x y f.
+  intros tt1 tt2 z.
   use is_iso_qinv.
-  - apply TODO.
+  - exact (hzsign z).
   - split.
-    + apply TODO.
-    + apply TODO.
+    + exact (hzrminus z).
+    + exact (hzlminus z).
 Defined.
 
 Definition circle_initial_algebra
