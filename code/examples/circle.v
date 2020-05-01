@@ -9,9 +9,11 @@ We look at the 1-truncation.
  *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
+Require Import UniMath.NumberSystems.Integers.
 
 Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.CategoryTheory.Groupoids.
+Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.Bicategories.Core.Bicat.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
@@ -120,6 +122,8 @@ End CircleInduction.
 Definition circle
   := pr1 (hit_existence circle_signature).
 
+
+(*
 Definition circle_path_space_base
   : UU
   := ((pr111 (initial_groupoid_algebra circle_signature) : groupoid)
@@ -134,3 +138,75 @@ Definition circle_is_path_space
        circle_signature
        (poly_initial_alg circle_point_constr tt)
        (poly_initial_alg circle_point_constr tt).
+ *)
+
+
+(**
+Initial groupoid algebra for the circle constructed in a special way.
+We will use this conclude that the fundamental group of the circle is the integers
+ *)
+Definition TODO {A : UU} : A.
+Admitted.
+
+Definition circle_initial_algebra_precategory_data
+  : precategory_data.
+Proof.
+  use make_precategory_data.
+  - use make_precategory_ob_mor.
+    + apply TODO.
+    + apply TODO.
+  - apply TODO.
+  - apply TODO.
+Defined.
+
+Definition circle_initial_algebra_is_precategory
+  : is_precategory circle_initial_algebra_precategory_data.
+Proof.
+  use make_is_precategory.
+  - apply TODO.
+  - apply TODO.
+  - apply TODO.
+  - apply TODO.
+Qed.
+
+Definition circle_initial_algebra_precategory
+  : precategory.
+Proof.
+  use make_precategory.
+  - exact circle_initial_algebra_precategory_data.
+  - exact circle_initial_algebra_is_precategory.
+Defined.
+
+Definition circle_initial_algebra_homsets
+  : has_homsets circle_initial_algebra_precategory.
+Proof.
+  intros x y.
+  apply TODO.
+Qed.
+
+Definition circle_initial_algebra_category
+  : category.
+Proof.
+  use make_category.
+  - exact circle_initial_algebra_precategory.
+  - exact circle_initial_algebra_homsets.
+Defined.
+
+Definition circle_initial_algebra_is_pregroupoid
+  : is_pregroupoid circle_initial_algebra_category.
+Proof.
+  intros x y f.
+  use is_iso_qinv.
+  - apply TODO.
+  - split.
+    + apply TODO.
+    + apply TODO.
+Defined.
+
+Definition circle_initial_algebra
+  : groupoid.
+Proof.
+  use make_groupoid.
+  - exact circle_initial_algebra_category.
+  - exact circle_initial_algebra_is_pregroupoid.
+Defined.
