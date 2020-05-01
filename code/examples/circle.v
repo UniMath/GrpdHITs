@@ -26,6 +26,9 @@ Require Import signature.hit.
 Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
+Require Import algebra.groupoid_polynomials.
+Require Import algebra.groupoid_endpoints.
+Require Import algebra.groupoid_homotopies.
 Require Import displayed_algebras.displayed_algebra.
 Require Import initial_grpd_alg.W_poly.
 Require Import initial_grpd_alg.initial_groupoid_algebra.
@@ -203,10 +206,20 @@ Proof.
     + apply TODO.
 Defined.
 
-Definition circle_initial_algebra
+Definition circle_initial_algebra_carrier
   : groupoid.
 Proof.
   use make_groupoid.
   - exact circle_initial_algebra_category.
   - exact circle_initial_algebra_is_pregroupoid.
 Defined.
+
+(** It forms a groupoid algebra *)
+Definition ci
+
+(** The UMP for 1-cells *)
+Section CircleInitialAlgUMPOne.
+  Variable (G : hit_algebra_grpd circle_signature).
+
+  Definition circle_initial_algebra_ump_1
+    : 
