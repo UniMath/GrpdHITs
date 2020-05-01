@@ -300,6 +300,19 @@ Proof.
   - abstract (intro j ; induction j).
 Defined.
 
+Definition morph_power_nat
+           {C : precategory}
+           {x : C}
+           (f : x --> x)
+           (n : nat)
+  : x --> x.
+Proof.
+  Locate loop_power_nat.
+  intros. induction n as [|n g].
+  - exact (identity x).
+  - exact (f · g).
+Defined.
+
 (** The UMP for 1-cells *)
 Section CircleInitialAlgUMPOne.
   Variable (G : hit_algebra_grpd circle_signature).
@@ -312,8 +325,11 @@ Section CircleInitialAlgUMPOne.
     use make_functor_data.
     - exact (λ _, alg_constr_grpd G tt).
     - intros tt1 tt2 z.
-      induction (hz_to_normal_form z) as [ (n , eq) | x ].
-      + 
+      assert (m := morph_power_nat (pr1 (alg_path_grpd G loop) tt) (hzabsval z)).
+      destruct (hzlthorgeh z 0%hz).
+      + simpl.
+        Locate groupoid.
+        
       
       simpl.
   Defined.
