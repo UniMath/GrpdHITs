@@ -346,29 +346,62 @@ Defined.
 Section CircleInitialAlgUMPOne.
   Variable (G : hit_algebra_grpd circle_signature).
 
+
+  Definition circle_initial_algebra_ump_1_carrier_data_0
+    : alg_carrier_grpd G
+    := alg_constr_grpd G tt.
+
+  Definition circle_initial_algebra_ump_1_carrier_data_1
+             (z : hz)
+    : alg_carrier_grpd G ⟦ circle_initial_algebra_ump_1_carrier_data_0 ,
+                           circle_initial_algebra_ump_1_carrier_data_0 ⟧.
+  Proof.
+    pose (hz_to_normal_form z) as znf.
+    induction znf as [(n , pos) | (n , neg)].
+    - exact (morph_power_nat (pr1 (alg_path_grpd G loop) tt) n).
+    - exact (grpd_inv (morph_power_nat (pr1 (alg_path_grpd G loop) tt) (S n))).
+  Defined.
+  
   Definition circle_initial_algebra_ump_1_carrier_data
     : functor_data
         circle_initial_algebra_precategory_data
         (alg_carrier_grpd G).
   Proof.
     use make_functor_data.
-    - exact (λ _, alg_constr_grpd G tt).
-    - intros tt1 tt2 z.
-      assert (f := morph_power_nat (pr1 (alg_path_grpd G loop) tt) (hzabsval z)).
-      destruct (hzlthorgeh z 0%hz).
-      + exact (grpd_inv f).
-      + exact f.
+    - exact (λ _, circle_initial_algebra_ump_1_carrier_data_0).
+    - exact (λ _ _, circle_initial_algebra_ump_1_carrier_data_1). 
   Defined.
 
+  Definition circle_initial_algebra_ump_1_carrier_data_1_pos_S
+             (n : nat)
+    : circle_initial_algebra_ump_1_carrier_data_1 (nattohz (S n))
+      =
+      compose (pr1 (alg_path_grpd G loop) tt)
+              (circle_initial_algebra_ump_1_carrier_data_1 (nattohz n)).
+  Proof.
+    apply TODO.
+  Qed.
+  
   Definition circle_initial_algebra_ump_1_carrier_is_functor
     : is_functor circle_initial_algebra_ump_1_carrier_data.
   Proof.
     split.
     - exact (λ _, idpath _).
-    - intros ? ? ? z z'.
+    - intros ? ? ?.
       simpl.
-      refine (@hz_ind _ _ _ _).
-      
+      refine (hz_ind _ _ _).
+      + intro z'.
+        exact (maponpaths _ (hzplusl0 _) @ ! id_left _).      
+      + intros n IHn z'.
+        refine (!_).
+        refine (maponpaths (λ x, compose x (circle_initial_algebra_ump_1_carrier_data_1 z'))
+                           (circle_initial_algebra_ump_1_carrier_data_1_pos_S n)
+                           @ _).
+        refine (assoc' _ _ _ @ _).
+        refine (maponpaths (compose (pr1 (alg_path_grpd G loop) tt)) (! IHn z') @ _).
+
+
+
   Qed.
   
   Definition circle_initial_algebra_ump_1_carrier
