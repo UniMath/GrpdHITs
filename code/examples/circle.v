@@ -12,13 +12,21 @@ Require Import UniMath.MoreFoundations.All.
 Require Import UniMath.NumberSystems.Integers.
 
 Require Import UniMath.CategoryTheory.Core.Categories.
+Require Import UniMath.CategoryTheory.Core.Functors.
+Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.Bicategories.Core.Bicat.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
-Require Import UniMath.Algebra.Monoids.
-Require Import UniMath.Algebra.Groups.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -215,11 +223,91 @@ Proof.
 Defined.
 
 (** It forms a groupoid algebra *)
-Definition ci
+Definition circle_initial_algebra_base_data
+  : functor_data
+      (⦃ point_constr circle_signature ⦄ circle_initial_algebra_carrier : groupoid)
+      (circle_initial_algebra_carrier).
+Proof.
+  use make_functor_data.
+  - apply TODO.
+  - apply TODO.
+Defined.
+
+Definition circle_initial_algebra_base_is_functor
+  : is_functor circle_initial_algebra_base_data.
+Proof.
+  split.
+  - apply TODO.
+  - apply TODO.
+Qed.
+
+Definition circle_initial_algebra_base
+  : (⦃ point_constr circle_signature ⦄ circle_initial_algebra_carrier : groupoid)
+    ⟶
+    circle_initial_algebra_carrier.
+Proof.
+  use make_functor.
+  - exact circle_initial_algebra_base_data.
+  - exact circle_initial_algebra_base_is_functor.
+Defined.
+
+Definition circle_initial_prealgebra
+  : hit_prealgebra_grpd circle_signature.
+Proof.
+  use make_hit_prealgebra_grpd.
+  - exact circle_initial_algebra_carrier.
+  - exact circle_initial_algebra_base.
+Defined.
+
+Definition circle_initial_algebra_loop_data
+  : nat_trans_data
+      (sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra)
+      (sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra).
+Proof.
+  apply TODO.
+Defined.
+
+Definition circle_initial_algebra_loop_is_nat_trans
+  : is_nat_trans
+      _ _
+      circle_initial_algebra_loop_data.
+Proof.
+  apply TODO.
+Qed.
+
+Definition circle_initial_algebra_loop
+  : sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra
+    ⟹
+    sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra.
+Proof.
+  use make_nat_trans.
+  - exact circle_initial_algebra_loop_data.
+  - exact circle_initial_algebra_loop_is_nat_trans.
+Defined.
+  
+Definition circle_initial_path_algebra
+  : hit_path_algebra_grpd circle_signature.
+Proof.
+  use make_hit_path_algebra_grpd.
+  - exact circle_initial_prealgebra.
+  - exact (λ _, circle_initial_algebra_loop).
+Defined.
+
+Definition circle_initial_algebra
+  : hit_algebra_grpd circle_signature.
+Proof.
+  use make_algebra_grpd.
+  - exact circle_initial_path_algebra.
+  - abstract (intro j ; induction j).
+Defined.
 
 (** The UMP for 1-cells *)
 Section CircleInitialAlgUMPOne.
   Variable (G : hit_algebra_grpd circle_signature).
 
   Definition circle_initial_algebra_ump_1
-    : 
+    : circle_initial_algebra --> G.
+  Proof.
+    use make_algebra_map_grpd.
+    use make_hit_path_alg_map_grpd.
+    - app
