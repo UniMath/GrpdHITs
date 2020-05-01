@@ -1,6 +1,5 @@
 (**
 Here we define the signature for the circle
-
 The circle is the following HIT:
 HIT circle :=
 | base : circle
@@ -142,7 +141,6 @@ Definition circle_path_space_base
   := ((pr111 (initial_groupoid_algebra circle_signature) : groupoid)
         ⟦ poly_initial_alg circle_point_constr tt
         , poly_initial_alg circle_point_constr tt ⟧).
-
 Definition circle_is_path_space
   : circle_base circle = circle_base circle
     ≃
@@ -301,7 +299,6 @@ Proof.
   - abstract (intro j ; induction j).
 Defined.
 
-
 Definition morph_power_nat
            {C : precategory}
            {x : C}
@@ -345,7 +342,6 @@ Defined.
 (** The UMP for 1-cells *)
 Section CircleInitialAlgUMPOne.
   Variable (G : hit_algebra_grpd circle_signature).
-
 
   Definition circle_initial_algebra_ump_1_carrier_data_0
     : alg_carrier_grpd G
@@ -399,10 +395,12 @@ Section CircleInitialAlgUMPOne.
                            @ _).
         refine (assoc' _ _ _ @ _).
         refine (maponpaths (compose (pr1 (alg_path_grpd G loop) tt)) (! IHn z') @ _).
-
-
-
+              
+      
+        apply TODO.
+      + apply TODO.        
   Qed.
+
   
   Definition circle_initial_algebra_ump_1_carrier
     : circle_initial_algebra_carrier ⟶ alg_carrier_grpd G.
@@ -481,6 +479,51 @@ Section CircleInitialAlgUMPOne.
   Defined.
 End CircleInitialAlgUMPOne.
 
+Definition toℤneg_S
+           (n : nat)
+  : toℤneg (S n) = (toℤneg n - 1)%hz.
+Proof.
+  unfold toℤneg.
+  rewrite <- !hzsign_nattohz.
+  rewrite nattohzandS.
+  rewrite hzminusplus.
+  rewrite hzpluscomm.
+  apply idpath.
+Qed.
+
+
+Definition functor_on_min_1
+           {G : groupoid}
+           (F : circle_initial_algebra_carrier ⟶ G)
+  : #F (-(1))%hz
+    =
+    @grpd_inv _ (F tt) (F tt) (#F 1)%hz.
+Proof.
+  refine (_ @ id_left _).
+  use move_grpd_inv_left.
+  refine (!_).
+  etrans.
+  {
+    exact (!(@functor_comp _ _ F tt tt tt _ _)).
+  }
+  refine (_ @ functor_id _ _).
+  apply maponpaths.
+  apply hzlminus.
+Qed.
+
+Definition circle_alg_mor_on_loop
+           {G₁ G₂ : hit_algebra_grpd circle_signature}
+           (F : G₁ --> G₂)
+  : # (pr111 F : _ ⟶ _) (alg_path_grpd G₁ loop tt) · (pr112 (pr11 F)) tt
+    =
+    (pr112 (pr11 F)) tt · alg_path_grpd G₂ loop tt.
+Proof.
+  pose (pr21 F loop) as m.
+  simpl in m.
+  pose (nat_trans_eq_pointwise m tt) as p.
+  exact p.
+Qed.
+
 Section CircleInitialAlgUMPTwo.
   Variable (G : hit_algebra_grpd circle_signature)
            (F₁ F₂ : circle_initial_algebra --> G).
@@ -492,45 +535,113 @@ Section CircleInitialAlgUMPTwo.
   Definition circle_initial_algebra_ump_2_is_nat_trans
     : is_nat_trans _ _ circle_initial_algebra_ump_2_carrier_data.
   Proof.
-    intros x y f.
+    intros x y.
     induction x, y.
-
-
-    
     unfold circle_initial_algebra_ump_2_carrier_data.
-    
-    pose (nat_trans_eq_pointwise (pr21 F₁ loop) tt) as m.
-    simpl in m.
-    unfold circle_initial_algebra_loop_data in m.
-    cbn in m.
-    cbn in m.
-    cbn in m.
-    
-    pose (pr212 (pr211 F₁)) as i.
-    simpl in i.
-    unfold is_nat_trans in i.
-    simpl in i.
-
-    pose (pr212 (pr11 F₁) _ _ (idpath tt)) as p.
-    simpl in p.
-    Opaque hz.
-    simpl in f.
-    pose (hz_to_normal_form  f).
-    destruct h.
-    - 
-    simpl in h.
-    rewrite (functor_id (pr211 G)) in p.
-    rewrite id_right in p.
-
-
+    intro f.
     refine (assoc _ _ _ @ _).
-    etrans.
-    {
+    refine (!_) ; use move_grpd_inv_left.
+    revert f.
+    use hz_ind ; simpl.
+    - rewrite (functor_id (pr111 F₁)), id_left.
+      rewrite (functor_id (pr111 F₂)), id_right.
+      refine (_ @ assoc _ _ _).
+      refine (!(id_right _) @ _).
+      apply maponpaths.
+      use move_grpd_inv_right.
+      rewrite id_right.
+      apply idpath.
+    - intros n IHn.
+      rewrite nattohzandS.
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (@functor_comp _ _ (pr111 F₁) _ tt _ 1%hz (nattohz n)).
+      }
+      refine (assoc' _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths.
+        exact IHn.
+      }
+      clear IHn.
+      rewrite !assoc.
       apply maponpaths_2.
-      unfold is_nat_trans in p.
-      simpl in p.
-      unfold 
-    apply TODO.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        exact (@functor_comp _ _ (pr111 F₂) _ tt _ 1%hz (nattohz n)).
+      }
+      rewrite !assoc.
+      apply maponpaths_2.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        exact (circle_alg_mor_on_loop F₁).
+      }
+      refine (assoc' _ _ _ @ _ @ assoc _ _ _).
+      apply maponpaths.
+      use move_grpd_inv_right.
+      refine (_ @ assoc' _ _ _).
+      use move_grpd_inv_left.
+      exact (!(circle_alg_mor_on_loop F₂)).
+    - intros n IHn.
+      rewrite !toℤneg_S.
+      etrans.
+      {
+        apply maponpaths_2.
+        unfold hzminus.
+        rewrite hzpluscomm.
+        exact (@functor_comp _ _ (pr111 F₁) _ tt _ (-(1))%hz (toℤneg n)).
+      }
+      refine (assoc' _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths.
+        exact IHn.
+      }
+      clear IHn.
+      rewrite !assoc.
+      apply maponpaths_2.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths.
+        unfold hzminus.
+        rewrite hzpluscomm.
+        exact (@functor_comp _ _ (pr111 F₂) _ tt _ (-(1))%hz (toℤneg n)).
+      }
+      rewrite !assoc.
+      apply maponpaths_2.
+      rewrite !functor_on_min_1.
+      refine (_ @ assoc _ _ _).
+      use move_grpd_inv_right.
+      refine (!_).
+      etrans.
+      {
+        do 2 (refine (assoc _ _ _ @ _) ; apply maponpaths_2).
+        exact (circle_alg_mor_on_loop F₁).
+      }
+      rewrite !assoc'.
+      apply maponpaths.
+      pose (circle_alg_mor_on_loop F₂).
+      refine (_ @ id_right _).
+      use move_grpd_inv_right.
+      refine (!_).
+      etrans.
+      {
+        refine (assoc _ _ _ @ _) ; apply maponpaths_2.
+        exact (!(circle_alg_mor_on_loop F₂)).
+      }
+      rewrite !assoc.
+      refine (!_).
+      use move_grpd_inv_left.
+      rewrite id_left.
+      refine (!_).
+      use move_grpd_inv_left.
+      apply idpath.
   Qed.
   
   Definition circle_initial_algebra_ump_2_carrier
