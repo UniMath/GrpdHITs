@@ -17,6 +17,7 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.Bicategories.Core.Bicat.
+Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 
 Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
@@ -401,3 +402,61 @@ Section CircleInitialAlgUMPOne.
     - exact circle_initial_algebra_ump_1_path.
   Defined.
 End CircleInitialAlgUMPOne.
+
+Section CircleInitialAlgUMPTwo.
+  Variable (G : hit_algebra_grpd circle_signature)
+           (F₁ F₂ : circle_initial_algebra --> G).
+
+  Definition circle_initial_algebra_ump_2_carrier_data
+    : nat_trans_data (pr111 (pr1 F₁)) (pr111 (pr1 F₂)).
+  Proof.
+    apply TODO.
+  Defined.
+
+  Definition circle_initial_algebra_ump_2_is_nat_trans
+    : is_nat_trans _ _ circle_initial_algebra_ump_2_carrier_data.
+  Proof.
+    apply TODO.
+  Qed.
+  
+  Definition circle_initial_algebra_ump_2_carrier
+    : pr111 (pr1 F₁) ⟹ pr111 (pr1 F₂).
+  Proof.
+    use make_nat_trans.
+    - exact circle_initial_algebra_ump_2_carrier_data.
+    - exact circle_initial_algebra_ump_2_is_nat_trans.
+  Defined.
+
+  Definition circle_initial_algebra_ump_2
+    : F₁ ==> F₂.
+  Proof.
+    simple refine (((_ ,, _) ,, λ _, tt) ,, tt).
+    - exact circle_initial_algebra_ump_2_carrier.
+    - use nat_trans_eq.
+      { apply (pr1 (pr111 G)). }
+      simpl.
+      intro x.
+      apply TODO.
+  Defined.
+End CircleInitialAlgUMPTwo.
+
+Section CircleInitialAlgUMPEq.
+  Variable (G : hit_algebra_grpd circle_signature)
+           (F₁ F₂ : circle_initial_algebra --> G)
+           (τ₁ τ₂ : F₁ ==> F₂).
+
+  Definition circle_ump_eq
+    : τ₁ = τ₂.
+  Proof.
+    use subtypePath.
+    { intro ; apply isapropunit. }
+    use subtypePath.
+    { intro ; use impred ; intro ; apply isapropunit. }
+    use subtypePath.
+    { intro ; apply grpd_bicat. }
+    use nat_trans_eq.
+    { apply (pr1 (pr111 G)). }
+    intro x ; induction x.
+    apply TODO.
+  Defined.
+End CircleInitialAlgUMPEq.
