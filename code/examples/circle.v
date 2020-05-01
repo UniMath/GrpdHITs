@@ -301,6 +301,31 @@ Proof.
   - abstract (intro j ; induction j).
 Defined.
 
+(** Induction for integers *)
+Definition hz_ind
+           {Y : hz → UU}
+           (Yz : Y (0%hz))
+           (Yplus : ∏ (n : nat), Y (nattohz n) → Y (nattohz (S n)))
+           (Ymin : ∏ (n : nat), Y (toℤneg (S n)) → Y (toℤneg (S(S n))))
+           (z : hz)
+  : Y z.
+Proof.
+  pose (hz_to_normal_form z) as znf.
+  induction znf as [zpos | zneg].
+  - induction zpos as [n p].
+    refine (transportf Y p _).
+    clear p z.
+    induction n.
+    + exact Yz.
+    + exact (Yplus _ IHn).
+  - induction zneg as [n p].
+    refine (transportf Y p _).
+    clear p z.
+    induction n.
+    + apply TODO.
+    + apply TODO.
+Defined.
+
 (** The UMP for 1-cells *)
 Section CircleInitialAlgUMPOne.
   Variable (G : hit_algebra_grpd circle_signature).
@@ -413,13 +438,31 @@ Section CircleInitialAlgUMPTwo.
   Proof.
     intros x y f.
     induction x, y.
+
+
+    
     unfold circle_initial_algebra_ump_2_carrier_data.
+    
+    pose (nat_trans_eq_pointwise (pr21 F₁ loop) tt) as m.
+    simpl in m.
+    unfold circle_initial_algebra_loop_data in m.
+    cbn in m.
+    cbn in m.
+    cbn in m.
+    
+    pose (pr212 (pr211 F₁)) as i.
+    simpl in i.
+    unfold is_nat_trans in i.
+    simpl in i.
 
     pose (pr212 (pr11 F₁) _ _ (idpath tt)) as p.
     simpl in p.
     Opaque hz.
     simpl in f.
-    pose (hz_normal_form f).
+    pose (hz_to_normal_form  f).
+    destruct h.
+    - 
+    simpl in h.
     rewrite (functor_id (pr211 G)) in p.
     rewrite id_right in p.
 
