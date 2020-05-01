@@ -301,6 +301,20 @@ Proof.
   - abstract (intro j ; induction j).
 Defined.
 
+
+Definition morph_power_nat
+           {C : precategory}
+           {x : C}
+           (f : x --> x)
+           (n : nat)
+  : x --> x.
+Proof.
+  Locate loop_power_nat.
+  intros. induction n as [|n g].
+  - exact (identity x).
+  - exact (f · g).
+Defined.
+
 (** Induction for integers *)
 Definition hz_ind
            {Y : hz → UU}
@@ -338,16 +352,23 @@ Section CircleInitialAlgUMPOne.
         (alg_carrier_grpd G).
   Proof.
     use make_functor_data.
-    - apply TODO.
-    - apply TODO.
+    - exact (λ _, alg_constr_grpd G tt).
+    - intros tt1 tt2 z.
+      assert (f := morph_power_nat (pr1 (alg_path_grpd G loop) tt) (hzabsval z)).
+      destruct (hzlthorgeh z 0%hz).
+      + exact (grpd_inv f).
+      + exact f.
   Defined.
 
   Definition circle_initial_algebra_ump_1_carrier_is_functor
     : is_functor circle_initial_algebra_ump_1_carrier_data.
   Proof.
     split.
-    - apply TODO.
-    - apply TODO.
+    - exact (λ _, idpath _).
+    - intros ? ? ? z z'.
+      simpl.
+      refine (@hz_ind _ _ _ _).
+      
   Qed.
   
   Definition circle_initial_algebra_ump_1_carrier
