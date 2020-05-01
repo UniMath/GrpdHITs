@@ -305,9 +305,97 @@ Defined.
 Section CircleInitialAlgUMPOne.
   Variable (G : hit_algebra_grpd circle_signature).
 
+  Definition circle_initial_algebra_ump_1_carrier_data
+    : functor_data
+        circle_initial_algebra_precategory_data
+        (alg_carrier_grpd G).
+  Proof.
+    use make_functor_data.
+    - apply TODO.
+    - apply TODO.
+  Defined.
+
+  Definition circle_initial_algebra_ump_1_carrier_is_functor
+    : is_functor circle_initial_algebra_ump_1_carrier_data.
+  Proof.
+    split.
+    - apply TODO.
+    - apply TODO.
+  Qed.
+  
+  Definition circle_initial_algebra_ump_1_carrier
+    : circle_initial_algebra_carrier ⟶ alg_carrier_grpd G.
+  Proof.
+    use make_functor.
+    - exact circle_initial_algebra_ump_1_carrier_data.
+    - exact circle_initial_algebra_ump_1_carrier_is_functor.
+  Defined.
+
+  Definition circle_initial_algebra_ump_1_commute_data
+    : nat_trans_data
+        (functor_composite_data
+           circle_initial_algebra_base_data
+           circle_initial_algebra_ump_1_carrier_data)
+        (functor_composite_data
+           (poly_act_functor
+              circle_point_constr
+              circle_initial_algebra_ump_1_carrier)
+           (alg_constr_grpd G)).
+  Proof.
+    apply TODO.
+  Defined.
+
+  Definition circle_initial_algebra_ump_1_commute_is_nat_trans
+    : is_nat_trans
+        _ _
+        circle_initial_algebra_ump_1_commute_data.
+  Proof.
+    apply TODO.
+  Qed.
+    
+  Definition circle_initial_algebra_ump_1_commute
+    : functor_composite_data
+        circle_initial_algebra_base_data
+        circle_initial_algebra_ump_1_carrier_data
+      ⟹
+      functor_composite_data
+        (poly_act_functor
+           circle_point_constr
+           circle_initial_algebra_ump_1_carrier)
+        (alg_constr_grpd G).
+  Proof.
+    use make_nat_trans.
+    - exact circle_initial_algebra_ump_1_commute_data.
+    - exact circle_initial_algebra_ump_1_commute_is_nat_trans.
+  Defined.
+
+  Definition circle_initial_prealgebra_ump_1
+    : pr11 circle_initial_algebra --> pr11 G.
+  Proof.
+    use make_hit_prealgebra_mor.
+    - exact circle_initial_algebra_ump_1_carrier.
+    - exact circle_initial_algebra_ump_1_commute.
+  Defined.
+
+  (** Might need to change once the definitions can be unfolded more *)
+  Definition circle_initial_algebra_ump_1_path
+             (j : path_label circle_signature)
+             (x : unit)
+    : # (pr11 circle_initial_prealgebra_ump_1)
+        (circle_initial_algebra_loop_data x)
+      · (pr112 circle_initial_prealgebra_ump_1) x
+      =
+      (pr112 circle_initial_prealgebra_ump_1) x · pr1 ((pr21 G) j) x.
+  Proof.
+    apply TODO.
+  Qed.
+  
   Definition circle_initial_algebra_ump_1
     : circle_initial_algebra --> G.
   Proof.
     use make_algebra_map_grpd.
     use make_hit_path_alg_map_grpd.
-    - app
+    - exact circle_initial_prealgebra_ump_1.
+    - exact circle_initial_algebra_ump_1_path.
+  Defined.
+End CircleInitialAlgUMPOne.
