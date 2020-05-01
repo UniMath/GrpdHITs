@@ -156,8 +156,6 @@ Definition circle_is_path_space
 Initial groupoid algebra for the circle constructed in a special way.
 We will use this conclude that the fundamental group of the circle is the integers
  *)
-Definition TODO {A : UU} : A.
-Admitted.
 
 Definition circle_initial_algebra_precategory_data
   : precategory_data.
@@ -383,9 +381,15 @@ Definition morph_power_neg
            (n : nat)
   : f ^ (toℤneg n) = morph_power_nat (grpd_inv f) n.
 Proof.
-  induction n.
+  induction n as [ | n IHn].
   - apply idpath.
-  - apply TODO.
+  - simpl.
+    rewrite toℤneg_S.
+    unfold hzminus.
+    rewrite hzpluscomm.
+    refine (maponpaths (λ z, _ · morph_power_nat (grpd_inv f) z) _).
+    simpl.
+    apply natminuseqn.
 Qed.
 
 Definition morph_power_zero
@@ -397,6 +401,60 @@ Proof.
   apply idpath.
 Qed.
 
+Definition morp_power_suc_pred
+           {C : groupoid}
+           {x : C}
+           (f : x --> x)
+           (z : hz)
+  : f ^ (1 + z)%hz = f · f^z
+  × f ^ (-(1) + z)%hz = grpd_inv f · f^z.
+Proof.
+  revert z.
+  use hz_ind.
+  - simpl.
+    split.
+    + rewrite hzplusr0, morph_power_zero, id_right.
+      apply id_right.
+    + rewrite hzplusr0, morph_power_zero, id_right.
+      apply id_right.
+  - simpl.
+    intros n IHn.
+    induction IHn as [IHnplus IHnmin].
+    split.
+    + apply idpath.
+    + rewrite nattohzandS.
+      rewrite <- hzplusassoc.
+      rewrite hzlminus.
+      rewrite hzplusl0.
+      rewrite IHnplus.
+      apply move_grpd_inv_right.
+      apply idpath.
+  - simpl ; intros n IHn.
+    induction IHn as [IHnplus IHnmin].
+    split.
+    + rewrite !toℤneg_S.
+      unfold hzminus.
+      rewrite hzpluscomm.
+      rewrite hzplusassoc.
+      rewrite hzlminus.
+      rewrite hzplusr0.
+      rewrite hzpluscomm.
+      rewrite IHnmin.
+      rewrite assoc.
+      refine (!(id_left _) @ _).
+      apply maponpaths_2.
+      use move_grpd_inv_left.
+      exact (!(id_left _)).
+    + rewrite !toℤneg_S.
+      unfold hzminus.
+      refine (!_).
+      rewrite hzpluscomm.
+      rewrite IHnmin.
+      rewrite morph_power_neg.
+      apply idpath.
+Qed.
+
+  
 Definition morp_power_suc
            {C : groupoid}
            {x : C}
@@ -404,26 +462,7 @@ Definition morp_power_suc
            (z : hz)
   : f ^ (1 + z)%hz = f · f^z.
 Proof.
-  revert z.
-  use hz_ind.
-  - simpl.
-    rewrite hzplusr0, morph_power_zero, id_right.
-    apply id_right.
-  - simpl.
-    intros n IHn.
-    apply idpath.
-  - (*simpl ; intros n IHn.
-    rewrite !toℤneg_S.
-    unfold hzminus.
-    rewrite hzpluscomm.
-    rewrite hzplusassoc.
-    rewrite hzlminus.
-    rewrite hzplusr0.
-    rewrite morph_power_neg.
-    induction n.
-    + simpl.
-      cbn.*)
-    apply TODO.
+  exact (pr1 (morp_power_suc_pred f z)).
 Qed.
 
 Definition morph_power_pred
@@ -433,15 +472,7 @@ Definition morph_power_pred
            (z : hz)
   : f ^ (-(1) + z)%hz = grpd_inv f · f^z.
 Proof.
-  revert z.
-  use hz_ind.
-  - simpl.
-    rewrite hzplusr0, morph_power_zero, id_right.
-    apply id_right.
-  - apply TODO.
-  - simpl.
-    intros n IHn.
-    apply TODO.
+  exact (pr2 (morp_power_suc_pred f z)).
 Qed.
 
 Definition morph_power_plus
@@ -598,7 +629,11 @@ Section CircleInitialAlgUMPOne.
       =
       (pr112 circle_initial_prealgebra_ump_1) x · pr1 ((pr21 G) j) x.
   Proof.
-    apply TODO.
+    cbn.
+    induction x, j.
+    cbn.
+    rewrite !id_right, id_left.
+    apply idpath.
   Qed.
   
   Definition circle_initial_algebra_ump_1
