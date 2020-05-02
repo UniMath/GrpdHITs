@@ -10,6 +10,7 @@ Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.categories.StandardCategories.
 Require Import UniMath.CategoryTheory.Equivalences.Core.
 Require Import UniMath.CategoryTheory.Equivalences.CompositesAndInverses.
+Require Import UniMath.CategoryTheory.Equivalences.FullyFaithful.
 Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
@@ -440,9 +441,7 @@ Section ProjUniqueMaps.
   Proof.
     intros f g α β.
     pose (L := functor_to_unit (hom X Y)).
-    pose (right_adj_equiv_is_ff _ _ _ (adj_equivalence_of_precats_inv (uX Y)) f g)
-      as HL.
-    simpl in HL.
+    pose (fully_faithful_from_equivalence _ _ _ (uX Y) f g) as HL.
     pose (right_adj_equiv_is_ff _ _ _ (uX Y) tt tt) as HR.
     refine (invmaponpathsincl #L HL α β _).
     refine (invmaponpathsincl _ HR _ _ _).
