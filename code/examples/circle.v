@@ -18,6 +18,7 @@ Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.Colimits.Initial.
 
 Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
 Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
@@ -868,3 +869,15 @@ Section CircleInitialAlgUMPEq.
       apply idpath.
   Qed.
 End CircleInitialAlgUMPEq.
+
+Definition circle_initial_algebra_unique_maps
+  : unique_maps circle_initial_algebra.
+Proof.
+  use make_unique_maps.
+  - exact circle_initial_algebra_ump_1.
+  - intros G f g.
+    use make_invertible_2cell.
+    + exact (circle_initial_algebra_ump_2 G f g).
+    + apply hit_alg_is_invertible_2cell.
+  - exact circle_ump_eq.
+Defined.    
