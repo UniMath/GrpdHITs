@@ -18,6 +18,7 @@ Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.Core.EquivToAdjequiv.
 Require Import UniMath.Bicategories.Colimits.Initial.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.DispInvertibles.
@@ -397,6 +398,91 @@ Section ConstrUniqueMaps.
   Defined.
 End ConstrUniqueMaps.
 
+Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.CategoryTheory.Adjunctions.Core.
+Require Import UniMath.Bicategories.Core.Examples.BicatOfCats.
+
+Section ProjUniqueMaps.
+  Variable (B : bicat)
+           (X : B)
+           (uX : unique_maps X).
+
+  Definition TODO (A : UU) : A.
+  Admitted.
+  
+  Definition unique_maps_1cell
+    : biinitial_1cell_property_help B X
+    := λ Y, pr11 (uX Y) tt.
+
+  Definition unique_maps_2cell
+             (Y : B)
+    : biinitial_2cell_property_help B X Y.
+  Proof.
+    intros f g.
+    pose (L := functor_to_unit (hom X Y)).
+    pose (θ₁ := iso_to_inv2cell
+                  _ _
+                  (CompositesAndInverses.nat_iso_to_pointwise_iso
+                     (unit_nat_iso_from_adj_equivalence_of_precats (uX Y))
+                     f)).
+    pose (θ₃ := inv_of_invertible_2cell
+                  (iso_to_inv2cell
+                     _ _
+                     (CompositesAndInverses.nat_iso_to_pointwise_iso
+                        (unit_nat_iso_from_adj_equivalence_of_precats (uX Y))
+                        g))).
+    pose (θ₂ := iso_to_inv2cell
+                  _ _
+                  (functor_on_iso (pr11 (uX Y)) (idtoiso (idpath _ : L f = L g)))).
+    exact (comp_of_invertible_2cell θ₁ (comp_of_invertible_2cell θ₂ θ₃)).
+  Defined.
+
+  Definition unique_maps_eq
+             (Y : B)
+    : biinitial_eq_property_help B X Y.
+  Proof.
+    intros f g α β.
+    pose (L := functor_to_unit (hom X Y)).
+    Check pr12 (uX Y) f.
+    Check left_adjoint_equivalence_to_is_catiso.
+    pose (right_adj_equiv_is_ff _ _ _ (uX Y) tt tt) as t.    
+    refine (invmaponpathsincl #L _ α β _).
+    - apply TODO.
+    - refine (invmaponpathsincl _ (right_adj_equiv_is_ff _ _ _ (uX Y) _ _) _ _ _).
+      apply idpath.
+  Qed.
+End ProjUniqueMaps.
+  
+Section UniqueMapsUniqueness.
+  Variable (B : bicat)
+           (X Y : B)
+           (uX : unique_maps X)
+           (uY : unique_maps Y).
+  
+  Definition unique_maps_unique_adj_data
+    : left_adjoint_data (unique_maps_1cell B X uX Y).
+  Proof.
+    simple refine (_,,_,,_).
+    - exact (unique_maps_1cell B Y uY X).
+    - exact (unique_maps_2cell B X uX X
+                               (id₁ X)
+                               (unique_maps_1cell B X uX Y · unique_maps_1cell B Y uY X)).
+    - exact (unique_maps_2cell B Y uY Y
+                               (unique_maps_1cell B Y uY X · unique_maps_1cell B X uX Y)
+                               (id₁ Y)).
+  Defined.
+  
+  Definition unique_maps_unique_adj_eqv
+    : left_adjoint_equivalence (unique_maps_1cell B X uX Y).
+  Proof.
+    apply equiv_to_isadjequiv.
+    use tpair.
+    - exact (unique_maps_unique_adj_data).
+    - abstract
+        (apply make_dirprod; apply property_from_invertible_2cell).
+  Defined.
+End UniqueMapsUniqueness.
+  
 Section GrpdAlgUMP.
   Variable (Σ : hit_signature).
 
