@@ -13,7 +13,11 @@ Require Import UniMath.CategoryTheory.Equivalences.CompositesAndInverses.
 Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
+Require Import UniMath.CategoryTheory.Adjunctions.Core.
+
 Require Import UniMath.Bicategories.Core.Bicat.
+Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Core.Examples.BicatOfCats.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Univalence.
@@ -398,18 +402,11 @@ Section ConstrUniqueMaps.
   Defined.
 End ConstrUniqueMaps.
 
-Require Import UniMath.Bicategories.Core.Adjunctions.
-Require Import UniMath.CategoryTheory.Adjunctions.Core.
-Require Import UniMath.Bicategories.Core.Examples.BicatOfCats.
-
 Section ProjUniqueMaps.
   Variable (B : bicat)
            (X : B)
            (uX : unique_maps X).
 
-  Definition TODO (A : UU) : A.
-  Admitted.
-  
   Definition unique_maps_1cell
     : biinitial_1cell_property_help B X
     := λ Y, pr11 (uX Y) tt.
@@ -443,13 +440,13 @@ Section ProjUniqueMaps.
   Proof.
     intros f g α β.
     pose (L := functor_to_unit (hom X Y)).
-    Check pr12 (uX Y) f.
-    Check left_adjoint_equivalence_to_is_catiso.
-    pose (right_adj_equiv_is_ff _ _ _ (uX Y) tt tt) as t.    
-    refine (invmaponpathsincl #L _ α β _).
-    - apply TODO.
-    - refine (invmaponpathsincl _ (right_adj_equiv_is_ff _ _ _ (uX Y) _ _) _ _ _).
-      apply idpath.
+    pose (right_adj_equiv_is_ff _ _ _ (adj_equivalence_of_precats_inv (uX Y)) f g)
+      as HL.
+    simpl in HL.
+    pose (right_adj_equiv_is_ff _ _ _ (uX Y) tt tt) as HR.
+    refine (invmaponpathsincl #L HL α β _).
+    refine (invmaponpathsincl _ HR _ _ _).
+    apply idpath.
   Qed.
 End ProjUniqueMaps.
   
