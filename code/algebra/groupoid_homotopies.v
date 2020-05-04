@@ -373,3 +373,91 @@ Proof.
   apply bicat_is_invertible_2cell_to_fullsub_is_invertible_2cell.
   apply hit_path_alg_is_invertible_2cell.
 Defined.
+
+(** Adjoint equivalence of grpd algebra gives fully faithful functors of carriers *)
+Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.DisplayedBicats.DispAdjunctions.
+Require Import UniMath.CategoryTheory.Adjunctions.Core.
+Require Import UniMath.CategoryTheory.Equivalences.Core.
+Require Import UniMath.CategoryTheory.Equivalences.FullyFaithful.
+
+Definition left_adjoint_equivalence_grpd
+           {G₁ G₂ : grpd_bicat}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : adj_equivalence_of_precats F.
+Proof.
+  use make_adj_equivalence_of_precats.
+  - exact (left_adjoint_right_adjoint Hf).
+  - exact (left_adjoint_unit Hf).
+  - exact (left_adjoint_counit Hf).
+  - split ; intro x ; cbn.
+    + abstract
+        (pose (nat_trans_eq_pointwise (pr1 (axioms_of_left_adjoint Hf)) x) as p ;
+         cbn in p ;
+         rewrite !id_left, !id_right in p ;
+         exact p).
+    + abstract
+        (pose (nat_trans_eq_pointwise (pr2 (axioms_of_left_adjoint Hf)) x) as p ;
+         cbn in p ;
+         rewrite !id_left, !id_right in p ;
+         exact p).
+  - split ; intro x ; cbn.
+    + apply G₁.
+    + apply G₂.
+Defined.
+
+Definition left_adjoint_equivalence_is_fully_faithful
+           {G₁ G₂ : grpd_bicat}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : fully_faithful F.
+Proof.
+  apply fully_faithful_from_equivalence.
+  apply left_adjoint_equivalence_grpd.
+  exact Hf.
+Defined.
+
+Definition left_adjoint_equivalence_grpd_prealgebra
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_prealgebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : left_adjoint_equivalence (pr1 F).
+Proof.
+  exact (pr21 (adjoint_equivalence_total_disp_weq _ _ (_ ,, Hf))).
+Defined.
+
+Definition left_adjoint_equivalence_grpd_path_algebra
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_path_algebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : left_adjoint_equivalence (pr1 F).
+Proof.
+  exact (pr21 (adjoint_equivalence_total_disp_weq _ _ (_ ,, Hf))).
+Defined.
+
+Definition left_adjoint_equivalence_grpd_algebra_help
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_algebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : left_adjoint_equivalence (pr1 F).
+Proof.
+  exact (pr21 (adjoint_equivalence_total_disp_weq _ _ (_ ,, Hf))).
+Defined.
+
+Definition left_adjoint_equivalence_grpd_algebra_is_fully_faithful
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_algebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : fully_faithful (pr111 F).
+Proof.
+  pose (Hf₁ := left_adjoint_equivalence_grpd_algebra_help Hf).
+  pose (Hf₂ := left_adjoint_equivalence_grpd_path_algebra Hf₁).
+  pose (Hf₃ := left_adjoint_equivalence_grpd_prealgebra Hf₂).
+  exact (left_adjoint_equivalence_is_fully_faithful Hf₃).
+Defined.
+
