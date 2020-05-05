@@ -3,7 +3,8 @@ We determine that the path space of the group quotient
  *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
-Require Import UniMath.NumberSystems.Integers.
+Require Import UniMath.Algebra.Monoids.
+Require Import UniMath.Algebra.Groups.
 
 Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.CategoryTheory.Core.Functors.
@@ -39,214 +40,235 @@ Require Import initial_grpd_alg.W_poly.
 Require Import initial_grpd_alg.initial_groupoid_algebra.
 Require Import initial_grpd_alg.is_initial.
 Require Import existence.hit_existence.
-Require Import examples.circle.
+Require Import examples.group_quotient.
 
 Require Import fundamental_groups.loops.
 
 Local Open Scope cat.
 
-(*
 
+Definition TODO (A : UU) : A.
+Admitted.
 (**
-Initial groupoid algebra for the circle constructed in a special way.
-We will use this conclude that the fundamental group of the circle is the integers
+Initial groupoid algebra for the group quotient constructed in a special way.
  *)
-Definition circle_initial_algebra_precategory_data
+
+Variable (G : gr).
+
+Definition group_quot_initial_algebra_precategory_data
   : precategory_data.
 Proof.
   use make_precategory_data.
   - use make_precategory_ob_mor.
     + exact unit. 
-    + exact (λ _ _, hz).
-  - exact (λ _, hzzero). 
-  - exact (λ _ _ _, hzplus).
+    + exact (λ _ _, G).
+  - exact (λ _, unel G).
+  - exact (λ _ _ _, op).
 Defined.
 
-Definition circle_initial_algebra_is_precategory
-  : is_precategory circle_initial_algebra_precategory_data.
+Definition group_quot_initial_algebra_is_precategory
+  : is_precategory group_quot_initial_algebra_precategory_data.
 Proof.
   use make_is_precategory.
-  - exact (λ _ _, hzplusl0).
-  - exact (λ _ _, hzplusr0).
-  - exact (λ _ _ _ _ x y z, ! hzplusassoc x y z).
-  - exact (λ _ _ _ _, hzplusassoc).
+  - exact (λ _ _, lunax G).
+  - exact (λ _ _, runax G).
+  - exact (λ _ _ _ _ x y z, ! assocax G x y z). 
+  - exact (λ _ _ _ _, assocax G).
 Qed.
 
-Definition circle_initial_algebra_precategory
+Definition group_quot_initial_algebra_precategory
   : precategory.
 Proof.
   use make_precategory.
-  - exact circle_initial_algebra_precategory_data.
-  - exact circle_initial_algebra_is_precategory.
+  - exact group_quot_initial_algebra_precategory_data.
+  - exact group_quot_initial_algebra_is_precategory.
 Defined.
 
-Definition circle_initial_algebra_homsets
-  : has_homsets circle_initial_algebra_precategory.
+Definition group_quot_initial_algebra_homsets
+  : has_homsets group_quot_initial_algebra_precategory.
 Proof.
   intros x y.
-  apply isasetsetquot.
+  apply (pr11 G).
 Qed.
 
-Definition circle_initial_algebra_category
+Definition group_quot_initial_algebra_category
   : category.
 Proof.
   use make_category.
-  - exact circle_initial_algebra_precategory.
-  - exact circle_initial_algebra_homsets.
+  - exact group_quot_initial_algebra_precategory.
+  - exact group_quot_initial_algebra_homsets.
 Defined.
 
-Definition circle_initial_algebra_is_pregroupoid
-  : is_pregroupoid circle_initial_algebra_category.
+Definition group_quot_initial_algebra_is_pregroupoid
+  : is_pregroupoid group_quot_initial_algebra_category.
 Proof.
-  intros tt1 tt2 z.
+  intros ? ? x.
   use is_iso_qinv.
-  - exact (hzsign z).
+  - exact (grinv G x).
   - split.
-    + exact (hzrminus z).
-    + exact (hzlminus z).
+    + exact (grrinvax G x).
+    + exact (grlinvax G x).
 Defined.
 
-Definition circle_initial_algebra_carrier
+Definition group_quot_initial_algebra_carrier
   : groupoid.
 Proof.
   use make_groupoid.
-  - exact circle_initial_algebra_category.
-  - exact circle_initial_algebra_is_pregroupoid.
+  - exact group_quot_initial_algebra_category.
+  - exact group_quot_initial_algebra_is_pregroupoid.
 Defined.
 
 (** It forms a groupoid algebra *)
-Definition circle_initial_algebra_base_data
+Definition group_quot_initial_algebra_base_data
   : functor_data
-      (⦃ point_constr circle_signature ⦄ circle_initial_algebra_carrier : groupoid)
-      (circle_initial_algebra_carrier).
+      (⦃ point_constr (group_quot_signature G) ⦄ group_quot_initial_algebra_carrier : groupoid)
+      (group_quot_initial_algebra_carrier).
 Proof.
   use make_functor_data.
   - exact (λ x, x).
-  - exact (λ _ _ _, hzzero).
+  - exact (λ _ _ _, unel G).
 Defined.
 
-Definition circle_initial_algebra_base_is_functor
-  : is_functor circle_initial_algebra_base_data.
+Definition group_quot_initial_algebra_base_is_functor
+  : is_functor group_quot_initial_algebra_base_data.
 Proof.
   split.
   - exact (λ _, idpath _).
-  - exact (λ _ _ _ _ _, ! hzplusr0 _).
+  - exact (λ _ _ _ _ _, ! runax G  _).
 Qed.
 
-Definition circle_initial_algebra_base
-  : (⦃ point_constr circle_signature ⦄ circle_initial_algebra_carrier : groupoid)
+Definition group_quot_initial_algebra_base
+  : (⦃ point_constr (group_quot_signature G) ⦄ group_quot_initial_algebra_carrier : groupoid)
     ⟶
-    circle_initial_algebra_carrier.
+    group_quot_initial_algebra_carrier.
 Proof.
   use make_functor.
-  - exact circle_initial_algebra_base_data.
-  - exact circle_initial_algebra_base_is_functor.
+  - exact group_quot_initial_algebra_base_data.
+  - exact group_quot_initial_algebra_base_is_functor.
 Defined.
 
-Definition circle_initial_prealgebra
-  : hit_prealgebra_grpd circle_signature.
+Definition group_quot_initial_prealgebra
+  : hit_prealgebra_grpd (group_quot_signature G).
 Proof.
   use make_hit_prealgebra_grpd.
-  - exact circle_initial_algebra_carrier.
-  - exact circle_initial_algebra_base.
+  - exact group_quot_initial_algebra_carrier.
+  - exact group_quot_initial_algebra_base.
 Defined.
 
-Definition circle_initial_algebra_loop_data
-  : nat_trans_data
-      (sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra)
-      (sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra)
-  := λ _, hzone.
-
-Definition circle_initial_algebra_loop_is_nat_trans
-  : is_nat_trans
-      _ _
-      circle_initial_algebra_loop_data.
-Proof.
-  exact (λ _ _ _, hzplusl0 _ @ ! hzplusr0 _).
-Qed.
-
-Definition circle_initial_algebra_loop
-  : sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra
+Definition group_quot_initial_algebra_loop
+  : sem_endpoint_grpd_data_functor_data
+      (group_quot_base_ep (group_quot_path_arg G tt))
+      group_quot_initial_prealgebra
     ⟹
-    sem_endpoint_grpd_data_functor_data constr circle_initial_prealgebra.
+    sem_endpoint_grpd_data_functor_data
+    (group_quot_base_ep (group_quot_path_arg G tt))
+    group_quot_initial_prealgebra.
 Proof.
   use make_nat_trans.
-  - exact circle_initial_algebra_loop_data.
-  - exact circle_initial_algebra_loop_is_nat_trans.
-Defined.
-  
-Definition circle_initial_path_algebra
-  : hit_path_algebra_grpd circle_signature.
-Proof.
-  use make_hit_path_algebra_grpd.
-  - exact circle_initial_prealgebra.
-  - exact (λ _, circle_initial_algebra_loop).
+  - exact (λ x, x). 
+  - intros x y eq.
+    exact (lunax G y @ ! eq @ ! runax G x).
 Defined.
 
-Definition circle_initial_algebra
-  : hit_algebra_grpd circle_signature.
+Definition group_quot_initial_path_algebra
+  : hit_path_algebra_grpd (group_quot_signature G).
+Proof.
+  use make_hit_path_algebra_grpd.
+  - exact group_quot_initial_prealgebra.
+  - exact (λ _, group_quot_initial_algebra_loop).
+Defined.
+
+Definition group_quot_initial_is_hit_algebra
+  : is_hit_algebra_grpd
+      (group_quot_signature G)
+      group_quot_initial_path_algebra.
+Proof.
+  intros j x ?.
+  induction j.
+  - simpl; cbn.
+    rewrite (grlinvax G _).
+    repeat rewrite (lunax G _).
+    apply idpath.
+  - simpl; cbn.
+    repeat rewrite (grlinvax G _).
+    repeat rewrite (lunax G _).
+    repeat rewrite (runax G _).
+    apply idpath.
+Qed.  
+
+Definition group_quot_initial_algebra
+  : hit_algebra_grpd (group_quot_signature G).
 Proof.
   use make_algebra_grpd.
-  - exact circle_initial_path_algebra.
-  - abstract (intro j ; induction j).
+  - exact group_quot_initial_path_algebra.
+  - exact group_quot_initial_is_hit_algebra.
 Defined.
+
+
+(* WIP from here *)
+
+
+
+
+
+
 
 (** The UMP for 1-cells *)
 Local Notation "f ^ z" := (morph_power f z).
 
-Section CircleInitialAlgUMPOne.
-  Variable (G : hit_algebra_grpd circle_signature).
+Section Group_quotInitialAlgUMPOne.
+  Variable (G : hit_algebra_grpd group_quot_signature).
 
   Local Notation "'Gloop'" := (pr1 (alg_path_grpd G loop) tt).
 
-  Definition circle_initial_algebra_ump_1_carrier_data_0
+  Definition group_quot_initial_algebra_ump_1_carrier_data_0
     : alg_carrier_grpd G
     := alg_constr_grpd G tt.
 
-  Definition circle_initial_algebra_ump_1_carrier_data_1
+  Definition group_quot_initial_algebra_ump_1_carrier_data_1
              (z : hz)
-    : alg_carrier_grpd G ⟦ circle_initial_algebra_ump_1_carrier_data_0 ,
-                           circle_initial_algebra_ump_1_carrier_data_0 ⟧
+    : alg_carrier_grpd G ⟦ group_quot_initial_algebra_ump_1_carrier_data_0 ,
+                           group_quot_initial_algebra_ump_1_carrier_data_0 ⟧
     := Gloop ^ z.
   
-  Definition circle_initial_algebra_ump_1_carrier_data
+  Definition group_quot_initial_algebra_ump_1_carrier_data
     : functor_data
-        circle_initial_algebra_precategory_data
+        group_quot_initial_algebra_precategory_data
         (alg_carrier_grpd G).
   Proof.
     use make_functor_data.
-    - exact (λ _, circle_initial_algebra_ump_1_carrier_data_0).
-    - exact (λ _ _, circle_initial_algebra_ump_1_carrier_data_1). 
+    - exact (λ _, group_quot_initial_algebra_ump_1_carrier_data_0).
+    - exact (λ _ _, group_quot_initial_algebra_ump_1_carrier_data_1). 
   Defined.
 
-  Definition circle_initial_algebra_ump_1_carrier_is_functor
-    : is_functor circle_initial_algebra_ump_1_carrier_data.
+  Definition group_quot_initial_algebra_ump_1_carrier_is_functor
+    : is_functor group_quot_initial_algebra_ump_1_carrier_data.
   Proof.
     split.
     - exact (λ _, idpath _).
     - intros ? ? ?.
-      cbn -[hz] ; unfold circle_initial_algebra_ump_1_carrier_data_1.
+      cbn -[hz] ; unfold group_quot_initial_algebra_ump_1_carrier_data_1.
       intros f g.
       exact (morph_power_plus Gloop f g).
   Qed.
 
-  Definition circle_initial_algebra_ump_1_carrier
-    : circle_initial_algebra_carrier ⟶ alg_carrier_grpd G.
+  Definition group_quot_initial_algebra_ump_1_carrier
+    : group_quot_initial_algebra_carrier ⟶ alg_carrier_grpd G.
   Proof.
     use make_functor.
-    - exact circle_initial_algebra_ump_1_carrier_data.
-    - exact circle_initial_algebra_ump_1_carrier_is_functor.
+    - exact group_quot_initial_algebra_ump_1_carrier_data.
+    - exact group_quot_initial_algebra_ump_1_carrier_is_functor.
   Defined.
 
-  Definition circle_initial_algebra_ump_1_commute_data
+  Definition group_quot_initial_algebra_ump_1_commute_data
     : nat_trans_data
         (functor_composite_data
-           circle_initial_algebra_base_data
-           circle_initial_algebra_ump_1_carrier_data)
+           group_quot_initial_algebra_base_data
+           group_quot_initial_algebra_ump_1_carrier_data)
         (functor_composite_data
            (poly_act_functor
-              circle_point_constr
-              circle_initial_algebra_ump_1_carrier)
+              group_quot_point_constr
+              group_quot_initial_algebra_ump_1_carrier)
            (alg_constr_grpd G)).
   Proof.
     intros x.
@@ -254,10 +276,10 @@ Section CircleInitialAlgUMPOne.
     apply id₁.
   Defined.
 
-  Definition circle_initial_algebra_ump_1_commute_is_nat_trans
+  Definition group_quot_initial_algebra_ump_1_commute_is_nat_trans
     : is_nat_trans
         _ _
-        circle_initial_algebra_ump_1_commute_data.
+        group_quot_initial_algebra_ump_1_commute_data.
   Proof.
     intros x y f.
     induction x, y.
@@ -270,39 +292,39 @@ Section CircleInitialAlgUMPOne.
     exact (!(functor_id (alg_constr_grpd G : _ ⟶ _) _)).
   Qed.
     
-  Definition circle_initial_algebra_ump_1_commute
+  Definition group_quot_initial_algebra_ump_1_commute
     : functor_composite_data
-        circle_initial_algebra_base_data
-        circle_initial_algebra_ump_1_carrier_data
+        group_quot_initial_algebra_base_data
+        group_quot_initial_algebra_ump_1_carrier_data
       ⟹
       functor_composite_data
         (poly_act_functor
-           circle_point_constr
-           circle_initial_algebra_ump_1_carrier)
+           group_quot_point_constr
+           group_quot_initial_algebra_ump_1_carrier)
         (alg_constr_grpd G).
   Proof.
     use make_nat_trans.
-    - exact circle_initial_algebra_ump_1_commute_data.
-    - exact circle_initial_algebra_ump_1_commute_is_nat_trans.
+    - exact group_quot_initial_algebra_ump_1_commute_data.
+    - exact group_quot_initial_algebra_ump_1_commute_is_nat_trans.
   Defined.
 
-  Definition circle_initial_prealgebra_ump_1
-    : pr11 circle_initial_algebra --> pr11 G.
+  Definition group_quot_initial_prealgebra_ump_1
+    : pr11 group_quot_initial_algebra --> pr11 G.
   Proof.
     use make_hit_prealgebra_mor.
-    - exact circle_initial_algebra_ump_1_carrier.
-    - exact circle_initial_algebra_ump_1_commute.
+    - exact group_quot_initial_algebra_ump_1_carrier.
+    - exact group_quot_initial_algebra_ump_1_commute.
   Defined.
 
   (** Might need to change once the definitions can be unfolded more *)
-  Definition circle_initial_algebra_ump_1_path
-             (j : path_label circle_signature)
+  Definition group_quot_initial_algebra_ump_1_path
+             (j : path_label group_quot_signature)
              (x : unit)
-    : # (pr11 circle_initial_prealgebra_ump_1)
-        (circle_initial_algebra_loop_data x)
-      · (pr112 circle_initial_prealgebra_ump_1) x
+    : # (pr11 group_quot_initial_prealgebra_ump_1)
+        (group_quot_initial_algebra_loop_data x)
+      · (pr112 group_quot_initial_prealgebra_ump_1) x
       =
-      (pr112 circle_initial_prealgebra_ump_1) x · pr1 ((pr21 G) j) x.
+      (pr112 group_quot_initial_prealgebra_ump_1) x · pr1 ((pr21 G) j) x.
   Proof.
     cbn.
     induction x, j.
@@ -311,20 +333,20 @@ Section CircleInitialAlgUMPOne.
     apply idpath.
   Qed.
   
-  Definition circle_initial_algebra_ump_1
-    : circle_initial_algebra --> G.
+  Definition group_quot_initial_algebra_ump_1
+    : group_quot_initial_algebra --> G.
   Proof.
     use make_algebra_map_grpd.
     use make_hit_path_alg_map_grpd.
-    - exact circle_initial_prealgebra_ump_1.
-    - exact circle_initial_algebra_ump_1_path.
+    - exact group_quot_initial_prealgebra_ump_1.
+    - exact group_quot_initial_algebra_ump_1_path.
   Defined.
-End CircleInitialAlgUMPOne.
+End Group_quotInitialAlgUMPOne.
 
 
 Definition functor_on_min_1
            {G : groupoid}
-           (F : circle_initial_algebra_carrier ⟶ G)
+           (F : group_quot_initial_algebra_carrier ⟶ G)
   : #F (-(1))%hz
     =
     @grpd_inv _ (F tt) (F tt) (#F 1)%hz.
@@ -341,8 +363,8 @@ Proof.
   apply hzlminus.
 Qed.
 
-Definition circle_alg_mor_on_loop
-           {G₁ G₂ : hit_algebra_grpd circle_signature}
+Definition group_quot_alg_mor_on_loop
+           {G₁ G₂ : hit_algebra_grpd group_quot_signature}
            (F : G₁ --> G₂)
   : # (pr111 F : _ ⟶ _) (alg_path_grpd G₁ loop tt) · (pr112 (pr11 F)) tt
     =
@@ -354,20 +376,20 @@ Proof.
   exact p.
 Qed.
 
-Section CircleInitialAlgUMPTwo.
-  Variable (G : hit_algebra_grpd circle_signature)
-           (F₁ F₂ : circle_initial_algebra --> G).
+Section Group_quotInitialAlgUMPTwo.
+  Variable (G : hit_algebra_grpd group_quot_signature)
+           (F₁ F₂ : group_quot_initial_algebra --> G).
 
-  Definition circle_initial_algebra_ump_2_carrier_data
+  Definition group_quot_initial_algebra_ump_2_carrier_data
     : nat_trans_data (pr111 (pr1 F₁)) (pr111 (pr1 F₂))
     := λ x, pr11 (pr211 F₁) x · grpd_inv (pr11 (pr211 F₂) x).
 
-  Definition circle_initial_algebra_ump_2_is_nat_trans
-    : is_nat_trans _ _ circle_initial_algebra_ump_2_carrier_data.
+  Definition group_quot_initial_algebra_ump_2_is_nat_trans
+    : is_nat_trans _ _ group_quot_initial_algebra_ump_2_carrier_data.
   Proof.
     intros x y.
     induction x, y.
-    unfold circle_initial_algebra_ump_2_carrier_data.
+    unfold group_quot_initial_algebra_ump_2_carrier_data.
     intro f.
     refine (assoc _ _ _ @ _).
     refine (!_) ; use move_grpd_inv_left.
@@ -409,14 +431,14 @@ Section CircleInitialAlgUMPTwo.
       etrans.
       {
         apply maponpaths_2.
-        exact (circle_alg_mor_on_loop F₁).
+        exact (group_quot_alg_mor_on_loop F₁).
       }
       refine (assoc' _ _ _ @ _ @ assoc _ _ _).
       apply maponpaths.
       use move_grpd_inv_right.
       refine (_ @ assoc' _ _ _).
       use move_grpd_inv_left.
-      exact (!(circle_alg_mor_on_loop F₂)).
+      exact (!(group_quot_alg_mor_on_loop F₂)).
     - intros n IHn.
       rewrite !toℤneg_S.
       etrans.
@@ -452,18 +474,18 @@ Section CircleInitialAlgUMPTwo.
       etrans.
       {
         do 2 (refine (assoc _ _ _ @ _) ; apply maponpaths_2).
-        exact (circle_alg_mor_on_loop F₁).
+        exact (group_quot_alg_mor_on_loop F₁).
       }
       rewrite !assoc'.
       apply maponpaths.
-      pose (circle_alg_mor_on_loop F₂).
+      pose (group_quot_alg_mor_on_loop F₂).
       refine (_ @ id_right _).
       use move_grpd_inv_right.
       refine (!_).
       etrans.
       {
         refine (assoc _ _ _ @ _) ; apply maponpaths_2.
-        exact (!(circle_alg_mor_on_loop F₂)).
+        exact (!(group_quot_alg_mor_on_loop F₂)).
       }
       rewrite !assoc.
       refine (!_).
@@ -474,25 +496,25 @@ Section CircleInitialAlgUMPTwo.
       apply idpath.
   Qed.
   
-  Definition circle_initial_algebra_ump_2_carrier
+  Definition group_quot_initial_algebra_ump_2_carrier
     : pr111 (pr1 F₁) ⟹ pr111 (pr1 F₂).
   Proof.
     use make_nat_trans.
-    - exact circle_initial_algebra_ump_2_carrier_data.
-    - exact circle_initial_algebra_ump_2_is_nat_trans.
+    - exact group_quot_initial_algebra_ump_2_carrier_data.
+    - exact group_quot_initial_algebra_ump_2_is_nat_trans.
   Defined.
 
-  Definition circle_initial_algebra_ump_2
+  Definition group_quot_initial_algebra_ump_2
     : F₁ ==> F₂.
   Proof.
     simple refine (((_ ,, _) ,, λ _, tt) ,, tt).
-    - exact circle_initial_algebra_ump_2_carrier.
+    - exact group_quot_initial_algebra_ump_2_carrier.
     - abstract
         (use nat_trans_eq ;
          [ apply (pr1 (pr111 G))
          | simpl ;
            intro x ;
-           unfold circle_initial_algebra_ump_2_carrier_data ;
+           unfold group_quot_initial_algebra_ump_2_carrier_data ;
            rewrite <- assoc ;
            apply maponpaths ;
            rewrite (functor_id (pr21 (pr1 G))) ;
@@ -501,14 +523,14 @@ Section CircleInitialAlgUMPTwo.
            rewrite id_right ;
            apply idpath]).
   Defined.
-End CircleInitialAlgUMPTwo.
+End Group_quotInitialAlgUMPTwo.
 
-Section CircleInitialAlgUMPEq.
-  Variable (G : hit_algebra_grpd circle_signature)
-           (F₁ F₂ : circle_initial_algebra --> G)
+Section Group_quotInitialAlgUMPEq.
+  Variable (G : hit_algebra_grpd group_quot_signature)
+           (F₁ F₂ : group_quot_initial_algebra --> G)
            (τ₁ τ₂ : F₁ ==> F₂).
 
-  Definition circle_ump_eq
+  Definition group_quot_ump_eq
     : τ₁ = τ₂.
   Proof.
     use subtypePath.
@@ -542,51 +564,51 @@ Section CircleInitialAlgUMPEq.
       rewrite id_left.
       apply idpath.
   Qed.
-End CircleInitialAlgUMPEq.
+End Group_quotInitialAlgUMPEq.
 
-Definition circle_initial_algebra_unique_maps
-  : unique_maps circle_initial_algebra.
+Definition group_quot_initial_algebra_unique_maps
+  : unique_maps group_quot_initial_algebra.
 Proof.
   use make_unique_maps.
-  - exact circle_initial_algebra_ump_1.
+  - exact group_quot_initial_algebra_ump_1.
   - intros G f g.
     use make_invertible_2cell.
-    + exact (circle_initial_algebra_ump_2 G f g).
+    + exact (group_quot_initial_algebra_ump_2 G f g).
     + apply hit_alg_is_invertible_2cell.
-  - exact circle_ump_eq.
+  - exact group_quot_ump_eq.
 Defined.    
 
-(** Path space of the circle at base *)
-Definition circle_path_space_base
+(** Path space of the group_quot at base *)
+Definition group_quot_path_space_base
   : UU
-  := ((pr111 (initial_groupoid_algebra circle_signature) : groupoid)
-        ⟦ poly_initial_alg circle_point_constr tt
-        , poly_initial_alg circle_point_constr tt ⟧).
+  := ((pr111 (initial_groupoid_algebra group_quot_signature) : groupoid)
+        ⟦ poly_initial_alg group_quot_point_constr tt
+        , poly_initial_alg group_quot_point_constr tt ⟧).
 
-Definition circle_path_space_base_is_Z
-  : circle_path_space_base ≃ hz.
+Definition group_quot_path_space_base_is_Z
+  : group_quot_path_space_base ≃ hz.
 Proof.
   pose (left_adjoint_equivalence_grpd_algebra_is_fully_faithful
           (unique_maps_unique_adj_eqv
              _ _ _
              (initial_groupoid_algebra_is_initial _)
-             circle_initial_algebra_unique_maps)
-          (poly_initial_alg circle_point_constr tt)
-          (poly_initial_alg circle_point_constr tt))
+             group_quot_initial_algebra_unique_maps)
+          (poly_initial_alg group_quot_point_constr tt)
+          (poly_initial_alg group_quot_point_constr tt))
     as f.
   exact (make_weq _ f).
 Defined.
 
-Definition circle_path_space_encode_decode
-  : circle_base circle = circle_base circle
+Definition group_quot_path_space_encode_decode
+  : group_quot_base group_quot = group_quot_base group_quot
     ≃
-    circle_path_space_base
+    group_quot_path_space_base
   := hit_path_space
-       circle_signature
-       (poly_initial_alg circle_point_constr tt)
-       (poly_initial_alg circle_point_constr tt).
+       group_quot_signature
+       (poly_initial_alg group_quot_point_constr tt)
+       (poly_initial_alg group_quot_point_constr tt).
 
-Definition circle_path_space_is_Z
-  : circle_base circle = circle_base circle ≃ hz
-  := (circle_path_space_base_is_Z ∘ circle_path_space_encode_decode)%weq.
+Definition group_quot_path_space_is_Z
+  : group_quot_base group_quot = group_quot_base group_quot ≃ hz
+  := (group_quot_path_space_base_is_Z ∘ group_quot_path_space_encode_decode)%weq.
 *)
