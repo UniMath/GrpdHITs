@@ -23,6 +23,7 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
+Require Import existence.hit_existence.
 
 Local Open Scope cat.
 
@@ -179,3 +180,6 @@ Section TorusInduction.
         torus_ind_base
     := pr22 torus_ind_disp_algebra_map p_right tt.
 End TorusInduction.
+
+Definition torus
+  := pr1 (hit_existence torus_signature).
