@@ -47,8 +47,6 @@ Require Import fundamental_groups.loops.
 Local Open Scope cat.
 
 
-Definition TODO (A : UU) : A.
-Admitted.
 (**
 Initial groupoid algebra for the group quotient constructed in a special way.
  *)
@@ -376,10 +374,32 @@ Section GroupQuotInitialAlgUMPTwo.
     intros x y.
     induction x, y.
     unfold group_quot_initial_algebra_ump_2_carrier_data.
-    intro f.
+    intro x.
     refine (assoc _ _ _ @ _).
     refine (!_) ; use move_grpd_inv_left.
-    apply TODO.
+    pose (m := pr21 F₁ tt).
+    simpl in m.
+    pose (nat_trans_eq_pointwise m x) as p.
+    etrans.
+    { 
+      refine (! id_right _ @ _ @ assoc' _ _ _).
+      apply maponpaths.
+      exact (! functor_id (pr211 H) _).
+    }
+    refine (p @ _).
+    refine (assoc' _ _ _ @ _ @ assoc _ _ _ @ assoc _ _ _).
+    apply maponpaths.
+    use move_grpd_inv_right.
+    pose (m' := pr21 F₂ tt).
+    simpl in m'.
+    pose (nat_trans_eq_pointwise m' x) as p'.
+    etrans.
+    {
+      refine (! id_right _ @ _ @ assoc' _ _ _).
+      apply maponpaths.
+      exact (! functor_id (pr211 H) _).
+    }
+    exact (p' @ assoc' _ _ _).
   Qed.
   
   Definition group_quot_initial_algebra_ump_2_carrier
