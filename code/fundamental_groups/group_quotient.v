@@ -1,5 +1,5 @@
 (**
-We determine that the path space of the group quotient
+We determine the path space of the group quotient
  *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
@@ -204,56 +204,81 @@ Proof.
   - exact group_quot_initial_is_hit_algebra.
 Defined.
 
-
-(* WIP from here *)
-
-
-
-
-
-
-
 (** The UMP for 1-cells *)
-Local Notation "f ^ z" := (morph_power f z).
 
-Section Group_quotInitialAlgUMPOne.
-  Variable (G : hit_algebra_grpd group_quot_signature).
+Section GroupQuotInitialAlgUMPOne.
+  Variable (H : hit_algebra_grpd (group_quot_signature G)).
 
-  Local Notation "'Gloop'" := (pr1 (alg_path_grpd G loop) tt).
+  Local Notation "'Hmor'" := (alg_path_grpd H tt).
 
   Definition group_quot_initial_algebra_ump_1_carrier_data_0
-    : alg_carrier_grpd G
-    := alg_constr_grpd G tt.
+    : alg_carrier_grpd H
+    := alg_constr_grpd H tt.
+
 
   Definition group_quot_initial_algebra_ump_1_carrier_data_1
-             (z : hz)
-    : alg_carrier_grpd G ⟦ group_quot_initial_algebra_ump_1_carrier_data_0 ,
+             (x : G)
+    : alg_carrier_grpd H ⟦ group_quot_initial_algebra_ump_1_carrier_data_0 ,
                            group_quot_initial_algebra_ump_1_carrier_data_0 ⟧
-    := Gloop ^ z.
-  
+    := Hmor x.
+
   Definition group_quot_initial_algebra_ump_1_carrier_data
     : functor_data
         group_quot_initial_algebra_precategory_data
-        (alg_carrier_grpd G).
+        (alg_carrier_grpd H).
   Proof.
     use make_functor_data.
     - exact (λ _, group_quot_initial_algebra_ump_1_carrier_data_0).
     - exact (λ _ _, group_quot_initial_algebra_ump_1_carrier_data_1). 
   Defined.
 
+  Definition group_quot_initial_algebra_ump_1_carrier_functor_id
+    : Hmor 1%multmonoid = id₁ (alg_constr_grpd H tt).
+  Proof.
+    refine (! id_left _ @ _ @ alg_homot_grpd H group_quot_ident tt (idpath _)).
+    simpl.
+    rewrite (functor_id (pr211 H)).
+    repeat rewrite id_left.
+    repeat rewrite id_right.
+    refine (maponpaths (λ z, z · Hmor _) (!_ @ id_right _)).
+    refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+    exact (! id_right _).
+  Qed.
+  
   Definition group_quot_initial_algebra_ump_1_carrier_is_functor
     : is_functor group_quot_initial_algebra_ump_1_carrier_data.
   Proof.
     split.
-    - exact (λ _, idpath _).
-    - intros ? ? ?.
-      cbn -[hz] ; unfold group_quot_initial_algebra_ump_1_carrier_data_1.
-      intros f g.
-      exact (morph_power_plus Gloop f g).
+    - exact (λ _, group_quot_initial_algebra_ump_1_carrier_functor_id).      
+    - intros ? ? ? x y.
+      simpl.
+      refine (!_ @ alg_homot_grpd H group_quot_comp (x ,, y) (idpath _) @ _).
+      + simpl.
+        rewrite (functor_id (pr211 H)).
+        repeat rewrite id_left.
+        repeat rewrite id_right.
+        refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+        rewrite id_left.
+        exact (idpath _).
+      + simpl.
+        rewrite (functor_id (pr211 H)).
+        repeat rewrite id_left.
+        repeat rewrite id_right.
+        etrans.
+        {
+          apply maponpaths.
+          refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+          rewrite id_left.
+          exact (idpath _).
+        }
+        apply maponpaths_2.
+        refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+        rewrite id_left.
+        exact (idpath _).
   Qed.
 
   Definition group_quot_initial_algebra_ump_1_carrier
-    : group_quot_initial_algebra_carrier ⟶ alg_carrier_grpd G.
+    : group_quot_initial_algebra_carrier ⟶ alg_carrier_grpd H.
   Proof.
     use make_functor.
     - exact group_quot_initial_algebra_ump_1_carrier_data.
@@ -269,7 +294,7 @@ Section Group_quotInitialAlgUMPOne.
            (poly_act_functor
               group_quot_point_constr
               group_quot_initial_algebra_ump_1_carrier)
-           (alg_constr_grpd G)).
+           (alg_constr_grpd H)).
   Proof.
     intros x.
     induction x ; simpl.
@@ -284,12 +309,14 @@ Section Group_quotInitialAlgUMPOne.
     intros x y f.
     induction x, y.
     simpl.
-    cbn.
     rewrite !id_left.
+    rewrite !id_right.
+    unfold group_quot_initial_algebra_ump_1_carrier_data_1.
     assert (f = idpath _) as p.
-    { apply isapropunit. }
+    { apply isapropunit. }    
     rewrite p.
-    exact (!(functor_id (alg_constr_grpd G : _ ⟶ _) _)).
+    rewrite (functor_id (alg_constr_grpd H)). 
+    exact group_quot_initial_algebra_ump_1_carrier_functor_id. 
   Qed.
     
   Definition group_quot_initial_algebra_ump_1_commute
@@ -301,7 +328,7 @@ Section Group_quotInitialAlgUMPOne.
         (poly_act_functor
            group_quot_point_constr
            group_quot_initial_algebra_ump_1_carrier)
-        (alg_constr_grpd G).
+        (alg_constr_grpd H).
   Proof.
     use make_nat_trans.
     - exact group_quot_initial_algebra_ump_1_commute_data.
@@ -309,76 +336,35 @@ Section Group_quotInitialAlgUMPOne.
   Defined.
 
   Definition group_quot_initial_prealgebra_ump_1
-    : pr11 group_quot_initial_algebra --> pr11 G.
+    : pr11 group_quot_initial_algebra --> pr11 H.
   Proof.
     use make_hit_prealgebra_mor.
     - exact group_quot_initial_algebra_ump_1_carrier.
     - exact group_quot_initial_algebra_ump_1_commute.
   Defined.
 
-  (** Might need to change once the definitions can be unfolded more *)
-  Definition group_quot_initial_algebra_ump_1_path
-             (j : path_label group_quot_signature)
-             (x : unit)
-    : # (pr11 group_quot_initial_prealgebra_ump_1)
-        (group_quot_initial_algebra_loop_data x)
-      · (pr112 group_quot_initial_prealgebra_ump_1) x
-      =
-      (pr112 group_quot_initial_prealgebra_ump_1) x · pr1 ((pr21 G) j) x.
-  Proof.
-    cbn.
-    induction x, j.
-    cbn.
-    rewrite !id_right, id_left.
-    apply idpath.
-  Qed.
-  
   Definition group_quot_initial_algebra_ump_1
-    : group_quot_initial_algebra --> G.
+    : group_quot_initial_algebra --> H.
   Proof.
     use make_algebra_map_grpd.
     use make_hit_path_alg_map_grpd.
     - exact group_quot_initial_prealgebra_ump_1.
-    - exact group_quot_initial_algebra_ump_1_path.
+    - abstract
+        (intros j x; 
+         simpl;
+         induction j;
+         cbn;
+         rewrite (functor_id (pr211 H));
+         repeat rewrite (id_left _);
+         exact (id_right _)).
   Defined.
-End Group_quotInitialAlgUMPOne.
+End GroupQuotInitialAlgUMPOne.
 
+(* WIP from here *)
 
-Definition functor_on_min_1
-           {G : groupoid}
-           (F : group_quot_initial_algebra_carrier ⟶ G)
-  : #F (-(1))%hz
-    =
-    @grpd_inv _ (F tt) (F tt) (#F 1)%hz.
-Proof.
-  refine (_ @ id_left _).
-  use move_grpd_inv_left.
-  refine (!_).
-  etrans.
-  {
-    exact (!(@functor_comp _ _ F tt tt tt _ _)).
-  }
-  refine (_ @ functor_id _ _).
-  apply maponpaths.
-  apply hzlminus.
-Qed.
-
-Definition group_quot_alg_mor_on_loop
-           {G₁ G₂ : hit_algebra_grpd group_quot_signature}
-           (F : G₁ --> G₂)
-  : # (pr111 F : _ ⟶ _) (alg_path_grpd G₁ loop tt) · (pr112 (pr11 F)) tt
-    =
-    (pr112 (pr11 F)) tt · alg_path_grpd G₂ loop tt.
-Proof.
-  pose (pr21 F loop) as m.
-  simpl in m.
-  pose (nat_trans_eq_pointwise m tt) as p.
-  exact p.
-Qed.
-
-Section Group_quotInitialAlgUMPTwo.
-  Variable (G : hit_algebra_grpd group_quot_signature)
-           (F₁ F₂ : group_quot_initial_algebra --> G).
+Section GroupQuotInitialAlgUMPTwo.
+  Variable (H : hit_algebra_grpd (group_quot_signature G))
+           (F₁ F₂ : group_quot_initial_algebra --> H).
 
   Definition group_quot_initial_algebra_ump_2_carrier_data
     : nat_trans_data (pr111 (pr1 F₁)) (pr111 (pr1 F₂))
@@ -393,107 +379,7 @@ Section Group_quotInitialAlgUMPTwo.
     intro f.
     refine (assoc _ _ _ @ _).
     refine (!_) ; use move_grpd_inv_left.
-    revert f.
-    use hz_ind ; simpl.
-    - rewrite (functor_id (pr111 F₁)), id_left.
-      rewrite (functor_id (pr111 F₂)), id_right.
-      refine (_ @ assoc _ _ _).
-      refine (!(id_right _) @ _).
-      apply maponpaths.
-      use move_grpd_inv_right.
-      rewrite id_right.
-      apply idpath.
-    - intros n IHn.
-      rewrite nattohzandS.
-      etrans.
-      {
-        apply maponpaths_2.
-        exact (@functor_comp _ _ (pr111 F₁) _ tt _ 1%hz (nattohz n)).
-      }
-      refine (assoc' _ _ _ @ _).
-      etrans.
-      {
-        apply maponpaths.
-        exact IHn.
-      }
-      clear IHn.
-      rewrite !assoc.
-      apply maponpaths_2.
-      refine (!_).
-      etrans.
-      {
-        apply maponpaths.
-        exact (@functor_comp _ _ (pr111 F₂) _ tt _ 1%hz (nattohz n)).
-      }
-      rewrite !assoc.
-      apply maponpaths_2.
-      refine (!_).
-      etrans.
-      {
-        apply maponpaths_2.
-        exact (group_quot_alg_mor_on_loop F₁).
-      }
-      refine (assoc' _ _ _ @ _ @ assoc _ _ _).
-      apply maponpaths.
-      use move_grpd_inv_right.
-      refine (_ @ assoc' _ _ _).
-      use move_grpd_inv_left.
-      exact (!(group_quot_alg_mor_on_loop F₂)).
-    - intros n IHn.
-      rewrite !toℤneg_S.
-      etrans.
-      {
-        apply maponpaths_2.
-        unfold hzminus.
-        rewrite hzpluscomm.
-        exact (@functor_comp _ _ (pr111 F₁) _ tt _ (-(1))%hz (toℤneg n)).
-      }
-      refine (assoc' _ _ _ @ _).
-      etrans.
-      {
-        apply maponpaths.
-        exact IHn.
-      }
-      clear IHn.
-      rewrite !assoc.
-      apply maponpaths_2.
-      refine (!_).
-      etrans.
-      {
-        apply maponpaths.
-        unfold hzminus.
-        rewrite hzpluscomm.
-        exact (@functor_comp _ _ (pr111 F₂) _ tt _ (-(1))%hz (toℤneg n)).
-      }
-      rewrite !assoc.
-      apply maponpaths_2.
-      rewrite !functor_on_min_1.
-      refine (_ @ assoc _ _ _).
-      use move_grpd_inv_right.
-      refine (!_).
-      etrans.
-      {
-        do 2 (refine (assoc _ _ _ @ _) ; apply maponpaths_2).
-        exact (group_quot_alg_mor_on_loop F₁).
-      }
-      rewrite !assoc'.
-      apply maponpaths.
-      pose (group_quot_alg_mor_on_loop F₂).
-      refine (_ @ id_right _).
-      use move_grpd_inv_right.
-      refine (!_).
-      etrans.
-      {
-        refine (assoc _ _ _ @ _) ; apply maponpaths_2.
-        exact (!(group_quot_alg_mor_on_loop F₂)).
-      }
-      rewrite !assoc.
-      refine (!_).
-      use move_grpd_inv_left.
-      rewrite id_left.
-      refine (!_).
-      use move_grpd_inv_left.
-      apply idpath.
+    apply TODO.
   Qed.
   
   Definition group_quot_initial_algebra_ump_2_carrier
@@ -511,23 +397,23 @@ Section Group_quotInitialAlgUMPTwo.
     - exact group_quot_initial_algebra_ump_2_carrier.
     - abstract
         (use nat_trans_eq ;
-         [ apply (pr1 (pr111 G))
+         [ apply (pr1 (pr111 H))
          | simpl ;
            intro x ;
            unfold group_quot_initial_algebra_ump_2_carrier_data ;
            rewrite <- assoc ;
            apply maponpaths ;
-           rewrite (functor_id (pr21 (pr1 G))) ;
+           rewrite (functor_id (pr21 (pr1 H))) ;
            refine (!_) ;
            apply move_grpd_inv_right ;
            rewrite id_right ;
            apply idpath]).
   Defined.
-End Group_quotInitialAlgUMPTwo.
+End GroupQuotInitialAlgUMPTwo.
 
-Section Group_quotInitialAlgUMPEq.
-  Variable (G : hit_algebra_grpd group_quot_signature)
-           (F₁ F₂ : group_quot_initial_algebra --> G)
+Section GroupQuotInitialAlgUMPEq.
+  Variable (H : hit_algebra_grpd (group_quot_signature G))
+           (F₁ F₂ : group_quot_initial_algebra --> H)
            (τ₁ τ₂ : F₁ ==> F₂).
 
   Definition group_quot_ump_eq
@@ -540,13 +426,13 @@ Section Group_quotInitialAlgUMPEq.
     use subtypePath.
     { intro ; apply grpd_bicat. }
     use nat_trans_eq.
-    { apply (pr1 (pr111 G)). }
+    { apply (pr1 (pr111 H)). }
     intro x ; induction x.
     pose (nat_trans_eq_pointwise (pr211 τ₁) tt) as p.
     pose (nat_trans_eq_pointwise (pr211 τ₂) tt) as q.
     cbn in p, q.
-    rewrite (functor_id (pr21 (pr1 G))), id_right in p.
-    rewrite (functor_id (pr21 (pr1 G))), id_right in q.
+    rewrite (functor_id (pr21 (pr1 H))), id_right in p.
+    rewrite (functor_id (pr21 (pr1 H))), id_right in q.
     pose (maponpaths (λ z, z · grpd_inv (pr11 (pr211 F₂) tt)) (p @ !q)) as r.
     simpl in r.
     refine (_ @ r @ _).
@@ -564,16 +450,16 @@ Section Group_quotInitialAlgUMPEq.
       rewrite id_left.
       apply idpath.
   Qed.
-End Group_quotInitialAlgUMPEq.
+End GroupQuotInitialAlgUMPEq.
 
 Definition group_quot_initial_algebra_unique_maps
   : unique_maps group_quot_initial_algebra.
 Proof.
   use make_unique_maps.
   - exact group_quot_initial_algebra_ump_1.
-  - intros G f g.
+  - intros H f g.
     use make_invertible_2cell.
-    + exact (group_quot_initial_algebra_ump_2 G f g).
+    + exact (group_quot_initial_algebra_ump_2 H f g).
     + apply hit_alg_is_invertible_2cell.
   - exact group_quot_ump_eq.
 Defined.    
@@ -581,12 +467,12 @@ Defined.
 (** Path space of the group_quot at base *)
 Definition group_quot_path_space_base
   : UU
-  := ((pr111 (initial_groupoid_algebra group_quot_signature) : groupoid)
+  := ((pr111 (initial_groupoid_algebra (group_quot_signature G)) : groupoid)
         ⟦ poly_initial_alg group_quot_point_constr tt
         , poly_initial_alg group_quot_point_constr tt ⟧).
 
-Definition group_quot_path_space_base_is_Z
-  : group_quot_path_space_base ≃ hz.
+Definition group_quot_path_space_base_is_G
+  : group_quot_path_space_base ≃ G.
 Proof.
   pose (left_adjoint_equivalence_grpd_algebra_is_fully_faithful
           (unique_maps_unique_adj_eqv
@@ -600,15 +486,15 @@ Proof.
 Defined.
 
 Definition group_quot_path_space_encode_decode
-  : group_quot_base group_quot = group_quot_base group_quot
+  : group_quot_base G (group_quot G) = group_quot_base G (group_quot G)
     ≃
     group_quot_path_space_base
   := hit_path_space
-       group_quot_signature
+       (group_quot_signature G)
        (poly_initial_alg group_quot_point_constr tt)
        (poly_initial_alg group_quot_point_constr tt).
+  
+Definition group_quot_path_space_is_G
+  : group_quot_base G (group_quot G) = group_quot_base G (group_quot G) ≃ G
+  := (group_quot_path_space_base_is_G ∘ group_quot_path_space_encode_decode)%weq.
 
-Definition group_quot_path_space_is_Z
-  : group_quot_base group_quot = group_quot_base group_quot ≃ hz
-  := (group_quot_path_space_base_is_Z ∘ group_quot_path_space_encode_decode)%weq.
-*)

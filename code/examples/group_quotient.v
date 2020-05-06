@@ -29,6 +29,7 @@ Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
 Require Import displayed_algebras.globe_over_lem.
+Require Import existence.hit_existence.
 
 Local Open Scope cat.
 
@@ -448,3 +449,6 @@ Section GroupQuotient.
     Qed.
   End GroupQuotInduction.
 End GroupQuotient.
+
+Definition group_quot (G : gr)
+  := pr1 (hit_existence (group_quot_signature G)).
