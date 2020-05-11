@@ -1,0 +1,258 @@
+\begin{figure*}
+Introduction rules: 
+
+\vspace{2pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$x : G$}
+\UnaryInfC{$\gcl(x) : \gquotType(G)$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$x, y : G$}
+\AxiomC{$f : \mor{G}{x}{y}$}
+\BinaryInfC{$\gcleq(f) : \gcl(x) = \gcl(y)$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$x : G$}
+\UnaryInfC{$\ge(x) : \gcleq(\idgrpd{x}) = \refl{\gcl(x)}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$x, y, z : G$}
+\AxiomC{$f : \mor{G}{x}{y}$}
+\AxiomC{$g : \mor{G}{y}{z}$}
+\TrinaryInfC{$\gconcat(f, g) : \gcleq(\compgrpd{f}{g}) = \concat{\gcleq(f)}{\gcleq(g)}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$x, y : \gquotType(G)$}
+\AxiomC{$p, q : x = y$}
+\AxiomC{$r, s : p = q$}
+\TrinaryInfC{$\gtrunc(r, s) : r = s$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+Elimination rule:
+
+\vspace{2pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$Y : \gquotType(G) \rightarrow \onetypes$}
+\AxiomC{$\gclY : \depprod{(x : G)}{Y(\gcl(x))}$}
+\noLine
+\BinaryInfC{$\gcleqY : \depprod{(x, y : G) (f : \mor{G}{x}{y})}{\pathover{\gcleq(f)}{\gclY(x)}{\gclY(y)}}$}
+\noLine
+\UnaryInfC{$\geY : \depprod{(x : G)}{\globeover{\ge(x)}{\gcleqY(\idgrpd{x})}{\refl{\gclY(x)}}}$}
+\noLine
+\UnaryInfC{$\gconcatY : \depprod{(x, y, z : G) (f : \mor{G}{x}{y}) (g : \mor{G}{y}{z})}{\globeover{\gconcat(f, g)}{\gcleqY(\compgrpd{f}{g})}{\concat{\gcleqY(f)}{\gcleqY(g)}}}$}
+\UnaryInfC{$\gind(\gclY, \gcleqY, \geY, \gconcatY) : \depprod{(x : \gquotType(G))}{Y(x)}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+Computation rules:
+
+For $\gcl$: $\gind(\gclY, \gcleqY, \geY, \gconcatY)(\gcl(x)) \defeq \gclY(x)$
+
+For $\gcleq$: $\apd{(\gind(\gclY, \gcleqY, \geY, \gconcatY))}{(\gcleq(f))} = \gcleqY(f)$
+\caption{Introduction, elimination, and computation rules for the groupoid quotient \cite{sojakovaPhD}.}
+\label{fig:gquot}
+\end{figure*}
+		
+\subsection{Groupoid Quotient}
+Let us start by formally introducing the groupoid quotient \cite{sojakovaPhD}.
+The groupoid quotient is a higher dimensional version of the set quotient,
+so let us quickly recall the set quotient.
+Given a setoid $(X,R)$ (a set $X$ with an equivalence relation $R$ valued in propositions on $X$),
+the set quotient gives a type $\quot{X}{R}$, which is $X$ with the points identified according to $R$.
+Note that $\quot{X}{R}$ always is a set since $R$ becomes the equality.
+
+Instead of a setoid, the groupoid quotient takes a groupoid as input.
+Recall that a groupoid is a category in which every morphism is invertible.
+In particular, each groupoid has identity morphisms, denoted by $\idgrpd{x}$, and a composition operation.
+The composition of $f$ and $g$ is denoted by $\compgrpd{f}{g}$.
+In addition, the type of morphisms from $x$ to $y$ is required to be a set.
+We write $\grpd$ for the type of groupoids.
+
+Given $G : \grpd$, the groupoid quotient gives a 1-type $\gquotType(G)$.
+In this type, the points are objects of $G$
+and these are identified according to the morphisms in $G$.
+In addition, the groupoid structure must be preserved.
+Informally, we define the groupoid quotient as the following HIT.
+
+\begin{lstlisting}[mathescape=true]
+Inductive $\gquotType$ $(G : \grpd)$ :=
+| $\gcl$ : $\functions{G}{\gquotType(G)}$
+| $\gcleq$ : $\depprod{(x, y : G) (f : \mor{G}{x}{y})}{\gcl(x) = \gcl(y)}$
+| $\ge$ : $\depprod{(x : G)}{\gcleq(\idgrpd{x}) = \refl{\gcl(x)}}$
+| $\gconcat$ : $\depprod{(x, y, z : G)(f : \mor{G}{x}{y})(g : \mor{G}{y}{z})}{}$
+           $\gcleq(\compgrpd{f}{g}) = \concat{\gcleq(f)}{\gcleq(g)}$
+| $\gtrunc$ : $\depprod{(x, y : \gquotType(G))(p, q: x = y) (r, s : p = q)}$
+           ${r = s}$
+\end{lstlisting}
+
+To formally add this type to our theory, we need to provide
+introduction, elimination, and computation rules for $\gquotType(G)$.
+Formulating the elimination principle requires two preliminary notions.
+These are inspired by the work by Licata and Brunerie \cite{licata2015cubical}.
+The first of these gives paths in a dependent type over a path in the base.
+
+\begin{definition}
+\label{def:path_over}
+Given a type $X : \Type$,
+a type family $Y : \functions{X}{\Type}$,
+points $x_1, x_2 : X$,
+a path $p : x_1 = x_2$,
+and points $\overline{x_1} : Y(x_1)$ and $\overline{x_2} : Y(x_2)$ over $x_1$ and $x_2$ respectively,
+we define the type $\pathover[Y]{p}{\overline{x_1}}{\overline{x_2}}$ of \fat{paths over} $p$ from $\overline{x_1}$ to $\overline{x_2}$ by path induction on $p$
+by saying that the paths over the identity path $\refl{x}$ from $\overline{x_1}$ to $\overline{x_2}$ are just paths $\overline{x_1} = \overline{x_2}$.
+\end{definition}
+
+Note that the groupoid quotient also has constructors for paths between paths.
+This means that we also need a dependent version of 2-paths,
+and inspired by the terminology of globular sets, we call these \emph{globes} over a given 2-path.
+We define them as follows.
+
+\begin{definition}
+\label{def:globe_over}
+Let $X$, $Y$, and $x_1, x_2$ be as in Definition \ref{def:path_over}.
+Suppose, that we paths $p, q : x_1 = x_2$,
+a 2-path $g : p = q$,
+and paths $\pover{p} : \pathover{p}{\overline{x_1}}{\overline{x_2}}$ and $\pover{q} : \pathover{q}{\overline{x_1}}{\overline{x_2}}$ over $p$ and $q$ respectively,
+we define the type $\globeover{g}{\pover{p}}{\pover{q}}$ of \fat{globes over} $g$ from $\pover{p}$ to $\pover{q}$ by path induction on $g$
+by saying that the paths over the identity path $\refl{p}$ are just paths $\pover{p} = \pover{q}$.
+\end{definition}
+
+From this point on, we assume that our type theory has the groupoid quotient.
+More specifically, we assume the following axiom.
+
+\begin{axiom}
+For each groupoid $G$ there is a type $\gquotType(G)$ which satisfies the rules in Figure \ref{fig:gquot}.
+\end{axiom}
+
+Note that there are no computation rules for $\gconcat$, $\ge$, and $\gtrunc$,
+because such rules follow from the fact that $Y$ is a family of 1-types.
+
+\subsection{Bicategory Theory}
+The upcoming construction makes heavy use of notions from bicategory theory \cite{10.1007/BFb0074299,leinster:basic-bicats}
+and in particular, the displayed machinery introduced by Ahrens \etal \ \cite{bicatjournal}.
+Here we recall some examples of bicategories and the basics of displayed bicategories.
+
+Recall that a bicategory consists of objects, 1-cells between objects, and 2-cells between 1-cells.
+The type of 1-cells from $x$ to $y$ is denoted by $x \onecell y$ and the type of 2-cells from $f$ to $g$ is denoted by $f \twocell g$.
+Note that the type $f \twocell g$ is required to be a set.
+There are identity 1-cells and 2-cells denoted by $\id_1$ and $\id_2$ respectively, composition of 1-cells $f$ and $g$ is denoted by $f \cdot g$,
+and the vertical composition of 2-cells $\tc$ and $\tc'$ is denoted by $\tc \vcomp \tc'$.
+The left whiskering of a 2-cell $\tc$ with 1-cell $f$ is denoted by $f \whiskerl \tc$ and right whiskering of $\tc$ with a 1-cell $g$ is denoted by $\tc \whiskerr g$. 
+Unitality and associativity of vertical composition of 2-cells hold strictly while for 1-cells, these laws only hold up to an invertible 2-cell.
+
+Let us fix some notation before continuing.
+Given bicategories $\B_1$ and $\B_2$, we write $\pseudo(\B_1, \B_2)$ for the type of pseudofunctors from $\B_1$ to $\B_2$.
+The type of pseudotransformations from $F$ to $G$ is denoted by $\pstrans{F}{G}$
+and the type of modifications from $\theta$ to $\theta'$ is denoted by $\modif{\theta}{\theta'}$ \cite{leinster:basic-bicats}.
+Lastly, the type of biadjunctions between $\B_1$ and $\B_2$ is denoted by $L \dashv R$
+where $L : \pseudo(\B_1, \B_2)$ and $R : \pseudo(\B_2, \B_1)$.
+If we have $L \dashv R$, we say that $L$ is \emph{left biadjoint} to $R$.
+The definition of biadjoint we use, is similar to the one used by Gurski \cite{gurski2012biequivalences},
+but without any coherencies.
+Beside these standard notions, we use two bicategories: $\onetypes$ and $\grpd$.
+
+\begin{example}
+We have
+\begin{itemize}
+	\item a bicategory $\onetypes$ whose objects are 1-types, 1-cells are functions, and 2-cells are homotopies;
+	\item a bicategory $\grpd$ of groupoids
+	whose objects are (not necessarily univalent) groupoids, 1-cells are functors, and 2-cells are natural transformations.
+\end{itemize}
+\end{example}
+
+Next we discuss \emph{displayed bicategories}, which is our main tool to define bicategories of algebras on a signature.
+Intuitively, a displayed bicategory $\D$ over $\B$ represents structure and properties to be added to $\B$.
+Displayed bicategories generalize displayed categories to the bicategorical setting \cite{AhrensL19}.
+Each such $\D$ gives rise to a total bicategory $\total{\D}$.
+The full definition can be found in the paper by Ahrens \etal \ \cite{bicatjournal}, and here, we only show a part.
+
+\begin{definition}
+Let $\B$ be a bicategory.
+A \fat{displayed bicategory} $\D$ over $\B$ consists of
+\begin{itemize}
+	\item For each $x : \B$ a type $\dob{\D}{x}$ of \fat{objects over $x$};
+	\item For each $f : x \onecell y$, $\xx : \dob{\D}{x}$ and $\yy : \dob{\D}{y}$,
+	a type $\dmor{\xx}{\yy}{f}$ of \fat{1-cells over $f$};
+	\item For each $\tc : f \twocell g$, $\ff : \dmor{\xx}{\yy}{f}$, and $\gg : \dmor{\xx}{\yy}{g}$, a \emph{set} $\dtwo{\ff}{\gg}{\tc}$ of \fat{2-cells over $\tc$}.
+\end{itemize}
+In addition, there are identity cells and there are composition and whiskering operations.
+The composition of displayed 1-cells $f$ and $g$ is denoted by $f \cdot g$, the displayed identity 1-cell is denoted by $\id_1(x)$.
+The vertical composition of 2-cells $\tc$ and $\tc'$ is denoted by $\tc \vcomp \tc'$, the left and right whiskering is denoted by $f \whiskerl \tc$ and $\tc \whiskerr f$ respectively,
+and the identity 2-cell is denoted by $\id_2(f)$. 
+\end{definition}
+
+\begin{definition}
+\label{def:totalbicat}
+Let $\B$ be a bicategory and let $\D$ be a displayed bicategory over $\B$.
+We define the \fat{total bicategory} $\total{D}$ as the bicategory whose objects of $\total{D}$ are just dependent pairs $(x, \xx)$ with $x$ in $\B$ and $\xx$ in $\dob{\D}{x}$.
+The 1-cells and 2-cells in $\total{D}$ are defined similarly.
+In addition, we define the \fat{projection} $\dproj{D} : \pseudo(\total{D}, \B)$ to be the pseudofunctor which takes the first component of each pair.
+\end{definition}
+
+Let us finish this section by defining the displayed bicategories we need in the remainder of this paper.
+Motivation and explanation of Examples \ref{ex:DFAlg} and \ref{ex:DCell} is given by Ahrens \etal \ \cite{bicatjournal}.
+
+\begin{example}
+\label{ex:DFAlg}
+Given a bicategory $\B$ and a pseudofunctor $F : \pseudo(\B, \B)$,
+we define a displayed bicategory $\DFAlg(F)$ over $\B$ such that
+\begin{itemize}
+	\item the objects over $x : \B$ are 1-cells $h_x : F(x) \onecell x$;
+	\item the 1-cells over $f : x \onecell y$ from $h_x$ to $h_y$ are invertible 2-cells $\tcC_f : h_x \cdot f \twocell F(f) \cdot h_y$;
+	\item the 2-cells over $\tc : f \twocell g$ from $\tcC_f$ to $\tcC_g$ are equalities
+	\[
+	h_x \whiskerl \tc \vcomp \tcC_g = \tcC_f \vcomp F(\tc) \whiskerr h_y.
+	\]
+\end{itemize}
+\end{example}
+
+\begin{example}
+\label{ex:disp_depprod}
+Given a bicategory $\B$, a type $I$, and for each $i : I$ a displayed bicategory $\D_i$ over $\B$,
+we define a displayed bicategory $\depprod{(i : I)}{\D_i}$ over $\B$ such that
+\begin{itemize}
+	\item the objects over $x : \B$ are functions $\depprod{(i : I)}{\D_i(x)}$;
+	\item the 1-cells over $f : x \onecell y$ from $\overline{x}$ to $\overline{y}$ are functions $\depprod{(i : I)}{\dmor{\overline{x}(i)}{\overline{y}(i)}{f}}$;
+	\item the 2-cells over $\tc : f \twocell g$ from $\overline{f}$ to $\overline{g}$ are functions $\depprod{(i : I)}{\dtwo{\overline{f}(i)}{\overline{g}(i)}{\tc}}$.
+\end{itemize}
+\end{example}
+
+\begin{example}
+\label{ex:DCell}
+Let $\B$ be a bicategory with a displayed bicategory $\D$ over it.
+Now suppose that we have pseudofunctors $S, T : \pseudo(\B, \B)$ and two pseudotransformations $l, r : \pstrans{\dproj{D} \cdot S}{\dproj{D} \cdot T}$.
+Then we define a displayed bicategory $\DCell(l,r)$ over $\total{D}$ such that
+\begin{itemize}
+	\item the objects over $x$ are 2-cells $\tcB_x : l(x) \twocell r(x)$;
+	\item the 1-cells over $f : x \onecell y$ from $\tcB_x$ to $\tcB_y$ are equalities
+	\[
+	(\tcB_x \whiskerr T(\dproj{D}(f))) \vcomp r(f)
+	=
+	l(f) \vcomp (S(\dproj{D}(f)) \whiskerl \tcB_y);
+	\]
+	\item the 2-cells over $\tc : f \twocell g$ are inhabitants of the unit type.
+\end{itemize}
+\end{example}
+
+\begin{example}
+\label{ex:fullsub}
+Let $\B$ be a bicategory and let $P$ be a family of propositions on the objects of $\B$.
+Then we define a displayed bicategory $\FSub(P)$ over $\B$ whose objects over $x$ are proofs of $P(x)$
+and whose displayed 1-cells and 2-cells are inhabitants of the unit type.
+The total bicategory $\total{\FSub(P)}$ is the \fat{full subbicategory} of $\B$ whose objects satisfy $P$.
+\end{example}

@@ -1,0 +1,36 @@
+We showed how to construct finitary 1-truncated higher inductive types using the propositional truncation, quotient, and the groupoid quotient.
+This reduces the existence of a general class of HITs to simpler ones.
+We needed the types to be 1-truncated, so that we could use the framework of bicategory theory,
+and the HITs we studied had to be finitary to guarantee that the groupoid quotient
+commutes with the involved operations \cite{DBLP:journals/mscs/ChapmanUV19}.
+On the way, we also proved that HITs are unique.
+
+There are numerous ways to improve on this result.
+First of all, the bicategory of algebras in 1-types can be studied in more detail.
+For example, it should have products, inserters and equifiers \cite{power1991characterization}.
+In addition, using the fact that we have higher inductive types, we should be able to show
+that this bicategory also has coproducts, co-inserters, and co-equifiers.
+Furthermore, to connect our approach to algebra in bicategories with established approaches,
+one should show that the underlying functor from $\algM(\sign)$  to $\onetypes$ has a left biadjoint,
+which gives rise to a monad on $\onetypes$ \cite{blackwell1989two,LACK2000179}.
+The biadjunction could be constructed using higher inductive types.
+
+Second of all, one would like to get rid of the truncation level.
+Since untruncated types correspond to $\infty$-groupoids,
+generalizing the methods used in this paper to the untruncated case,
+requires formalizing notions from $\infty$-category theory in type theory
+\cite{DBLP:conf/csl/AltenkirchR12,DBLP:journals/pacmpl/CapriottiK18,FinsterM17}.
+This also requires finding an $\infty$-dimensional generalization of the groupoid quotient.
+An alternative approach to deal with untruncated HITs, pointed out by Ali Caglayan,
+would be using wild categories \cite{DBLP:conf/tlca/HirschowitzHT15,KrausRaumer}.
+
+Lastly, it should be possible to take advantage of the way we constructed HITs
+to say something about the path space.
+One can show with the encode-decode method that the type $\gcl(x) = \gcl(y)$ is equivalent
+to $\mor{G}{x}{y}$.
+By inspecting Construction \ref{constr:hit_exist}, we see that HITs are constructed
+as the groupoid quotient of the groupoid $\constfont{G}$ constructed in Construction \ref{constr:initial_grpd_alg}
+where we also proved a universal property for $\constfont{G}$.
+For concrete examples, such as the circle, one might be able to make use of this
+universal property to deduce a mapping principle for $\baseS = \baseS$,
+which could be used to show that $\pi_1(\circleS)$ is the integers \cite{LicataS13}.

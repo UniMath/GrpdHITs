@@ -1,0 +1,514 @@
+\begin{figure*}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\UnaryInfC{$\idE{A} : \pathendpoint{A}{P}{P}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q, R : \poly$}
+\AxiomC{$e_1 : \pathendpoint{A}{P}{Q}$}
+\AxiomC{$e_2 : \pathendpoint{A}{Q}{R}$}
+\TrinaryInfC{$\comp{e_1}{e_2} : \pathendpoint{A}{P}{R}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\constr : \pathendpoint{A}{A}{\idP}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\inle : \pathendpoint{A}{P}{\sumP{P}{Q}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\inre : \pathendpoint{A}{Q}{\sumP{P}{Q}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\prle : \pathendpoint{A}{\prodP{P}{Q}}{P}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q : \poly$}
+\UnaryInfC{$\prre : \pathendpoint{A}{\prodP{P}{Q}}{Q}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$X : \onetypes$}
+\AxiomC{$x : X$}
+\TrinaryInfC{$\Ce(x) : \pathendpoint{A}{P}{\constantP{X}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P, Q, R: \poly$}
+\AxiomC{$e_1 : \pathendpoint{A}{P}{Q}$}
+\AxiomC{$e_2 : \pathendpoint{A}{P}{R}$}
+\TrinaryInfC{$\pair{e_1}{e_2} : \pathendpoint{A}{P}{\prodP{Q}{R}}$}
+\end{bprooftree}
+\end{center}
+\caption{Rules for the path endpoints.}
+\label{fig:path_ep}
+\end{figure*}
+
+\begin{figure*}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$T : \poly$}
+\AxiomC{$e : \pathendpoint{A}{R}{T}$}
+\BinaryInfC{$\hrefl{e} : \homotendpoint{l}{r}{a_1}{a_2}{e}{e}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$T : \poly$}
+\AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
+\TrinaryInfC{$\hinv{h} : \homotendpoint{l}{r}{a_1}{a_2}{e_2}{e_1}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$T : \poly$}
+\AxiomC{$e_1, e_2, e_3 : \pathendpoint{A}{R}{T}$}
+\AxiomC{$h_1 : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
+\AxiomC{$h_2 : \homotendpoint{l}{r}{a_1}{a_2}{e_2}{e_3}$}
+\QuaternaryInfC{$\hconcat{h_1}{h_2} : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_3}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$T_1, T_2, T_3 : \poly$}
+\AxiomC{$e_1 : \pathendpoint{A}{R}{T_1}$}
+\AxiomC{$e_2 : \pathendpoint{A}{T_1}{T_2}$}
+\AxiomC{$e_3 : \pathendpoint{A}{T_2}{T_3}$}
+\QuaternaryInfC{$\hassoc{e_1}{e_2}{e_3} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{(\comp{e_2}{e_3})}}{\comp{(\comp{e_1}{e_2})}{e_3}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$T: \poly$}
+\AxiomC{$e : \pathendpoint{A}{R}{T}$}
+\BinaryInfC{$\hlunit{e} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{\idE{R}}{e}}{e}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$T: \poly$}
+\AxiomC{$e : \pathendpoint{A}{R}{T}$}
+\BinaryInfC{$\hrunit{e} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e}{\idE{T}}}{e}$}
+\end{bprooftree}
+\end{center}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$T_1, T_2 : \poly$}
+\AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
+\AxiomC{$e_3, e_4 : \pathendpoint{A}{R}{T_2}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
+\QuaternaryInfC{$\hprl{h} : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}, \quad \hprr{h} : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$T_1, T_2 : \poly$}
+\AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
+\AxiomC{$e_3, e_4 : \pathendpoint{A}{R}{T_2}$}
+\AxiomC{$h_1 : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
+\AxiomC{$h_2 : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4}$}
+\QuinaryInfC{$\hpair{h_1}{h_2} : \homotendpoint{l}{r}{a_1}{a_2}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$T_1, T_2 : \poly$}
+\AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
+\TrinaryInfC{$\hinl{h} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{\inle}}{\comp{e_2}{\inle}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$j : J$}
+\AxiomC{$e : \pathendpoint{A}{R}{Q_j}$}
+\BinaryInfC{$\hconstr{j}{e} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e}{l(j)}}{\comp{e}{r(j)}}$}
+\end{bprooftree}
+
+\begin{bprooftree}
+\AxiomC{$T_1, T_2 : \poly$}
+\AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_2}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
+\TrinaryInfC{$\hinr{h} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{\inre}}{\comp{e_2}{\inre}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\harg : \homotendpoint{l}{r}{a_1}{a_2}{a_1}{a_2}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$e_l, e_r : \pathendpoint{A}{Q}{A}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_l}{e_r}$}
+\BinaryInfC{$\hap{h} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_l}{\constr}}{\comp{e_r}{\constr}}$}
+\end{bprooftree}
+\end{center}
+
+\caption{Rules for the homotopy endpoints.}
+\label{fig:homot_ep}
+\end{figure*}
+
+Before we can discuss how to construct 1-truncated higher inductive types,
+we need to define signatures for those.
+Our notion of signature is similar to the one by Dybjer and Moenclaey \cite{DBLP:journals/entcs/DybjerM18}.
+However, instead of defining them externally, we define a type of signatures within type theory
+just like what was done for inductive-recursive and inductive-inductive
+definitions \cite{Dybjer1999AFA,forsberg2012finite}. 
+In addition, we show that each signature $\sign$ gives rise to a bicategory of algebras for $\sign$.
+
+In this section, we study HITs of the following shape
+\begin{lstlisting}[mathescape=true]
+Inductive $H$ :=
+| $c$ : $\functions{\polyAct{P}{H}}{H}$
+| $p$ : $\depprod{(j : I) (x : \polyAct{Q}{H})}{l(x) = r(x)}$
+| $s$ : $\depprod{(j : J) (x : \polyAct{R}{H}) (r : a_1(x) = a_2(x))}$
+      ${\homotendpointAct{q_1}{x, r} = \homotendpointAct{q_2}{x, r}}$
+| $t$ : $\depprod{(x, y : H) (q_1, q_2 : x = y) (r, s : q_1 = q_2)}{r = s}$
+\end{lstlisting}
+To see what the challenges are when defining such HITs, let us take a closer look at the torus.
+
+\begin{lstlisting}[mathescape=true]
+Inductive $\torus$ :=
+| $\base$ : $\torus$
+| $\leftLoop, \rightLoop$ : $\base = \base$
+| $\surface$ : $\concat{\leftLoop}{\rightLoop} = \concat{\rightLoop}{\leftLoop}$
+\end{lstlisting}
+
+There is a point constructor $\base$, two paths constructors $\leftLoop, \rightLoop : \base = \base$,
+and a homotopy constructor $\surface : \concat{\leftLoop}{\rightLoop} = \concat{\rightLoop}{\leftLoop}$.
+Note that $\leftLoop$ and $\rightLoop$ refer to $\base$ and that $\surface$ refers to all other constructors.
+Hence, the signatures we define, must be flexible enough to allow such dependencies.
+
+A similar challenge comes up when defining the bicategory of algebras for a signature.
+For the torus, an algebra would consist of a type $X$, a point $b$, paths $p, q : b = b$, and a 2-path $s : \concat{p}{q} = \concat{q}{p}$.
+Again there are dependencies: $p$ and $q$ depend on $b$ while $s$ depends on both $p$ and $q$.
+To overcome this challenge, we use displayed bicategories to construct the bicategory of algebras in a stratified way.
+
+\subsection{Signatures}
+Now let us define signatures, and to do so, we must specify data which describes the constructors for points, paths, and homotopies.
+To specify the point constructors, we use \emph{polynomial codes}.
+Given a type $X$ and a polynomial code $P$, we get another type $\polyAct{P}{X}$.
+Such a code $P$ describes an operation of the form $\polyAct{P}{X} \rightarrow X$.
+
+\begin{definition}
+The type of \fat{codes for polynomials} is inductively generated by the following constructors
+\[ 
+\constantP{A} : \poly, \quad \idP : \poly, \quad \sumP{P_1}{P_2} : \poly, \quad \prodP{P_1}{P_2} : \poly
+\]
+where $A$ is a 1-type and $P_1$ and $P_2$ are elements of $\poly$.
+\end{definition}
+
+The constructor $\constantP{A}$ represents the constant polynomial, $\idP$ represents the identity,
+and $\sumP{P_1}{P_2}$ and $\prodP{P_1}{P_2}$ represent the sum and product respectively.
+Note that we restrict ourselves to finitary polynomials since we do not have a constructor which represents the function space.
+
+The second part of the signature describes the path constructors, which represent universally quantified equations.
+To describe them, we must give two \emph{path endpoints}.
+These endpoints can refer to the point constructor, which we represent by a polynomial $A$.
+In addition, they have a source (the type of the quantified variable) and a target (the type of the term).
+The source and the target are represented by polynomials $S$ and $T$ respectively.
+
+\begin{definition}
+Let $A$, $S$, and $T$ be codes for polynomials.
+The type $\pathendpoint{A}{S}{T}$ of \fat{path endpoints} with arguments $A$, source  $S$, and target $T$ is inductively generated by the constructors given in Figure \ref{fig:path_ep}.
+\end{definition}
+
+Note that the parameter $A$ is only used in the path endpoint $\constr$, which represents the point constructor.
+If we have a type $X$ with a function $c : \polyAct{A}{X} \rightarrow X$,
+then each endpoint $e$ gives for every $x : \polyAct{S}{X}$ a point $\pathendpointFun{e}(x) : \polyAct{T}{X}$.
+Note that $\pathendpointFun{e}(x)$ depends on $c$ while we do not write $c$ in the notation.
+Hence, two endpoints $e_l, e_r$ represent the equation
+\[
+\depprod{(x : \polyAct{S}{X})}{\pathendpointAct{e_l}{x} = \pathendpointAct{e_r}{x}}.
+\]
+Note that a HIT could have arbitrarily many path constructors and we index them by the type $J$.
+
+The last part of the signature describes the homotopy constructors
+and these depend on both the point and path constructors.
+A homotopy constructor represents an equation of paths, which is universally quantified over both points and paths of
+the HIT being defined.
+The point argument is represented by a polynomial $R$, and the path argument is represented by a polynomial $T$ and endpoints $a_1, a_2 : \pathendpoint{A}{R}{T}$.
+Lastly, the type of the paths in the equation is described by two endpoints $s_l, s_r : \pathendpoint{A}{R}{W}$ with $W : \poly$.
+
+\begin{definition}
+Suppose that we have
+\begin{itemize}
+	\item A polynomial $A$;
+	\item A type $J$ together with for each $j : J$ a polynomial $Q_j$ and endpoints $l_j, r_j : \pathendpoint{A}{Q_j}{\idP}$;
+	\item A polynomial $R$;
+	\item A polynomial $T$ with endpoints $a_1, a_2 : \pathendpoint{A}{R}{T}$;
+	\item A polynomial $W$ with endpoints $s_1, s_2 : \pathendpoint{A}{R}{W}$.
+\end{itemize}
+Then we define the type $\homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$ of \fat{homotopy endpoint} inductively by the constructors in Figure \ref{fig:homot_ep}.
+\end{definition}
+
+There are three homotopy endpoints of particular importance.
+The first one is $\constructor{path}$, which represents the path constructor and it makes use of $l_j$ and $r_j$.
+The second one, $\harg$, represents the path argument and it uses $a_1$ and $a_2$.
+The last one is $\constructor{ap}$ and it represents the action of the point constructor on a homotopy endpoint.
+
+The way we represent path arguments allows us to represent equations with any finite number of path arguments by only two path endpoints.
+For example, two path arguments $p : x_1 = y_1$ and $q : x_2 = y_2$ is represented by one path argument of type $(x_1, x_2) = (y_1, y_2)$.
+
+Given a type $X$ with a function $c : \polyAct{A}{X} \rightarrow X$ and for each $x : Q_j(X)$ a path $l_j(x) = r_j(x)$,
+a homotopy endpoint $p : \homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$ gives rise for each point $x : \polyAct{R}{X}$ and path $w : a_1(x) = a_2(x)$
+to another path $\homotendpointAct{p}{x, w} : s_1(x) = s_2(x)$.
+Hence, two homotopy endpoints $p, q : \homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$ represent the equation
+\[
+\depprod{(x : \polyAct{R}{X}) (w : a_1(x) = a_2(x))}{\homotendpointAct{p}{x, w} = \homotendpointAct{q}{x, w}}
+\]
+Now let us put this all together and define what signatures for higher inductive types are.
+
+\begin{definition}
+\label{def:signature}
+A \fat{HIT-signature} $\sign$ consists of
+\begin{itemize}
+	\item A polynomial $\pointconstr[\sign]$;
+	\item A type $\pathlabel[\sign]$ together with for each $j : \pathlabel[\sign]$ a polynomial $\patharg[\sign]_j$ and endpoints $\pathleft[\sign]_j, \pathright[\sign]_j : \pathendpoint{\pointconstr[\sign]}{\patharg[\sign]_j}{\idP}$;
+	\item A type $\homotlabel[\sign]$ together with for each $j : \homotlabel[\sign]$ polynomials $\homotpointarg[\sign]_j$ and $\homotpathtarg[\sign]_j$,
+	endpoints $\pathargleft[\sign]_j, \pathargright[\sign]_j : \pathendpoint{\pointconstr[\sign]}{\homotpointarg[\sign]_j}{\homotpathtarg[\sign]_j}$
+	and $\homotpathleft[\sign]_j, \homotpathright[\sign]_j : \pathendpoint{\pointconstr[\sign]}{\homotpointarg[\sign]_j}{\idP}$,
+	and homotopy endpoints $\homotleft[\sign]_j, \homotright[\sign]_j : \homotendpoint{\pathleft[\sign]_j}{\pathright[\sign]_j}{\pathargleft[\sign]_j}{\pathargright[\sign]_j}{\homotpathleft[\sign]_j}{\homotpathright[\sign]_j}$.
+\end{itemize}
+\end{definition}
+
+If $\sign$ is clear from the context, we do not write the superscript.
+In the remainder, we show how to interpret the following HIT given a signature $\sign$:
+
+\begin{lstlisting}[mathescape=true]
+Inductive $H$ :=
+| $c$ : $\functions{\polyAct{\pointconstr}{H}}{H}$
+| $p$ : $\depprod{(j : \pathlabel) (x : \polyAct{\patharg_j}{H})}{\pathendpointAct{\pathleft_j}{x} = \pathendpointAct{\pathright_j}{x}}$
+| $s$ : $\depprod{(j : \homotlabel) (x : \polyAct{\homotpointarg_j}{H}) (r : \pathargleft_j(x) = \pathargright_j(x))}$
+      ${\homotendpointAct{\homotleft_j}{x, r} = \homotendpointAct{\homotright_j}{x, r}}$
+| $t$ : $\depprod{(x, y : H) (p, q : x = y) (r, s : p = q)}{r = s}$
+\end{lstlisting}
+
+Next we consider three examples of HITs we can express with these signatures.
+
+\begin{example}
+\label{ex:torus}
+The torus is described by the signature $\torus$.
+\begin{itemize}
+	\item Take $\pointconstr[\torus] = \constantP{\unit}$;
+	\item Take $\pathlabel[\torus] = \bool$ and for both inhabitants we take $\patharg[\torus] = \constantP{\unit}$ and $\pathleft[\torus] = \pathright[\torus] = \constr$;
+	\item Take $\homotlabel[\torus] = \unit$.
+	Since there no arguments for this path constructor, we take $\homotpointarg[\torus] = \constantP{\unit}$ and $\pathargleft[\torus] = \pathargright[\torus] = \Ce(\unitt)$.
+	Now for the left-hand side and right-hand side of this equation, we take $\hconcat{\hconstr{\booltrue}{\idENA}}{\hconstr{\boolfalse}{\idENA}}$ and $\hconcat{\hconstr{\boolfalse}{\idENA}}{\hconstr{\booltrue}{\idENA}}$ respectively. 
+\end{itemize}
+\end{example}
+
+\begin{example}
+\label{ex:mod}
+We represent the integers modulo 2 as the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\ZT$ :=
+| $\ZZ$ : $\ZT$
+| $\ZS$ : $\ZT \rightarrow \ZT$
+| $\ZM$ : $\depprod{(x : \ZT)}{\ZS(\ZS(x)) = x}$
+| $\ZC$ : $\depprod{(x : \ZT)}{\ZM(\ZS(x)) = \ap{\ZS}{(\ZM(x))}}$
+\end{lstlisting}
+Note that all constructors except $\ZZ$ are recursive.
+We define a signature $\ZT$.
+\begin{itemize}
+	\item Take $\pointconstr[\ZT] = \sumP{\constantP{\unit}}{\idP}$;
+	\item Take $\pathlabel[\ZT] = \constantP{\unit}$ and for its unique inhabitant we take $\patharg[\ZT] = \idP$ and
+	\[
+	\pathleft[\ZT] = \comp{(\comp{\inre}{\constr})}{(\comp{\inre}{\constr})}, \quad
+	\pathright[\ZT] = \idENA;
+	\]
+	\item Take $\homotlabel[\ZT] = \constantP{\unit}$.
+	Furthermore, we take $\homotpointarg[\ZT] = \idP$ and $\pathargleft[\ZT] = \pathargright[\ZT] = \Ce(\unitt)$.
+	The endpoints $\homotpathleft$ and $\homotpathright$ encode $\ZS(\ZS(\ZS(x)))$ and $\ZS(x)$ respectively,
+	and for the left-hand side and right-hand side of this equation, we take
+	\[
+	\hap{(\hconcat{\hinv{\hlunitN}}{\hconcat{\hassocN}{\hconcat{\hinr{\hconstr{\unit}{\idENA}}}{\hconcat{\hinv{\hassocN}}{\hconcat{\hlunitN}{\hlunitN}}}}})}
+	\]
+	\[
+	\hconcat{\hinv{\hassocN}}{\hconcat{\hinv{\hassocN}}{\hconcat{\hconstr{\unitt}{\comp{\inre}{\constr}}}{\hrunitN}}}.
+	\]
+	respectively.
+	Note that we use $\hassocN$, $\hlunitN$, and $\hrunitN$ to make the equations type check.
+	If we would interpret the left-hand side and right-hand side of  the homotopy constructor in 1-types,
+	then all occurrences of $\hassocN$, $\hlunitN$, and $\hrunitN$ become the identity path.
+	We thus get the right homotopy constructor.
+\end{itemize}
+\end{example}
+
+\begin{example}
+\label{ex:settrunc}
+Given a 1-type $A$,  the set truncation of $A$ is defined by the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\ST{A}$ :=
+| $\SC$ : $A \rightarrow \ST{A}$
+| $\Strunc$ : $\depprod{(x, y : \ST{A}) (p, q : x = y)}{p = q}$
+\end{lstlisting}
+Note that this higher inductive type has a parameter $A$,
+so the signature we define, depends on a 1-type $A$ as well.
+To encode the path arguments of $\Strunc$, we use that two paths $p, q : x = y$ is the same as a path $r : (x, x) = (y, y)$.
+Define a signature $\ST{A}$ such that
+\begin{itemize}
+	\item $\pointconstr[\ST{A}] = \constantP{A}$;
+	\item $\pathlabel[\ST{A}]$ is the empty type;
+	\item $\homotlabel[\ST{A}] = \unit$.
+	In addition, there are two point arguments $\homotpointarg[\ST{A}] = \prodP{\idP}{\idP}$
+	and a path argument with left-hand side $\pair{\prle}{\prle}$ and right-hand side $\pair{\prre}{\prre}$.
+	For the left-hand side and right-hand side of the homotopy, we take $\hprl{\harg}$ and $\hprr{\harg}$ respectively.
+\end{itemize}
+\end{example}
+
+\subsection{Algebras in 1-types and groupoids}
+With the signatures in place, our next goal is to study the introduction rules of HITs and for that, we define bicategories of algebras for a signature.
+Since we ultimately want to construct HITs via the groupoid quotient, we look at both algebras in 1-types and groupoids.
+
+In both cases, we use a stratified approach with displayed bicategories.
+Let us illustrate this by briefly describing the construction for 1-types.
+On $\onetypes$, we define a displayed bicategory and we denote its total bicategory by $\prealg{\sign}$.
+The objects of $\prealg{\sign}$ consist of a 1-type $X$ together with an operation $\polyAct{P}{X} \rightarrow X$.
+Concretely, the objects satisfy the point introduction rules specified by $\sign$.
+On top of $\prealg{\sign}$, we define another displayed bicategory whose total bicategory is denoted by $\pathalg{\sign}$.
+Objects of $\pathalg{\sign}$ satisfy the introduction rules for both the points and the paths.
+Lastly, we take a full subbicategory of $\pathalg{\sign}$ obtaining another bicategory $\alg(\sign)$ whose objects satisfy the introduction rules for the points, paths and homotopies.
+
+To define $\prealg{\sign}$, we use Example \ref{ex:DFAlg}.
+
+\begin{problem}
+\label{prob:sem_poly}
+Given $P : \poly$, to construct pseudofunctors
+\[
+\semP{P} : \pseudo(\onetypes, \onetypes), 
+\semPG{P} : \pseudo(\grpd, \grpd).
+\]
+\end{problem}
+
+\begin{construction}{prob:sem_poly}
+We only discuss the case for 1-types since the case for groupoids is similar.
+Given a polynomial $P$ and a type $X$, we get a type $\polyAct{P}{X}$ by induction.
+The verification that this gives rise to a pseudofunctor can be found in the formalization.
+\end{construction}
+
+\begin{definition}
+\label{def:prealg}
+Let $\sign$ be a signature.
+Then we define the bicategories $\prealg{\sign}$ and $\prealgG{\sign}$
+to be the total bicategories of $\DFAlg(\semP{\pointconstr[\sign]})$
+and $\DFAlg(\semPG{\pointconstr[\sign]})$ respectively.
+Objects of these bicategories are called \fat{prealgebras} for $\sign$.
+\end{definition}
+
+Note that prealgebras only have structure witnessing the introduction rule for the points.
+Next we look at the introduction rule for the paths.
+In this case, the desired structure is added via Example \ref{ex:DCell} and to apply this construction,
+we interpret path endpoints as pseudotransformations.
+
+\begin{problem}
+\label{prob:sem_endpoint}
+Given $e : \pathendpoint{A}{P}{Q}$, to construct pseudotransformations
+\[
+\semE{e} : \pstrans{\semP{P} \cdot \dproj{\DFAlg(\semP{A})}}{\semP{Q} \cdot \dproj{\DFAlg(\semP{A})}},
+\]
+\[
+\semEG{e} : \pstrans{\semPG{P} \cdot \dproj{\DFAlg(\semPG{A})}}{\semPG{Q} \cdot \dproj{\DFAlg(\semPG{A})}}.
+\]
+\end{problem}
+
+\begin{construction}{prob:sem_endpoint}
+We only discuss $\semE{e}$ since $\semEG{e}$ is defined similarly.
+Given a 1-type $X$ and $c : \polyAct{A}{X} \rightarrow X$, we define the function
+$\semE{e} : \polyAct{P}{X} \rightarrow \polyAct{Q}{X}$ by induction.
+The verification that this gives rise to a pseudotransformation can be found in the formalization.
+\end{construction}
+
+\begin{definition}
+\label{def:pathalg}
+Let $\sign$ be a signature.
+We use Examples \ref{ex:disp_depprod} and \ref{ex:DCell} to define displayed bicategories over $\prealg{\sign}$ and $\prealgG{\sign}$.
+\[
+\pathalgMD(\sign) = \depprod{(i : \pathlabel[\sign])}{\DCell(\semE{\pathleft[\sign](i)},\semE{\pathright[\sign](i)})}
+\]
+\[
+\pathalgGD{\sign} = \depprod{(i : \pathlabel[\sign])}{\DCell(\semEG{\pathleft[\sign](i)},\semEG{\pathright[\sign](i)})}
+\]
+We define $\pathalgM(\sign)$ and $\pathalgG{\sign}$ to be the total bicategories of $\pathalgMD(\sign)$ and $\pathalgGD{\sign}$ respectively.
+Objects of $\pathalgM(\sign)$ and $\pathalgG{\sign}$ are called \fat{path algebras} for $\sign$.
+\end{definition}
+
+\begin{problem}
+\label{prob:sem_homendpoint}
+Suppose that we have a homotopy endpoint $h : \homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$.
+Given a 1-type $X$ with $c : \polyAct{A}{X} \rightarrow X$ and $p : \depprod{(j : J) (x : \polyAct{Q_j}{X})}{l_j(x) = r_j(x)}$,
+to construct for each $x : \polyAct{Q}{X}$ and $w : \semE{a_1}(x) = \semE{a_2}(x)$
+an equality $\semH{h}(x, w) : \semE{s_1}(x) = \semE{s_2}(x)$.
+
+In addition, given a groupoid $G$ together with a functor $c : \semPG{A}{(G)} \rightarrow G$ and for each $j : J$ a natural transformation $\semEG{l_j}(G) \twocell \semEG{r_j}(G)$,
+to construct for each object $x : \semPG{Q}{(G)}$ and morphism $w : \semEG{a_1}(G)(x) \rightarrow \semEG{a_2}(G)(x)$
+a morphism $\semHG{h}(x, w) : \semEG{s_1}(G)(x) \rightarrow \semEG{s_2}(G)(x)$.
+\end{problem}
+
+\begin{construction}{prob:sem_homendpoint}
+By induction.
+\end{construction}
+
+\begin{definition}
+\label{def:bicat_grpd}
+Let $\sign$ be a HIT signature.
+We define $\algM(\sign)$ to be the full subbicategory of $\pathalgM(\sign)$
+in which every object $X$ satisfies
+\begin{equation*}
+\begin{split}
+\prod
+(j : \homotlabel[\sign]) &(x : \polyAct{\homotpointarg[\sign]_j}{X}) (w : \semE{\pathargleft[\sign]_j}(x) = \semE{\pathargright[\sign]_j}(x)),\\
+&\semH{\homotleft[\sign]_j}(x, w) = \semH{\homotright[\sign]_j}(x, w)
+\end{split}
+\end{equation*}
+In addition, we define $\algG{\sign}$ to be the full subbicategory of $\pathalgG{\sign} $
+in which every object $X$ satisfies
+\begin{equation*}
+\begin{split}
+\prod
+(j : \homotlabel[\sign]) &(x : \semPG{\homotpointarg[\sign]_j}{X}) (w : \semEG{\pathargleft[\sign]_j}(x) = \semEG{\pathargright[\sign]_j}(x)),\\
+&\semHG{\homotleft[\sign]_j}(x, w) = \semHG{\homotright[\sign]_j}(x, w)
+\end{split}
+\end{equation*}
+Objects of $\algM(\sign)$ and $\algG{\sign}$ are called \fat{algebras} for $\sign$.
+\end{definition}
+
+The bicategory $\algM(\sign)$ is constructed by repeatedly using Definition \ref{def:totalbicat}.
+By unpacking the definition, we see that an algebra $X : \algM(\sign)$ consists of
+\begin{itemize}
+	\item A 1-type $X$;
+	\item A function $\AlgPoint{X} : \polyAct{\pointconstr}{X} \rightarrow X$;
+	\item For each $j : \pathlabel$ and point $x : \polyAct{\patharg_j}{X}$ a path
+	$
+	\AlgPath{X}{j}(x) : \semE{\pathleft_j}(x) = \semE{\pathright_j}(x);
+	$
+	\item For each $j : \homotlabel$, $x : \polyAct{\homotpointarg}{X}$ and $w : \semE{a_1}(x) = \semE{a_2}(x)$, a homotopy
+	$
+	\AlgHomot{X}{j} : \semH{\homotleft}(x, w) = \semH{\homotright}(x, w)
+	$
+\end{itemize}

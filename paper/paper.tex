@@ -1,0 +1,209 @@
+\documentclass[sigplan,screen]{acmart}
+\settopmatter{}
+
+\copyrightyear{2020} 
+\acmYear{2020} 
+\setcopyright{rightsretained} 
+\acmISBN{978-1-4503-7104-9/20/07}
+\acmDOI{10.1145/3373718.3394803}
+\acmConference[LICS '20]{Proceedings of the 35th Annual ACM/IEEE Symposium on Logic
+  in Computer Science (LICS)}{July 8--11, 2020}{Saarbr\"ucken, Germany}
+\acmBooktitle{Proceedings of the 35th Annual ACM/IEEE Symposium on Logic in
+  Computer Science (LICS '20), July 8--11, 2020, Saarbr\"ucken, Germany}
+\startPage{1}
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission;
+%% use 'none' for review submission.
+%\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+\setcopyright{rightsretained}
+%\copyrightyear{2018}           %% If different from \acmYear
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%\citestyle{acmauthoryear}  %% For author/year citations
+%\citestyle{acmnumeric}     %% For numeric citations
+%\setcitestyle{nosort}      %% With 'acmnumeric', to disable automatic
+                            %% sorting of references within a single citation;
+                            %% e.g., \cite{Smith99,Carpenter05,Baker12}
+                            %% rendered as [14,5,2] rather than [2,5,14].
+%\setcitesyle{nocompress}   %% With 'acmnumeric', to disable automatic
+                            %% compression of sequential references within a
+                            %% single citation;
+                            %% e.g., \cite{Baker12,Baker14,Baker16}
+                            %% rendered as [2,3,4] rather than [2-4].
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note: Authors migrating a paper from traditional SIGPLAN
+%% proceedings format to PACMPL format must update the
+%% '\documentclass' and topmatter commands above; see
+%% 'acmart-pacmpl-template.tex'.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage{bussproofs}
+\usepackage{listings}
+\usepackage{coq}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{stmaryrd}
+
+\usepackage{xspace}
+\usepackage{xifthen}
+
+\usepackage[all,cmtip]{xy}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{constrInternal}[theorem]{Construction}
+
+\newenvironment{construction}[2][]
+{\pushQED{\qed}\begin{constrInternal}[{for Problem~\ref{#2}\ifthenelse{\isempty{#1}}{}{; #1}}]}
+	{\popQED\end{constrInternal}}
+
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\cL}{{\cal L}}
+
+\newenvironment{bprooftree}
+{\leavevmode\hbox\bgroup}
+{\DisplayProof\egroup}
+
+\input{macros}
+
+\begin{document}
+	
+\lstset{language=Coq}
+
+%% Title information
+\title{Constructing Higher Inductive Types as Groupoid Quotients}
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+\author{Niels van der Weide}
+\orcid{0000-0003-1146-4161}             %% \orcid is optional
+\affiliation{
+  \department{Institute for Computation and Information Sciences}
+  \institution{Radboud Universiteit}
+  \city{Nijmegen}
+  \country{The Netherlands}
+}
+\email{nweide@cs.ru.nl}
+
+\begin{abstract}
+	In this paper, we show that all finitary 1-truncated higher inductive types (HITs) can be constructed from the groupoid quotient.
+	We start by defining internally a notion of signatures for HITs,
+	and for each signature, we construct a bicategory of algebras in 1-types and in groupoids.
+	We continue by proving initial algebra semantics for our signatures.
+	After that, we show that the groupoid quotient induces a biadjunction between the bicategories of algebras in 1-types and in groupoids.
+	We finish by constructing a biinitial object in the bicategory of algebras in groupoids.
+	From all this, we conclude that all finitary 1-truncated HITs can be constructed from the groupoid quotient. 
+	All the results are formalized over the UniMath library of univalent mathematics in Coq.
+\end{abstract}
+
+% 2012 ACM Computing Classification System (CSS) concepts
+% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\begin{CCSXML}
+	<ccs2012>
+	<concept>
+	<concept_id>10003752.10003790.10011740</concept_id>
+	<concept_desc>Theory of computation~Type theory</concept_desc>
+	<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+	<concept_id>10003752.10003790.10003796</concept_id>
+	<concept_desc>Theory of computation~Constructive mathematics</concept_desc>
+	<concept_significance>500</concept_significance>
+	</concept>
+	</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Theory of computation~Type theory}
+\ccsdesc[500]{Theory of computation~Constructive mathematics}
+% end generated code
+
+% Legacy 1998 ACM Computing Classification System categories are also
+% supported, but not recommended.
+%\category{CR-number}{subcategory}{third-level}[fourth-level]
+%\category{D.3.0}{Programming Languages}{General}
+%\category{F.3.2}{Logics and Meanings of Programs}{Semantics of Programming Languages}[Program analysis]
+
+\keywords{
+higher inductive types,
+homotopy type theory,
+Coq,
+bicategories}
+
+\maketitle
+
+\section{Introduction}
+\input{introduction}
+
+\section{Preliminaries}
+\label{sec:prelims}
+\input{preliminaries}
+
+\section{Signatures and their Algebras}
+\label{sec:signs}
+\input{algebras}
+
+\section{Induction and Biinitiality}
+\label{sec:induction}
+\input{induction}
+
+\section{Lifting the Groupoid Quotient}
+\label{sec:biadj}
+\input{biadj}
+
+\section{HIT Existence}
+\label{sec:existence}
+\input{existence}
+
+%\section{Calculating Fundamental Groups}
+
+\section{Conclusion and Further Work}
+\label{sec:conclusion}
+\input{conclusion}
+
+
+\begin{acks}
+The author thanks Herman Geuvers, Dan Frumin, Niccol\`o Veltri, Benedikt Ahrens, and Ali Caglayan for helpful comments and discussions.
+The author also thanks the anonymous reviewers for their helpful comments and suggestions.
+\end{acks}
+
+
+\bibliography{literature}
+
+\end{document}

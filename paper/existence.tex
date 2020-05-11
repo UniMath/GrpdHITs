@@ -1,0 +1,43 @@
+From Theorem \ref{thm:initial_alg_sem} we know that initiality implies the induction principle.
+Hence, it suffices to construct a biinitial object in the bicategory of algebras in 1-types.
+By Proposition \ref{prop:biinitial_in_grpd}, it suffices to construct a biinitial object in $\algG{\sign}$.
+To do so, we adapt the semantics by Dybjer and Moeneclaey to our setting \cite{DBLP:journals/entcs/DybjerM18}.
+
+\begin{problem}
+\label{prob:initial_grpd_alg}
+Given a signature $\sign$, to construct a biinitial object  $\constfont{G}$ in $\algG{\sign}$.
+\end{problem}
+
+\begin{construction}{prob:initial_grpd_alg}
+\label{constr:initial_grpd_alg}
+We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
+\begin{itemize}
+	\item Note  that each polynomial $P$ gives rise to a container $\hat{P}$.
+	Note that each container induces a W-type \cite{abbott2003categories},
+	and we define the type of objects of $G$ to be the W-type induced by $\hat{\pointconstr}$.
+	Denote this type by $\initob$.
+	\item The morphisms of $G$ are constructed as a set quotient.
+	We first define for each $x, y : \initob$ a type $\initmor{x}{y}$
+	and for each $x, y : \initob$ and $f, g : \initmor{x}{y}$, we define a type $\initeq{f}{g}$.
+	Both of these are defined as an inductive type and for the constructors, we refer the reader to the formalization.
+	Basically, the constructors for these types are chosen in such a way that the groupoid being defined here, has the desired structure.
+	This means we add constructors witnessing the path constructors, identity, composition, and all other laws.
+	We use the same idea to define $\initeq{f}{g}$.
+	
+	Note that the input of the quotient is an equivalence relation, which are valued in propositions.
+	For this reason, we define $\initeqprop{f}{g}$ to be the propositional truncation of $\initeq{f}{g}$
+	All in all, we define the morphisms from $x$ to $y$ to be the set quotient of $\initmor{x}{y}$ by $\approx_p$.
+	\qedhere	
+\end{itemize}
+\end{construction}
+
+\begin{problem}
+\label{prob:hit_exist}
+Each signature has a HIT.
+\end{problem}
+
+\begin{construction}{prob:hit_exist}
+\label{constr:hit_exist}
+By Propositions \ref{thm:initial_alg_sem} and \ref{prop:biinitial_in_grpd}, it suffices to find a biinitial object in $\algG{\sign}$.
+The desired object is given in Construction \ref{constr:initial_grpd_alg}.
+\end{construction}
