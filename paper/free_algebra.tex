@@ -1,36 +1,66 @@
-\cite{lynge2019}
+In this section, we discuss the free algebra and show that it gives rise to a left biadjoint pseudofunctor from 1-types to algebras on a given signature.
+From this, we conclude that each signature gives rise to a pseudomonad on the bicategory of 1-types \cite{lack2000coherent}.
+We construct the free algebra as a biinitial algebra of a some signature.
+More specifically, suppose that we have a signature $\sign$ and a 1-type $A$.
+We first construct another signature, called the \emph{free signature}, which has all the constructors of $\sign$ and an additional point constructor with arguments from $A$.
+Then we define the free $\sign$-algebra on $A$ to be the biinitial algebra of free signature.
 
 \begin{definition}
-Signature for the free algebra on $A$
-
-The free algebra on $A$ is defined to be...
+Let $\sign$ be a signature and let $A$ be a 1-type.
+Define the \fat{free signature} $\freesign{\sign}{A}$ as follows
+\begin{itemize}
+	\item 
+	\item
+	\item
+\end{itemize}
+We define the \fat{free $\sign$-algebra} on $A$ to be the biinitial $\freesign{\sign}{A}$-algebra.
+The free $\sign$-algebra on $A$ is denoted by $\freealg{\sign}{A}$ and the inclusion is denoted by $\freealginc{\sign} : A \rightarrow \freealg{\sign}{A}$.
 \end{definition}
 
-The following result follows from initial algebra semantics
+Note that the free algebra exists by Construction \ref{constr:hit_exist}.
+The free signature of the signature for monoidal objects (Subsection \ref{sec:monoidal_object}) is given as follows
+
+
+
+To construct the desired left biadjoint pseudofunctor, we first give a more convenient formulation of the biinitiality of $\freealg{\sign}{A}$.
+By stating the mapping properties with algebras for $\sign$, we can apply them directly when constructing the biadjunction.
 
 \begin{corollary}
-The free algebra is the biinitial of the bicategory ...
-
-That is to say
+Let $\sign$ be a signature and let $A$ be a 1-type.
+Suppose that we have $Y : \algM(\sign)$ and $\iota_Y : A \rightarrow Y$.
 \begin{itemize}
-	\item Mapping property
-	\item 2-cell property
-	\item equality property
+	\item We have a homomorphism $f : \freealg{\sign}{A} \onecell Y$ such that for all $a : A$, we have $f(\freealginc{\sign}(a)) = \iota_Y(a)$.
+	\item
+	Given homomorphisms $f_1, f_2 : \freealg{\sign}{A} \onecell Y$
+	and paths $p_1 : f_1(\freealginc{\sign}(a)) = \iota_Y(a)$ and $p_2 : f_2(\freealginc{\sign}(a)) = \iota_Y(a)$ for each $a : A$,
+	we get a path $\tc : f_1(x) = f_2(x)$ for each $x : \freealg{\sign}{A}$
+	such that ...
+	\item
+	Suppose that we have homomorphisms $f_1, f_2 : \freealg{\sign}{A} \onecell Y$
+	and paths $p_1 : f_1(\freealginc{\sign}(a)) = \iota_Y(a)$ and $p_2 : f_2(\freealginc{\sign}(a)) = \iota_Y(a)$ for each $a : A$.
+	In addition, suppose that we have paths $\tc_1, \tc_2 : f_1(x) = f_2(x)$ for each $x : \freealg{\sign}{A}$
+	such that ...
+	Then for each $x : \freealg{\sign}{A}$, we have $\tc_1(x) = \tc_2(x)$.
 \end{itemize} 
 \end{corollary}
 
+Now we have enough in place to construct the desired biadjunction.
 
+\begin{problem}
+\label{prob:free_alg}
+Given a signature $\sign$, to construct a coherent biadjunction $\freealgpsfun{\sign} \dashv \underlying$ where $\underlying : \pseudo(\algM(\sign), \onetypes)$ is the forgetful pseudofunctor.
+\end{problem}
 
-\begin{proposition}
-The free algebra gives a coherent left biadjoint pseudofunctor
+\begin{construction}{prob:free_alg}
+We only indicate how to construct the left biadjoint.
+\end{construction}
+
+From all of this, we conclude that each signature gives rise to a pseudomonad on 1-types.
+
+\begin{proposition}[Proposition 5.1 in \cite{lack2000coherent}]
+Each coherent biadjunction gives rise to a pseudomonad.
 \end{proposition}
 
-
-
-
-
-\begin{proposition}
-Lack: each coherent biadjunction gives rise to a pseudomonad
-
-\cite{lack2000coherent}
-\end{proposition}
+\begin{corollary}
+Each signature gives rise to a pseudomonad on 1-types.
+\end{corollary}
