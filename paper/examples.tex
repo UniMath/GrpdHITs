@@ -3,6 +3,11 @@
 
 Given two 1-types $A$ and $B$ and two functions $f , g: A \to B$, the
 coequalizer of $f$ and $g$ is given by the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\coequalizer f g$ :=
+| $\coequalizerbase$ : $B \rightarrow \coequalizer f g$
+| $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
+\end{lstlisting}
 
 Signature for the coequalizer
 
@@ -12,13 +17,27 @@ Signature for the coequalizer
 Assume two 1-types $A$ and $B$, two functions $f , g: A \to B$ and two
 homotopies $p$ and $q$ between $f$ and $g$. The coequifier of $p$ and
 $q$ is given by the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\coequifier p q$ :=
+| $\coequifierbase$ : $B \rightarrow \coequifier f g$
+| $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(p(x))} = \ap {\coequifierbase}{(q(x))}}$
+\end{lstlisting}
 
 Signature for the coequifier
 
 \subsection{Group Quotient}
 \label{sec:group_quotient}
 
-Given a group $G$, the group quotient of $G$ is the following HIT:
+Let $G$ be a group with unit $e$ and multiplication $*$. The group
+quotient of $G$ is the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\groupquot G$ :=
+| $\groupquotbase$ : $\groupquot G$
+| $\groupquotloop$ : $G \rightarrow \groupquotbase = \groupquotbase$
+| $\groupquotloope$ : $\groupquotloop(e)= \refl \groupquotbase$
+| $\groupquotloopm$ : $\depprod{(x,y : G)}{\groupquotloop(x * y)= \concat{\groupquotloop(x)}{\groupquotloop(y)}}$
+\end{lstlisting}
+
 
 Signature for the group quotient
 
@@ -26,6 +45,17 @@ Signature for the group quotient
 \label{sec:monoidal_object}
 
 The monoidal object is defined by the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\monobj$ :=
+| $\monobjunit$ : $\monobj$
+| $\monobjtensor$ : $\monobj \rightarrow \monobj \rightarrow \monobj$
+| $\monobjlambda$ : $\depprod{(x : \monobj)}{\monobjtensor(\monobjunit,x) = x}$
+| $\monobjrho$ : $\depprod{(x : \monobj)}{\monobjtensor(x,\monobjunit) = x}$
+| $\monobjalpha$ : $\depprod{(x ,y,z: \monobj)}{\monobjtensor(x,(\monobjtensor(y,z)))=\monobjtensor(\monobjtensor(x,y),z)}$
+| $\monobjtr$ : $\depprod{(x,y : \monobj)}{\ap{(\Lam z. \monobjtensor(x,z))}{(\monobjlambda(y))}} = \concat{\monobjalpha(x,\monobjunit,y)}{\ap{(\Lam z. \monobjtensor(z,y))}{(\monobjrho(x))}}$
+| $\monobjpent$ : $\depprod{(w,x,y,z : \monobj)}{}$
+    $\concat{\monobjalpha(w,x,\monobjtensor(y,z))}{\monobjalpha(\monobjtensor(w,x),y,z)}=\concat{\ap{(\Lam v. \monobjtensor(w,v))}{(\monobjalpha(x,y,z))}}{\concat{\monobjalpha(w,\monobjtensor(x,y),z)}{\ap{(\Lam v. \monobjtensor(v,z))}{(\monobjalpha(w,x,y))}}}$
+\end{lstlisting}
 
 Signature for the monoidal object
 
@@ -33,5 +63,25 @@ Signature for the monoidal object
 \label{sec:coeherent_group}
 
 The coherent group is defined by the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\cohgroup$ :=
+| $\cohgroupunit$ : $\cohgroup$
+| $\cohgrouptensor$ : $\cohgroup \rightarrow \cohgroup \rightarrow \cohgroup$
+| $\cohgroupinv$ : $\cohgroup \rightarrow \cohgroup$
+| $\cohgrouplambda$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupunit,x) = x}$
+| $\cohgrouprho$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(x,\cohgroupunit) = x}$
+| $\cohgroupalpha$ : $\depprod{(x ,y,z: \cohgroup)}{\cohgrouptensor(x,(\cohgrouptensor(y,z)))=\cohgrouptensor(\cohgrouptensor(x,y),z)}$
+| $\cohgrouplinv$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupinv(x),x) = \cohgroupunit}$
+| $\cohgrouprinv$ : $\depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))}$
+| $\cohgrouptr$ : $\depprod{(x,y : \cohgroup)}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplambda(y))}} = \concat{\cohgroupalpha(x,\cohgroupunit,y)}{\ap{(\Lam z. \cohgrouptensor(z,y))}{(\cohgrouprho(x))}}$
+| $\cohgrouppent$ : $\depprod{(w,x,y,z : \cohgroup)}{}$
+    $\concat{\cohgroupalpha(w,x,\cohgrouptensor(y,z))}{\cohgroupalpha(\cohgrouptensor(w,x),y,z)}=\concat{\ap{(\Lam v. \cohgrouptensor(w,v))}{(\cohgroupalpha(x,y,z))}}{\concat{\cohgroupalpha(w,\cohgrouptensor(x,y),z)}{\ap{(\Lam v. \cohgrouptensor(v,z))}{(\cohgroupalpha(w,x,y))}}}$
+| $\cohgroupinvadjtrl$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(z,x))}{(\cohgrouprinv(x))}}{\concat{\inverse{(\cohgroupalpha(x,\cohgroupinv(x),x))}}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouplambda(x)}{\inverse{(\cohgrouprho(x))}}}$
+| $\cohgroupinvadjtrr$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(\cohgroupinv(x),z))}{(\cohgrouprinv(x))}}{\concat{\cohgroupalpha(\cohgroupinv(x),x,\cohgroupinv(x))}{\ap{(\Lam z. \cohgrouptensor(z,\cohgroupinv(x)))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouprho(\cohgroupinv(x))}{\inverse{(\cohgrouplambda(\cohgroupinv(x)))}}}$
+\end{lstlisting}
+
+
+
+
 
 Signature for the coherent group

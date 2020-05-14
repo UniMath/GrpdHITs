@@ -152,6 +152,7 @@
 
 \newcommand{\refl}[1]{\constructor{idpath}(#1)}
 \newcommand{\concat}[2]{#1 \bullet #2}
+\newcommand{\inverse}[1]{#1^{-1}}
 
 \newcommand{\pathover}[4][]{#3 =_{#2}^{#1} #4}
 \newcommand{\globeover}[4][]{#3 =_{#2}^{#1} #4}
@@ -345,7 +346,48 @@
 \newcommand{\underlying}{\constfont{U}}
 
 
-% 
+%Coequalizer
+\newcommand{\coequalizer}[2]{\mathsf{Coequalizer}(#1,#2)}
+\newcommand{\coequalizerbase}{\constructor{base}}
+\newcommand{\coequalizerglue}{\constructor{glue}}
+
+%Coequifier
+\newcommand{\coequifier}[2]{\mathsf{Coequifier}(#1,#2)}
+\newcommand{\coequifierbase}{\constructor{base}}
+\newcommand{\coequifierglue}{\constructor{glue}}
+
+%Group quotient
+\newcommand{\groupquot}[1]{\mathsf{GroupQuot(#1)}}
+\newcommand{\groupquotbase}{\constructor{base}}
+\newcommand{\groupquotloop}{\constructor{loop}}
+\newcommand{\groupquotloope}{\constructor{loope}}
+\newcommand{\groupquotloopm}{\constructor{loopm}}
+
+%Monoidal Object
+\newcommand{\monobj}{\mathsf{MonObj}}
+\newcommand{\monobjunit}{\constructor{u}}
+\newcommand{\monobjtensor}{\constructor{m}}
+\newcommand{\monobjlambda}{\constructor{lam}}
+\newcommand{\monobjrho}{\constructor{rho}}
+\newcommand{\monobjalpha}{\constructor{al}}
+\newcommand{\monobjtr}{\constructor{tr}}
+\newcommand{\monobjpent}{\constructor{pent}}
+
+%Coherent Group
+\newcommand{\cohgroup}{\mathsf{CohGrp}}
+\newcommand{\cohgroupunit}{\constructor{u}}
+\newcommand{\cohgrouptensor}{\constructor{m}}
+\newcommand{\cohgroupinv}{\constructor{i}}
+\newcommand{\cohgrouplambda}{\constructor{lam}}
+\newcommand{\cohgrouprho}{\constructor{rho}}
+\newcommand{\cohgroupalpha}{\constructor{al}}
+\newcommand{\cohgrouplinv}{\constructor{linv}}
+\newcommand{\cohgrouprinv}{\constructor{rinv}}
+\newcommand{\cohgrouptr}{\constructor{tr}}
+\newcommand{\cohgrouppent}{\constructor{pent}}
+\newcommand{\cohgroupinvadjtrl}{\constructor{invadjtrl}}
+\newcommand{\cohgroupinvadjtrr}{\constructor{invadjtrr}}
+
 
 
 \newcommand{\remove}[1]{}
