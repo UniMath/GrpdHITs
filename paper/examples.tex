@@ -1,15 +1,18 @@
+In this section we present some additional examples, complementing the
+ones introduced in Section \ref{sec:signs}.
+
 \subsection{Coequalizer}
 \label{sec:coequalizer}
 
 Given two 1-types $A$ and $B$ and two functions $f , g: A \to B$, the
-coequalizer of $f$ and $g$ is given by the following HIT:
+\emph{coequalizer} of $f$ and $g$ is given by the following HIT:
 \begin{lstlisting}[mathescape=true]
 Inductive $\coequalizer f g$ :=
 | $\coequalizerbase$ : $B \rightarrow \coequalizer f g$
 | $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
 \end{lstlisting}
 
-The signature of the coequalizer of $f$ and $g$ is:
+The signature of the coequalizer is constructed as follows:
 \begin{itemize}
 \item $\pointconstr[\coequalizer f g] = \constantP{B}$;
 \item $\pathlabel[\coequalizer f g] = \unit$, and for its unique inhabitant take $\patharg[\coequalizer f g] = \constantP{A}$ and endpoints
@@ -24,7 +27,7 @@ The signature of the coequalizer of $f$ and $g$ is:
 \label{sec:coequifier}
 
 Assume two 1-types $A$ and $B$, two functions $f , g: A \to B$ and two
-homotopies $p$ and $q$ between $f$ and $g$. The coequifier of $p$ and
+homotopies $p$ and $q$ between $f$ and $g$. The \emph{coequifier} of $p$ and
 $q$ is given by the following HIT:
 \begin{lstlisting}[mathescape=true]
 Inductive $\coequifier p q$ :=
@@ -32,7 +35,7 @@ Inductive $\coequifier p q$ :=
 | $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(p(x))} = \ap {\coequifierbase}{(q(x))}}$
 \end{lstlisting}
 
-The signature of the coequifier of $p$ and $q$ is:
+The signature of the coequifier of $p$ and $q$ is given as follows:
 \begin{itemize}
 \item $\pointconstr[\coequifier f g] = \constantP{B}$;
 \item $\pathlabel[\coequifier f g]$ is the empty type; 
@@ -41,12 +44,12 @@ The signature of the coequifier of $p$ and $q$ is:
   The homotopy constructor $\coequifierglue$ does not have path arguments, so we take  
   $\homotpathtarg[\coequifier f g] = \constantP{\unit}$ and
   $\pathargleft[\coequifier f g] = \pathargright[\coequifier f g] = \Ce(\unitt)$.
-  The endpoints $\homotpathleft[\coequifier f g]$ and $\homotpathright[\coequifier f g]$ are
+  The endpoints $\homotpathleft[\coequifier f g]$ and $\homotpathright[\coequifier f g]$ are:
   \[
   \homotpathleft[\coequifier f g] = \comp{\fmap(f)}{\constr}, \quad
   \homotpathright[\coequifier f g] = \comp{\fmap(g)}{\constr},
   \]
-  and the left and right homotopy endpoints are
+  while the left and right homotopy endpoints are:
   \[
   \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(p))}))}, \quad
   \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(q))}))}.
@@ -73,7 +76,9 @@ Signature for the group quotient
 \subsection{Monoidal Object}
 \label{sec:monoidal_object}
 
-The monoidal object is defined by the following HIT:
+
+An important algebraic example is given by the \emph{monoidal object},
+which can be presented as the following HIT:
 \begin{lstlisting}[mathescape=true]
 Inductive $\monobj$ :=
 | $\monobjunit$ : $\monobj$
@@ -85,32 +90,49 @@ Inductive $\monobj$ :=
 | $\monobjpent$ : $\depprod{(w,x,y,z : \monobj)}{}$
     $\concat{\monobjalpha(w,x,\monobjtensor(y,z))}{\monobjalpha(\monobjtensor(w,x),y,z)}=\concat{\ap{(\Lam v. \monobjtensor(w,v))}{(\monobjalpha(x,y,z))}}{\concat{\monobjalpha(w,\monobjtensor(x,y),z)}{\ap{(\Lam v. \monobjtensor(v,z))}{(\monobjalpha(w,x,y))}}}$
 \end{lstlisting}
+We do not show the signature associated to this HIT here. We redirect
+the interested reader to our formalization for the complete
+definition.
 
-Signature for the monoidal object
+Algebras in groupoids for the monoidal object signature correspond
+precisely with \emph{monoidal groupoids}, the groupoid variant of
+monoidal categories.  $\monobj$ is then the initial monoidal
+groupoid.
 
-\subsection{Coherent Group}
-\label{sec:coeherent_group}
+We also formalized the \emph{coherent group} \cite{baez2004groups} as
+a HIT named $\cohgroup$.  Its definition includes all the constructors of
+the monoidal object, plus a new point constructor $\cohgroupinv$ :
+$\cohgroup \rightarrow \cohgroup$, two new path constructors
+\[
+\cohgrouplinv : \depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupinv(x),x) = \cohgroupunit},
+\quad\quad
+\cohgrouprinv : \depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))},
+\]
+and two new homotopy constructors, 
 
-The coherent group is defined by the following HIT:
-\begin{lstlisting}[mathescape=true]
-Inductive $\cohgroup$ :=
-| $\cohgroupunit$ : $\cohgroup$
-| $\cohgrouptensor$ : $\cohgroup \rightarrow \cohgroup \rightarrow \cohgroup$
-| $\cohgroupinv$ : $\cohgroup \rightarrow \cohgroup$
-| $\cohgrouplambda$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupunit,x) = x}$
-| $\cohgrouprho$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(x,\cohgroupunit) = x}$
-| $\cohgroupalpha$ : $\depprod{(x ,y,z: \cohgroup)}{\cohgrouptensor(x,(\cohgrouptensor(y,z)))=\cohgrouptensor(\cohgrouptensor(x,y),z)}$
-| $\cohgrouplinv$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupinv(x),x) = \cohgroupunit}$
-| $\cohgrouprinv$ : $\depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))}$
-| $\cohgrouptr$ : $\depprod{(x,y : \cohgroup)}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplambda(y))}} = \concat{\cohgroupalpha(x,\cohgroupunit,y)}{\ap{(\Lam z. \cohgrouptensor(z,y))}{(\cohgrouprho(x))}}$
-| $\cohgrouppent$ : $\depprod{(w,x,y,z : \cohgroup)}{}$
-    $\concat{\cohgroupalpha(w,x,\cohgrouptensor(y,z))}{\cohgroupalpha(\cohgrouptensor(w,x),y,z)}=\concat{\ap{(\Lam v. \cohgrouptensor(w,v))}{(\cohgroupalpha(x,y,z))}}{\concat{\cohgroupalpha(w,\cohgrouptensor(x,y),z)}{\ap{(\Lam v. \cohgrouptensor(v,z))}{(\cohgroupalpha(w,x,y))}}}$
-| $\cohgroupinvadjtrl$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(z,x))}{(\cohgrouprinv(x))}}{\concat{\inverse{(\cohgroupalpha(x,\cohgroupinv(x),x))}}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouplambda(x)}{\inverse{(\cohgrouprho(x))}}}$
-| $\cohgroupinvadjtrr$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(\cohgroupinv(x),z))}{(\cohgrouprinv(x))}}{\concat{\cohgroupalpha(\cohgroupinv(x),x,\cohgroupinv(x))}{\ap{(\Lam z. \cohgrouptensor(z,\cohgroupinv(x)))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouprho(\cohgroupinv(x))}{\inverse{(\cohgrouplambda(\cohgroupinv(x)))}}}$
-\end{lstlisting}
-
-
-
-
-
-Signature for the coherent group
+%% \subsection{Coherent Group}
+%% \label{sec:coeherent_group}
+%% 
+%% The coherent group is defined by the following HIT:
+%% \begin{lstlisting}[mathescape=true]
+%% Inductive $\cohgroup$ :=
+%% | $\cohgroupunit$ : $\cohgroup$
+%% | $\cohgrouptensor$ : $\cohgroup \rightarrow \cohgroup \rightarrow \cohgroup$
+%% | $\cohgroupinv$ : $\cohgroup \rightarrow \cohgroup$
+%% | $\cohgrouplambda$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupunit,x) = x}$
+%% | $\cohgrouprho$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(x,\cohgroupunit) = x}$
+%% | $\cohgroupalpha$ : $\depprod{(x ,y,z: \cohgroup)}{\cohgrouptensor(x,(\cohgrouptensor(y,z)))=\cohgrouptensor(\cohgrouptensor(x,y),z)}$
+%% | $\cohgrouplinv$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupinv(x),x) = \cohgroupunit}$
+%% | $\cohgrouprinv$ : $\depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))}$
+%% | $\cohgrouptr$ : $\depprod{(x,y : \cohgroup)}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplambda(y))}} = \concat{\cohgroupalpha(x,\cohgroupunit,y)}{\ap{(\Lam z. \cohgrouptensor(z,y))}{(\cohgrouprho(x))}}$
+%% | $\cohgrouppent$ : $\depprod{(w,x,y,z : \cohgroup)}{}$
+%%     $\concat{\cohgroupalpha(w,x,\cohgrouptensor(y,z))}{\cohgroupalpha(\cohgrouptensor(w,x),y,z)}=\concat{\ap{(\Lam v. \cohgrouptensor(w,v))}{(\cohgroupalpha(x,y,z))}}{\concat{\cohgroupalpha(w,\cohgrouptensor(x,y),z)}{\ap{(\Lam v. \cohgrouptensor(v,z))}{(\cohgroupalpha(w,x,y))}}}$
+%% | $\cohgroupinvadjtrl$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(z,x))}{(\cohgrouprinv(x))}}{\concat{\inverse{(\cohgroupalpha(x,\cohgroupinv(x),x))}}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouplambda(x)}{\inverse{(\cohgrouprho(x))}}}$
+%% | $\cohgroupinvadjtrr$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(\cohgroupinv(x),z))}{(\cohgrouprinv(x))}}{\concat{\cohgroupalpha(\cohgroupinv(x),x,\cohgroupinv(x))}{\ap{(\Lam z. \cohgrouptensor(z,\cohgroupinv(x)))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouprho(\cohgroupinv(x))}{\inverse{(\cohgrouplambda(\cohgroupinv(x)))}}}$
+%% \end{lstlisting}
+%% 
+%% 
+%% 
+%% 
+%% 
+%% Signature for the coherent group
