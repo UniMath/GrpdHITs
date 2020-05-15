@@ -131,8 +131,8 @@
 
 \newcommand{\transport}[0]{\constfont{transport}}
 \renewcommand{\transp}[1]{#1_*}
-\newcommand{\depeq}[1][*]{=_{#1}}                                                                                      
-\newcommand{\defeq}{\equiv}                                                                                      
+\newcommand{\depeq}[1][*]{=_{#1}}
+\newcommand{\defeq}{\equiv}                                                                
 
 \newcommand{\Empty}[0]{\type{Empty}}
 \newcommand{\Unit}[0]{\type{Unit}}
@@ -164,6 +164,8 @@
 
 \newcommand{\inl}{\constructor{inl}}
 \newcommand{\inr}{\constructor{inr}}
+
+\newcommand{\funextsec}{\constfont{funext}}
 
 % variables
 \newcommand{\sign}{\Sigma}
@@ -290,15 +292,22 @@
 \newcommand{\hrunit}[1]{\hrunitN(#1)}
 \newcommand{\hprl}[1]{\constructor{pr}_1(#1)}
 \newcommand{\hprr}[1]{\constructor{pr}_2(#1)}
+\newcommand{\hpairprle}{\constructor{pairpr}_1}
+\newcommand{\hpairprre}{\constructor{pairpr}_2}
 \newcommand{\hpair}[2]{(#1 , #2)}
 \newcommand{\hinl}[1]{\constructor{inl}(#1)}
 \newcommand{\hinr}[1]{\constructor{inr}(#1)}
 \newcommand{\harg}[0]{\constructor{p}_{\constfont{arg}}}
 \newcommand{\hconstr}[2]{\constructor{path}_{#1}(#2)}
+\newcommand{\hcomppair}{\constructor{comppair}}
 \newcommand{\hap}[1]{\constructor{ap} \, #1}
+\newcommand{\hcompconst}[1]{\constructor{cmap}(#1)}
 
 \newcommand{\homotendpointAct}[2]{#1(#2)}
 \newcommand{\homotendpointDact}[2]{\overline{#1}(#2)}
+
+\newcommand{\idtoH}{\constfont{idtoH}}
+
 
 % Interpretation
 \newcommand{\semP}[1]{\llbracket #1 \rrbracket} % interpretation of poylnomials on 1-types
@@ -347,12 +356,12 @@
 
 
 %Coequalizer
-\newcommand{\coequalizer}[2]{\mathsf{Coequalizer}(#1,#2)}
+\newcommand{\coequalizer}[2]{\mathsf{Coeqz}(#1,#2)}
 \newcommand{\coequalizerbase}{\constructor{base}}
 \newcommand{\coequalizerglue}{\constructor{glue}}
 
 %Coequifier
-\newcommand{\coequifier}[2]{\mathsf{Coequifier}(#1,#2)}
+\newcommand{\coequifier}[2]{\mathsf{Coeqf}(#1,#2)}
 \newcommand{\coequifierbase}{\constructor{base}}
 \newcommand{\coequifierglue}{\constructor{glue}}
 

@@ -9,7 +9,16 @@ Inductive $\coequalizer f g$ :=
 | $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
 \end{lstlisting}
 
-Signature for the coequalizer
+The signature of the coequalizer of $f$ and $g$ is:
+\begin{itemize}
+\item $\pointconstr[\coequalizer f g] = \constantP{B}$;
+\item $\pathlabel[\coequalizer f g] = \unit$, and for its unique inhabitant take $\patharg[\coequalizer f g] = \constantP{A}$ and endpoints
+  \[
+  \pathleft[\coequalizer f g] = \comp{\fmap(f)}{\constr}, \quad
+  \pathright[\coequalizer f g] = \comp{\fmap(g)}{\constr}; 
+  \]
+\item $\homotlabel[\coequalizer f g]$ is the empty type.
+\end{itemize}
 
 \subsection{Coequifier}
 \label{sec:coequifier}
@@ -23,7 +32,27 @@ Inductive $\coequifier p q$ :=
 | $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(p(x))} = \ap {\coequifierbase}{(q(x))}}$
 \end{lstlisting}
 
-Signature for the coequifier
+The signature of the coequifier of $p$ and $q$ is:
+\begin{itemize}
+\item $\pointconstr[\coequifier f g] = \constantP{B}$;
+\item $\pathlabel[\coequifier f g]$ is the empty type; 
+\item $\homotlabel[\coequifier f g] = \unit$, and take 
+  $\homotpointarg[\coequifier f g] = \constantP{A}$.
+  The homotopy constructor $\coequifierglue$ does not have path arguments, so we take  
+  $\homotpathtarg[\coequifier f g] = \constantP{\unit}$ and
+  $\pathargleft[\coequifier f g] = \pathargright[\coequifier f g] = \Ce(\unitt)$.
+  The endpoints $\homotpathleft[\coequifier f g]$ and $\homotpathright[\coequifier f g]$ are
+  \[
+  \homotpathleft[\coequifier f g] = \comp{\fmap(f)}{\constr}, \quad
+  \homotpathright[\coequifier f g] = \comp{\fmap(g)}{\constr},
+  \]
+  and the left and right homotopy endpoints are
+  \[
+  \hap{(\idtoH(\funextsec(p)))}, \quad
+  \hap{(\idtoH(\funextsec(q)))}.
+  \]
+\end{itemize}
+
 
 \subsection{Group Quotient}
 \label{sec:group_quotient}

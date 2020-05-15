@@ -164,9 +164,12 @@ Lastly, we conclude in Section \ref{sec:conclusion}.
 \\
 \emph{\textbf{Notation.}}
 Let us recall some notation from HoTT which we use throughout this paper.
-The identity path is denoted by $\refl{x}$ and the concatenation of paths $p : x = y$ and $q : y = z$ is denoted by $p \vcomp q$.
+The identity path is denoted by $\refl{x}$, the concatenation of paths $p : x = y$ and $q : y = z$ is denoted by $p \vcomp q$, and the inverse of a path $p : x = y$ is denoted by $\inverse{p} : y = x$.
 Given a type $X$ with points $x, y : X$ and paths $p, q : x = y$, we call a path $s : p = q$ a \emph{2-path}.
 A \emph{proposition} is a type of which all inhabitants are equal.
 A \emph{set} is a type $X$ such that for all $x, y : X$ the type $x = y$ is a proposition.
 \remove{A \emph{1-type} is a type $X$ such that for all $x, y : X$ the type $x = y$ is a set.}
-A \emph{homotopy} between $f, g : X \rightarrow Y$ consists of a path $f(x) = g(x)$ for each $x : A$.
+A \emph{homotopy} between $f, g : X \rightarrow Y$ consists of a path
+$f(x) = g(x)$ for each $x : A$. We assume \emph{function extensionality}, and
+we write $\funextsec$ for the map sending a homotopy between functions
+$f$ and $g$ into a path $f = g$.
