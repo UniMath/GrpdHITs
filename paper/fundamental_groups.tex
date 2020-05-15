@@ -1,16 +1,43 @@
+Let us finish by using Construction \ref{constr:hit_exist} to determine the fundamental group of some HITs.
+Such results are often proven by encode-decode method \cite{LicataS13,LicataF14}, but we take a different approach.
+We only use encode-decode to determine the path space of the groupoid quotient.
+For other higher inductive types, we just find a simpler description of the initial groupoid algebra.
+We start by determining the path space of the groupoid quotient.
+
+\begin{proposition}
+\label{prop:groupoid_quot_encode_decode}
+Let $G$ be a groupoid and let $x$ and $y$ be objects in $G$.
+Then the types $\gcl(x) = \gcl(y)$ and $\mor{G}{x}{y}$ are equivalent.
+\end{proposition}
+
+As a result, the type of paths between two points in a HIT is the type of morphisms in the initial groupoid algebra.
+Since this algebra is unique, we can determine the fundamental group by finding a simpler description for the initial groupoid algebra.
+
 \subsection{Circle}
 \label{sec:circle_fund_group}
+Let us start by taking a close look at the circle.
+Recall that the circle is defined as the following HIT
 
-We construct an algebra of the circle in groupoid and we prove it
-equivalent to initial algebra of the circle in groupoid.
+\begin{lstlisting}[mathescape=true]
+Inductive $\circleS$ :=
+| $\baseS$ : $\circleS$
+| $\SLoop$ : $\baseS = \baseS$
+\end{lstlisting}
+
+Note that we can define a signature $\circleS$ that represents this HIT.
+Next we construct a groupoid algebra $\circlegrpd$ of this signature and we prove $\circlegrpd$ is biinitial.
 
 \begin{definition}
-  Definition of the groupoid
+We define a groupoid $\circlegrpd$ as follows
+\begin{itemize}
+	\item the type of objects is the unit type
+	\item the type of morphisms from $\unitt$ to $\unitt$ is the integers
+\end{itemize}
 \end{definition}
 
 \begin{problem}
-  \label{prob:initial_grpd_alg_circle}
-  Algebra structure
+\label{prob:initial_grpd_alg_circle}
+To construct an $\circleS$-algebra structure on $\circlegrpd$.
 \end{problem}
 
 \begin{construction}{prob:initial_grpd_alg_circle}
@@ -18,11 +45,15 @@ equivalent to initial algebra of the circle in groupoid.
 \end{construction}
 
 \begin{proposition}
-  Initiality
+The groupoid $\circlegrpd$ is biinitial in $\algG{\circleS}$.
 \end{proposition}
 
+From Construction \ref{constr:hit_exist} and the fact that biinitial objects are unique up to equivalence,
+we can deduce that the circle is the groupoid quotient of $\circlegrpd$ and that its base point $\baseS$ is $\gcl(\unitt)$.
+Since the morphisms of $\circlegrpd$ are just the integers, we immediately get the following from Proposition \ref{prop:groupoid_quot_encode_decode}
+
 \begin{corollary}
-  The fundamental group of the circle is $\mathbb{Z}$.
+The type $\baseS = \baseS$ is equivalent to the integers.
 \end{corollary}
 
 \subsection{Torus}
