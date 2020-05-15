@@ -4,29 +4,38 @@ ones introduced in Section \ref{sec:signs}.
 \subsection{Coequalizer}
 \label{sec:coequalizer}
 
-The coqualizer of two morphisms is a basic categorical construction,
-that admits the following bicategorical generalization.
+The coequalizer is a particular kind of finite colimit in a
+category. It admits a bicategorical generalization, which is typically
+called coinserter. Here we refrain from using the latter terminology
+and refer to this colimit in bicategories again as coequalizer. This
+choice of terminology is motivated by our interest for this
+construction in the bicategory of 1-types, in which the coinserter
+captures precisely the notion of homotopy coequalizer \cite[Chapter 6]{hottbook}.
 
 \begin{definition}
 Let $\B$ be a bicategory. Let $A$ and $B$ be objects in $B$ and let
 $f,g : A \onecell B$. The \emph{coequalizer} of $f$ and $g$ is an
-object $Q$ together with a 1-cell $q : B \onecell Q$ and an invertible
-2-cell $\theta : f \cdot q\twocell g \cdot q$.
+object $Q$ together with a 1-cell $q : B \onecell Q$ and a 2-cell
+$\theta : f \cdot q\twocell g \cdot q$.
 
 The triple $(Q,q,\theta)$ must satisfy the following universal
-property. Assume given an object $C$, a 1-cell $h : B \onecell C$ and
-an invertible 2-cell $\phi : f \cdot h \twocell g \cdot h$. Then there
-exists a 1-cell $h' : Q \onecell C$ together with an invertible 2-cell
-$\phi' : q \cdot h' \twocell h$ such that $\theta \whiskerr h' \vcomp g
-\whiskerl \phi' = \lassoc{f}{q}{h'} \vcomp f \whiskerl \phi' \vcomp
-\phi$
+property. Assume given:
+\begin{itemize}
+\item an object $C$,
+\item a 1-cell $h : B \onecell C$, and
+\item a 2-cell $\phi : f \cdot h \twocell g \cdot h$.
+\end{itemize}
+Then there exists a 1-cell $h' : Q \onecell C$ together with a 2-cell
+$\phi' : q \cdot h' \twocell h$ with a path $\theta \whiskerr h' \vcomp
+g \whiskerl \phi' = \lassoc{f}{q}{h'} \vcomp f \whiskerl \phi' \vcomp
+\phi$. The pair $(h',\phi')$ is ``unique'' in the sense that,
 %% \footnote{Notice that this path would type-check also without the
 %%   left associator $\lassoc{}{}{}$, since function composition is
 %%   stricly associative. But the presence of the left associator is
 %%   necessary if we consider algebras for the coequalizer in
 %%   bicategories more general than the one of 1-types and groupoids.}.
-Given another 1-cell $h'' : Q \onecell C$ and an invertible 2-cell $\phi'' :
-q \cdot h'' \twocell h$ such that $\theta \whiskerr h'' \vcomp g
+given another 1-cell $h'' : Q \onecell C$ and another 2-cell $\phi'' :
+q \cdot h'' \twocell h$ with a path $\theta \whiskerr h'' \vcomp g
 \whiskerl \phi'' = \lassoc{f}{q}{h''} \vcomp f \whiskerl \phi'' \vcomp
 \phi$, then there exists a unique invertible 2-cell $\tau : h'
 \twocell h''$ such that $q \whiskerl \tau \vcomp \phi'' = \phi'$.
