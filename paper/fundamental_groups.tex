@@ -30,8 +30,8 @@ Next we construct a groupoid algebra $\circlegrpd$ of this signature and we prov
 \begin{definition}
 We define a groupoid $\circlegrpd$ as follows
 \begin{itemize}
-	\item the type of objects is the unit type
-	\item the type of morphisms from $\unitt$ to $\unitt$ is the integers
+	\item the type of objects is the unit type;
+	\item the type of morphisms from $\unitt$ to $\unitt$ is the integers.
 \end{itemize}
 \end{definition}
 
@@ -58,17 +58,20 @@ The type $\baseS = \baseS$ is equivalent to the integers.
 
 \subsection{Torus}
 \label{sec:torus_fund_group}
-
-We construct an algebra of the torus in groupoid and we prove it
-equivalent to initial algebra of the torus in groupoid.
+The next example we look at, is the torus, which we defined in Example \ref{ex:torus}.
+We use the same approach to determine its fundamental group, so we give a simpler description of the biinitial algebra in groupoids.
 
 \begin{definition}
-  Definition of the groupoid
+Define a groupoid $\torusgrpd$ as follows
+\begin{itemize}
+	\item the type of objects is the unit type;
+	\item the type of morphisms from $\unitt$ to $\unitt$ is $\mathbb{Z} \times \mathbb{Z}$.
+\end{itemize}
 \end{definition}
 
 \begin{problem}
-  \label{prob:initial_grpd_alg_torus}
-  Algebra structure
+\label{prob:initial_grpd_alg_torus}
+To construct an $\torus$-algebra structure on $\torusgrpd$.
 \end{problem}
 
 \begin{construction}{prob:initial_grpd_alg_torus}
@@ -76,27 +79,33 @@ equivalent to initial algebra of the torus in groupoid.
 \end{construction}
 
 \begin{proposition}
-  Initiality
+The groupoid $\torusgrpd$ is biinitial in $\algG{\torus}$.
 \end{proposition}
 
+Again we can deduce that the torus is the groupoid quotient of $\torusgrpd$ and that its base point $\base$ is $\gcl(\unitt)$.
+From Proposition \ref{prop:groupoid_quot_encode_decode}, we immediately get
+
 \begin{corollary}
-  The fundamental group of the torus is $\mathbb{Z} \times \mathbb{Z}$.
+The type $\base = \base$ is equivalent to $\mathbb{Z} \times \mathbb{Z}$.
 \end{corollary}
 
 \subsection{Group Quotient}
 \label{sec:group_quotient_fund_group}
-
-Let $G$ be a group.  We construct an algebra of the group quotient of $G$ in
-groupoid and we prove it equivalent to initial algebra of the group
-quotient of $G$ in groupoid.
+For the remainder of this section, we assume that a group $G$ is given.
+Our goal is to show that the fundamental group of the group quotient at its base point is $G$.
+Again we do this by determining the biinitial groupoid algebra.
 
 \begin{definition}
-  Definition of the groupoid
+We define a groupoid $\grquotgrpd$ as follows
+\begin{itemize}
+	\item the type of objects is the unit type;
+	\item the type of morphisms from $\unitt$ to $\unitt$ is $G$.
+\end{itemize}
 \end{definition}
 
 \begin{problem}
-  \label{prob:initial_grpd_alg_group_quot}
-  Algebra structure
+\label{prob:initial_grpd_alg_group_quot}
+To construct an ...-algebra structure on $\grquotgrpd$.
 \end{problem}
 
 \begin{construction}{prob:initial_grpd_alg_group_quot}
@@ -104,9 +113,9 @@ quotient of $G$ in groupoid.
 \end{construction}
 
 \begin{proposition}
-  Initiality
+The groupoid $\grquotgrpd$ is biinitial in $\algG{..}$.
 \end{proposition}
 
 \begin{corollary}
-  The fundamental group of the group quotient of $G$ is $G$ itself.
+The fundamental group of the group quotient of $G$ is $G$ itself.
 \end{corollary}
