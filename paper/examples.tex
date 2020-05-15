@@ -4,15 +4,46 @@ ones introduced in Section \ref{sec:signs}.
 \subsection{Coequalizer}
 \label{sec:coequalizer}
 
-Given two 1-types $A$ and $B$ and two functions $f , g: A \to B$, the
-\emph{coequalizer} of $f$ and $g$ is given by the following HIT:
+The coqualizer of two morphisms is a basic categorical construction,
+that admits the following bicategorical generalization.
+
+\begin{definition}
+Let $\B$ be a bicategory. Let $A$ and $B$ be objects in $B$ and let
+$f,g : A \onecell B$. The \emph{coequalizer} of $f$ and $g$ is an
+object $Q$ together with a 1-cell $q : B \onecell Q$ and an invertible
+2-cell $\theta : f \cdot q\twocell g \cdot q$.
+
+The triple $(Q,q,\theta)$ must satisfy the following universal
+property. Assume given an object $C$, a 1-cell $h : B \onecell C$ and
+an invertible 2-cell $\phi : f \cdot h \twocell g \cdot h$. Then there
+exists a 1-cell $h' : Q \onecell C$ together with an invertible 2-cell
+$\phi' : q \cdot h' \twocell h$ such that $\theta \whiskerr h' \vcomp g
+\whiskerl \phi' = \lassoc{f}{q}{h'} \vcomp f \whiskerl \phi' \vcomp
+\phi$
+%% \footnote{Notice that this path would type-check also without the
+%%   left associator $\lassoc{}{}{}$, since function composition is
+%%   stricly associative. But the presence of the left associator is
+%%   necessary if we consider algebras for the coequalizer in
+%%   bicategories more general than the one of 1-types and groupoids.}.
+Given another 1-cell $h'' : Q \onecell C$ and an invertible 2-cell $\phi'' :
+q \cdot h'' \twocell h$ such that $\theta \whiskerr h'' \vcomp g
+\whiskerl \phi'' = \lassoc{f}{q}{h''} \vcomp f \whiskerl \phi'' \vcomp
+\phi$, then there exists a unique invertible 2-cell $\tau : h'
+\twocell h''$ such that $q \whiskerl \tau \vcomp \phi'' = \phi'$.
+\end{definition}
+
+This section is dedicated to the construction of the coequalizer in
+the bicategory of 1-types.  Given two 1-types $A$ and $B$ and two
+functions $f , g: A \to B$, the coequalizer of $f$ and $g$ is
+given by the following HIT:
 \begin{lstlisting}[mathescape=true]
 Inductive $\coequalizer f g$ :=
 | $\coequalizerbase$ : $B \rightarrow \coequalizer f g$
 | $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
 \end{lstlisting}
 
-The signature of the coequalizer is constructed as follows:
+Here are all the ingredients needed to specify the signature of the coequalizer:
+%is constructed as follows:
 \begin{itemize}
 \item $\pointconstr[\coequalizer f g] = \constantP{B}$;
 \item $\pathlabel[\coequalizer f g] = \unit$, and for its unique inhabitant take $\patharg[\coequalizer f g] = \constantP{A}$ and endpoints
@@ -22,6 +53,26 @@ The signature of the coequalizer is constructed as follows:
   \]
 \item $\homotlabel[\coequalizer f g]$ is the empty type.
 \end{itemize}
+
+%% The coequalizer satisfies the following universal property. Assume
+%% given a 1-type $C$, a function $h : B \rightarrow C$ and a homotopy
+%% $p$ between $f \cdot h$ and $g \cdot h$. Then there exists a function
+%% $h' : \coequalizer f g \rightarrow C$ together with a homotopy $p'$
+%% between $\coequalizerbase \cdot h'$ and $h$, and a path
+%% $\coequalizerglue \whiskerr h' \vcomp g \whiskerl p' = \lassoc{}{}{}
+%% \vcomp f \whiskerl p' \vcomp p$\footnote{Notice that this path would
+%%   type-check also without the left associator $\lassoc{}{}{}$, since
+%%   function composition is stricly associative. But the presence of the
+%%   left associator is necessary if we consider algebras for the
+%%   coequalizer in bicategories more general than the one of 1-types and
+%%   groupoids.}.  Given another function $h'' : \coequalizer f g
+%% \rightarrow C$ with homotopy $p''$ between $\coequalizerbase \cdot
+%% h''$ and $h$ such that $\coequalizerglue \whiskerr h'' \vcomp g
+%% \whiskerl p'' = \lassoc{}{}{} \vcomp f \whiskerl p'' \vcomp p$, then
+%% there exists a unique homotopy $\tau$ between $h'$ and $h''$ such that
+%% $\coequalizerbase \whiskerl \tau \vcomp p'' = p'$.
+
+
 
 \subsection{Coequifier}
 \label{sec:coequifier}
@@ -94,21 +145,23 @@ We do not show the signature associated to this HIT here. We redirect
 the interested reader to our formalization for the complete
 definition.
 
-Algebras in groupoids for the monoidal object signature correspond
-precisely with \emph{monoidal groupoids}, the groupoid variant of
-monoidal categories.  $\monobj$ is then the initial monoidal
-groupoid.
+Our interest in these example stems from the algebras in groupoids of
+the monoidal object signature, which correspond precisely to
+\emph{monoidal groupoids}, the groupoid variant of monoidal
+categories. $\monobj$ is therefore a presentation of the initial
+monoidal groupoid.
 
 We also formalized the \emph{coherent group} \cite{baez2004groups} as
-a HIT named $\cohgroup$.  Its definition includes all the constructors of
-the monoidal object, plus a new point constructor $\cohgroupinv$ :
-$\cohgroup \rightarrow \cohgroup$, two new path constructors
+a HIT, that we name $\cohgroup$.  Its definition includes all the
+constructors of the monoidal object, plus a new point constructor
+$\cohgroupinv$ : $\cohgroup \rightarrow \cohgroup$, two new path
+constructors
 \[
 \cohgrouplinv : \depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupinv(x),x) = \cohgroupunit},
 \quad\quad
 \cohgrouprinv : \depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))},
 \]
-and two new homotopy constructors, 
+and two new homotopy constructors.
 
 %% \subsection{Coherent Group}
 %% \label{sec:coeherent_group}
