@@ -99,9 +99,9 @@
 \begin{bprooftree}
 \AxiomC{$T_1, T_2 : \poly$}
 \AxiomC{$e_1, e_2 : \pathendpoint{A}{Q}{T_1}$}
-\AxiomC{$e_3 : \pathendpoint{A}{T_1}{T_2}$}
+\AxiomC{$e : \pathendpoint{A}{T_1}{T_2}$}
 \AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
-\QuaternaryInfC{$\hap{h} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{e_3}}{\comp{e_2}{e_3}}$}
+\QuaternaryInfC{$\hap e h : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{e}}{\comp{e_2}{e}}$}
 \end{bprooftree}
 \end{center}
 
@@ -325,9 +325,9 @@ examples.
 \AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
 \AxiomC{$e_3, e_4 : \pathendpoint{A}{R}{T_2}$}
 \AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
-\QuaternaryInfC{$\hprl{h} \eqdef \hconcat{\hinv{\hpairprle}}{\hconcat{\hap h}{\hpairprle}} : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
+\QuaternaryInfC{$\hprl{h} \eqdef \hconcat{\hinv{\hpairprle}}{\hconcat{\hap {\prle} h}{\hpairprle}} : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
 \alwaysNoLine
-\UnaryInfC{$\hprr{h} \eqdef \hconcat{\hinv{\hpairprre}}{\hconcat{\hap h}{\hpairprre}} : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4}$}
+\UnaryInfC{$\hprr{h} \eqdef \hconcat{\hinv{\hpairprre}}{\hconcat{\hap {\prre} h}{\hpairprre}} : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4}$}
 \end{bprooftree}
 \end{center}
 
@@ -406,7 +406,7 @@ We define a signature $\ZT$.
 	The endpoints $\homotpathleft$ and $\homotpathright$ encode $\ZS(\ZS(\ZS(x)))$ and $\ZS(x)$ respectively,
 	and for the left-hand side and right-hand side of this equation, we take
 	\[
-	\hap{(\hconcat{\hinv{\hlunitN}}{\hconcat{\hassocN}{\hconcat{\hap{(\hconstr{\unit}{\idENA})}}{\hconcat{\hinv{\hassocN}}{\hconcat{\hlunitN}{\hlunitN}}}}})}
+	\hap{\constr}{(\hconcat{\hinv{\hlunitN}}{\hconcat{\hassocN}{\hconcat{\hap{\inre}{(\hconstr{\unit}{\idENA})}}{\hconcat{\hinv{\hassocN}}{\hconcat{\hlunitN}{\hlunitN}}}}})}
 	\]
 	\[
 	\hconcat{\hinv{\hassocN}}{\hconcat{\hinv{\hassocN}}{\hconcat{\hconstr{\unitt}{\comp{\inre}{\constr}}}{\hrunitN}}}.
