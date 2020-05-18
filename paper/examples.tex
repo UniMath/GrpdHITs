@@ -13,7 +13,7 @@ construction in the bicategory of 1-types, in which the coinserter
 captures precisely the notion of homotopy coequalizer \cite[Chapter 6]{hottbook}.
 
 \begin{definition}
-Let $\B$ be a bicategory. Let $A$ and $B$ be objects in $B$ and let
+Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
 $f,g : A \onecell B$. The \emph{coequalizer} of $f$ and $g$ is an
 object $Q$ together with a 1-cell $q : B \onecell Q$ and a 2-cell
 $\theta : f \cdot q\twocell g \cdot q$.
@@ -21,24 +21,24 @@ $\theta : f \cdot q\twocell g \cdot q$.
 The triple $(Q,q,\theta)$ must satisfy the following universal
 property. Assume given:
 \begin{itemize}
-\item an object $C$,
-\item a 1-cell $h : B \onecell C$, and
-\item a 2-cell $\phi : f \cdot h \twocell g \cdot h$.
+\item an object $Q'$,
+\item a 1-cell $q' : B \onecell Q'$, and
+\item a 2-cell $\theta' : f \cdot q' \twocell g \cdot q'$.
 \end{itemize}
-Then there exists a 1-cell $h' : Q \onecell C$ together with a 2-cell
-$\phi' : q \cdot h' \twocell h$ with a path $\theta \whiskerr h' \vcomp
-g \whiskerl \phi' = \lassoc{f}{q}{h'} \vcomp f \whiskerl \phi' \vcomp
-\phi$. The pair $(h',\phi')$ is ``unique'' in the sense that,
+Then there exists a 1-cell $h : Q \onecell Q'$ together with a 2-cell
+$\phi : q \cdot h \twocell q'$ with a path $\theta \whiskerr h \vcomp
+g \whiskerl \phi = \lassoc{f}{q}{h} \vcomp f \whiskerl \phi \vcomp
+\theta'$. The pair $(h,\phi)$ is ``unique'' in the sense that,
 %% \footnote{Notice that this path would type-check also without the
 %%   left associator $\lassoc{}{}{}$, since function composition is
 %%   stricly associative. But the presence of the left associator is
 %%   necessary if we consider algebras for the coequalizer in
 %%   bicategories more general than the one of 1-types and groupoids.}.
-given another 1-cell $h'' : Q \onecell C$ and another 2-cell $\phi'' :
-q \cdot h'' \twocell h$ with a path $\theta \whiskerr h'' \vcomp g
-\whiskerl \phi'' = \lassoc{f}{q}{h''} \vcomp f \whiskerl \phi'' \vcomp
-\phi$, then there exists a unique invertible 2-cell $\tau : h'
-\twocell h''$ such that $q \whiskerl \tau \vcomp \phi'' = \phi'$.
+given another 1-cell $h' : Q \onecell Q'$ and another 2-cell $\phi' :
+q \cdot h' \twocell q'$ with a path $\theta \whiskerr h' \vcomp g
+\whiskerl \phi' = \lassoc{f}{q}{h'} \vcomp f \whiskerl \phi' \vcomp
+\theta'$, then there exists a unique invertible 2-cell $\tau : h
+\twocell h'$ such that $q \whiskerl \tau \vcomp \phi' = \phi$.
 \end{definition}
 
 This section is dedicated to the construction of the coequalizer in
@@ -86,16 +86,41 @@ Here are all the ingredients needed to specify the signature of the coequalizer:
 \subsection{Coequifier}
 \label{sec:coequifier}
 
-Assume two 1-types $A$ and $B$, two functions $f , g: A \to B$ and two
-homotopies $p$ and $q$ between $f$ and $g$. The \emph{coequifier} of $p$ and
-$q$ is given by the following HIT:
+The coequifier is a finite bilimit in a bicategory, corresponding to a
+higher version of the coequalizer.
+
+\begin{definition}
+Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$, let $f,
+g : A \onecell B$ and $\beta,\gamma : f \twocell
+g$. The \emph{coequifier} of $\beta$ and $\gamma$ is an object $Q$
+together with a 1-cell $q : B \onecell Q$ and a path
+$\beta \whiskerr q = \gamma \whiskerr q$.
+
+The pair $(Q,q)$ must satisfy the following universal
+property. Assume given:
+\begin{itemize}
+\item an object $Q'$,
+\item a 1-cell $q' : B \onecell Q'$, and
+\item a path $\beta \whiskerr q' = \gamma \whiskerr q'$.
+\end{itemize}
+Then there exists a 1-cell $h : Q \onecell Q'$ together with a 2-cell
+$\phi : q \cdot h \twocell q'$. The pair $(h,\phi)$ is ``unique'' in the sense that,
+given another 1-cell $h' : Q \onecell Q'$ and another 2-cell $\phi' :
+q \cdot h' \twocell q'$, then there exists a unique invertible 2-cell $\tau : h
+\twocell h'$ such that $q \whiskerl \tau \vcomp \phi' = \phi$.
+\end{definition}
+
+
+In the bicategory of 1-types, the coequifier is defined as a HIT.  In
+the definition below, $A$ and $B$ are 1-types, $f , g: A \to B$ are
+functions and $\beta$ and $\gamma$ are homotopies between $f$ and $g$.
 \begin{lstlisting}[mathescape=true]
-Inductive $\coequifier p q$ :=
+Inductive $\coequifier \beta \gamma$ :=
 | $\coequifierbase$ : $B \rightarrow \coequifier f g$
-| $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(p(x))} = \ap {\coequifierbase}{(q(x))}}$
+| $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(\beta(x))} = \ap {\coequifierbase}{(\gamma(x))}}$
 \end{lstlisting}
 
-The signature of the coequifier of $p$ and $q$ is given as follows:
+The signature of the coequifier of $\beta$ and $\gamma$ is given as follows:
 \begin{itemize}
 \item $\pointconstr[\coequifier f g] = \constantP{B}$;
 \item $\pathlabel[\coequifier f g]$ is the empty type; 
@@ -111,10 +136,16 @@ The signature of the coequifier of $p$ and $q$ is given as follows:
   \]
   while the left and right homotopy endpoints are:
   \[
-  \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(p))}))}, \quad
-  \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(q))}))}.
+  \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(\beta))}))}, \quad
+  \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(\gamma))}))}.
   \]
 \end{itemize}
+In the construction of the homotopy endopoint we used the function
+$\idtoH$ introduced in Section~\ref{sec:signatures}, which embeds
+paths between endpoints into homotopy endpoints. Notice also the
+difference between $\constructor{ap}$ and $\constfont{ap}$: the first
+is an homotopy endpoint constructor, the second indicates the
+application of a function to a path.
 
 
 \subsection{Group Quotient}
@@ -137,8 +168,8 @@ Signature for the group quotient
 \label{sec:monoidal_object}
 
 
-An important algebraic example is given by the \emph{monoidal object},
-which can be presented as the following HIT:
+Another important algebraic example constructed as a HIT is what we
+refer to as the \emph{monoidal object}:
 \begin{lstlisting}[mathescape=true]
 Inductive $\monobj$ :=
 | $\monobjunit$ : $\monobj$
@@ -154,11 +185,24 @@ We do not show the signature associated to this HIT here. We redirect
 the interested reader to our formalization for the complete
 definition.
 
-Our interest in these example stems from the algebras in groupoids of
-the monoidal object signature, which correspond precisely to
+In the constructors of $\monobj$ we can recognize the data of a
+monoidal category. The point constructors $\monobjunit$ and
+$\monobjtensor$ correspond to unit object and tensor. The path
+constructors $\monobjlambda$, $\monobjrho$ and $\monobjalpha$ are left
+unitor, right unitor and associator, while the homotopy constructors
+$\monobjtr$ and $\monobjpent$ are the two coherence laws of
+monoidal categories. And in fact, algebras in groupoids of the
+monoidal object signature are precisely
 \emph{monoidal groupoids}, the groupoid variant of monoidal
-categories. $\monobj$ is therefore a presentation of the initial
+categories, and $\monobj$ is a presentation of the initial
 monoidal groupoid.
+
+%%The importance of this example stems from the fact that algebras in
+%%groupoids of the monoidal object signaturecorrespond precisely
+%%to
+%%\emph{monoidal groupoids}, the groupoid variant of monoidal
+%%categories. $\monobj$ is therefore a presentation of the initial
+%%monoidal groupoid.
 
 We also formalized the \emph{coherent group} \cite{baez2004groups} as
 a HIT, that we name $\cohgroup$.  Its definition includes all the
