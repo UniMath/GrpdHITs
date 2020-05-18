@@ -31,8 +31,19 @@ Moreover, given two 1-cells $h_1,h_2 : X \onecell \prodB A B$ with
 \theta'_2 = \theta'_1$.
 \end{definition} 
 
+Here is how to construct the binary product of algebras in
+$\alg(\sign)$.
+
 \begin{definition}
-The product of two algebras
+Let $A$ and $B$ be two algebras for $\sign$. The product of $A$ and
+$B$ consists of the following data:
+\begin{itemize}
+\item the carrier is $A \times B$, the product of the carriers of $A$ and $B$;
+\item the function $\AlgPoint{A \times B} : \polyAct{\pointconstr}{A \times B} \rightarrow A \times B$ is
+\[
+\AlgPoint{A \times B}(x) \eqdef (\AlgPoint{A}(\polyAct{\pointconstr}{\projl}(x)),\AlgPoint{B}(\polyAct{\pointconstr}{\projr}(x)))
+\]
+\end{itemize}
 \end{definition}
 
 \begin{proposition}
