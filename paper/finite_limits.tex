@@ -4,7 +4,25 @@ bicategory $\alg(\sign)$ of algebras in 1-types for the signature $\sign$.
 \subsection{Products}
 
 \begin{definition}
-Let $\B$ be a bicategory and let $A$ and $B$ be two objects of $\B$. The \emph{product} of $A$ and $B$ is an object $\prodB A B$ together with 1-cells $\projlB$
+Let $\B$ be a bicategory and let $A$ and $B$ be two objects of
+$\B$. The \emph{product} of $A$ and $B$ is given by an object $\prodB
+A B$ together with 1-cells $\projlB : \prodB A B \onecell A$ and
+$\projrB : \prodB A B \onecell B$.
+
+The triple $(\prodB A B,\projlB, \projrB)$ must satisfy the following
+universal property. Assume given an object $X$ and 1-cells $f : X
+\onecell A$ and $g : X \onecell B$. Then there exist a 1-cell
+$\mappair f g : X \onecell \prodB A B$ and two 2-cells $\theta :
+\mappair f g \cdot \projlB \twocell f$ and $\theta' : \mappair f g
+\cdot \projrB \twocell g$.
+
+
+Moreover, given two 1-cells $h_1,h_2 : X \onecell \prodB A B$ with
+2-cells $\theta_i : h_i \cdot \projlB \twocell f$ and $\theta'_i : h_i
+\cdot \projrB \twocell g$, for $i= 1,2$, there exists a unique
+invertible 2-cell $\tau : h_1 \twocell h_2$ such that $\tau \whiskerr
+\projlB \vcomp \theta_2 = \theta_1$ and $\tau \whiskerr \projrB \vcomp
+\theta'_2 = \theta'_1$.
 \end{definition} 
 
 \begin{definition}
