@@ -41,7 +41,10 @@ To construct an $\circleS$-algebra structure on $\circlegrpd$.
 \end{problem}
 
 \begin{construction}{prob:initial_grpd_alg_circle}
-
+To construct the desired algebra structure, we first need to define a functor $\circlegrpdbase$ from the unit category to $\circlegrpd$.
+This functor sends the unique element to $\unitt$.
+Furthermore, we need to define a natural transformation $\circlegrpdloop$ from $\circlegrpdbase$ to $\circlegrpdbase$.
+On each component, this transformation is defined to be $1$.
 \end{construction}
 
 \begin{proposition}
@@ -75,7 +78,11 @@ To construct an $\torus$-algebra structure on $\torusgrpd$.
 \end{problem}
 
 \begin{construction}{prob:initial_grpd_alg_torus}
-
+\label{constr:initial_grpd_alg_torus}
+Again the point constructor is given by a functor $\torusgrpdbase$ from the unit category to $\torusgrpd$, which sends the unique element to $\unitt$.
+The two natural transformations $\torusgrpdloopl$ and $\torusgrpdloopr$ from $\torusgrpdbase$ to $\torusgrpdbase$ send each element to $(1, 0)$ and $(0, 1)$ respectively.
+For the last component, we need to give an equality $\torusgrpdsurf$ between $(1, 0) + (0, 1) = (0, 1) + (1, 0)$.
+This holds definitionally.
 \end{construction}
 
 \begin{proposition}
@@ -94,6 +101,7 @@ The type $\base = \base$ is equivalent to $\mathbb{Z} \times \mathbb{Z}$.
 For the remainder of this section, we assume that a group $G$ is given.
 Our goal is to show that the fundamental group of the group quotient at its base point is $G$.
 Again we do this by determining the biinitial groupoid algebra.
+The algebra structure is constructed in a similar fashion to Construction \ref{constr:initial_grpd_alg_torus}.
 
 \begin{definition}
 We define a groupoid $\grquotgrpd$ as follows
@@ -105,15 +113,11 @@ We define a groupoid $\grquotgrpd$ as follows
 
 \begin{problem}
 \label{prob:initial_grpd_alg_group_quot}
-To construct an ...-algebra structure on $\grquotgrpd$.
+To construct an $\groupquot{G}$-algebra structure on $\grquotgrpd$.
 \end{problem}
 
-\begin{construction}{prob:initial_grpd_alg_group_quot}
-
-\end{construction}
-
 \begin{proposition}
-The groupoid $\grquotgrpd$ is biinitial in $\algG{..}$.
+The groupoid $\grquotgrpd$ is biinitial in $\algG{\groupquot{G}}$.
 \end{proposition}
 
 \begin{corollary}
