@@ -53,7 +53,7 @@ Inductive $\coequalizer f g$ :=
 | $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
 \end{lstlisting}
 
-Here are all the ingredients needed to specify the signature for the coequalizer:
+Here are all the ingredients needed to specify the signature $\coequalizer f g$ for the coequalizer:
 %is constructed as follows:
 \begin{itemize}
 \item $\pointconstr[\coequalizer f g] = \constantP{B}$;
@@ -88,7 +88,7 @@ Here are all the ingredients needed to specify the signature for the coequalizer
 \subsection{Coequifier}
 \label{sec:coequifier}
 
-The coequifier is a finite bilimit in a bicategory, corresponding to a
+The coequifier is a finite colimit in a bicategory, corresponding to a
 higher version of the coequalizer.
 
 \begin{definition}
@@ -122,7 +122,8 @@ Inductive $\coequifier \beta \gamma$ :=
 | $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(\beta(x))} = \ap {\coequifierbase}{(\gamma(x))}}$
 \end{lstlisting}
 
-The signature for the coequifier of $\beta$ and $\gamma$ is given as follows:
+The signature $\coequifier \beta \gamma$ for the coequifier of $\beta$
+and $\gamma$ is given as follows:
 \begin{itemize}
 \item $\pointconstr[\coequifier f g] = \constantP{B}$;
 \item $\pathlabel[\coequifier f g]$ is the empty type; 
@@ -168,7 +169,7 @@ Inductive $\groupquot G$ :=
 \end{lstlisting}
 
 
-The signature for the group quotient is defined as follows:
+The signature $\groupquot G$ for the group quotient is defined as follows:
 \begin{itemize}
 \item $\pointconstr = \constantP{\unit}$;
 \item $\pathlabel = \unit$, and for its unique inhabitant take $\patharg = \constantP{G}$ and both endpoints $\pathleft$ and $\pathright$ equal to $\comp{\Ce(\unitt)}{\constr}$.
