@@ -23,8 +23,20 @@ The free $\sign$-algebra on $A$ is denoted by $\freealg{\sign}{A}$ and the inclu
 Note that the free algebra exists by Construction \ref{constr:hit_exist}.
 The free signature of the signature for monoidal objects (Subsection \ref{sec:monoidal_object}) is given as follows
 
+\begin{lstlisting}[mathescape=true]
+Inductive $\freemonoid{A}$ :=
+| $\freemonoidinc$ : $A \rightarrow \freemonoid{A}$
+| $\monobjunit$ : $\freemonoid{A}$
+| $\monobjtensor$ : $\freemonoid{A} \rightarrow \freemonoid{A} \rightarrow \freemonoid{A}$
+| $\monobjlambda$ : $\depprod{(x : \freemonoid{A})}{\monobjtensor(\monobjunit,x) = x}$
+| $\monobjrho$ : $\depprod{(x : \freemonoid{A})}{\monobjtensor(x,\monobjunit) = x}$
+| $\monobjalpha$ : $\depprod{(x ,y,z: \freemonoid{A})}{\monobjtensor(x,(\monobjtensor(y,z)))=\monobjtensor(\monobjtensor(x,y),z)}$
+| $\monobjtr$ : $\depprod{(x,y : \freemonoid{A})}{\ap{(\Lam z. \monobjtensor(x,z))}{(\monobjlambda(y))}} = \concat{\monobjalpha(x,\monobjunit,y)}{\ap{(\Lam z. \monobjtensor(z,y))}{(\monobjrho(x))}}$
+| $\monobjpent$ : $\depprod{(w,x,y,z : \freemonoid{A})}{}$
+    $\concat{\monobjalpha(w,x,\monobjtensor(y,z))}{\monobjalpha(\monobjtensor(w,x),y,z)}=\concat{\ap{(\Lam v. \monobjtensor(w,v))}{(\monobjalpha(x,y,z))}}{\concat{\monobjalpha(w,\monobjtensor(x,y),z)}{\ap{(\Lam v. \monobjtensor(v,z))}{(\monobjalpha(w,x,y))}}}$
+\end{lstlisting}
 
-
+Note that this corresponds to the free monoidal groupoid as given by Piceghello \cite{piceghello2019}.
 To construct the desired left biadjoint pseudofunctor, we first give a more convenient formulation of the biinitiality of $\freealg{\sign}{A}$.
 By stating the mapping properties with algebras for $\sign$, we can apply them directly when constructing the biadjunction.
 
