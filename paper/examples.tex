@@ -1,5 +1,7 @@
 In this section we present some additional examples, complementing the
-ones introduced in Section \ref{sec:signs}.
+ones introduced in Section \ref{sec:signs}. Remember that our higher
+inductive types are all 1-truncated, and we always omit the 1-truncation
+constructor from their syntax.
 
 \subsection{Coequalizer}
 \label{sec:coequalizer}
@@ -51,7 +53,7 @@ Inductive $\coequalizer f g$ :=
 | $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
 \end{lstlisting}
 
-Here are all the ingredients needed to specify the signature of the coequalizer:
+Here are all the ingredients needed to specify the signature for the coequalizer:
 %is constructed as follows:
 \begin{itemize}
 \item $\pointconstr[\coequalizer f g] = \constantP{B}$;
@@ -120,7 +122,7 @@ Inductive $\coequifier \beta \gamma$ :=
 | $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(\beta(x))} = \ap {\coequifierbase}{(\gamma(x))}}$
 \end{lstlisting}
 
-The signature of the coequifier of $\beta$ and $\gamma$ is given as follows:
+The signature for the coequifier of $\beta$ and $\gamma$ is given as follows:
 \begin{itemize}
 \item $\pointconstr[\coequifier f g] = \constantP{B}$;
 \item $\pathlabel[\coequifier f g]$ is the empty type; 
@@ -151,18 +153,98 @@ application of a function to a path.
 \subsection{Group Quotient}
 \label{sec:group_quotient}
 
-Let $G$ be a group with unit $e$ and multiplication $*$. The group
-quotient of $G$ is the following HIT:
+Now we introduce a particular instance of the groupoid quotient, that
+we call \emph{group quotient}. Start with a group $G$, with $\id$ as
+unit and $\cdot$ as multiplication. Define a groupoid $\widehat{G}$
+with only one object and with $G$ as the only homset. The group
+quotient of $G$ is the groupoid quotient of $\widehat{G}$,
+corresponding to the following HIT:
 \begin{lstlisting}[mathescape=true]
 Inductive $\groupquot G$ :=
 | $\groupquotbase$ : $\groupquot G$
 | $\groupquotloop$ : $G \rightarrow \groupquotbase = \groupquotbase$
-| $\groupquotloope$ : $\groupquotloop(e)= \refl \groupquotbase$
-| $\groupquotloopm$ : $\depprod{(x,y : G)}{\groupquotloop(x * y)= \concat{\groupquotloop(x)}{\groupquotloop(y)}}$
+| $\groupquotloope$ : $\groupquotloop(\id)= \refl \groupquotbase$
+| $\groupquotloopm$ : $\depprod{(x,y : G)}{\groupquotloop(x \cdot y)= \concat{\groupquotloop(x)}{\groupquotloop(y)}}$
 \end{lstlisting}
 
 
-Signature for the group quotient
+The signature for the group quotient is defined as follows:
+\begin{itemize}
+\item $\pointconstr = \constantP{\unit}$;
+\item $\pathlabel = \unit$, and for its unique inhabitant take $\patharg = \constantP{G}$ and both endpoints $\pathleft$ and $\pathright$ equal to $\comp{\Ce(\unitt)}{\constr}$.
+\item $\homotlabel = \bool$, where $\bool$ is the type of
+booleans with inhabitants $\booltrue$ and $\boolfalse$. This means
+that there are two homotopy constructors: $\groupquotloope$, with
+associated label $\booltrue$, and $\groupquotloopm$, with associated
+label $\boolfalse$.
+\begin{itemize}
+\item The constructor $\groupquotloope$ does not have
+point arguments, so we take $\homotpointarg_{\booltrue}
+= \constantP{\unit}$. It also does not have path arguments, therefore
+$\homotpathtarg_{\booltrue} = \constantP{\unit}$ and
+$\pathargleft_{\booltrue} = \pathargright_{\booltrue} = \Ce(\unitt)$.
+The endpoints $\homotpathleft_{\booltrue}$ and
+$\homotpathright_{\booltrue}$ are both equal to
+$\comp{\Ce(\unitt)}{\constr}$. The left homotopy endpoint is
+\[
+\hconcat{\hap{\constr}{\hinv{(\hcompconst{\Ce(\id)})}}}{
+\hconcat{\hinv{\hassocN}}{
+\hconcat{\hconstr{}{\Ce(\id)}}{
+\hconcat{\hassocN}{\hap{\constr}{(\hcompconst{\Ce(\id)})}}
+}}},
+\]
+while the right homotopy endpoint is $\hrefl{\constr}$.
+\item The constructor $\groupquotloopm$ has two point
+arguments of type $G$, so we take $\homotpointarg_{\boolfalse}
+= \constantP{G \times G}$. It does not have path arguments, therefore
+$\homotpathtarg_{\boolfalse} = \constantP{\unit}$ and
+$\pathargleft_{\boolfalse} = \pathargright_{\boolfalse}
+= \Ce(\unitt)$.  The endpoints $\homotpathleft_{\boolfalse}$ and
+$\homotpathright_{\boolfalse}$ are both equal to
+$\comp{\Ce(\unitt)}{\constr}$. The left homotopy endpoint is
+%%\begin{align*}
+%%\hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}}}{
+%%& \hinv{\hassocN}} \\
+%%\hconcat{}{& \hconstr{}{\fmap(\Lam {x,y}. x \cdot y)}} \\
+%%\hconcat{}{& \hassocN} \\
+%%\hconcat{}{& \hap{\constr}{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}},
+%%\end{align*}
+%%while the right endpoint is
+%%\begin{align*}
+%%\hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\projl)})}}}{
+%%& \hinv{\hassocN}} \\
+%%\hconcat{}{& \hconstr{}{\fmap(\projl)}} \\
+%%\hconcat{}{& \hassocN} \\
+%%\hconcat{}{& \hap{\constr}{(\hcompconst{\fmap(\projl)})}} \\
+%%\hconcat{}{& \hap{\constr}{\hinv{(\hcompconst{\fmap(\projr)})}}} \\
+%%\hconcat{}{& \hinv{\hassocN}} \\
+%%\hconcat{}{& \hconstr{}{\fmap(\projr)}} \\
+%%\hconcat{}{& \hassocN} \\
+%%\hconcat{}{& \hap{\constr}{(\hcompconst{\fmap(\projr)})}}
+%%\end{align*}
+\begin{align*}
+& \hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}}}{\hinv{\hassocN}} \\
+& \quad \hconcat{}{\hconstr{}{\fmap(\Lam {x,y}. x \cdot y)}} \\
+& \quad \hconcat{}{\hconcat{\hassocN}{\hap{\constr}{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}}},
+\end{align*}
+while the right endpoint is
+\begin{align*}
+& \hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\projl)})}}}{
+\hinv{\hassocN}} \\
+& \quad \hconcat{}{\hconstr{}{\fmap(\projl)}} \\
+& \quad \hconcat{}{\hconcat{\hassocN}{\hap{\constr}{(\hcompconst{\fmap(\projl)})}}} \\
+& \quad \hconcat{}{\hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\projr)})}}}{\hinv{\hassocN}}} \\
+& \quad \hconcat{}{\hconstr{}{\fmap(\projr)}} \\
+& \quad \hconcat{}{\hconcat{\hassocN}}{\hap{\constr}{(\hcompconst{\fmap(\projr)})}}
+\end{align*}
+\end{itemize}
+\end{itemize}
+
+The signature for the groupoid quotient is obtainable as a slight
+generalization of the signature for the group quotient. We do not show
+the more general construction here, since this is not conceptually
+more enlightening than the (already quite complicated) signature for
+the group quotient.
 
 \subsection{Monoidal Object}
 \label{sec:monoidal_object}
