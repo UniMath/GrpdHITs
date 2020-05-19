@@ -10,7 +10,7 @@ latter kinds of limits.
 Binary products in a bicategory generalize the notion of binary
 product in a category.
 
-\begin{definition}
+\begin{definition}\label{def:product}
 Let $\B$ be a bicategory and let $A$ and $B$ be two objects of
 $\B$. The \emph{product} of $A$ and $B$ is given by an object $\prodB
 A B$ together with 1-cells $\projlB : \prodB A B \onecell A$ and
@@ -31,23 +31,57 @@ Moreover, given two 1-cells $h_1,h_2 : X \onecell \prodB A B$ with
 \theta'_2 = \theta'_1$.
 \end{definition} 
 
-Here is how to construct the binary product of algebras in
+\begin{problem}
+\label{prob:product}
+Given $A$ and $B$ algebras for $\sign$, construct their product in
 $\alg(\sign)$.
+\end{problem}
 
-\begin{definition}
+\begin{construction}{prob:product}\label{cons:product}
 Let $A$ and $B$ be two algebras for $\sign$. The product of $A$ and
 $B$ consists of the following data:
 \begin{itemize}
-\item the carrier is $A \times B$, the product of the carriers of $A$ and $B$;
-\item the function $\AlgPoint{A \times B} : \polyAct{\pointconstr}{A \times B} \rightarrow A \times B$ is
+\item The carrier is $A \times B$, the product of the carriers of $A$ and $B$.
+\item The function $\AlgPoint{A \times B} : \polyAct{\pointconstr}{A \times B} \rightarrow A \times B$ is
 \[
-\AlgPoint{A \times B}(x) \eqdef (\AlgPoint{A}(\polyAct{\pointconstr}{\projl}(x)),\AlgPoint{B}(\polyAct{\pointconstr}{\projr}(x)))
+\AlgPoint{A \times B}(x) \eqdef (\AlgPoint{A}(\polyAct{\pointconstr}{\projl}(x)),\AlgPoint{B}(\polyAct{\pointconstr}{\projr}(x))).
 \]
+\item For all labels $j : \pathlabel$ we are given pseudonatural
+transformations $\semE{\pathleft_j}$ and $\semE{\pathright_j}$. We
+write $\semE{\pathleft_j}_X$ for the component of $\semE{\pathleft_j}$
+at object $X$. Given a
+1-cell $f : X \onecell Y$ in $\alg(\sign)$, we write
+$\semE{\pathleft_j}_f$ for the 2-cell of type
+$\semE{\pathleft_j}_X \cdot
+f \twocell \polyAct{\patharg_j}{f} \cdot \semE{\pathleft_j}_Y$.
+We write similarly for $\semE{\pathright_j}$.
+
+For each point $x : \polyAct{\patharg_j}{A \times B}$, we are required
+to construct a path $\AlgPath{A \times B}{j}(x)
+: \semE{\pathleft_j}_{A \times B}(x) = \semE{\pathright_j}_{A \times
+B}(x)$. This is a path in $A \times B$, so it is enough to construct
+two paths $\projl(\semE{\pathleft_j}_{A \times B}(x))
+= \projl(\semE{\pathright_j}_{A \times B}(x))$ and
+$\projr(\semE{\pathleft_j}_{A \times B}(x))
+= \projr(\semE{\pathright_j}_{A \times B}(x))$. The first of these is
+defined as the following concatenation of paths:
+\[
+\projl(\semE{\pathleft_j}_{A \times B}(x))
+\stackrel{\semE{\pathleft_j}_{\projl}(x)}{=}
+\semE{\pathleft_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) 
+\stackrel{\AlgPath{A}{j}(\polyAct{\patharg_j}{\projl}(x))}{=}
+\semE{\pathright_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) 
+\stackrel{\inverse{(\semE{\pathright_j}_{\projl}(x))}}{=}
+\projl(\semE{\pathright_j}_{A \times B}(x))
+\]
+The second path is defined analogously.
+\item The construction of the required homotopies is more involved and we refer the reader to the formalization for all the details.
 \end{itemize}
-\end{definition}
+\end{construction}
 
 \begin{proposition}
-Product satisfies the required universal property
+The product of algebras described in Construction~\ref{cons:product}
+satisfies the required universal property of Definition~\ref{def:product}.
 \end{proposition}
 
 \subsection{Inserter}
