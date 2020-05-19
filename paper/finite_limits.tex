@@ -88,17 +88,18 @@ property of the product (of types!). It is possible to prove that
 $\mappair f g$ is also a morphisms of algebras. 
 \end{construction}
 
-\subsection{Equalizer}
+\subsection{Inserter}
 
-The equalizer in a bicategory is a generalization of the equalizer in
-a category. This is typically called inserter. We call it equalizer
-instead, to keep the terminology consistent with the one of
-Section~\ref{sec:coequalizer}, where coequalizer is used in place of
-coinserter.
+The inserter in a bicategory is a generalization of the equalizer in
+a category.
+%% This is typically called inserter. We call it equalizer
+%% instead, to keep the terminology consistent with the one of
+%% Section~\ref{sec:coequalizer}, where coequalizer is used in place of
+%% coinserter.
 
 \begin{definition}
 Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
-$f,g : A \onecell B$. The \emph{equalizer} of $f$ and $g$ is an
+$f,g : A \onecell B$. The \emph{inserter} of $f$ and $g$ is an
 object $E$ together with a 1-cell $e : E \onecell A$ and a 2-cell
 $\epsilon : e \cdot f\twocell e \cdot g$.
 
@@ -122,13 +123,13 @@ h' \whiskerl \epsilon \vcomp \lassoc{h'}{e}{g} \vcomp \phi' \whiskerr g
 \end{definition}
 
 \begin{problem}
-\label{prob:equalizer}
+\label{prob:inserter}
 Given $A$ and $B$ algebras for $\sign$ and $f,g : A \onecell B$
-algebra morphisms, construct the equalizer of $f$ and $g$ in $\alg(\sign)$.
+algebra morphisms, construct the inserter of $f$ and $g$ in $\alg(\sign)$.
 \end{problem}
 
-\begin{construction}{prob:equalizer}\label{cons:equalizer}
-The equalizer of $f$ and $g$ is defined as the total algebra of a
+\begin{construction}{prob:inserter}\label{cons:inserter}
+The inserter of $f$ and $g$ is defined as the total algebra of a
 displayed algebra $E$ over $A$. Displayed algebras were
 introduced in Definition~\ref{def:disp_alg}. $E$ is defined as follows:
 \begin{itemize}
