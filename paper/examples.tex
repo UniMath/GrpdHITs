@@ -3,20 +3,17 @@ ones introduced in Section \ref{sec:signs}. Remember that our higher
 inductive types are all 1-truncated, and we always omit the 1-truncation
 constructor from their syntax.
 
-\subsection{Coequalizer}
-\label{sec:coequalizer}
+\subsection{Coinserter}
+\label{sec:coinserter}
 
-The coequalizer is a particular kind of finite colimit in a
-category. It admits a bicategorical generalization, which is typically
-called coinserter. Here we refrain from using the latter terminology
-and refer to this colimit in bicategories again as coequalizer. This
-choice of terminology is motivated by our interest for this
-construction in the bicategory of 1-types, in which the coinserter
-captures precisely the notion of homotopy coequalizer \cite[Chapter 6]{hottbook}.
+The coinserter is a bicategorical generalization of the coequalizer in
+a category. In the bicategory of 1-types, coinserter captures
+precisely the notion of homotopy coequalizer \cite[Chapter
+6]{hottbook}.
 
 \begin{definition}
 Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
-$f,g : A \onecell B$. The \emph{coequalizer} of $f$ and $g$ is an
+$f,g : A \onecell B$. The \emph{coinserter} of $f$ and $g$ is an
 object $Q$ together with a 1-cell $q : B \onecell Q$ and a 2-cell
 $\theta : f \cdot q\twocell g \cdot q$.
 
@@ -34,7 +31,7 @@ g \whiskerl \phi = \lassoc{f}{q}{h} \vcomp f \whiskerl \phi \vcomp
 %% \footnote{Notice that this path would type-check also without the
 %%   left associator $\lassoc{}{}{}$, since function composition is
 %%   stricly associative. But the presence of the left associator is
-%%   necessary if we consider algebras for the coequalizer in
+%%   necessary if we consider algebras for the coinserter in
 %%   bicategories more general than the one of 1-types and groupoids.}.
 given another 1-cell $h' : Q \onecell Q'$ and another 2-cell $\phi' :
 q \cdot h' \twocell q'$ with a path $\theta \whiskerr h' \vcomp g
@@ -43,9 +40,9 @@ q \cdot h' \twocell q'$ with a path $\theta \whiskerr h' \vcomp g
 \twocell h'$ such that $q \whiskerl \tau \vcomp \phi' = \phi$.
 \end{definition}
 
-This section is dedicated to the construction of the coequalizer in
+This section is dedicated to the construction of the coinserter in
 the bicategory of 1-types.  Given two 1-types $A$ and $B$ and two
-functions $f , g: A \to B$, the coequalizer of $f$ and $g$ is
+functions $f , g: A \to B$, the coinserter of $f$ and $g$ is
 given by the following HIT:
 \begin{lstlisting}[mathescape=true]
 Inductive $\coequalizer f g$ :=
@@ -53,7 +50,7 @@ Inductive $\coequalizer f g$ :=
 | $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
 \end{lstlisting}
 
-Here are all the ingredients needed to specify the signature $\coequalizer f g$ for the coequalizer:
+Here are all the ingredients needed to specify the signature $\coequalizer f g$ for the coinserter:
 %is constructed as follows:
 \begin{itemize}
 \item $\pointconstr[\coequalizer f g] = \constantP{B}$;
