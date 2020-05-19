@@ -180,11 +180,23 @@ where $L : \pseudo(\B_1, \B_2)$ and $R : \pseudo(\B_2, \B_1)$.
 If we have $L \dashv R$, we say that $L$ is \fat{left biadjoint} to $R$.
 \end{definition}
 
+Before we say when a biadjunction is coherent, let us introduce some notation.
+Suppose, that we have a biadjunction $L \dashv R$ where $L : \pseudo(\B_1, \B_2)$.
+For each $x : \B_1$ we get a 1-cell $\eta(x) : x \onecell R(L(x))$ and for $x : \B_2$, we get a 1-cell $\varepsilon(x) : L(R(x)) \onecell x$.
+Given $x : \B_1$, we get an invertible 2-cell $\widehat{\tau_2(x)} : L(\eta(x)) \cdot \varepsilon(R(x)) \twocell \id_1(L(x))$.
+Similarly, we define an invertible 2-cell $\widehat{\tau_1(x)} : \eta(R(x)) \cdot R(\varepsilon(x)) \twocell \id_1(R(x))$ for $x : \B_2$.
+
 \begin{definition}
-Given biacategories $\B_1$ and $\B_2$ and a biadjucntion $L \dashv R$ with $L : \pseudo(\B_1, \B_2)$, we say that $L \dashv R$ is \fat{coherent} if the following equalities hold
-\[
-first coherency
-\]
+Given bicategories $\B_1$ and $\B_2$ and a biadjunction $L \dashv R$ with $L : \pseudo(\B_1, \B_2)$, we say that $L \dashv R$ is \fat{coherent} if the following 2-cells are equal to identity 2-cells
+\begin{equation*}
+\begin{split}
+(\identitor{L} \vcomp L(\widehat{\tau_1(x)}^{-1}) \vcomp \compositor{L}^{-1}) \whiskerr \varepsilon(x)
+\vcomp \alpha^{-1}
+\vcomp L(\eta(R(x))) \whiskerl \eta_1(\eta(x))^{-1}
+\vcomp \alpha
+\vcomp \widehat{\tau_2(x)}
+\end{split}
+\end{equation*}
 \[
 second coherency
 \]
