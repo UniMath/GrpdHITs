@@ -51,9 +51,9 @@ transformations $\semE{\pathleft_j}$ and $\semE{\pathright_j}$. We
 write $\semE{\pathleft_j}_X$ for the component of $\semE{\pathleft_j}$
 at object $X$. Given a
 1-cell $f : X \onecell Y$ in $\alg(\sign)$, we write
-$\semE{\pathleft_j}_f$ for the 2-cell of type
+$\semE{\pathleft_j}(f)$ for the 2-cell of type
 $\semE{\pathleft_j}_X \cdot
-f \twocell \polyAct{\patharg_j}{f} \cdot \semE{\pathleft_j}_Y$.
+f \twocell \polyAct{\patharg_j}{f} \cdot \semE{\pathleft_j}_Y$ (this is the same notation used in Example~\ref{ex:DCell}).
 We write similarly for $\semE{\pathright_j}$.
 
 For each point $x : \polyAct{\patharg_j}{A \times B}$, we are required
@@ -67,22 +67,26 @@ $\projr(\semE{\pathleft_j}_{A \times B}(x))
 defined as the following concatenation of paths:
 \[
 \projl(\semE{\pathleft_j}_{A \times B}(x))
-\stackrel{\semE{\pathleft_j}_{\projl}(x)}{=}
+\stackrel{\semE{\pathleft_j}(\projl)(x)}{=}
 \semE{\pathleft_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) 
 \stackrel{\AlgPath{A}{j}(\polyAct{\patharg_j}{\projl}(x))}{=}
 \semE{\pathright_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) 
-\stackrel{\inverse{(\semE{\pathright_j}_{\projl}(x))}}{=}
+\stackrel{\inverse{(\semE{\pathright_j}(\projl)(x))}}{=}
 \projl(\semE{\pathright_j}_{A \times B}(x))
 \]
 The second path is defined analogously.
 \item The construction of the required homotopies is more involved and we refer the reader to the formalization for all the details.
 \end{itemize}
-\end{construction}
 
-\begin{proposition}
-The product of algebras described in Construction~\ref{cons:product}
-satisfies the required universal property of Definition~\ref{def:product}.
-\end{proposition}
+It is not difficult to show that the projections $\projlB : \prodB A
+B \onecell A$ and $\projrB : \prodB A B \onecell B$ are morphisms of
+algebras.  Moreover, the product of algebras satisfies the required
+universal property of Definition~\ref{def:product}. For example, given
+two algebra morphisms $f : X \onecell A$ and $g : X \onecell B$, we
+have a function $\mappair f g : X \to A \times B$ by the universal
+property of the product (of types!). It is possible to prove that
+$\mappair f g$ is also a morphisms of algebras. 
+\end{construction}
 
 \subsection{Inserter}
 
