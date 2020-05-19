@@ -192,14 +192,20 @@ Given bicategories $\B_1$ and $\B_2$ and a biadjunction $L \dashv R$ with $L : \
 \begin{split}
 (\identitor{L} \vcomp L(\widehat{\tau_1(x)}^{-1}) \vcomp \compositor{L}^{-1}) \whiskerr \varepsilon(x)
 \vcomp \alpha^{-1}
-\vcomp L(\eta(R(x))) \whiskerl \eta_1(\eta(x))^{-1}
+\vcomp L(\eta(R(x))) \whiskerl \varepsilon_1(\varepsilon(x))^{-1}
 \vcomp \alpha
 \vcomp \widehat{\tau_2(x)}
 \end{split}
 \end{equation*}
-\[
-second coherency
-\]
+\begin{equation*}
+\begin{split}
+\eta(x) \whiskerl \widehat{\tau_1(L(x))}^{-1}
+\vcomp \alpha
+\vcomp (\eta_1(\eta(x)))^{-1} \whiskerr R(\varepsilon(L(x)))
+\vcomp \alpha^{-1}
+\vcomp \eta(x) \whiskerl (\compositor{R} \vcomp R(\widehat{\tau_2(x)}) \vcomp \identitor{R}^{-1})
+\end{split}
+\end{equation*}
 \end{definition}
 
 Beside these standard notions, we use two bicategories: $\onetypes$ and $\grpd$.

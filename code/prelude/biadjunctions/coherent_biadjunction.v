@@ -61,7 +61,7 @@ Definition biadj_left_triangle_ob
       (#L (biadj_unit (pr1 R) x) · biadj_counit (pr1 R) (L x))
       (id₁ (L x)).
 Proof.
-  pose (invertible_modcomponent_of (biadj_triangle_l R) x) as p.    
+  pose (invertible_modcomponent_of (biadj_triangle_l R) x) as p.
   use make_invertible_2cell.
   - refine (_ • p) ; cbn.
     exact ((_ ◃ (rinvunitor _ • linvunitor _)) • linvunitor _).
