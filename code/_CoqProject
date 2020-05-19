@@ -16,6 +16,8 @@ prelude/gquot_biadjunction/path_groupoid.v
 prelude/gquot_biadjunction/gquot_functor.v
 prelude/gquot_biadjunction/gquot_biadjunction.v
 
+prelude/biadjunctions/coherent_biadjunction.v
+
 prelude/all.v
 
 signature/hit_signature.v

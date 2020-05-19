@@ -159,16 +159,35 @@ Let us fix some notation before continuing.
 Given bicategories $\B_1$ and $\B_2$, we write $\pseudo(\B_1, \B_2)$ for the type of pseudofunctors from $\B_1$ to $\B_2$.
 The type of pseudotransformations from $F$ to $G$ is denoted by $\pstrans{F}{G}$
 and the type of modifications from $\theta$ to $\theta'$ is denoted by $\modif{\theta}{\theta'}$ \cite{leinster:basic-bicats}.
+Next we discuss \emph {biadjunctions} \cite{gurski2012biequivalences,LACK2000179}.
 
 \begin{definition}
-% Definition of left biadjoint pseudofunctor
-% When is a left biadjoint pseudofunctor coherent
-
-Lastly, the type of biadjunctions between $\B_1$ and $\B_2$ is denoted by $L \dashv R$
+Let $\B_1$ and $\B_2$ be bicategories.
+A \fat{biadjunction} from $\B_1$ to $\B_2$ consists of
+\begin{itemize}
+	\item pseudofunctors $L : \pseudo(\B_1, \B_2)$ and $R : \pseudo(\B_2, \B_1)$;
+	\item pseudotransformations $\eta : \pstrans{\id(\B_1)}{R \circ L}$ and $\varepsilon : \pstrans{L \circ R}{\id(\B_2)}$;
+	\item invertible modifications
+	\[
+	\tau_1 : \modif{\rho(L)^{-1} \vcomp L \whiskerl \eta \vcomp \alpha(L, R, L) \vcomp \varepsilon \whiskerr L \vcomp \lambda(L)}{\id(L)}
+	\]
+	\[
+	\tau_2 : \modif{\lambda(R)^{-1} \vcomp \eta \whiskerr R \vcomp \alpha(R, L, R)^{-1} \vcomp R \whiskerl \varepsilon \vcomp \rho(R)}{\id(L)}.
+	\]
+\end{itemize}
+The type of biadjunctions from $\B_1$ to $\B_2$ is denoted by $L \dashv R$
 where $L : \pseudo(\B_1, \B_2)$ and $R : \pseudo(\B_2, \B_1)$.
-If we have $L \dashv R$, we say that $L$ is \emph{left biadjoint} to $R$.
-The definition of biadjoint we use, is similar to the one used by Gurski \cite{gurski2012biequivalences},
-but without any coherencies.
+If we have $L \dashv R$, we say that $L$ is \fat{left biadjoint} to $R$.
+\end{definition}
+
+\begin{definition}
+Given biacategories $\B_1$ and $\B_2$ and a biadjucntion $L \dashv R$ with $L : \pseudo(\B_1, \B_2)$, we say that $L \dashv R$ is \fat{coherent} if the following equalities hold
+\[
+first coherency
+\]
+\[
+second coherency
+\]
 \end{definition}
 
 Beside these standard notions, we use two bicategories: $\onetypes$ and $\grpd$.
