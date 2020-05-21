@@ -41,11 +41,32 @@ Now we look at the mapping property
 \end{problem}
 
 \begin{construction}{prob:mapping_property_congruence}
+\label{constr:mapping_property_congruence}
 
 \end{construction}
 
 \subsection{The First Isomorphism Theorem}
+Now let us prove a generalization of the first isomorphism theorem to the 1-truncated case.
+Note that our proof follows the same steps as the proof of the first isomorphism theorem for sets.
+Let us start by characterizing adjoint equivalences in $\algM(\sign)$.
+
+\begin{proposition}
+\label{prop:algebra_adjequiv}
+Suppose we have a signature $\sign$, algebras $X, Y : \algM(\sign)$, and a homomorphism $f : X \onecell Y$.
+Then $f$ is an adjoint equivalence in $\algM(\sign)$ if its carrier is an adjoint equivalence in $\onetypes$.
+\end{proposition}
 
 \begin{theorem}
-First isomorphism theorem
+Let $\sign$ be a signature.
+Suppose, we have algebras $X, Y : \algM(\sign)$ and a homomorphism $f : X \onecell Y$.
+Then we have a congruence relation $R$ on $X$ with an equivalence ... 
 \end{theorem}
+
+\begin{proof}
+The proof is done in three steps.
+First, we define the congruence relation $R$ on $X$ by setting $R(x, y) := f(x) = f(y)$.
+Second, we factor the map ... from $X$ to the image as a map ... from ... (quotient) to ... (image) using Construction \ref{constr:mapping_property_congruence}.
+Lastly, we show that the acquired map is an equivalence using Proposition \ref{prop:algebra_adjequiv}.
+This is done by showing that the fiber are contractible.
+Showing that the fibers are inhabited and propositional is similarly to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
+\end{proof}
