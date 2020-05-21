@@ -4,7 +4,16 @@
 \subsection{The Image}
 
 \begin{definition}
-Given a homomorphism, define its image as follows
+Let $A$ and $B$ be algebras in 1-types for a signature $\sign$ and let
+$f : A \onecell B$ be an algebra morphism. The \emph{image} of $f$ is
+the total algebra of the following displayed algebra over $B$:
+\begin{itemize}
+\item The underlying family of 1-types over $B$ is $Y(x) \eqdef \exists a : A.\ f(a) = x$.
+\item For each $x : \polyAct{\pointconstr}{A}$, we are required to construct
+a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow
+\exists a : A.\ f(a) = \polyAct{\AlgPoint{B}}{x}$.
+\end{itemize}
+
 \end{definition}
 
 
