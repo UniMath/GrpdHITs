@@ -144,12 +144,12 @@ $\pointconstr$, it is possible to derive from $\pover{x}$ a path $p
 define $\DispAlgPoint{Y}(\pover{x})$ as the following concatenation of paths:
 \[
 f(\AlgPoint{A}(x))
-\stackrel{\tcC_f(x)}{=} \AlgPoint{B}(\polyAct{\pointconstr}{f}(x))
+\stackrel{\AlgPoint{f}(x)}{=} \AlgPoint{B}(\polyAct{\pointconstr}{f}(x))
 \stackrel{\ap{\AlgPoint{B}}{p}}{=} \AlgPoint{B}(\polyAct{\pointconstr}{g}(x))
-\stackrel{\inverse{(\tcC_g)(x)}}{=} g (\AlgPoint{A}(x))
+\stackrel{\inverse{(\AlgPoint{g}(x))}}{=} g (\AlgPoint{A}(x))
 \]
-The family of invertible 2-cells $\tcC$ underlying the algebra
-morphism $\AlgPoint{}$ was introduced in Example~\ref{ex:DFAlg}.
+%% The family of invertible 2-cells $\tcC$ underlying the algebra
+%% morphism $\AlgPoint{}$ was introduced in Example~\ref{ex:DFAlg}.
 \item The construction of paths $\DispAlgPath{Y}{j}$ is relatively involved, and we refer to the formalization for the details.
 \item
 The construction of globes $\DispAlgHomot{Y}{j}$ is
@@ -215,15 +215,15 @@ paths:
 \begin{align*}
 \beta(\AlgPoint{A}(x))
 &= \hconcat{\beta(\AlgPoint{A}(x))}{\refl{g(\AlgPoint{A}(x))}} \\
-&= \hconcat{\beta(\AlgPoint{A}(x))}{(\hconcat{\tcC_g(x)}{\inverse{(\tcC_g(x))}})} \\
-&= \hconcat{(\hconcat{\beta(\AlgPoint{A}(x))}{\tcC_g(x)})}{\inverse{(\tcC_g(x))}} \\
-&= \hconcat{(\hconcat{\tcC_f(x)}{\ap{\AlgPoint{B}}{(\polyAct{\pointconstr}{\beta}(x))}})}{\inverse{(\tcC_g(x))}}
-& \text{(by equality~(\ref{eq:twocell_alg}))}\\
-&= \hconcat{(\hconcat{\tcC_f(x)}{\ap{\AlgPoint{B}}{(\polyAct{\pointconstr}{\gamma}(x))}})}{\inverse{(\tcC_g(x))}}
+&= \hconcat{\beta(\AlgPoint{A}(x))}{(\hconcat{\AlgMapPoint{g}(x)}{\inverse{(\AlgMapPoint{g}(x))}})} \\
+&= \hconcat{(\hconcat{\beta(\AlgPoint{A}(x))}{\AlgMapPoint{g}(x)})}{\inverse{(\AlgMapPoint{g}(x))}} \\
+&= \hconcat{(\hconcat{\AlgMapPoint{f}(x)}{\ap{\AlgPoint{B}}{(\polyAct{\pointconstr}{\beta}(x))}})}{\inverse{(\AlgMapPoint{g}(x))}}
+& \text{(by $\AlgCellPoint{\beta}(x)$)}\\
+&= \hconcat{(\hconcat{\AlgMapPoint{f}(x)}{\ap{\AlgPoint{B}}{(\polyAct{\pointconstr}{\gamma}(x))}})}{\inverse{(\AlgMapPoint{g}(x))}}
 & \text{(by $p$)}\\
-&= \hconcat{(\hconcat{\gamma(\AlgPoint{A}(x))}{\tcC_g(x)})}{\inverse{(\tcC_g(x))}}
-& \text{(by equality~(\ref{eq:twocell_alg}))}\\
-&= \hconcat{\gamma(\AlgPoint{A}(x))}{(\hconcat{\tcC_g(x)}{\inverse{(\tcC_g(x))}})} \\
+&= \hconcat{(\hconcat{\gamma(\AlgPoint{A}(x))}{\AlgMapPoint{g}(x)})}{\inverse{(\AlgMapPoint{g}(x))}}
+& \text{(by $\AlgCellPoint{\gamma}(x)$)}\\
+&= \hconcat{\gamma(\AlgPoint{A}(x))}{(\hconcat{\AlgMapPoint{g}(x)}{\inverse{(\AlgMapPoint{g}(x))}})} \\
 &= \hconcat{\gamma(\AlgPoint{A}(x))}{\refl{g(\AlgPoint{A}(x))}} \\
 &= \gamma(\AlgPoint{A}(x))
 \end{align*}
