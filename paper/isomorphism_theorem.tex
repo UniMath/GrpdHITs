@@ -6,12 +6,34 @@
 \begin{definition}
 Let $A$ and $B$ be algebras in 1-types for a signature $\sign$ and let
 $f : A \onecell B$ be an algebra morphism. The \emph{image} of $f$ is
-the total algebra of the following displayed algebra over $B$:
+the total algebra of the following displayed algebra $Y$ over $B$:
 \begin{itemize}
 \item The underlying family of 1-types over $B$ is $Y(x) \eqdef \exists a : A.\ f(a) = x$.
 \item For each $x : \polyAct{\pointconstr}{A}$, we are required to construct
 a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow
-\exists a : A.\ f(a) = \polyAct{\AlgPoint{B}}{x}$.
+\exists a : A.\ f(a) = \AlgPoint{B}(x)$. Assume given $\pover{x}
+: \polyDact{\pointconstr}{Y}(x)$. By induction on the polynomial
+$\pointconstr$, it is possible to derive from $\pover{x}$ an
+inhabitant of $\exists y
+: \polyAct{\pointconstr}{A}.\ \polyAct{\pointconstr}{f}(y) = x$. By
+invoking the elimination principle of propositional truncation, in
+order to define the map $\DispAlgPoint{Y}$ it is sufficient to
+construct a map $f : \Sum {y
+: \polyAct{\pointconstr}{A}}.\ \polyAct{\pointconstr}{f}(y) =
+x \rightarrow \Sum {a : A}.\ f(a) = \AlgPoint{B}(x)$.  So assume given
+$y : \polyAct{\pointconstr}{A}$ and a path $p
+: \polyAct{\pointconstr}{f}(y) = x$. Take $f(y,p)$ to be the pair
+consisting of $\AlgPoint{A}(y)$ and the path:
+\[
+f(\AlgPoint{A}(y))
+\stackrel{\tcC_f(y)}{=}
+\AlgPoint{B}(\polyAct{\pointconstr}{f}(y))
+\stackrel{\ap {\AlgPoint{B}} p}{=}
+\AlgPoint{B}(x)
+\]
+\item Since $Y(x)$ is a proposition for all $x : B$, the construction of
+paths $\DispAlgPath{Y}{j}$ and globes $\DispAlgHomot{Y}{j}$ is
+straightforward.
 \end{itemize}
 
 \end{definition}
