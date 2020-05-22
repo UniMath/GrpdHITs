@@ -93,7 +93,8 @@ Now let us look at what we need to show that $\toGrpdPathAlg{R}$ is an algebra.
 To show that it is indeed an algebra, we need to verify the homotopy constructor.
 Since this constructor has both a point and path constructor, we need to check an equality of morphisms of $\toGrpdPathAlg{R}$, which depend on points of $X$ and morphisms of $\toGrpdPathAlg{R}$.
 As a result, we cannot reuse the homotopy constructor of $X$, because it only depends on points of $X$ and paths in $X$.
-This means that for congruence relations the homotopy constructor needs to 
+This means that to construct a groupoid algebra, the homotopy constructor needs to be constructed from scratch.
+This is reflected in the following definition.
 
 \begin{definition}
 A path congruence relation $R$ is a \fat{congruence} relation if $\toGrpdPathAlg{R}$ is an algebra in groupoids.
