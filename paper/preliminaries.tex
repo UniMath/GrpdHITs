@@ -155,13 +155,25 @@ Note that the type $f \twocell g$ is required to be a set.
 There are identity 1-cells and 2-cells denoted by $\id_1$ and $\id_2$ respectively, composition of 1-cells $f$ and $g$ is denoted by $f \cdot g$,
 and the vertical composition of 2-cells $\tc$ and $\tc'$ is denoted by $\tc \vcomp \tc'$.
 The left whiskering of a 2-cell $\tc$ with 1-cell $f$ is denoted by $f \whiskerl \tc$ and right whiskering of $\tc$ with a 1-cell $g$ is denoted by $\tc \whiskerr g$. 
-Unitality and associativity of vertical composition of 2-cells hold strictly while for 1-cells, these laws only hold up to an invertible 2-cell.
+Unitality and associativity of vertical composition of 2-cells hold strictly, while For 1-cells these laws hold only up to invertible 2-cell. Given 1-cell $f : A \onecell B$, there are invertible 2-cells $\lunitor{f} : \id_1(A) \cdot f \twocell f$ and $\runitor{f} : f \cdot \id_1(B) \twocell f$.
+Given three composable 1-cells $f,g$ and $h$, there is an invertible 2-cell $\lassoc{f}{g}{h} : f \cdot (g \cdot h) \twocell (f \cdot g) \cdot h$.
 
-Let us fix some notation before continuing.
-Given bicategories $\B_1$ and $\B_2$, we write $\pseudo(\B_1, \B_2)$ for the type of pseudofunctors from $\B_1$ to $\B_2$.
-The type of pseudotransformations from $F$ to $G$ is denoted by $\pstrans{F}{G}$
-and the type of modifications from $\theta$ to $\theta'$ is denoted by $\modif{\theta}{\theta'}$ \cite{leinster:basic-bicats}.
-Next we discuss \emph {biadjunctions} \cite{gurski2012biequivalences,LACK2000179}.
+Let us fix some notation before continuing.  Given bicategories $\B_1$
+and $\B_2$, we write $\pseudo(\B_1, \B_2)$ for the type of
+pseudofunctors from $\B_1$ to $\B_2$. Pseudofunctors preserve identity
+and composition of 1-cells up to invertible 2-cell. Given a
+pseudofunctor $F : \pseudo(\B_1, \B_2)$ and an object $A$ of $\B_1$,
+there are invertible 2-cells $\identitor{F} :\id_1(F(A)) \twocell
+F(\id_1(A))$ and $\compositor{F} : F(f) \cdot F(g) \twocell F(f \cdot
+g)$, with $f$ and $g$ two composable 1-cells. Preservation of identity
+and composition of 2-cells is strict.
+The type of pseudotransformations from $F$ to $G$ is denoted by
+$\pstrans{F}{G}$.
+The naturality square of a pseudotransformation $\theta : \pstrans{F}{G}$ holds only up to invertible 2-cell. Given a 1-cell $f$ in $\B_1$, there is an invertible 2-cell $\theta_1(f) : \theta(A) \cdot G(f) \twocell F(f) \cdot \theta(B)$.
+The type of modifications from $\theta$ to
+$\theta'$ is denoted by $\modif{\theta}{\theta'}$
+\cite{leinster:basic-bicats}.  Next we discuss \emph {biadjunctions}
+\cite{gurski2012biequivalences,LACK2000179}.
 
 \begin{definition}
 Let $\B_1$ and $\B_2$ be bicategories.
