@@ -62,16 +62,28 @@ propositional truncation.
 \subsection{Congruence Relations}
 
 \begin{definition}
-Path congruence relation (only gives a path algebra)
+Let $\sign$ be a signature and let $X : \algebra{\sign}$.
+A \fat{path congruence relation} $R$ on $X$ consists of
+\begin{itemize}
+	\item a groupoid structure $R$ on $X$;
+	\item for each $x, y : \polyAct{\pointconstr[\sign]}{X}$ and $f : \mor{\polyAct{\pointconstr[\sign]}{R}}{x}{y}$, a morphism $\AlgPoint{R} : \mor{R}{\AlgPoint{X}(x)}{\AlgPoint{X}(y)}$ and a proof that this assignment is functorial;
+	\item a proof that the assignment $\Lam x, \idtoiso(\AlgPath{X}{j}(x))$ gives a natural transformation $\semEG{\pathleft[\sign]_j} \twocell \semEG{\pathright[\sign]_j}$ for each $j : \pathlabel[\sign]$.
+\end{itemize}
 \end{definition}
 
 \begin{problem}
 \label{prob:path_congruence_relation_to_grpd}
-Path congruence relation gives a path algebra in groupoids
+Given a path congruence relation $R$,
+to construct $\toGrpdPathAlg{R} : \pathalgG{\sign}$.
 \end{problem}
 
 \begin{construction}{prob:path_congruence_relation_to_grpd}
-
+We only discuss the data involved.
+\begin{itemize}
+	\item The carrier $\toGrpdPathAlg{R}$ is the groupoid whose type of objects is $X$ and whose morphisms are given by $R$.
+	\item Next we define a functor $\semPG{\pointconstr[\sign]}(\toGrpdPathAlg{R}) \onecell \toGrpdPathAlg{R}$. It is defined to be $\AlgPoint{X}$ on the objects and on the morphisms, it is defined to be $\AlgPoint{R}$.
+	\item Lastly, we define a natural transformation $\semEG{\pathleft[\sign]_j} \twocell \semEG{\pathright[\sign]_j}$ for each $j : \pathlabel[\sign]$. The component function of this transformation is $\Lam x, \idtoiso(\AlgPath{X}{j}(x))$.
+\end{itemize}
 \end{construction}
 
 \begin{definition}
