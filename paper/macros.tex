@@ -348,9 +348,14 @@
 \newcommand{\ZC}{\constructor{c}}
 
 % Set Truncation
-\newcommand{\ST}[1]{|| #1 ||}
+\newcommand{\ST}[1]{|| #1 ||_0}
 \newcommand{\SC}{\constructor{inc}}
 \newcommand{\Strunc}{\constructor{trunc}}
+
+% Propositional Truncation
+\newcommand{\PT}[1]{|| #1 ||}
+\newcommand{\PC}{\constructor{inc}}
+\newcommand{\Ptrunc}{\constructor{trunc}}
 
 % Free algebra
 \newcommand{\freesign}[2]{\constfont{FreeSig}_{#1}(#2)}
@@ -423,5 +428,10 @@
 \newcommand{\prodB}[2]{#1 \times #2}
 \newcommand{\projlB}{\projl}
 \newcommand{\projrB}{\projr}
+
+% Iso theorem
+\renewcommand{\Im}{\constfont{Im}}
+
+
 
 \newcommand{\remove}[1]{}

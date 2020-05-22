@@ -170,6 +170,9 @@ A \emph{proposition} is a type of which all inhabitants are equal.
 A \emph{set} is a type $X$ such that for all $x, y : X$ the type $x = y$ is a proposition.
 \remove{A \emph{1-type} is a type $X$ such that for all $x, y : X$ the type $x = y$ is a set.}
 A \emph{homotopy} between $f, g : X \rightarrow Y$ consists of a path
-$f(x) = g(x)$ for each $x : A$. We assume \emph{function extensionality}, and
-we write $\funextsec$ for the map sending a homotopy between functions
-$f$ and $g$ into a path $f = g$.
+$f(x) = g(x)$ for each $x : A$. We assume \emph{function
+extensionality}, and we write $\funextsec$ for the map sending a
+homotopy between functions $f$ and $g$ into a path $f = g$. Given a
+type $A$, we write $\PT{A}$ for its \emph{propositional truncation}
+and $\PC : A \to \PT{A}$. We define the existential quantification
+$\exists a : A.\B(a)$ as $\PT{\Sum {a : A}. B(a)}$.
