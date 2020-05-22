@@ -150,9 +150,9 @@
 \AxiomC{$T_1, T_2 : \poly$}
 \AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
 \AxiomC{$e_3, e_4 : \pathendpoint{A}{R}{T_2}$}
-\AxiomC{$h_1 : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
-\AxiomC{$h_2 : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4}$}
-\QuinaryInfC{$\hpair{h_1}{h_2} : \homotendpoint{l}{r}{a_1}{a_2}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
+\noLine
+\TrinaryInfC{$\qquad h_1 : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2} \qquad h_2 : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4} \qquad$}
+\UnaryInfC{$\hpair{h_1}{h_2} : \homotendpoint{l}{r}{a_1}{a_2}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
 \end{bprooftree}
 \end{center}
 
@@ -217,15 +217,14 @@ Our notion of signature is similar to the one by Dybjer and Moenclaey \cite{DBLP
 However, instead of defining them externally, we define a type of signatures within type theory
 just like what was done for inductive-recursive and inductive-inductive
 definitions \cite{Dybjer1999AFA,forsberg2012finite}. 
-In addition, we show that each signature $\sign$ gives rise to a bicategory of algebras for $\sign$.
+We also show that each signature $\sign$ gives rise to a bicategory of algebras for $\sign$.
 
 In this section, we study HITs of the following shape
 \begin{lstlisting}[mathescape=true]
 Inductive $H$ :=
 | $c$ : $\functions{\polyAct{P}{H}}{H}$
 | $p$ : $\depprod{(j : I) (x : \polyAct{Q}{H})}{l(x) = r(x)}$
-| $s$ : $\depprod{(j : J) (x : \polyAct{R}{H}) (r : a_1(x) = a_2(x))}$
-      ${\homotendpointAct{q_1}{x, r} = \homotendpointAct{q_2}{x, r}}$
+| $s$ : $\depprod{(j : J) (x : \polyAct{R}{H}) (r : a_1(x) = a_2(x))}{\homotendpointAct{q_1}{x, r} = \homotendpointAct{q_2}{x, r}}$
 | $t$ : $\depprod{(x, y : H) (q_1, q_2 : x = y) (r, s : q_1 = q_2)}{r = s}$
 \end{lstlisting}
 To see what the challenges are when defining such HITs, let us take a closer look at the torus.
@@ -314,7 +313,7 @@ The way we represent path arguments allows us to represent equations with any fi
 For example, two path arguments $p : x_1 = y_1$ and $q : x_2 = y_2$ is represented by one path argument of type $(x_1, x_2) = (y_1, y_2)$.
 
 From the grammar in Figure \ref{fig:homot_ep}, we can derive
-the following additional homotopy endpoints, which be employed in forthcoming
+the following additional homotopy endpoints, which will be employed in forthcoming
 examples. 
 
 \vspace{5pt}
@@ -363,8 +362,7 @@ In the remainder, we show how to interpret the following HIT given a signature $
 Inductive $H$ :=
 | $c$ : $\functions{\polyAct{\pointconstr}{H}}{H}$
 | $p$ : $\depprod{(j : \pathlabel) (x : \polyAct{\patharg_j}{H})}{\pathendpointAct{\pathleft_j}{x} = \pathendpointAct{\pathright_j}{x}}$
-| $s$ : $\depprod{(j : \homotlabel) (x : \polyAct{\homotpointarg_j}{H}) (r : \pathargleft_j(x) = \pathargright_j(x))}$
-      ${\homotendpointAct{\homotleft_j}{x, r} = \homotendpointAct{\homotright_j}{x, r}}$
+| $s$ : $\depprod{(j : \homotlabel) (x : \polyAct{\homotpointarg_j}{H}) (r : \pathargleft_j(x) = \pathargright_j(x))}{\homotendpointAct{\homotleft_j}{x, r} = \homotendpointAct{\homotright_j}{x, r}}$
 | $t$ : $\depprod{(x, y : H) (p, q : x = y) (r, s : p = q)}{r = s}$
 \end{lstlisting}
 
@@ -544,8 +542,8 @@ in which every object $X$ satisfies
 \begin{equation*}
 \begin{split}
 \prod
-(j : \homotlabel[\sign]) &(x : \polyAct{\homotpointarg[\sign]_j}{X}) (w : \semE{\pathargleft[\sign]_j}(x) = \semE{\pathargright[\sign]_j}(x)),\\
-&\semH{\homotleft[\sign]_j}(x, w) = \semH{\homotright[\sign]_j}(x, w)
+(j : \homotlabel[\sign]) (x : \polyAct{\homotpointarg[\sign]_j}{X}) (w : \semE{\pathargleft[\sign]_j}(x) = \semE{\pathargright[\sign]_j}(x)),
+\ \semH{\homotleft[\sign]_j}(x, w) = \semH{\homotright[\sign]_j}(x, w)
 \end{split}
 \end{equation*}
 In addition, we define $\algG{\sign}$ to be the full subbicategory of $\pathalgG{\sign} $
@@ -553,8 +551,8 @@ in which every object $X$ satisfies
 \begin{equation*}
 \begin{split}
 \prod
-(j : \homotlabel[\sign]) &(x : \semPG{\homotpointarg[\sign]_j}{X}) (w : \semEG{\pathargleft[\sign]_j}(x) = \semEG{\pathargright[\sign]_j}(x)),\\
-&\semHG{\homotleft[\sign]_j}(x, w) = \semHG{\homotright[\sign]_j}(x, w)
+(j : \homotlabel[\sign]) (x : \semPG{\homotpointarg[\sign]_j}{X}) (w : \semEG{\pathargleft[\sign]_j}(x) = \semEG{\pathargright[\sign]_j}(x)),\
+\semHG{\homotleft[\sign]_j}(x, w) = \semHG{\homotright[\sign]_j}(x, w)
 \end{split}
 \end{equation*}
 Objects of $\algM(\sign)$ and $\algG{\sign}$ are called \fat{algebras} for $\sign$.
