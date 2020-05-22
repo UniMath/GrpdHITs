@@ -107,13 +107,36 @@ Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\algg
 Suppose, we have two algebra $X, Y : \algebra{\sign}$ and a congruence relation $R$ on $X$.
 By the biadjunction, we get a morphism $\alggquot{\toGrpdAlg{R}} \onecell Y$ from $R \onecell \algpgrpd{Y}$.
 Using this, we can give conditions for when a homomorphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
+We can unfold the definition to find the necessary ingredients for the factorization.
+For example, to show that $f$ lifts to a functor, we need to provide a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$, and equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$.
+\remove
+{
 For such a factorization, we need to give
 \begin{itemize}
 	\item a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$;
 	\item equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$;
+	\item 
+	\[
+	f_2(p)
+	\vcomp
+	\AlgMapPoint{f}(y)
+	=
+	\AlgMapPoint{f}(x)
+	\vcomp
+	\ap{\AlgPoint{Y}}{}
+	\]
 	\item
-	\item
+	\[
+	\semE{\pathleft[\sign]_j}(\AlgMapPoint{f})(x)
+	\vcomp
+	\AlgPath{Y}{j}(\semP{\patharg[\sign]}(f)(x))
+	=
+	f_2(\idtoiso(\AlgPath{X}{j}(x)))
+	\vcomp
+	\semE{\pathright[\sign]_j}(\AlgMapPoint{f})(x)
+	\]
 \end{itemize}
+}
 \end{remark}
 
 \subsection{The First Isomorphism Theorem}
@@ -130,14 +153,14 @@ Then $f$ is an adjoint equivalence in $\algM(\sign)$ if its carrier is an adjoin
 \begin{theorem}
 Let $\sign$ be a signature.
 Suppose, we have algebras $X, Y : \algM(\sign)$ and a homomorphism $f : X \onecell Y$.
-Then we have a congruence relation $R$ on $X$ with an equivalence ... 
+Then we have a congruence relation $R$ on $X$ and an adjoint equivalence $\overline{f} : \alggquot(\toGrpdAlg{R}) \onecell \Im(f)$.
 \end{theorem}
 
 \begin{proof}
 The proof is done in three steps.
 First, we define the congruence relation $R$ on $X$ by setting $R(x, y) := f(x) = f(y)$.
-Second, we factor the map ... from $X$ to the image as a map ... from ... (quotient) to ... (image) using Construction \ref{remark:mapping_property_congruence}.
-Lastly, we show that the acquired map is an equivalence using Proposition \ref{prop:algebra_adjequiv}.
-This is done by showing that the fiber are contractible.
+Second, we factor the map $\ImProj{f}$ from $X$ to the image as a map $\overline{f}$ from $\alggquot(\toGrpdAlg{R})$ to $\Im(f)$ using Construction \ref{remark:mapping_property_congruence}.
+Lastly, we show that the $\overline{f}$ is an adjoint equivalence using Proposition \ref{prop:algebra_adjequiv}.
+This is done by showing that the fibers are contractible.
 Showing that the fibers are inhabited and propositional is similarly to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
 \end{proof}

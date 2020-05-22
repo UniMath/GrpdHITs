@@ -579,7 +579,7 @@ Furthermore, a morphism $f : X \onecell Y$ where $X, Y : \algM(\sign)$ consists 
 	\item a map $f : X \rightarrow Y$;
 	\item for each $x : \polyAct{\pointconstr[\sign]}{X}$ a path
 	\[
-	\AlgMapPoint{f} : f(\AlgPoint{X}(x)) = \AlgPoint{Y}(\semP{\pointconstr[\sign]}(f) \> x);
+	\AlgMapPoint{f}(x) : f(\AlgPoint{X}(x)) = \AlgPoint{Y}(\semP{\pointconstr[\sign]}(f) \> x);
 	\]
 	\item for each $j : \pathlabel[\sign]$ and $x : \polyAct{\patharg[\sign]}{X}$ a 2-path
 	\[
@@ -594,7 +594,7 @@ Lastly, given two algebras $X, Y : \algM(\sign)$ and morphisms $f, g : X \onecel
 	\item for each $x : X$ a path $\theta : f(x) = g(x)$;
 	\item for each $x : \polyAct{\pointconstr[\sign]}{X}$ a path
 	\[
-	\AlgCellPoint{\theta} : 
+	\AlgCellPoint{\theta}(x) : 
 	\theta(x) \vcomp \AlgMapPoint{g}(x)
 	=
 	\AlgMapPoint{f}(x)
