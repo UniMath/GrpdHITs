@@ -87,25 +87,34 @@ We only discuss the data involved.
 \end{construction}
 
 \begin{definition}
-Congruence relation
+A path congruence relation $R$ is a \fat{congruence} relation if $\toGrpdPathAlg{R}$ is an algebra in groupoids.
 \end{definition}
+
+The following is immediate.
 
 \begin{problem}
 \label{prob:congruence_relation_to_grpd}
-Path congruence relation gives a path algebra in groupoids
+Given a congruence relation $R$,
+to construct $\toGrpdAlg{R} : \algG{\sign}$.
 \end{problem}
 
-Now we look at the mapping property
+By Construction \ref{constr:alg_biadj}, the groupoid quotient lifts to $\alggquot : \pseudo(\algG{\sign}, \algebra{\sign})$.
+Hence, we can construct an algebra $\alggquot(\toGrpdAlg{R}) : \algebra{\sign}$ from a congruence relation $R$.
+Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\alggquot(\toGrpdAlg{R})$.
 
-\begin{problem}
-\label{prob:mapping_property_congruence}
-
-\end{problem}
-
-\begin{construction}{prob:mapping_property_congruence}
-\label{constr:mapping_property_congruence}
-
-\end{construction}
+\begin{remark}
+\label{remark:mapping_property_congruence}
+Suppose, we have two algebra $X, Y : \algebra{\sign}$ and a congruence relation $R$ on $X$.
+By the biadjunction, we get a morphism $\alggquot{\toGrpdAlg{R}} \onecell Y$ from $R \onecell \algpgrpd{Y}$.
+Using this, we can give conditions for when a homomorphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
+For such a factorization, we need to give
+\begin{itemize}
+	\item a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$;
+	\item equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$;
+	\item
+	\item
+\end{itemize}
+\end{remark}
 
 \subsection{The First Isomorphism Theorem}
 Now let us prove a generalization of the first isomorphism theorem to the 1-truncated case.
@@ -127,7 +136,7 @@ Then we have a congruence relation $R$ on $X$ with an equivalence ...
 \begin{proof}
 The proof is done in three steps.
 First, we define the congruence relation $R$ on $X$ by setting $R(x, y) := f(x) = f(y)$.
-Second, we factor the map ... from $X$ to the image as a map ... from ... (quotient) to ... (image) using Construction \ref{constr:mapping_property_congruence}.
+Second, we factor the map ... from $X$ to the image as a map ... from ... (quotient) to ... (image) using Construction \ref{remark:mapping_property_congruence}.
 Lastly, we show that the acquired map is an equivalence using Proposition \ref{prop:algebra_adjequiv}.
 This is done by showing that the fiber are contractible.
 Showing that the fibers are inhabited and propositional is similarly to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
