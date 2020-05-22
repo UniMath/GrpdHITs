@@ -363,8 +363,7 @@ In the remainder, we show how to interpret the following HIT given a signature $
 Inductive $H$ :=
 | $c$ : $\functions{\polyAct{\pointconstr}{H}}{H}$
 | $p$ : $\depprod{(j : \pathlabel) (x : \polyAct{\patharg_j}{H})}{\pathendpointAct{\pathleft_j}{x} = \pathendpointAct{\pathright_j}{x}}$
-| $s$ : $\depprod{(j : \homotlabel) (x : \polyAct{\homotpointarg_j}{H}) (r : \pathargleft_j(x) = \pathargright_j(x))}$
-      ${\homotendpointAct{\homotleft_j}{x, r} = \homotendpointAct{\homotright_j}{x, r}}$
+| $s$ : $\depprod{(j : \homotlabel) (x : \polyAct{\homotpointarg_j}{H}) (r : \pathargleft_j(x) = \pathargright_j(x))}{\homotendpointAct{\homotleft_j}{x, r} = \homotendpointAct{\homotright_j}{x, r}}$
 | $t$ : $\depprod{(x, y : H) (p, q : x = y) (r, s : p = q)}{r = s}$
 \end{lstlisting}
 
