@@ -60,6 +60,9 @@ propositional truncation.
 \end{construction}
 
 \subsection{Congruence Relations}
+Next we define congruence relations and we show that each such relation gives a algebra in groupoids.
+The difficulty here is constructing the homotopy constructor of that algebra.
+For this reason, we define congruence relations in two steps, and we start by defining \emph{path congruence relations} and showing that these give rise to path algebras in groupoids.
 
 \begin{definition}
 Let $\sign$ be a signature and let $X : \algebra{\sign}$.
@@ -86,18 +89,17 @@ We only discuss the data involved.
 \end{itemize}
 \end{construction}
 
+Now let us look at what we need to show that $\toGrpdPathAlg{R}$ is an algebra.
+To show that it is indeed an algebra, we need to verify the homotopy constructor.
+Since this constructor has both a point and path constructor, we need to check an equality of morphisms of $\toGrpdPathAlg{R}$, which depend on points of $X$ and morphisms of $\toGrpdPathAlg{R}$.
+As a result, we cannot reuse the homotopy constructor of $X$, because it only depends on points of $X$ and paths in $X$.
+This means that for congruence relations the homotopy constructor needs to 
+
 \begin{definition}
 A path congruence relation $R$ is a \fat{congruence} relation if $\toGrpdPathAlg{R}$ is an algebra in groupoids.
 \end{definition}
 
-The following is immediate.
-
-\begin{problem}
-\label{prob:congruence_relation_to_grpd}
-Given a congruence relation $R$,
-to construct $\toGrpdAlg{R} : \algG{\sign}$.
-\end{problem}
-
+Note that each congruence relation $R$ gives rise to an algebra $\toGrpdAlg{R} : \algG{\sign}$.
 By Construction \ref{constr:alg_biadj}, the groupoid quotient lifts to $\alggquot : \pseudo(\algG{\sign}, \algebra{\sign})$.
 Hence, we can construct an algebra $\alggquot(\toGrpdAlg{R}) : \algebra{\sign}$ from a congruence relation $R$.
 Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\alggquot(\toGrpdAlg{R})$.
@@ -109,34 +111,6 @@ By the biadjunction, we get a morphism $\alggquot{\toGrpdAlg{R}} \onecell Y$ fro
 Using this, we can give conditions for when a homomorphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
 We can unfold the definition to find the necessary ingredients for the factorization.
 For example, to show that $f$ lifts to a functor, we need to provide a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$, and equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$.
-\remove
-{
-For such a factorization, we need to give
-\begin{itemize}
-	\item a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$;
-	\item equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$;
-	\item 
-	\[
-	f_2(p)
-	\vcomp
-	\AlgMapPoint{f}(y)
-	=
-	\AlgMapPoint{f}(x)
-	\vcomp
-	\ap{\AlgPoint{Y}}{}
-	\]
-	\item
-	\[
-	\semE{\pathleft[\sign]_j}(\AlgMapPoint{f})(x)
-	\vcomp
-	\AlgPath{Y}{j}(\semP{\patharg[\sign]}(f)(x))
-	=
-	f_2(\idtoiso(\AlgPath{X}{j}(x)))
-	\vcomp
-	\semE{\pathright[\sign]_j}(\AlgMapPoint{f})(x)
-	\]
-\end{itemize}
-}
 \end{remark}
 
 \subsection{The First Isomorphism Theorem}
