@@ -52,7 +52,9 @@ Elimination rule:
 \noLine
 \UnaryInfC{$\geY : \depprod{(x : G)}{\globeover{\ge(x)}{\gcleqY(\idgrpd{x})}{\refl{\gclY(x)}}}$}
 \noLine
-\UnaryInfC{$\gconcatY : \depprod{(x, y, z : G) (f : \mor{G}{x}{y}) (g : \mor{G}{y}{z})}{\globeover{\gconcat(f, g)}{\gcleqY(\compgrpd{f}{g})}{\concat{\gcleqY(f)}{\gcleqY(g)}}}$}
+\UnaryInfC{$\gconcatY : \depprod{(x, y, z : G) (f : \mor{G}{x}{y}) (g : \mor{G}{y}{z})}{}$}
+\noLine
+\UnaryInfC{$\qquad\qquad\qquad\qquad\globeover{\gconcat(f, g)}{\gcleqY(\compgrpd{f}{g})}{\concat{\gcleqY(f)}{\gcleqY(g)}}$}
 \UnaryInfC{$\gind(\gclY, \gcleqY, \geY, \gconcatY) : \depprod{(x : \gquotType(G))}{Y(x)}$}
 \end{bprooftree}
 \end{center}
