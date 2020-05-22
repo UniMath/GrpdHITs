@@ -314,7 +314,7 @@ The way we represent path arguments allows us to represent equations with any fi
 For example, two path arguments $p : x_1 = y_1$ and $q : x_2 = y_2$ is represented by one path argument of type $(x_1, x_2) = (y_1, y_2)$.
 
 From the grammar in Figure \ref{fig:homot_ep}, we can derive
-the following additional homotopy endpoints, which be employed in forthcoming
+the following additional homotopy endpoints, which will be employed in forthcoming
 examples. 
 
 \vspace{5pt}
@@ -544,8 +544,8 @@ in which every object $X$ satisfies
 \begin{equation*}
 \begin{split}
 \prod
-(j : \homotlabel[\sign]) &(x : \polyAct{\homotpointarg[\sign]_j}{X}) (w : \semE{\pathargleft[\sign]_j}(x) = \semE{\pathargright[\sign]_j}(x)),\\
-&\semH{\homotleft[\sign]_j}(x, w) = \semH{\homotright[\sign]_j}(x, w)
+(j : \homotlabel[\sign]) (x : \polyAct{\homotpointarg[\sign]_j}{X}) (w : \semE{\pathargleft[\sign]_j}(x) = \semE{\pathargright[\sign]_j}(x)),
+\ \semH{\homotleft[\sign]_j}(x, w) = \semH{\homotright[\sign]_j}(x, w)
 \end{split}
 \end{equation*}
 In addition, we define $\algG{\sign}$ to be the full subbicategory of $\pathalgG{\sign} $
@@ -553,8 +553,8 @@ in which every object $X$ satisfies
 \begin{equation*}
 \begin{split}
 \prod
-(j : \homotlabel[\sign]) &(x : \semPG{\homotpointarg[\sign]_j}{X}) (w : \semEG{\pathargleft[\sign]_j}(x) = \semEG{\pathargright[\sign]_j}(x)),\\
-&\semHG{\homotleft[\sign]_j}(x, w) = \semHG{\homotright[\sign]_j}(x, w)
+(j : \homotlabel[\sign]) (x : \semPG{\homotpointarg[\sign]_j}{X}) (w : \semEG{\pathargleft[\sign]_j}(x) = \semEG{\pathargright[\sign]_j}(x)),\
+\semHG{\homotleft[\sign]_j}(x, w) = \semHG{\homotright[\sign]_j}(x, w)
 \end{split}
 \end{equation*}
 Objects of $\algM(\sign)$ and $\algG{\sign}$ are called \fat{algebras} for $\sign$.
