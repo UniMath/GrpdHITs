@@ -174,7 +174,7 @@ A \fat{biadjunction} from $\B_1$ to $\B_2$ consists of
 	\tau_1 : \modif{\rho(L)^{-1} \vcomp L \whiskerl \eta \vcomp \alpha(L, R, L) \vcomp \varepsilon \whiskerr L \vcomp \lambda(L)}{\id(L)}
 	\]
 	\[
-	\tau_2 : \modif{\lambda(R)^{-1} \vcomp \eta \whiskerr R \vcomp \alpha(R, L, R)^{-1} \vcomp R \whiskerl \varepsilon \vcomp \rho(R)}{\id(L)}.
+	\tau_2 : \modif{\lambda(R)^{-1} \vcomp \eta \whiskerr R \vcomp \alpha(R, L, R)^{-1} \vcomp R \whiskerl \varepsilon \vcomp \rho(R)}{\id(R)}.
 	\]
 \end{itemize}
 The type of biadjunctions from $\B_1$ to $\B_2$ is denoted by $L \dashv R$
@@ -185,7 +185,7 @@ If we have $L \dashv R$, we say that $L$ is \fat{left biadjoint} to $R$.
 Before we say when a biadjunction is coherent, let us introduce some notation.
 Suppose, that we have a biadjunction $L \dashv R$ where $L : \pseudo(\B_1, \B_2)$.
 For each $x : \B_1$ we get a 1-cell $\eta(x) : x \onecell R(L(x))$ and for $x : \B_2$, we get a 1-cell $\varepsilon(x) : L(R(x)) \onecell x$.
-Given $x : \B_1$, we get an invertible 2-cell $\widehat{\tau_2(x)} : L(\eta(x)) \cdot \varepsilon(R(x)) \twocell \id_1(L(x))$.
+Given $x : \B_1$, we get an invertible 2-cell $\widehat{\tau_2(x)} : L(\eta(x)) \cdot \varepsilon(L(x)) \twocell \id_1(L(x))$.
 Similarly, we define an invertible 2-cell $\widehat{\tau_1(x)} : \eta(R(x)) \cdot R(\varepsilon(x)) \twocell \id_1(R(x))$ for $x : \B_2$.
 
 \begin{definition}
@@ -196,7 +196,7 @@ Given bicategories $\B_1$ and $\B_2$ and a biadjunction $L \dashv R$ with $L : \
 \vcomp \alpha^{-1}
 \vcomp L(\eta(R(x))) \whiskerl \varepsilon_1(\varepsilon(x))^{-1}
 \vcomp \alpha
-\vcomp \widehat{\tau_2(x)} \whiskerr \varepsilon(x)
+\vcomp \widehat{\tau_2(R(x))} \whiskerr \varepsilon(x)
 \end{split}
 \end{equation*}
 \begin{equation*}
