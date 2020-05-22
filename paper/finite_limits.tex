@@ -12,7 +12,7 @@ product in a category.
 
 \begin{definition}\label{def:product}
 Let $\B$ be a bicategory and let $A$ and $B$ be two objects of
-$\B$. The \emph{product} of $A$ and $B$ is given by an object $\prodB
+$\B$. The \fat{product} of $A$ and $B$ is given by an object $\prodB
 A B$ together with 1-cells $\projlB : \prodB A B \onecell A$ and
 $\projrB : \prodB A B \onecell B$.
 
@@ -65,15 +65,15 @@ two paths $\projl(\semE{\pathleft_j}_{A \times B}(x))
 $\projr(\semE{\pathleft_j}_{A \times B}(x))
 = \projr(\semE{\pathright_j}_{A \times B}(x))$. The first of these is
 defined as the following concatenation of paths:
-\[
+\begin{align*}
 \projl(\semE{\pathleft_j}_{A \times B}(x))
-\stackrel{\semE{\pathleft_j}(\projl)(x)}{=}
-\semE{\pathleft_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) 
-\stackrel{\AlgPath{A}{j}(\polyAct{\patharg_j}{\projl}(x))}{=}
-\semE{\pathright_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) 
-\stackrel{\inverse{(\semE{\pathright_j}(\projl)(x))}}{=}
+&\stackrel{\semE{\pathleft_j}(\projl)(x)}{=}
+\semE{\pathleft_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) \\
+&\stackrel{\AlgPath{A}{j}(\polyAct{\patharg_j}{\projl}(x))}{=}
+\semE{\pathright_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) \\
+&\stackrel{\inverse{(\semE{\pathright_j}(\projl)(x))}}{=}
 \projl(\semE{\pathright_j}_{A \times B}(x))
-\]
+\end{align*}
 The second path is defined analogously.
 \item The construction of the required homotopies is more involved and we refer the reader to the formalization for all the details.
 \end{itemize}
@@ -99,7 +99,7 @@ a category.
 
 \begin{definition}\label{def:inserter}
 Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
-$f,g : A \onecell B$. The \emph{inserter} of $f$ and $g$ is an
+$f,g : A \onecell B$. The \fat{inserter} of $f$ and $g$ is an
 object $E$ together with a 1-cell $e : E \onecell A$ and a 2-cell
 $\epsilon : e \cdot f\twocell e \cdot g$.
 
@@ -129,7 +129,7 @@ algebra morphisms, to construct the inserter of $f$ and $g$ in $\alg(\sign)$.
 \end{problem}
 
 \begin{construction}{prob:inserter}\label{cons:inserter}
-The inserter of $f$ and $g$ is defined as the total algebra $E$ of a
+The inserter of $f$ and $g$ is defined as the total algebra $\TotalAlg Y$ of a
 displayed algebra $Y$ over $A$. Displayed algebras were
 introduced in Definition~\ref{def:disp_alg}. $Y$ is defined as follows:
 \begin{itemize}
@@ -158,10 +158,11 @@ point $x$. Since $Y(x)$ is a set, then there is exactly one path
 between any two paths in $Y(x)$.
 \end{itemize}
 
-The 1-cell $e$ is the first projection out of the total algebra $E$, which
-is an algebra morphism by construction. The 2-cell $\epsilon$ is the
-second projection out of $E$. The algebra $E$ satisfies the required
-universal property of the inserter spelled out in Definition~\ref{def:inserter}.
+The 1-cell $e$ is the first projection out of the total algebra
+$\TotalAlg Y$, which is an algebra morphism by construction. The
+2-cell $\epsilon$ is the second projection out of $\TotalAlg Y$. The
+algebra $\TotalAlg Y$ satisfies the required universal property of the
+inserter spelled out in Definition~\ref{def:inserter}.
 \end{construction}
 
 \subsection{Equifier}
@@ -172,7 +173,7 @@ higher version of the equalizer.
 \begin{definition}\label{def:equifier}
 Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$, let $f,
 g : A \onecell B$ and $\beta,\gamma : f \twocell
-g$. The \emph{equifier} of $\beta$ and $\gamma$ is an object $E$
+g$. The \fat{equifier} of $\beta$ and $\gamma$ is an object $E$
 together with a 1-cell $e : E \onecell A$ and a path
 $e \whiskerl \beta = e \whiskerl \gamma$.
 
@@ -199,7 +200,7 @@ equifier of $\beta$ and $\gamma$ in $\alg(\sign)$.
 
 \begin{construction}{prob:equifier}\label{cons:equifier}
 Similarly to the construction of the inserter, we defined the equifier
-of $\beta$ and $\gamma$ as the total algebra $E$ of a certain
+of $\beta$ and $\gamma$ as the total algebra $\TotalAlg Y$ of a certain
 displayed algebra $Y$ over $A$.
 \begin{itemize}
 \item The underlying family $Y$ of 1-types over $A$ is $Y(x) \eqdef \beta(x) = \gamma(x)$.
@@ -233,9 +234,9 @@ in $Y(x)$, for some point $x$. Since $Y(x)$ is a proposition, then
 these constructions are all trivial.
 \end{itemize}
 
-The 1-cell $e$ is the first projection out of the total algebra $E$, which
+The 1-cell $e$ is the first projection out of the total algebra $\TotalAlg Y$, which
 is an algebra morphism by construction. The 2-cell $\epsilon$ is the
-second projection out of $E$. The algebra $E$ satisfies the required
+second projection out of $\TotalAlg Y$. The algebra $\TotalAlg Y$ satisfies the required
 universal property of the equifier spelled out in Definition~\ref{def:equifier}.
 
 \end{construction}
