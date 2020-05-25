@@ -67,6 +67,7 @@ to construct a path
 
 With these notions in place, we define \emph{displayed algebras}.
 These represent the input of the elimination rule.
+Furthermore, we show that each displayed algebra gives rise to a total algebra and a projection.
 
 \begin{definition}\label{def:disp_alg}
 Given a signature $\sign$ and an algebra $X$ for $\sign$,
@@ -98,12 +99,11 @@ $\AlgPoint{\TotalAlg Y}$ acting on an element $z
 \AlgPoint{\TotalAlg Y}(z) \eqdef
 (\AlgPoint{X}(\projl(\polyoplax{\pointconstr}(z)))
 ,
-\DispAlgPoint{Y}(\projr((\polyoplax{\pointconstr}(z))))).
+\DispAlgPoint{Y}(\projr(\polyoplax{\pointconstr}(z)))).
 \]
-We refer to the formalization for details on the construction of paths
-$\AlgPath{\TotalAlg Y}{j}$ and homotopies $\AlgHomot{\TotalAlg
-Y}{j}$. The first projection $\TotalAlg Y \rightarrow X$ is a morphism
-of algebras.
+We refer to the formalization for details on the construction of the
+required paths and homotopies. The first projection $\TotalAlg
+Y \rightarrow X$ is a morphism of algebras.
 \end{definition}
 
 \begin{remark}
