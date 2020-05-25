@@ -64,13 +64,22 @@ which takes a groupoid $G$ and returns a 1-type
 whose points are objects of $G$ up to equivalence.
 Note that the types of univalent groupoids and of 1-types are equivalent \cite{rezk_completion}.
 
-The goal of this paper is to show that finitary 1-truncated higher inductive types can be derived from simpler principles.
+The main goal of this paper is to show that finitary 1-truncated higher inductive types can be derived from simpler principles.
 More specifically, every finitary 1-truncated HIT can be constructed in a type theory
 with propositional truncations, set quotients, and groupoid quotients.
 Note that the set quotient is a special instance of the groupoid quotient.
 The result of this paper can be used to simplify the semantic study of finitary 1-truncated HITs.
 Instead of verifying the existence of a wide class of HITs, one only needs to check the existence
 of propositional truncations and groupoid quotients.
+
+
+Each HIT discussed in the paper comes with a notion of algebra: a
+1-type (or a groupoid) which is closed under the introduction rules of
+the HIT.  Algebras for a HIT form a bicategory, which is a natural
+setting for the development of ``higher'' universal algebra. We show
+that the bicategory of algebras has finite limits, and we prove a
+variant of the first isomorphism theorem for 1-types. 
+
 
 The contributions of this paper are summarized as follows
 \begin{itemize}
@@ -81,6 +90,8 @@ The contributions of this paper are summarized as follows
 	\item A construction of 1-truncated HITs from the groupoid quotient (Construction \ref{constr:hit_exist}),
 	which shows that such HITs exist.
 	This is the main contribution of this paper.
+        \item A definition of the free algebra over a signature as a HIT (Definition \ref{def:free_alg}).
+        The free algebra construction underlies a coherent biadjunction between the bicategory of algebras and the bicategory of 1-types.
 \end{itemize}
 \emph{\textbf{Related Work.}}
 Various schemes of higher inductive types have been defined and studied.
