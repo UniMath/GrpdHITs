@@ -73,13 +73,18 @@ Instead of verifying the existence of a wide class of HITs, one only needs to ch
 of propositional truncations and groupoid quotients.
 
 
-Each HIT discussed in the paper comes with a notion of algebra: a
-1-type (or a groupoid) which is closed under the introduction rules of
-the HIT.  Algebras for a HIT form a bicategory, which is a natural
-setting for the development of ``higher'' universal algebra. We show
-that the bicategory of algebras has finite limits, and we prove a
-variant of the first isomorphism theorem for 1-types. 
+Moreover, we employ our framework for HITs for the development of
+2-dimensional universal algebra. Each HIT discussed in the paper comes
+with a notion of algebra: a 1-type (or a groupoid) which is closed
+under the introduction rules of the HIT.  Algebras for a HIT form a
+bicategory. We prove that this bicategory has finite limits. Moreover,
+all its morphisms admit a factorization analogous to the one given by the
+first isomorphism theorem. Our framework also allows the construction
+of the free algebra over a signature, generalizing the notion of term
+algebra in (1-dimensional) universal algebra.
 
+Lastly, we show how to exploit our construction of HITs via the
+groupoid quotient to calculate the fundamental group of some HITs.
 
 The contributions of this paper are summarized as follows
 \begin{itemize}
@@ -89,9 +94,12 @@ The contributions of this paper are summarized as follows
 	\item A biadjunction between the bicategories of algebras in 1-types and algebras in groupoids (Construction \ref{constr:alg_biadj});
 	\item A construction of 1-truncated HITs from the groupoid quotient (Construction \ref{constr:hit_exist}),
 	which shows that such HITs exist.
-	This is the main contribution of this paper.
+	This is the main contribution of this paper;
+        \item Finite limits in bicategories of algebras (Section \ref{sec:finite_limits});
         \item A definition of the free algebra over a signature as a HIT (Definition \ref{def:free_alg}).
-        The free algebra construction underlies a coherent biadjunction between the bicategory of algebras and the bicategory of 1-types.
+        The free algebra construction underlies a coherent biadjunction between the bicategory of algebras and the bicategory of 1-types;
+        \item A proof of the first isomorphism theorem for 1-types (Theorem \ref{thm:iso_thm});
+        \item An alternative approach for calculating the fundamental groups of some HITs (Section~\ref{sec:fundamental_groups}).
 \end{itemize}
 \emph{\textbf{Related Work.}}
 Various schemes of higher inductive types have been defined and studied.
