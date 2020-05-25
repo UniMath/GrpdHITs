@@ -6,7 +6,7 @@ All of these constructions are done by induction and details can be found in the
 \begin{problem}
 \label{prob:poly_dact}
 Given a type $X$, a type family $Y$ on $X$, and a polynomial $P$,
-to construct a type family $\polyDact{P}{Y}$ on $\polyAct{P}{Y}$.
+to construct a type family $\polyDact{P}{Y}$ on $\polyAct{P}{X}$.
 \end{problem}
 
 \begin{problem}
@@ -14,8 +14,17 @@ to construct a type family $\polyDact{P}{Y}$ on $\polyAct{P}{Y}$.
 Given a type $X$, a type family $Y$ on $X$, a polynomial $P$, and a map $f : \depprod{(x : X)}{Y(x)}$,
 to construct a map
 $
-\polyDmap{P}{f} : \depprod{(x : \polyAct{P}{X})}{\polyDact{P}{Y}(x)},
+\polyDmap{P}{f} : \depprod{(x : \polyAct{P}{X})}{\polyDact{P}{Y}(x)}.
 $
+\end{problem}
+
+\begin{problem}
+\label{prob:poly_dmap}
+Given a type $X$, a type family $Y$ on $X$, and a polynomial $P$, to construct a map
+$
+\polyoplax P : \polyAct{P}{\Sum (x : X). Y(x)} \rightarrow \Sum (x : \polyAct{P}{X}). \polyDact{P}{Y}(x)
+$
+such that, for all $z :  \polyAct{P}{\Sum (x : X). Y(x)}$, we have $\projl(\polyoplax{P}(z)) = \polyAct{P}{\projl}(z)$.
 \end{problem}
 
 \begin{problem}
@@ -77,13 +86,31 @@ a \fat{displayed algebra} $Y$ over $X$ consists of
 	$
 	over $\AlgHomot{X}{j}{(x, w)}$.
 \end{itemize}
-The \fat{total algebra} of a displayed algebra $Y$ over $X$ is the algebra $\TotalAlg Y$ ...
+\end{definition}
+
+\begin{definition}\label{def:total_alg}
+Let $X$ be an algebra for a signature $\sign$ and let $Y$ be a
+displayed algebra over $X$. The \fat{total algebra} of $Y$ is the
+algebra $\TotalAlg Y$ with carrier $\Sum (x : X). Y(x)$ and function
+$\AlgPoint{\TotalAlg Y}$ acting on an element $z
+: \polyAct{\pointconstr}{\Sum (x : X). Y(x)}$ as follows:
+\[
+\AlgPoint{\TotalAlg Y}(z) \eqdef
+(\AlgPoint{X}(\projl(\polyoplax{\pointconstr}(z)))
+,
+\DispAlgPoint{Y}(\projr((\polyoplax{\pointconstr}(z))))).
+\]
+We refer to the formalization for details on the construction of paths
+$\AlgPath{\TotalAlg Y}{j}$ and homotopies $\AlgHomot{\TotalAlg
+Y}{j}$. The first projection $\TotalAlg Y \rightarrow X$ is a morphism
+of algebras.
 \end{definition}
 
 \begin{remark}
 The type family of a displayed algebra is required to be 1-truncated.
-This means that the HITs we construct, can only be eliminated into 1-types,
-and as a consequence, these HITs only have the right elimination principle with respect to 1-types.
+This means that the HITs we construct, can only be eliminated into
+1-types, and as a consequence, these HITs only have the right
+elimination principle with respect to 1-types.
 \end{remark}
 
 The output of the elimination rule and the computation rules are given by a \emph{section} to be defined in Definition \ref{def:section} below.
