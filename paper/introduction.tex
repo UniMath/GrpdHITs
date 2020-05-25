@@ -136,7 +136,7 @@ Note that these two works only concern set truncated HITs while our work concern
 Furthermore, the HITs considered by Van der Weide and Geuvers are a special case of
 the HITs in this paper.
 
-Lastly, an alternative way to verify the existence of higher inductive types,
+An alternative way to verify the existence of higher inductive types,
 is by constructing them directly in a model.
 Coquand \etal \ interpreted several HITs in the cubical sets model \cite{BezemCH13,CoquandHM18}.
 Note that one can constructively prove univalence in the cubical sets model \cite{CohenCHM16}
@@ -144,6 +144,12 @@ and that cubical type theory satisfies homotopy canonicity \cite{DBLP:conf/rta/C
 Furthermore, cubical type theory has been implemented in Agda with support for higher inductive types \cite{vezzosi2019cubical}.
 Lumsdaine and Shulman give a semantical scheme for HITs and show that these can be interpreted
 in sufficiently nice model categories \cite{lumsdaine2017semantics}.
+
+Lastly, there are other approaches to 2-dimensional universal algebra.
+Blackwell \etal \ study 2-dimensional universal algebra in a syntax-less fashion: they define 2-categories of algebras as the algebra on a 2-monad \cite{blackwell1989two}.
+Their main result says that these 2-categories support limits and colimits.
+On the contrast, our approach is based on a concrete notion of signature, which represents the syntax.
+Note that by Corollary \ref{cor:pseudomonadofsig}, each signature gives rise to a pseudomonad and as such, the work by Blackwell \etal \ considers a more general notion of version of 2-dimensional universal algebra.
 \\
 \emph{\textbf{Formalization.}}
 All results in this paper are formalized in Coq \cite{Coq:manual} using UniMath \cite{UniMath}.
