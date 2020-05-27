@@ -65,7 +65,7 @@ whose points are objects of $G$ identified up to isomorphism.
 
 The main goal of this paper is to show that finitary 1-truncated higher inductive types can be derived from simpler principles.
 More specifically, every finitary 1-truncated HIT can be constructed in a type theory
-with propositional truncations, set quotient, and groupoid quotients.
+with propositional truncations, set quotients, and groupoid quotients.
 Note that the set quotient is a special instance of the groupoid quotient.
 The result of this paper can be used to simplify the semantic study of finitary 1-truncated HITs.
 Instead of verifying the existence of a wide class of HITs, one only needs to check the existence
@@ -187,7 +187,7 @@ In Section \ref{sec:existence}, we construct the desired initial algebra and we 
 Next we discuss more examples of HITs in Section \ref{sec:examples} and there, we also show how to obtain monoidal objects and coherent 2-groups as algebras on a certain signature.
 After that we study 2-dimensional universal algebra with our signatures.
 More specifically, we construct finite limits of algebras in Section \ref{sec:finite_limits}, the free algebra over a signature in Section \ref{sec:free_algebra}, and we prove the first isomorphism theorem in Section \ref{sec:isomorphism_theorem}.
-The final topic we discuss, is the calculation fundamental groups.
+The final topic we discuss, is the calculation of fundamental groups.
 In Section \ref{sec:fundamental_groups}, we use the way we constructed higher inductive types to determine the fundamental group of the circle, the torus, and the group quotient.
 Lastly, we conclude in Section \ref{sec:conclusion}.
 \\
@@ -205,9 +205,9 @@ A \emph{proposition} is a type of which all inhabitants are equal.
 A \emph{set} is a type $X$ such that for all $x, y : X$ the type $x = y$ is a proposition.
 \remove{A \emph{1-type} is a type $X$ such that for all $x, y : X$ the type $x = y$ is a set.}
 A \emph{homotopy} between $f, g : X \rightarrow Y$ consists of a path
-$f(x) = g(x)$ for each $x : A$. We assume \emph{function
-extensionality}, and we write $\funextsec$ for the map sending a
-homotopy between functions $f$ and $g$ into a path $f = g$. Given a
+$f(x) = g(x)$ for each $x : A$. By assuming function
+extensionality, we have access to a map $\funextsec$ sending a
+homotopy between functions $f$ and $g$ to a path $f = g$. Given a
 type $A$, we write $\PT{A}$ for its \emph{propositional truncation}
 and $\PC : A \to \PT{A}$ for its point constructor. We define the existential quantification
 $\exists a : A.B(a)$ as $\PT{\Sum {a : A}. B(a)}$.
