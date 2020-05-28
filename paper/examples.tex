@@ -7,27 +7,25 @@ constructor from their syntax.
 \label{sec:coinserter}
 
 The coinserter is a bicategorical generalization of the coequalizer in
-a category. In the bicategory of 1-types, coinserter captures
-precisely the notion of homotopy coequalizer \cite[Chapter
-6]{hottbook}.
+a category. In the bicategory of 1-types, coinserters can be constructed as
+ homotopy coequalizer \cite[Chapter 6]{hottbook}.
 
 \begin{definition}
 Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
 $f,g : A \onecell B$. The \fat{coinserter} of $f$ and $g$ is an
 object $Q$ together with a 1-cell $q : B \onecell Q$ and a 2-cell
 $\theta : f \cdot q\twocell g \cdot q$.
-
 The triple $(Q,q,\theta)$ must satisfy the following universal
-property. Assume given:
+property. Suppose that we have
 \begin{itemize}
-\item an object $Q'$,
-\item a 1-cell $q' : B \onecell Q'$, and
+\item an object $Q'$;
+\item a 1-cell $q' : B \onecell Q'$;
 \item a 2-cell $\theta' : f \cdot q' \twocell g \cdot q'$.
 \end{itemize}
 Then there exists a 1-cell $h : Q \onecell Q'$ together with a 2-cell
 $\phi : q \cdot h \twocell q'$ with a path $\theta \whiskerr h \vcomp
 g \whiskerl \phi = \lassoc{f}{q}{h} \vcomp f \whiskerl \phi \vcomp
-\theta'$. The pair $(h,\phi)$ is ``unique'' in the sense that,
+\theta'$. The pair $(h,\phi)$ is unique up to unique 2-cell, which means that
 %% \footnote{Notice that this path would type-check also without the
 %%   left associator $\lassoc{}{}{}$, since function composition is
 %%   stricly associative. But the presence of the left associator is
@@ -40,8 +38,7 @@ q \cdot h' \twocell q'$ with a path $\theta \whiskerr h' \vcomp g
 \twocell h'$ such that $q \whiskerl \tau \vcomp \phi' = \phi$.
 \end{definition}
 
-This section is dedicated to the construction of the coinserter in
-the bicategory of 1-types.  Given two 1-types $A$ and $B$ and two
+Next we show how to constructor coinserters in the bicategory of 1-types.  Given two 1-types $A$ and $B$ and two
 functions $f , g: A \to B$, the coinserter of $f$ and $g$ is
 given by the following HIT:
 \begin{lstlisting}[mathescape=true]
@@ -87,30 +84,30 @@ Here are all the ingredients needed to specify the signature $\coequalizer f g$ 
 
 The coequifier is a finite colimit in a bicategory, corresponding to a
 higher version of the coequalizer.
+While the coinserter makes a diagram of 1-cell commute up to a 2-cell,
+the coequifier makes a diagram of 2-cells commute strictly.
 
 \begin{definition}
 Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$, let $f,
-g : A \onecell B$ and $\beta,\gamma : f \twocell
-g$. The \fat{coequifier} of $\beta$ and $\gamma$ is an object $Q$
+g : A \onecell B$ be 1-cells and $\beta,\gamma : f \twocell
+g$ be 2-cells. The \fat{coequifier} of $\beta$ and $\gamma$ is an object $Q$
 together with a 1-cell $q : B \onecell Q$ and a path
 $\beta \whiskerr q = \gamma \whiskerr q$.
-
 The pair $(Q,q)$ must satisfy the following universal
-property. Assume given:
+property. Suppose that we have
 \begin{itemize}
 \item an object $Q'$,
 \item a 1-cell $q' : B \onecell Q'$, and
 \item a path $\beta \whiskerr q' = \gamma \whiskerr q'$.
 \end{itemize}
 Then there exists a 1-cell $h : Q \onecell Q'$ together with a 2-cell
-$\phi : q \cdot h \twocell q'$. The pair $(h,\phi)$ is ``unique'' in the sense that,
+$\phi : q \cdot h \twocell q'$. The pair $(h,\phi)$ is unique up to a unique 2-cell, which means that
 given another 1-cell $h' : Q \onecell Q'$ and another 2-cell $\phi' :
-q \cdot h' \twocell q'$, then there exists a unique 2-cell $\tau : h
+q \cdot h' \twocell q'$, there exists a unique 2-cell $\tau : h
 \twocell h'$ such that $q \whiskerl \tau \vcomp \phi' = \phi$.
 \end{definition}
 
-
-In the bicategory of 1-types, the coequifier is defined as a HIT.  In
+In the bicategory of 1-types, the coequifier can also be constructed as a HIT. In
 the definition below, $A$ and $B$ are 1-types, $f , g: A \to B$ are
 functions and $\beta$ and $\gamma$ are homotopies between $f$ and $g$.
 \begin{lstlisting}[mathescape=true]
@@ -152,11 +149,11 @@ application of a function to a path.
 \label{sec:group_quotient}
 
 Now we introduce a particular instance of the groupoid quotient, that
-we call \emph{group quotient}. Start with a group $G$, with $\id$ as
-unit and $\cdot$ as multiplication. Define a groupoid $\widehat{G}$
+we call the \emph{group quotient}. We start with a group $G$ and we write $\id$ 
+for its unit and $\cdot$ for multiplication in $G$. Define a groupoid $\widehat{G}$
 with only one object and with $G$ as the only homset. The group
-quotient of $G$ is the groupoid quotient of $\widehat{G}$,
-corresponding to the following HIT:
+quotient of $G$ is the groupoid quotient of $\widehat{G}$, and it
+corresponds to the following HIT:
 \begin{lstlisting}[mathescape=true]
 Inductive $\groupquot G$ :=
 | $\groupquotbase$ : $\groupquot G$
@@ -164,7 +161,6 @@ Inductive $\groupquot G$ :=
 | $\groupquotloope$ : $\groupquotloop(\id)= \refl \groupquotbase$
 | $\groupquotloopm$ : $\depprod{(x,y : G)}{\groupquotloop(x \cdot y)= \concat{\groupquotloop(x)}{\groupquotloop(y)}}$
 \end{lstlisting}
-
 
 The signature $\groupquot G$ for the group quotient is defined as follows:
 \begin{itemize}
@@ -175,7 +171,6 @@ booleans with inhabitants $\booltrue$ and $\boolfalse$. This means
 that there are two homotopy constructors: $\groupquotloope$, with
 associated label $\booltrue$, and $\groupquotloopm$, with associated
 label $\boolfalse$.
-\begin{itemize}
 \item The constructor $\groupquotloope$ does not have
 point arguments, so we take $\homotpointarg_{\booltrue}
 = \constantP{\unit}$. It also does not have path arguments, therefore
@@ -236,7 +231,6 @@ while the right endpoint is
 & \quad \hconcat{}{\hconcat{\hassocN}}{\hap{\constr}{(\hcompconst{\fmap(\projr)})}}
 \end{align*}
 \end{itemize}
-\end{itemize}
 
 The signature for the groupoid quotient is obtainable as a slight
 generalization of the signature for the group quotient. We do not show
@@ -246,10 +240,9 @@ the group quotient.
 
 \subsection{Monoidal Object}
 \label{sec:monoidal_object}
-
-
-Another important algebraic example constructed as a HIT is what we
-refer to as the \emph{monoidal object}:
+Next we look at two other examples of signatures.
+Here we are not interested in the initial object, but instead, we are interested in the algebras for the signature.
+We first discuss the signature whose algebras are \emph{monoidal objects}.
 \begin{lstlisting}[mathescape=true]
 Inductive $\monobj$ :=
 | $\monobjunit$ : $\monobj$
@@ -267,11 +260,11 @@ We do not show the signature associated to this HIT here. We redirect
 the interested reader to our formalization for the complete
 definition.
 
-In the constructors of $\monobj$ we can recognize the data of a
+In the constructors of $\monobj$, one can recognize the data of a
 monoidal category. The point constructors $\monobjunit$ and
 $\monobjtensor$ correspond to unit object and tensor. The path
 constructors $\monobjlambda$, $\monobjrho$ and $\monobjalpha$ are left
-unitor, right unitor and associator, while the homotopy constructors
+unitor, right unitor and associator respectively, while the homotopy constructors
 $\monobjtr$ and $\monobjpent$ are the two coherence laws of
 monoidal categories. And in fact, algebras in groupoids of the
 monoidal object signature are precisely
