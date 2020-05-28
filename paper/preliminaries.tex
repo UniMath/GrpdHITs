@@ -110,7 +110,7 @@ Inductive $\gquotType$ $(G : \grpd)$ :=
 To formally add this type to our theory, we need to provide
 introduction, elimination, and computation rules for $\gquotType(G)$.
 Formulating the elimination principle requires two preliminary notions.
-These are inspired by the work by Licata and Brunerie \cite{licata2015cubical}.
+These are inspired by the work of Licata and Brunerie \cite{licata2015cubical}.
 The first of these gives paths in a dependent type over a path in the base.
 
 \begin{definition}
@@ -132,10 +132,10 @@ We define them as follows.
 \begin{definition}
 \label{def:globe_over}
 Let $X$, $Y$, and $x_1, x_2$ be as in Definition \ref{def:path_over}.
-Suppose, that we paths $p, q : x_1 = x_2$,
+Suppose that we have paths $p, q : x_1 = x_2$,
 a 2-path $g : p = q$,
-and paths $\pover{p} : \pathover{p}{\overline{x_1}}{\overline{x_2}}$ and $\pover{q} : \pathover{q}{\overline{x_1}}{\overline{x_2}}$ over $p$ and $q$ respectively,
-we define the type $\globeover{g}{\pover{p}}{\pover{q}}$ of \fat{globes over} $g$ from $\pover{p}$ to $\pover{q}$ by path induction on $g$
+and paths $\pover{p} : \pathover{p}{\overline{x_1}}{\overline{x_2}}$ and $\pover{q} : \pathover{q}{\overline{x_1}}{\overline{x_2}}$ over $p$ and $q$ respectively.
+We define the type $\globeover{g}{\pover{p}}{\pover{q}}$ of \fat{globes over} $g$ from $\pover{p}$ to $\pover{q}$ by path induction on $g$
 by saying that the paths over the identity path $\refl{p}$ are just paths $\pover{p} = \pover{q}$.
 \end{definition}
 
@@ -150,11 +150,11 @@ Note that there are no computation rules for $\gconcat$, $\ge$, and $\gtrunc$,
 because such rules follow from the fact that $Y$ is a family of 1-types.
 
 \subsection{Bicategory Theory}
-The upcoming construction makes heavy use of notions from bicategory theory \cite{10.1007/BFb0074299,leinster:basic-bicats}
+The upcoming constructions make heavy use of notions from bicategory theory \cite{10.1007/BFb0074299,leinster:basic-bicats}
 and in particular, the displayed machinery introduced by Ahrens \etal \ \cite{bicatjournal}.
 Here we recall some examples of bicategories and the basics of displayed bicategories.
 
-Recall that a bicategory consists of objects, 1-cells between objects, and 2-cells between 1-cells.
+A bicategory consists of objects, 1-cells between objects, and 2-cells between 1-cells.
 The type of 1-cells from $x$ to $y$ is denoted by $x \onecell y$ and the type of 2-cells from $f$ to $g$ is denoted by $f \twocell g$.
 Note that the type $f \twocell g$ is required to be a set.
 There are identity 1-cells and 2-cells denoted by $\id_1$ and $\id_2$ respectively, composition of 1-cells $f$ and $g$ is denoted by $f \cdot g$,
@@ -199,7 +199,7 @@ where $L : \pseudo(\B_1, \B_2)$ and $R : \pseudo(\B_2, \B_1)$.
 If we have $L \dashv R$, we say that $L$ is \fat{left biadjoint} to $R$.
 \end{definition}
 
-Before we say when a biadjunction is coherent, let us introduce some notation.
+Before presenting the definition of coherent biadjunction, let us introduce some notation.
 Suppose, that we have a biadjunction $L \dashv R$ where $L : \pseudo(\B_1, \B_2)$.
 For each $x : \B_1$ we get a 1-cell $\eta(x) : x \onecell R(L(x))$ and for $x : \B_2$, we get a 1-cell $\varepsilon(x) : L(R(x)) \onecell x$.
 Given $x : \B_1$, we get an invertible 2-cell $\widehat{\tau_2(x)} : L(\eta(x)) \cdot \varepsilon(L(x)) \twocell \id_1(L(x))$.
@@ -227,16 +227,24 @@ Given bicategories $\B_1$ and $\B_2$ and a biadjunction $L \dashv R$ with $L : \
 \end{equation*}
 \end{definition}
 
-Beside these standard notions, we use two bicategories: $\onetypes$ and $\grpd$.
+The two following bicategories are important for subsequent constructions:
+%Beside these standard notions, we use two bicategories:
+$\onetypes$ and $\grpd$.
 
 \begin{example}
 We have
 \begin{itemize}
 	\item a bicategory $\onetypes$ whose objects are 1-types, 1-cells are functions, and 2-cells are homotopies;
 	\item a bicategory $\grpd$ of groupoids
-	whose objects are (not necessarily univalent) groupoids, 1-cells are functors, and 2-cells are natural transformations.
+	whose objects are groupoids, 1-cells are functors, and 2-cells are natural transformations.
 \end{itemize}
 \end{example}
+In homotopy type theory, groupoids (and more generally categories) are
+usually required to be univalent, meaning that isomorphism of objects
+in a groupoid is equivalent to equality of objects. In this paper we
+do not assume this requirement, so the groupoids in $\grpd$ are not
+necessarily univalent.
+
 
 Next we discuss \emph{displayed bicategories}, which is our main tool to define bicategories of algebras on a signature.
 Intuitively, a displayed bicategory $\D$ over $\B$ represents structure and properties to be added to $\B$.
@@ -262,7 +270,7 @@ and the identity 2-cell is denoted by $\id_2(f)$.
 \begin{definition}
 \label{def:totalbicat}
 Let $\B$ be a bicategory and let $\D$ be a displayed bicategory over $\B$.
-We define the \fat{total bicategory} $\total{D}$ as the bicategory whose objects of $\total{D}$ are just dependent pairs $(x, \xx)$ with $x$ in $\B$ and $\xx$ in $\dob{\D}{x}$.
+We define the \fat{total bicategory} $\total{D}$ as the bicategory whose objects are dependent pairs $(x, \xx)$ with $x$ in $\B$ and $\xx$ in $\dob{\D}{x}$.
 The 1-cells and 2-cells in $\total{D}$ are defined similarly.
 In addition, we define the \fat{projection} $\dproj{D} : \pseudo(\total{D}, \B)$ to be the pseudofunctor which takes the first component of each pair.
 \end{definition}
@@ -315,7 +323,7 @@ Then we define a displayed bicategory $\DCell(l,r)$ over $\total{D}$ such that
 \begin{example}
 \label{ex:fullsub}
 Let $\B$ be a bicategory and let $P$ be a family of propositions on the objects of $\B$.
-Then we define a displayed bicategory $\FSub(P)$ over $\B$ whose objects over $x$ are proofs of $P(x)$
+We define a displayed bicategory $\FSub(P)$ over $\B$ whose objects over $x$ are proofs of $P(x)$
 and whose displayed 1-cells and 2-cells are inhabitants of the unit type.
 The total bicategory $\total{\FSub(P)}$ is the \fat{full subbicategory} of $\B$ whose objects satisfy $P$.
 \end{example}
