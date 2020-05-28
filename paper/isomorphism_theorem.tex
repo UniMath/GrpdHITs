@@ -1,5 +1,5 @@
 The first isomorphism theorem is one of the classical results in universal algebra.
-While this statement is usually about algebra structures in sets \cite{lynge2019}, we look at a generalization to the 1-truncated case.
+While this statement is usually about algebraic structures in sets \cite{lynge2019}, we look at a generalization to the 1-truncated case.
 More specifically, we formulate and prove this theorem for algebras for the signatures defined in Definition \ref{def:signature}.
 
 Before stating and proving the isomorphism theorem, we need to generalize several notions from universal algebra to the 1-truncated case.
@@ -13,7 +13,7 @@ Once these notions are in place, we can formulate and prove the first isomorphis
 
 \subsection{The Image}
 We start by defining the image of an algebra morphism.
-For each morphism $f : A \onecell B$ we are after a factorization $A \onecell \Im{f} \onecell B$.
+For each $f : A \onecell B$ we are after a factorization $A \onecell \Im{f} \onecell B$.
 
 \begin{problem}
 \label{prob:image}
@@ -27,19 +27,19 @@ We define $\Im(f)$ to be the total algebra $\TotalAlg Y$ of the following displa
 \item The underlying family of 1-types over $B$ is $Y(x) \eqdef \exists a : A.\ f(a) = x$.
 \item For each $x : \polyAct{\pointconstr}{A}$, we are required to construct
 a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow
-\exists a : A.\ f(a) = \AlgPoint{B}(x)$. Assume given $\pover{x}
+\exists a : A.\ f(a) = \AlgPoint{B}(x)$. Suppose we have $\pover{x}
 : \polyDact{\pointconstr}{Y}(x)$. By induction on the polynomial
 $\pointconstr$, it is possible to derive from $\pover{x}$ an
 inhabitant of $\exists y
 : \polyAct{\pointconstr}{A}.\ \polyAct{\pointconstr}{f}(y) = x$. By
-invoking the elimination principle of propositional truncation, in
-order to define the map $\DispAlgPoint{Y}$ it is sufficient to
+invoking the elimination principle of propositional truncation, it is sufficient to
 construct a map $f : \Sum {y
 : \polyAct{\pointconstr}{A}}.\ \polyAct{\pointconstr}{f}(y) =
-x \rightarrow \Sum {a : A}.\ f(a) = \AlgPoint{B}(x)$.  So assume given
+x \rightarrow \Sum {a : A}.\ f(a) = \AlgPoint{B}(x)$ in
+order to define the map $\DispAlgPoint{Y}$.  So, assume that we have
 $y : \polyAct{\pointconstr}{A}$ and a path $p
 : \polyAct{\pointconstr}{f}(y) = x$. Take $f(y,p)$ to be the pair
-consisting of $\AlgPoint{A}(y)$ and the path:
+consisting of $\AlgPoint{A}(y)$ and the path
 \[
 f(\AlgPoint{A}(y))
 \stackrel{\AlgMapPoint{f}(y)}{=}
@@ -52,8 +52,7 @@ paths $\DispAlgPath{Y}{j}$ and globes $\DispAlgHomot{Y}{j}$ is
 straightforward.
 \end{itemize}
 
-The map $\ImInc{f}$ is the first projection.
-The morphism $\ImProj{f}$ sends an element $x : A$ to
+The map $\ImInc{f}$ is the first projection and $\ImProj{f}$ sends $x : A$ to
 $(f(x),\PC(x,\refl{f(x)}))$, where $\PC$ is the point constructor of
 propositional truncation. 
 \end{construction}
@@ -88,10 +87,10 @@ We only discuss the data involved.
 \end{itemize}
 \end{construction}
 
-To show that $\toGrpdPathAlg{R}$ is an algebra, we need to verify the homotopy constructor.
+To show that $\toGrpdPathAlg{R}$ is an algebra, we also need to give the homotopy constructor.
 Since this constructor has both a point and a path constructor, we need to check an equality of morphisms of $\toGrpdPathAlg{R}$, which depend on points of $X$ and morphisms of $\toGrpdPathAlg{R}$.
 As a result, we cannot reuse the homotopy constructor of $X$, because it only depends on points of $X$ and paths in $X$.
-This means that to construct a groupoid algebra, the homotopy constructor needs to be constructed from scratch.
+This means that to construct the groupoid algebra, the homotopy constructor needs to be constructed from scratch.
 This is reflected in the following definition.
 
 \begin{definition}
@@ -109,7 +108,7 @@ Suppose that we have two algebras $X, Y : \algebra{\sign}$ and a congruence rela
 From the biadjunction, we get a morphism $\alggquot{\toGrpdAlg{R}} \onecell Y$ from $R \onecell \algpgrpd{Y}$.
 Using this, we can give conditions for when an algebra morphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
 We can unfold the definition to find the necessary ingredients for the factorization.
-For example, to show that $f$ lifts to a functor, we need to provide a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$, and equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$.
+For example, we need to show that $f$ lifts to a functor, which means we need to provide a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$, and equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$.
 \end{remark}
 
 \subsection{The First Isomorphism Theorem}
@@ -131,7 +130,7 @@ Then we have a congruence relation $R$ on $X$ and an adjoint equivalence $\overl
 
 \begin{proof}
 The proof is done in three steps.
-First, we define the congruence relation $R$ on $X$ by setting $R(x, y) := f(x) = f(y)$.
+First, we define the congruence relation $R$ on $X$ by setting $R(x, y) \eqdef f(x) = f(y)$.
 Second, we factor the map $\ImProj{f}$ from $X$ to the image as a map $\overline{f}$ from $\alggquot(\toGrpdAlg{R})$ to $\Im(f)$ using Construction \ref{remark:mapping_property_congruence}.
 Lastly, we show that the $\overline{f}$ is an adjoint equivalence using Proposition \ref{prop:algebra_adjequiv}.
 This is done by showing that the fibers are contractible.
