@@ -1,9 +1,9 @@
-In this section, we discuss the free algebra and show that it gives rise to a left biadjoint pseudofunctor from 1-types to algebras on a given signature.
-From this, we conclude that each signature gives rise to a pseudomonad on the bicategory of 1-types \cite{LACK2000179}.
-We construct the free algebra as a biinitial algebra of a some signature.
+In this section, we discuss the free algebra for a signature $\sign$ and show that it gives rise to a left biadjoint pseudofunctor from 1-types to algebras for $\sign$.
+From this, we conclude that each signature generates a pseudomonad on the bicategory of 1-types \cite{LACK2000179}.
+We construct the free algebra for $\sign$ as a biinitial algebra for a modified version of $\sign$.
 More specifically, suppose that we have a signature $\sign$ and a 1-type $A$.
 We first construct another signature, called the \emph{free signature}, which has all the constructors of $\sign$ and an additional point constructor with arguments from $A$.
-Then we define the free $\sign$-algebra on $A$ to be the biinitial algebra of free signature.
+Then we define the free $\sign$-algebra on $A$ to be the biinitial algebra for the free signature.
 
 \begin{definition}\label{def:free_alg}
 Let $\sign$ be a signature and let $A$ be a 1-type.
@@ -11,7 +11,8 @@ Define the \fat{free signature} $\freesign{\sign}{A}$ as follows
 \begin{itemize}
 	\item $\pointconstr[\freesign{\sign}{A}] = \sumP{\pointconstr[\sign]}{\constantP{A}}$
 	\item Note that each path endpoint $e : \pathendpoint{\pointconstr[\sign]}{P}{Q}$ gives rise to another path endpoint $\freepath{e} : \pathendpoint{\pointconstr[\freesign{\sign}{A}]}{P}{Q}$.
-	We choose $\pathlabel[\freesign{\sign}{A}]$ to be $\pathlabel[\sign]$ and for each $j : \pathlabel[\sign]$ we take $\patharg[\freesign{\sign}{A}]{j} = \patharg[\sign]{j}$.
+	We choose $\pathlabel[\freesign{\sign}{A}]$ to be $\pathlabel[\sign]$ and $\patharg[\freesign{\sign}{A}] = \patharg[\sign]$.
+%and for each $j : \pathlabel[\sign]$ we take $\patharg[\freesign{\sign}{A}]{j} = \patharg[\sign]{j}$.
 	Lastly, we define the endpoints $\pathleft[\freesign{\sign}{A}]_j$ and $\pathright[\freesign{\sign}{A}]_j$ to be $\freepath{\pathleft[\sign]_j}$ and $\freepath{\pathright[\sign]_j}$ respectively.
 	\item To define the homotopy endpoints of $\freesign{\sign}{A}$, we first note that each $h : \homotendpoint{\pathleft[\sign]}{\pathright[\sign]}{a_l}{a_r}{s_l}{s_r}$ gives rise to a homotopy endpoint $\freehomot{h} : \homotendpoint{\pathleft[\freesign{\sign}{A}]}{\pathright[\freesign{\sign}{A}]}{\freepath{a_l}}{\freepath{a_r}}{\freepath{s_l}}{\freepath{s_r}}$.
 	Now we define $\homotleft[\freesign{\sign}{A}]$ and $\homotright[\freesign{\sign}{A}]$ to be $\freehomot{\homotleft[\sign]}$ and $\freehomot{\homotright[\sign]}$ respectively.
@@ -47,7 +48,7 @@ By stating the mapping properties with algebras for $\sign$, we can apply them d
 Let $\sign$ be a signature and let $A$ be a 1-type.
 Suppose that we have $Y : \algM(\sign)$ and $\iota_Y : A \rightarrow Y$.
 \begin{itemize}
-	\item We have a homomorphism $f : \freealg{\sign}{A} \onecell Y$ such that for all $a : A$, we have $f(\freealginc{\sign}(a)) = \iota_Y(a)$.
+	\item There is a homomorphism $f : \freealg{\sign}{A} \onecell Y$ such that for all $a : A$, we have $f(\freealginc{\sign}(a)) = \iota_Y(a)$.
 	\item
 	Given homomorphisms $f_1, f_2 : \freealg{\sign}{A} \onecell Y$
 	and paths $p_1 : f_1(\freealginc{\sign}(a)) = \iota_Y(a)$ and $p_2 : f_2(\freealginc{\sign}(a)) = \iota_Y(a)$ for each $a : A$,
@@ -66,7 +67,7 @@ Given a signature $\sign$, to construct a coherent biadjunction $\freealgpsfun{\
 \begin{construction}{prob:free_alg}
 We only indicate how to construct the left biadjoint.
 To construct $\freealgpsfun{\sign} : \pseudo(\onetypes, \algM(\sign))$, we need to give an algebra $\freealgpsfun{\sign}(A)$ for $A : \onetypes$.
-We define $\freealgpsfun{\sign}(A)$ to be the biinitial algebra of $\freesign{\sign}{A}$.
+We define $\freealgpsfun{\sign}(A)$ to be the biinitial algebra for $\freesign{\sign}{A}$.
 Pseudofunctoriality follows from Corollary \ref{cor:free_alg_ump}.
 \end{construction}
 
