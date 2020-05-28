@@ -272,6 +272,12 @@ monoidal object signature are precisely
 categories, and $\monobj$ is a presentation of the initial
 monoidal groupoid.
 
+\begin{example}
+Let $A$ be a 1-type.
+We can construct an algebra of $\monobj$ whose carrier is the type $\List(A)$ of lists of $A$.
+The unit is the empty list, the tensor is concatenation, and the laws and coherencies are proven by induction.
+\end{example}
+
 %%The importance of this example stems from the fact that algebras in
 %%groupoids of the monoidal object signaturecorrespond precisely
 %%to
@@ -279,9 +285,8 @@ monoidal groupoid.
 %%categories. $\monobj$ is therefore a presentation of the initial
 %%monoidal groupoid.
 
-We also formalized the \emph{coherent group} \cite{baez2004groups} as
-a HIT, that we name $\cohgroup$.  Its definition includes all the
-constructors of the monoidal object, plus a new point constructor
+We also define a signature $\cohgroup$ whose algebras are \emph{coherent groups} \cite{baez2004groups}.
+Its definition includes all the constructors of the monoidal object, plus a new point constructor
 $\cohgroupinv$ : $\cohgroup \rightarrow \cohgroup$, two new path
 constructors
 \[
@@ -289,7 +294,25 @@ constructors
 \quad\quad
 \cohgrouprinv : \depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))},
 \]
-and two new homotopy constructors.
+and two new homotopy constructors similar to the coherencies given by Baez \cite{baez2004groups}.
+
+We look at two examples of coherent two groups.
+The first is based on the work by Buchholtz \etal \ \cite{DBLP:conf/lics/BuchholtzDR18}.
+They define higher groups as loop spaces and for 1-truncated types, the loop space is a coherent 2-group in our sense.
+
+\begin{example}
+Suppose, $A$ is a 2-type and $a$ is a point of $A$.
+Then we can construct an algebra of $\cohgroup$ whose carrier is given by $a = a$.
+\end{example}
+
+The second example is the automorphism group on a 1-type whose elements are equivalences on a given 1-type.
+Note that this group is the loop space of the 2-type of 1-types if we assume univalence.
+
+\begin{example}
+Let $A$ be a 1-type.
+We have an algebra of $\cohgroup$ whose carrier is given by equivalences $f : A \to A$.
+The unit element is the identity function, the tensor is the concatenation, and the inverse is just the inverse of an equivalence.
+\end{example}
 
 %% \subsection{Coherent Group}
 %% \label{sec:coeherent_group}
