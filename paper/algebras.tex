@@ -373,10 +373,10 @@ Next we consider three examples of HITs we can express with these signatures.
 \label{ex:torus}
 The torus is described by the signature $\torus$.
 \begin{itemize}
-	\item Take $\pointconstr[\torus] = \constantP{\unit}$;
-	\item Take $\pathlabel[\torus] = \bool$ and for both inhabitants we take $\patharg[\torus] = \constantP{\unit}$ and $\pathleft[\torus] = \pathright[\torus] = \constr$;
-	\item Take $\homotlabel[\torus] = \unit$.
-	Since there no arguments for this path constructor, we take $\homotpointarg[\torus] = \constantP{\unit}$ and $\pathargleft[\torus] = \pathargright[\torus] = \Ce(\unitt)$.
+	\item Take $\pointconstr[\torus] \eqdef \constantP{\unit}$;
+	\item Take $\pathlabel[\torus] \eqdef \bool$ and for both inhabitants we take $\patharg[\torus] \eqdef \constantP{\unit}$ and $\pathleft[\torus] \eqdef \pathright[\torus] \eqdef \constr$;
+	\item Take $\homotlabel[\torus] \eqdef \unit$.
+	Since there no arguments for this path constructor, we take $\homotpointarg[\torus] \eqdef \constantP{\unit}$ and $\pathargleft[\torus] \eqdef \pathargright[\torus] \eqdef \Ce(\unitt)$.
 	Now for the left-hand side and right-hand side of this equation, we take $\hconcat{\hconstr{\booltrue}{\idENA}}{\hconstr{\boolfalse}{\idENA}}$ and $\hconcat{\hconstr{\boolfalse}{\idENA}}{\hconstr{\booltrue}{\idENA}}$ respectively. 
 \end{itemize}
 \end{example}
@@ -394,14 +394,14 @@ Inductive $\ZT$ :=
 Note that all constructors except $\ZZ$ are recursive.
 We define a signature $\ZT$.
 \begin{itemize}
-	\item Take $\pointconstr[\ZT] = \sumP{\constantP{\unit}}{\idP}$;
-	\item Take $\pathlabel[\ZT] = \constantP{\unit}$ and for its unique inhabitant we take $\patharg[\ZT] = \idP$ and
+	\item Take $\pointconstr[\ZT] \eqdef \sumP{\constantP{\unit}}{\idP}$;
+	\item Take $\pathlabel[\ZT] \eqdef \constantP{\unit}$ and for its unique inhabitant we take $\patharg[\ZT] \eqdef \idP$ and
 	\[
-	\pathleft[\ZT] = \comp{(\comp{\inre}{\constr})}{(\comp{\inre}{\constr})}, \quad
-	\pathright[\ZT] = \idENA;
+	\pathleft[\ZT] \eqdef \comp{(\comp{\inre}{\constr})}{(\comp{\inre}{\constr})}, \quad
+	\pathright[\ZT] \eqdef \idENA;
 	\]
-	\item Take $\homotlabel[\ZT] = \constantP{\unit}$.
-	Furthermore, we take $\homotpointarg[\ZT] = \idP$ and $\pathargleft[\ZT] = \pathargright[\ZT] = \Ce(\unitt)$.
+	\item Take $\homotlabel[\ZT] \eqdef \constantP{\unit}$.
+	Furthermore, we take $\homotpointarg[\ZT] \eqdef \idP$ and $\pathargleft[\ZT] \eqdef \pathargright[\ZT] \eqdef \Ce(\unitt)$.
 	The endpoints $\homotpathleft$ and $\homotpathright$ encode $\ZS(\ZS(\ZS(x)))$ and $\ZS(x)$ respectively,
 	and for the left-hand side and right-hand side of this equation, we take
 	\[
@@ -431,10 +431,10 @@ so the signature we define, depends on a 1-type $A$ as well.
 To encode the path arguments of $\Strunc$, we use that two paths $p, q : x = y$ is the same as a path $r : (x, x) = (y, y)$.
 Define a signature $\ST{A}$ such that
 \begin{itemize}
-	\item $\pointconstr[\ST{A}] = \constantP{A}$;
+	\item $\pointconstr[\ST{A}] \eqdef \constantP{A}$;
 	\item $\pathlabel[\ST{A}]$ is the empty type;
-	\item $\homotlabel[\ST{A}] = \unit$.
-	In addition, there are two point arguments $\homotpointarg[\ST{A}] = \prodP{\idP}{\idP}$
+	\item $\homotlabel[\ST{A}] \eqdef \unit$.
+	In addition, there are two point arguments $\homotpointarg[\ST{A}] \eqdef \prodP{\idP}{\idP}$
 	and a path argument with left-hand side $\pair{\prle}{\prle}$ and right-hand side $\pair{\prre}{\prre}$.
 	For the left-hand side and right-hand side of the homotopy, we take $\hprl{\harg}$ and $\hprr{\harg}$ respectively.
 \end{itemize}
@@ -510,10 +510,10 @@ The verification that this gives rise to a pseudotransformation can be found in 
 Let $\sign$ be a signature.
 We use Examples \ref{ex:disp_depprod} and \ref{ex:DCell} to define displayed bicategories over $\prealg{\sign}$ and $\prealgG{\sign}$.
 \[
-\pathalgMD(\sign) = \depprod{(i : \pathlabel[\sign])}{\DCell(\semE{\pathleft[\sign](i)},\semE{\pathright[\sign](i)})}
+\pathalgMD(\sign) \eqdef \depprod{(i : \pathlabel[\sign])}{\DCell(\semE{\pathleft[\sign](i)},\semE{\pathright[\sign](i)})}
 \]
 \[
-\pathalgGD{\sign} = \depprod{(i : \pathlabel[\sign])}{\DCell(\semEG{\pathleft[\sign](i)},\semEG{\pathright[\sign](i)})}
+\pathalgGD{\sign} \eqdef \depprod{(i : \pathlabel[\sign])}{\DCell(\semEG{\pathleft[\sign](i)},\semEG{\pathright[\sign](i)})}
 \]
 We define $\pathalgM(\sign)$ and $\pathalgG{\sign}$ to be the total bicategories of $\pathalgMD(\sign)$ and $\pathalgGD{\sign}$ respectively.
 Objects of $\pathalgM(\sign)$ and $\pathalgG{\sign}$ are called \fat{path algebras} for $\sign$.

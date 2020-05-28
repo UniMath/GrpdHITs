@@ -50,11 +50,11 @@ Inductive $\coequalizer f g$ :=
 Here are all the ingredients needed to specify the signature $\coequalizer f g$ for the coinserter:
 %is constructed as follows:
 \begin{itemize}
-\item $\pointconstr[\coequalizer f g] = \constantP{B}$;
-\item $\pathlabel[\coequalizer f g] = \unit$, and for its unique inhabitant take $\patharg[\coequalizer f g] = \constantP{A}$ and endpoints
+\item $\pointconstr[\coequalizer f g] \eqdef \constantP{B}$;
+\item $\pathlabel[\coequalizer f g] \eqdef \unit$, and for its unique inhabitant take $\patharg[\coequalizer f g] \eqdef \constantP{A}$ and endpoints
   \[
-  \pathleft[\coequalizer f g] = \comp{\fmap(f)}{\constr}, \quad
-  \pathright[\coequalizer f g] = \comp{\fmap(g)}{\constr}; 
+  \pathleft[\coequalizer f g] \eqdef \comp{\fmap(f)}{\constr}, \quad
+  \pathright[\coequalizer f g] \eqdef \comp{\fmap(g)}{\constr}; 
   \]
 \item $\homotlabel[\coequalizer f g]$ is the empty type.
 \end{itemize}
@@ -119,17 +119,17 @@ Inductive $\coequifier \beta \gamma$ :=
 The signature $\coequifier \beta \gamma$ for the coequifier of $\beta$
 and $\gamma$ is given as follows:
 \begin{itemize}
-\item $\pointconstr[\coequifier f g] = \constantP{B}$;
+\item $\pointconstr[\coequifier f g] \eqdef \constantP{B}$;
 \item $\pathlabel[\coequifier f g]$ is the empty type; 
-\item $\homotlabel[\coequifier f g] = \unit$, and take 
-  $\homotpointarg[\coequifier f g] = \constantP{A}$.
+\item $\homotlabel[\coequifier f g] \eqdef \unit$, and take 
+  $\homotpointarg[\coequifier f g] \eqdef \constantP{A}$.
   The homotopy constructor $\coequifierglue$ does not have path arguments, so we take  
-  $\homotpathtarg[\coequifier f g] = \constantP{\unit}$ and
-  $\pathargleft[\coequifier f g] = \pathargright[\coequifier f g] = \Ce(\unitt)$.
+  $\homotpathtarg[\coequifier f g] \eqdef \constantP{\unit}$ and
+  $\pathargleft[\coequifier f g] \eqdef \pathargright[\coequifier f g] \eqdef \Ce(\unitt)$.
   The endpoints $\homotpathleft[\coequifier f g]$ and $\homotpathright[\coequifier f g]$ are:
   \[
-  \homotpathleft[\coequifier f g] = \comp{\fmap(f)}{\constr}, \quad
-  \homotpathright[\coequifier f g] = \comp{\fmap(g)}{\constr},
+  \homotpathleft[\coequifier f g] \eqdef \comp{\fmap(f)}{\constr}, \quad
+  \homotpathright[\coequifier f g] \eqdef \comp{\fmap(g)}{\constr},
   \]
   while the left and right homotopy endpoints are:
   \[
@@ -164,18 +164,18 @@ Inductive $\groupquot G$ :=
 
 The signature $\groupquot G$ for the group quotient is defined as follows:
 \begin{itemize}
-\item $\pointconstr = \constantP{\unit}$;
-\item $\pathlabel = \unit$, and for its unique inhabitant take $\patharg = \constantP{G}$ and both endpoints $\pathleft$ and $\pathright$ equal to $\comp{\Ce(\unitt)}{\constr}$.
-\item $\homotlabel = \bool$, where $\bool$ is the type of
+\item $\pointconstr \eqdef \constantP{\unit}$;
+\item $\pathlabel \eqdef \unit$, and for its unique inhabitant take $\patharg \eqdef \constantP{G}$ and both endpoints $\pathleft$ and $\pathright$ equal to $\comp{\Ce(\unitt)}{\constr}$.
+\item $\homotlabel \eqdef \bool$, where $\bool$ is the type of
 booleans with inhabitants $\booltrue$ and $\boolfalse$. This means
 that there are two homotopy constructors: $\groupquotloope$, with
 associated label $\booltrue$, and $\groupquotloopm$, with associated
 label $\boolfalse$.
 \item The constructor $\groupquotloope$ does not have
 point arguments, so we take $\homotpointarg_{\booltrue}
-= \constantP{\unit}$. It also does not have path arguments, therefore
-$\homotpathtarg_{\booltrue} = \constantP{\unit}$ and
-$\pathargleft_{\booltrue} = \pathargright_{\booltrue} = \Ce(\unitt)$.
+\eqdef \constantP{\unit}$. It also does not have path arguments, therefore
+$\homotpathtarg_{\booltrue} \eqdef \constantP{\unit}$ and
+$\pathargleft_{\booltrue} \eqdef \pathargright_{\booltrue} \eqdef \Ce(\unitt)$.
 The endpoints $\homotpathleft_{\booltrue}$ and
 $\homotpathright_{\booltrue}$ are both equal to
 $\comp{\Ce(\unitt)}{\constr}$. The left homotopy endpoint is
@@ -189,10 +189,10 @@ $\comp{\Ce(\unitt)}{\constr}$. The left homotopy endpoint is
 while the right homotopy endpoint is $\hrefl{\constr}$.
 \item The constructor $\groupquotloopm$ has two point
 arguments of type $G$, so we take $\homotpointarg_{\boolfalse}
-= \constantP{G \times G}$. It does not have path arguments, therefore
-$\homotpathtarg_{\boolfalse} = \constantP{\unit}$ and
-$\pathargleft_{\boolfalse} = \pathargright_{\boolfalse}
-= \Ce(\unitt)$.  The endpoints $\homotpathleft_{\boolfalse}$ and
+\eqdef \constantP{G \times G}$. It does not have path arguments, therefore
+$\homotpathtarg_{\boolfalse} \eqdef \constantP{\unit}$ and
+$\pathargleft_{\boolfalse} \eqdef \pathargright_{\boolfalse}
+\eqdef \Ce(\unitt)$.  The endpoints $\homotpathleft_{\boolfalse}$ and
 $\homotpathright_{\boolfalse}$ are both equal to
 $\comp{\Ce(\unitt)}{\constr}$. The left homotopy endpoint is
 %%\begin{align*}

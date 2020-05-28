@@ -10,9 +10,9 @@ Then we define the free $\sign$-algebra on $A$ to be the biinitial algebra for t
 Let $\sign$ be a signature and let $A$ be a 1-type.
 Define the \fat{free signature} $\freesign{\sign}{A}$ as follows
 \begin{itemize}
-	\item $\pointconstr[\freesign{\sign}{A}] = \sumP{\pointconstr[\sign]}{\constantP{A}}$
+	\item $\pointconstr[\freesign{\sign}{A}] \eqdef \sumP{\pointconstr[\sign]}{\constantP{A}}$
 	\item Note that each path endpoint $e : \pathendpoint{\pointconstr[\sign]}{P}{Q}$ gives rise to another path endpoint $\freepath{e} : \pathendpoint{\pointconstr[\freesign{\sign}{A}]}{P}{Q}$.
-	We choose $\pathlabel[\freesign{\sign}{A}]$ to be $\pathlabel[\sign]$ and $\patharg[\freesign{\sign}{A}] = \patharg[\sign]$.
+	We choose $\pathlabel[\freesign{\sign}{A}] \eqdef\pathlabel[\sign]$ and $\patharg[\freesign{\sign}{A}] \eqdef \patharg[\sign]$.
 %and for each $j : \pathlabel[\sign]$ we take $\patharg[\freesign{\sign}{A}]{j} = \patharg[\sign]{j}$.
 	Lastly, we define the endpoints $\pathleft[\freesign{\sign}{A}]_j$ and $\pathright[\freesign{\sign}{A}]_j$ to be $\freepath{\pathleft[\sign]_j}$ and $\freepath{\pathright[\sign]_j}$ respectively.
 	\item To define the homotopy endpoints of $\freesign{\sign}{A}$, we first note that each $h : \homotendpoint{\pathleft[\sign]}{\pathright[\sign]}{a_l}{a_r}{s_l}{s_r}$ gives rise to a homotopy endpoint $\freehomot{h} : \homotendpoint{\pathleft[\freesign{\sign}{A}]}{\pathright[\freesign{\sign}{A}]}{\freepath{a_l}}{\freepath{a_r}}{\freepath{s_l}}{\freepath{s_r}}$.
