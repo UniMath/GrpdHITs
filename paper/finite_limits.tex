@@ -17,8 +17,8 @@ A B$ together with 1-cells $\projlB : \prodB A B \onecell A$ and
 $\projrB : \prodB A B \onecell B$.
 
 The triple $(\prodB A B,\projlB, \projrB)$ must satisfy the following
-universal property. Assume given an object $X$ and 1-cells $f : X
-\onecell A$ and $g : X \onecell B$. Then there exist a 1-cell
+universal property. Given an object $X$ and 1-cells $f : X
+\onecell A$ and $g : X \onecell B$, there exist a 1-cell
 $\mappair f g : X \onecell \prodB A B$ and two 2-cells $\theta :
 \mappair f g \cdot \projlB \twocell f$ and $\theta' : \mappair f g
 \cdot \projrB \twocell g$.
@@ -33,8 +33,7 @@ Moreover, given two 1-cells $h_1,h_2 : X \onecell \prodB A B$ with
 
 \begin{problem}
 \label{prob:product}
-Given $A$ and $B$ algebras for $\sign$, to construct their product in
-$\alg(\sign)$.
+Given algebras $A$ and $B$ for $\sign$, to construct their product in $\alg(\sign)$.
 \end{problem}
 
 \begin{construction}{prob:product}\label{cons:product}
@@ -81,15 +80,14 @@ The second path is defined analogously.
 It is not difficult to show that the projections $\projlB : \prodB A
 B \onecell A$ and $\projrB : \prodB A B \onecell B$ are morphisms of
 algebras.  Moreover, the product of algebras satisfies the required
-universal property of Definition~\ref{def:product}. For example, given
+universal property of Definition~\ref{def:product}. Given
 two algebra morphisms $f : X \onecell A$ and $g : X \onecell B$, we
 have a function $\mappair f g : X \to A \times B$ by the universal
-property of the product (of types!). It is possible to prove that
-$\mappair f g$ is also a morphisms of algebras. 
+property of the product (of types). We refer the reader to the formalization for the proof that
+$\mappair f g$ is  a morphism of algebras. 
 \end{construction}
 
 \subsection{Inserter}
-
 The inserter in a bicategory is a generalization of the equalizer in
 a category.
 %% This is typically called inserter. We call it equalizer
@@ -102,30 +100,29 @@ Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
 $f,g : A \onecell B$. The \fat{inserter} of $f$ and $g$ is an
 object $E$ together with a 1-cell $e : E \onecell A$ and a 2-cell
 $\epsilon : e \cdot f\twocell e \cdot g$.
-
 The triple $(E,e,\epsilon)$ must satisfy the following universal
-property. Assume given:
+property. Suppose we have
 \begin{itemize}
-\item an object $E'$,
-\item a 1-cell $e' : E' \onecell A$, and
+\item an object $E'$;
+\item a 1-cell $e' : E' \onecell A$;
 \item a 2-cell $\epsilon' : e' \cdot f \twocell e' \cdot g$.
 \end{itemize}
 Then there exists a 1-cell $h : E' \onecell E$ together with a 2-cell
-$\phi : h \cdot e \twocell e'$ with a path $\rassoc{h}{e}{f} \vcomp
+$\phi : h \cdot e \twocell e'$ and a path $\rassoc{h}{e}{f} \vcomp
 h \whiskerl \epsilon \vcomp \lassoc{h}{e}{g} \vcomp \phi \whiskerr g
 = \phi \whiskerr f \vcomp \epsilon'$.
-The pair $(h,\phi)$ is ``unique'' in the sense that,
-given another 1-cell $h' : E' \onecell E$ and another 2-cell $\phi' :
-h' \cdot e \twocell e'$ with a path $\rassoc{h'}{e}{f} \vcomp
+The pair $(h,\phi)$ is unique up to unique 2-cell, which means that
+given another 1-cell $h' : E' \onecell E$, another 2-cell $\phi' :
+h' \cdot e \twocell e'$, and a path $\rassoc{h'}{e}{f} \vcomp
 h' \whiskerl \epsilon \vcomp \lassoc{h'}{e}{g} \vcomp \phi' \whiskerr g
-= \phi' \whiskerr f \vcomp \epsilon'$, then there exists a unique 2-cell $\tau : h
+= \phi' \whiskerr f \vcomp \epsilon'$, there exists a unique 2-cell $\tau : h
 \twocell h'$ such that $\tau \whiskerr e \vcomp \phi' = \phi$.
 \end{definition}
 
 \begin{problem}
 \label{prob:inserter}
-Given $A$ and $B$ algebras for $\sign$ and $f,g : A \onecell B$
-algebra morphisms, to construct the inserter of $f$ and $g$ in $\alg(\sign)$.
+Given algebras $A$ and $B$ for $\sign$ and
+algebra morphisms $f,g : A \onecell B$, to construct the inserter of $f$ and $g$ in $\alg(\sign)$.
 \end{problem}
 
 \begin{construction}{prob:inserter}\label{cons:inserter}
@@ -137,7 +134,7 @@ introduced in Definition~\ref{def:disp_alg}. $Y$ is defined as follows:
 \item
 For each $x : \polyAct{\pointconstr}{A}$, we are required to construct
 a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow
-f(\AlgPoint{A}(x)) = g (\AlgPoint{A}(x))$. Assume given $\pover{x}
+f(\AlgPoint{A}(x)) = g (\AlgPoint{A}(x))$. Suppose we have $\pover{x}
 : \polyDact{\pointconstr}{Y}(x)$. By induction on the polynomial
 $\pointconstr$, it is possible to derive from $\pover{x}$ a path $p
 : \polyAct{\pointconstr}{f}(x) = \polyAct{\pointconstr}{g}(x)$.  We
@@ -154,8 +151,7 @@ f(\AlgPoint{A}(x))
 \item
 The construction of globes $\DispAlgHomot{Y}{j}$ is
 straightforward. These are paths between paths in $Y(x)$, for some
-point $x$. Since $Y(x)$ is a set, then there is exactly one path
-between any two paths in $Y(x)$.
+point $x$. Since $Y(x)$ is a set, the required paths exist.
 \end{itemize}
 
 The 1-cell $e$ is the first projection out of the total algebra
@@ -176,30 +172,29 @@ g : A \onecell B$ and $\beta,\gamma : f \twocell
 g$. The \fat{equifier} of $\beta$ and $\gamma$ is an object $E$
 together with a 1-cell $e : E \onecell A$ and a path
 $e \whiskerl \beta = e \whiskerl \gamma$.
-
 The pair $(E,e)$ must satisfy the following universal
-property. Assume given:
+property. Suppose we have
 \begin{itemize}
-\item an object $E'$,
-\item a 1-cell $e' : E' \onecell A$, and
+\item an object $E'$;
+\item a 1-cell $e' : E' \onecell A$;
 \item a path $e' \whiskerl \beta = e' \whiskerl \gamma$.
 \end{itemize}
 Then there exists a 1-cell $h : E' \onecell E$ together with a 2-cell
-$\phi : h \cdot e \twocell e'$. The pair $(h,\phi)$ is ``unique'' in the sense that,
+$\phi : h \cdot e \twocell e'$. The pair $(h,\phi)$ is unique up to unique 2-cell, which means that
 given another 1-cell $h' : E' \onecell E$ and another 2-cell $\phi' :
-h' \cdot e \twocell e'$, then there exists a unique 2-cell $\tau : h
+h' \cdot e \twocell e'$, there exists a unique 2-cell $\tau : h
 \twocell h'$ such that $\tau \whiskerr e \vcomp \phi' = \phi$.
 \end{definition}
 
 \begin{problem}
 \label{prob:equifier}
-Given $A$ and $B$ algebras for $\sign$, given 1-cells $f,g :
+Given algebras $A$ and $B$ for $\sign$, given 1-cells $f,g :
 A \onecell B$ and 2-cells $\beta,\gamma : f \twocell g$, to construct the
 equifier of $\beta$ and $\gamma$ in $\alg(\sign)$.
 \end{problem}
 
 \begin{construction}{prob:equifier}\label{cons:equifier}
-Similarly to the construction of the inserter, we defined the equifier
+Similar to the construction of the inserter, we define the equifier
 of $\beta$ and $\gamma$ as the total algebra $\TotalAlg Y$ of a certain
 displayed algebra $Y$ over $A$.
 \begin{itemize}
@@ -230,7 +225,7 @@ paths:
 \end{align*}
 \item The construction of paths $\DispAlgPath{Y}{j}$ and globes $\DispAlgHomot{Y}{j}$ is
 straightforward. These are respectively paths and paths between paths
-in $Y(x)$, for some point $x$. Since $Y(x)$ is a proposition, then
+in $Y(x)$ for some point $x$. Since $Y(x)$ is a proposition,
 these constructions are all trivial.
 \end{itemize}
 
@@ -238,5 +233,4 @@ The 1-cell $e$ is the first projection out of the total algebra $\TotalAlg Y$, w
 is an algebra morphism by construction. The 2-cell $\epsilon$ is the
 second projection out of $\TotalAlg Y$. The algebra $\TotalAlg Y$ satisfies the required
 universal property of the equifier spelled out in Definition~\ref{def:equifier}.
-
 \end{construction}
