@@ -2,23 +2,22 @@ The first isomorphism theorem is one of the classical results in universal algeb
 While this statement is usually about algebra structures in sets \cite{lynge2019}, we look at a generalization to the 1-truncated case.
 More specifically, we formulate and prove this theorem for algebras for the signatures defined in Definition \ref{def:signature}.
 
-Before we can do prove the isomorphism theorem, we need to generalize several notions from universal algebra to the 1-truncated case.
-First of all, we need to define the image of homomorphisms of algebras.
-We take the same approach as in Section \ref{sec:finite_limits}, meaning that we define the image using displayed algebras.
-Second of all, we need to define congruence relations and their quotients.
-The main idea here is to use Construction \ref{constr:alg_biadj}.
-Here we lifted the groupoid quotient to a biadjunction from $\algG{\sign}$ to $\algebra{\sign}$.
+Before stating and proving the isomorphism theorem, we need to generalize several notions from universal algebra to the 1-truncated case.
+First of all, following the approach of Section \ref{sec:finite_limits}, we define the image of an algebra morphism using displayed algebras.
+Second of all, we define congruence relations and their quotients.
+The main idea here is to use Construction \ref{constr:alg_biadj}, where
+we lifted the groupoid quotient to a biadjunction from $\algG{\sign}$ to $\algebra{\sign}$.
 This result also indicates how congruence relations will be defined.
 Basically, a congruence relation on $X : \algebra{\sign}$ is a groupoid structure on $X$ which gives an algebra of groupoids.
 Once these notions are in place, we can formulate and prove the first isomorphism theorem similarly to the set-theoretical version.
 
 \subsection{The Image}
-We start by defining the image.
-This means that for each morphism $f : A \onecell B$ we must find a factorization $A \onecell \Im{f} \onecell B$.
+We start by defining the image of an algebra morphism.
+For each morphism $f : A \onecell B$ we are after a factorization $A \onecell \Im{f} \onecell B$.
 
 \begin{problem}
 \label{prob:image}
-Given algebra $A$ and $B$ for a signature $\sign$ and a algebra morphism $f : A \onecell B$,
+Given algebras $A$ and $B$ for a signature $\sign$ and an algebra morphism $f : A \onecell B$,
 to construct an algebra $\Im(f)$ and morphisms $\ImProj{f} : A \onecell \Im{f}$ and $\ImInc{f} : \Im(f) \onecell B$. 
 \end{problem}
 
@@ -84,14 +83,13 @@ to construct $\toGrpdPathAlg{R} : \pathalgG{\sign}$.
 We only discuss the data involved.
 \begin{itemize}
 	\item The carrier $\toGrpdPathAlg{R}$ is the groupoid whose type of objects is $X$ and whose morphisms are given by $R$.
-	\item Next we define a functor $\semPG{\pointconstr[\sign]}(\toGrpdPathAlg{R}) \onecell \toGrpdPathAlg{R}$. It is defined to be $\AlgPoint{X}$ on the objects and on the morphisms, it is defined to be $\AlgPoint{R}$.
+	\item Next we define a functor $\semPG{\pointconstr[\sign]}(\toGrpdPathAlg{R}) \onecell \toGrpdPathAlg{R}$. It is defined to be $\AlgPoint{X}$ on objects and $\AlgPoint{R}$ on morphisms.
 	\item Lastly, we define a natural transformation $\semEG{\pathleft[\sign]_j} \twocell \semEG{\pathright[\sign]_j}$ for each $j : \pathlabel[\sign]$. The component function of this transformation is $\Lam x, \idtoiso(\AlgPath{X}{j}(x))$. \qedhere
 \end{itemize}
 \end{construction}
 
-Now let us look at what we need to show that $\toGrpdPathAlg{R}$ is an algebra.
-To show that it is indeed an algebra, we need to verify the homotopy constructor.
-Since this constructor has both a point and path constructor, we need to check an equality of morphisms of $\toGrpdPathAlg{R}$, which depend on points of $X$ and morphisms of $\toGrpdPathAlg{R}$.
+To show that $\toGrpdPathAlg{R}$ is an algebra, we need to verify the homotopy constructor.
+Since this constructor has both a point and a path constructor, we need to check an equality of morphisms of $\toGrpdPathAlg{R}$, which depend on points of $X$ and morphisms of $\toGrpdPathAlg{R}$.
 As a result, we cannot reuse the homotopy constructor of $X$, because it only depends on points of $X$ and paths in $X$.
 This means that to construct a groupoid algebra, the homotopy constructor needs to be constructed from scratch.
 This is reflected in the following definition.
@@ -107,9 +105,9 @@ Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\algg
 
 \begin{remark}
 \label{remark:mapping_property_congruence}
-Suppose, we have two algebra $X, Y : \algebra{\sign}$ and a congruence relation $R$ on $X$.
-By the biadjunction, we get a morphism $\alggquot{\toGrpdAlg{R}} \onecell Y$ from $R \onecell \algpgrpd{Y}$.
-Using this, we can give conditions for when a homomorphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
+Suppose that we have two algebras $X, Y : \algebra{\sign}$ and a congruence relation $R$ on $X$.
+From the biadjunction, we get a morphism $\alggquot{\toGrpdAlg{R}} \onecell Y$ from $R \onecell \algpgrpd{Y}$.
+Using this, we can give conditions for when an algebra morphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
 We can unfold the definition to find the necessary ingredients for the factorization.
 For example, to show that $f$ lifts to a functor, we need to provide a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$, and equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$.
 \end{remark}
@@ -121,13 +119,13 @@ Let us start by characterizing adjoint equivalences in $\algM(\sign)$.
 
 \begin{proposition}
 \label{prop:algebra_adjequiv}
-Suppose we have a signature $\sign$, algebras $X, Y : \algM(\sign)$, and a homomorphism $f : X \onecell Y$.
+Suppose we have a signature $\sign$, algebras $X, Y : \algM(\sign)$, and an algebra morphism $f : X \onecell Y$.
 Then $f$ is an adjoint equivalence in $\algM(\sign)$ if its carrier is an adjoint equivalence in $\onetypes$.
 \end{proposition}
 
 \begin{theorem}\label{thm:iso_thm}
 Let $\sign$ be a signature.
-Suppose, we have algebras $X, Y : \algM(\sign)$ and a homomorphism $f : X \onecell Y$.
+Suppose, we have algebras $X, Y : \algM(\sign)$ and an algebra morphism $f : X \onecell Y$.
 Then we have a congruence relation $R$ on $X$ and an adjoint equivalence $\overline{f} : \alggquot(\toGrpdAlg{R}) \onecell \Im(f)$.
 \end{theorem}
 

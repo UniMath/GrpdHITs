@@ -1,7 +1,7 @@
 Let us finish by using Construction \ref{constr:hit_exist} to determine the fundamental group of some HITs.
 Such results are often proven by encode-decode method \cite{LicataS13,LicataF14}, but we take a different approach.
 We only use encode-decode to determine the path space of the groupoid quotient.
-For other higher inductive types, we just find a simpler description of the initial groupoid algebra.
+The HITs considered in this section admit a simpler description of the initial groupoid algebra.
 We start by determining the path space of the groupoid quotient.
 
 \begin{proposition}
@@ -11,11 +11,11 @@ Then the types $\gcl(x) = \gcl(y)$ and $\mor{G}{x}{y}$ are equivalent.
 \end{proposition}
 
 As a result, the type of paths between two points in a HIT is the type of morphisms in the initial groupoid algebra.
-Since this algebra is unique, we can determine the fundamental group by finding a simpler description for the initial groupoid algebra.
+Since this algebra is unique, we can determine the fundamental group by finding a simpler description of the initial groupoid algebra.
 
 \subsection{Circle}
 \label{sec:circle_fund_group}
-Let us start by taking a close look at the circle.
+%Let us start by taking a close look at the circle.
 Recall that the circle is defined as the following HIT
 
 \begin{lstlisting}[mathescape=true]
@@ -25,13 +25,13 @@ Inductive $\circleS$ :=
 \end{lstlisting}
 
 Note that we can define a signature $\circleS$ that represents this HIT.
-Next we construct a groupoid algebra $\circlegrpd$ of this signature and we prove $\circlegrpd$ is biinitial.
+Next we construct a groupoid algebra $\circlegrpd$ of this signature and we prove that $\circlegrpd$ is biinitial.
 
 \begin{definition}
 We define a groupoid $\circlegrpd$ as follows
 \begin{itemize}
 	\item the type of objects is the unit type;
-	\item the type of morphisms from $\unitt$ to $\unitt$ is the integers.
+	\item the type of morphisms from $\unitt$ to $\unitt$ is the the type integers.
 \end{itemize}
 \end{definition}
 
@@ -61,7 +61,7 @@ The type $\baseS = \baseS$ is equivalent to the integers.
 
 \subsection{Torus}
 \label{sec:torus_fund_group}
-The next example we look at, is the torus, which we defined in Example \ref{ex:torus}.
+Next we look at the torus, which we defined in Example \ref{ex:torus}.
 We use the same approach to determine its fundamental group, so we give a simpler description of the biinitial algebra in groupoids.
 
 \begin{definition}
