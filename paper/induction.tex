@@ -24,7 +24,7 @@ Given a type $X$, a type family $Y$ on $X$, and a polynomial $P$, to construct a
 $
 \polyoplax P : \polyAct{P}{\Sum (x : X). Y(x)} \rightarrow \Sum (x : \polyAct{P}{X}). \polyDact{P}{Y}(x)
 $
-such that, for all $z :  \polyAct{P}{\Sum (x : X). Y(x)}$, we have $\projl(\polyoplax{P}(z)) = \polyAct{P}{\projl}(z)$.
+such that for all $z :  \polyAct{P}{\Sum (x : X). Y(x)}$, we have $\projl(\polyoplax{P}(z)) = \polyAct{P}{\projl}(z)$.
 \end{problem}
 
 \begin{problem}
@@ -89,23 +89,6 @@ a \fat{displayed algebra} $Y$ over $X$ consists of
 \end{itemize}
 \end{definition}
 
-\begin{definition}\label{def:total_alg}
-Let $X$ be an algebra for a signature $\sign$ and let $Y$ be a
-displayed algebra over $X$. The \fat{total algebra} of $Y$ is the
-algebra $\TotalAlg Y$ with carrier $\Sum (x : X). Y(x)$ and function
-$\AlgPoint{\TotalAlg Y}$ acting on an element $z
-: \polyAct{\pointconstr}{\Sum (x : X). Y(x)}$ as follows:
-\[
-\AlgPoint{\TotalAlg Y}(z) \eqdef
-(\AlgPoint{X}(\projl(\polyoplax{\pointconstr}(z)))
-,
-\DispAlgPoint{Y}(\projr(\polyoplax{\pointconstr}(z)))).
-\]
-We refer to the formalization for details on the construction of the
-required paths and homotopies. The first projection $\TotalAlg
-Y \rightarrow X$ is a morphism of algebras.
-\end{definition}
-
 \begin{remark}
 The type family of a displayed algebra is required to be 1-truncated.
 This means that the HITs we construct, can only be eliminated into
@@ -113,6 +96,26 @@ This means that the HITs we construct, can only be eliminated into
 elimination principle with respect to 1-types.
 \end{remark}
 
+\begin{problem}
+\label{prob:total_alg}
+Given an algebra $X$ for a signature $\sign$ and a displayed algebra $Y$ over $X$,
+to construct an algebra $\TotalAlg{Y}$ and a morphism $\pi_1 : \TotalAlg{Y} \onecell X$.
+\end{problem}
+
+\begin{construction}{prob:total_alg}
+We only discuss the carrier and the point constructor of $\TotalAlg{Y}$.
+The carrier of $\TotalAlg{Y}$ is defined to be $\sum (x : X), Y(x)$
+and the function $\AlgPoint{\TotalAlg Y}$ acts on elements $z : \polyAct{\pointconstr}{\sum (x : X), Y(x)}$ as follows:
+\[
+\AlgPoint{\TotalAlg Y}(z) \eqdef
+(\AlgPoint{X}(\projl(\polyoplax{\pointconstr}(z)))
+,
+\DispAlgPoint{Y}(\projr(\polyoplax{\pointconstr}(z)))).
+\]
+The underlying map of the morphism $\pi_1 : \TotalAlg{Y} \onecell X$ takes the first projection of a pair.
+\end{construction}
+
+We call $\TotalAlg{Y}$ the \emph{total algebra} of $Y$ and the morphism $\pi_1$ is called the \emph{first projection}.
 The output of the elimination rule and the computation rules are given by a \emph{section} to be defined in Definition \ref{def:section} below.
 One might expect that, just like for the groupoid quotient, the computation rules for the paths
 are given as globes over some 2-path in the base (Definition \ref{def:globe_over}).
@@ -130,7 +133,7 @@ The elimination rule gives a map $f : \depprod{(x : \torus)}{Y(x)}$.
 By the point computation rule, we have a propositional equality between $f(\base)$ and $b$.
 Now the computation rule for $\leftLoop$ ought to equate $\apd{f}{\leftLoop}$ and $p_l$.
 However, such an equation does not type check since $\apd{f}{\leftLoop}$ has type $\pathover{\leftLoop}{f(b)}{f(b)}$ while $p_l$ has type $\pathover{\leftLoop}{b}{b}$.
-In conclusion, we cannot formulate the computation rules the same way as we did for the grorupoid quotient.
+In conclusion, we cannot formulate the computation rules the same way as we did for the groupoid quotient.
 
 Our solution to this problem is to define a type of \emph{squares} over a given 2-path similarly to Definition \ref{def:globe_over}.
 
