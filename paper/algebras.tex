@@ -225,7 +225,7 @@ Inductive $H$ :=
 | $c$ : $\functions{\polyAct{P}{H}}{H}$
 | $p$ : $\depprod{(j : I) (x : \polyAct{Q}{H})}{l(x) = r(x)}$
 | $s$ : $\depprod{(j : J) (x : \polyAct{R}{H}) (r : a_1(x) = a_2(x))}{\homotendpointAct{q_1}{x, r} = \homotendpointAct{q_2}{x, r}}$
-| $t$ : $\depprod{(x, y : H) (q_1, q_2 : x = y) (r, s : q_1 = q_2)}{r = s}$
+| $t$ : $\depprod{(x, y : H) (q_1, q_2 : x = y) (r_1, r_2 : q_1 = q_2)}{r_1 = r_2}$
 \end{lstlisting}
 To see what the challenges are when defining such HITs, let us take a closer look at the torus.
 
@@ -364,7 +364,7 @@ Inductive $H$ :=
 | $c$ : $\functions{\polyAct{\pointconstr}{H}}{H}$
 | $p$ : $\depprod{(j : \pathlabel) (x : \polyAct{\patharg_j}{H})}{\pathendpointAct{\pathleft_j}{x} = \pathendpointAct{\pathright_j}{x}}$
 | $s$ : $\depprod{(j : \homotlabel) (x : \polyAct{\homotpointarg_j}{H}) (r : \pathargleft_j(x) = \pathargright_j(x))}{\homotendpointAct{\homotleft_j}{x, r} = \homotendpointAct{\homotright_j}{x, r}}$
-| $t$ : $\depprod{(x, y : H) (p, q : x = y) (r, s : p = q)}{r = s}$
+| $t$ : $\depprod{(x, y : H) (q_1, q_2 : x = y) (r_1, r_2 : q_1 = q_2)}{r_1 = r_2}$
 \end{lstlisting}
 
 Next we consider three examples of HITs we can express with these signatures.
