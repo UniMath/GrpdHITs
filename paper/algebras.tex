@@ -71,13 +71,13 @@
 \begin{bprooftree}
 \AxiomC{$T : \poly$}
 \AxiomC{$e : \pathendpoint{A}{R}{T}$}
-\BinaryInfC{$\hrefl{e} : \homotendpoint{l}{r}{a_1}{a_2}{e}{e}$}
+\BinaryInfC{$\hrefl{e} : \homotendpoint{l}{r}{a}{b}{e}{e}$}
 \end{bprooftree}
 \begin{bprooftree}
 \AxiomC{$T : \poly$}
 \AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T}$}
-\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
-\TrinaryInfC{$\hinv{h} : \homotendpoint{l}{r}{a_1}{a_2}{e_2}{e_1}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a}{b}{e_1}{e_2}$}
+\TrinaryInfC{$\hinv{h} : \homotendpoint{l}{r}{a}{b}{e_2}{e_1}$}
 \end{bprooftree}
 \end{center}
 
@@ -87,9 +87,9 @@
 \begin{bprooftree}
 \AxiomC{$T : \poly$}
 \AxiomC{$e_1, e_2, e_3 : \pathendpoint{A}{R}{T}$}
-\AxiomC{$h_1 : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
-\AxiomC{$h_2 : \homotendpoint{l}{r}{a_1}{a_2}{e_2}{e_3}$}
-\QuaternaryInfC{$\hconcat{h_1}{h_2} : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_3}$}
+\AxiomC{$h_1 : \homotendpoint{l}{r}{a}{b}{e_1}{e_2}$}
+\AxiomC{$h_2 : \homotendpoint{l}{r}{a}{b}{e_2}{e_3}$}
+\QuaternaryInfC{$\hconcat{h_1}{h_2} : \homotendpoint{l}{r}{a}{b}{e_1}{e_3}$}
 \end{bprooftree}
 \end{center}
 
@@ -100,8 +100,8 @@
 \AxiomC{$T_1, T_2 : \poly$}
 \AxiomC{$e_1, e_2 : \pathendpoint{A}{Q}{T_1}$}
 \AxiomC{$e : \pathendpoint{A}{T_1}{T_2}$}
-\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
-\QuaternaryInfC{$\hap e h : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{e}}{\comp{e_2}{e}}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a}{b}{e_1}{e_2}$}
+\QuaternaryInfC{$\hap e h : \homotendpoint{l}{r}{a}{b}{\comp{e_1}{e}}{\comp{e_2}{e}}$}
 \end{bprooftree}
 \end{center}
 
@@ -113,7 +113,7 @@
 \AxiomC{$e_1 : \pathendpoint{A}{R}{T_1}$}
 \AxiomC{$e_2 : \pathendpoint{A}{T_1}{T_2}$}
 \AxiomC{$e_3 : \pathendpoint{A}{T_2}{T_3}$}
-\QuaternaryInfC{$\hassoc{e_1}{e_2}{e_3} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{(\comp{e_2}{e_3})}}{\comp{(\comp{e_1}{e_2})}{e_3}}$}
+\QuaternaryInfC{$\hassoc{e_1}{e_2}{e_3} : \homotendpoint{l}{r}{a}{b}{\comp{e_1}{(\comp{e_2}{e_3})}}{\comp{(\comp{e_1}{e_2})}{e_3}}$}
 \end{bprooftree}
 \end{center}
 
@@ -123,12 +123,12 @@
 \begin{bprooftree}
 \AxiomC{$T: \poly$}
 \AxiomC{$e : \pathendpoint{A}{R}{T}$}
-\BinaryInfC{$\hlunit{e} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{\idE{R}}{e}}{e}$}
+\BinaryInfC{$\hlunit{e} : \homotendpoint{l}{r}{a}{b}{\comp{\idE{R}}{e}}{e}$}
 \end{bprooftree}
 \begin{bprooftree}
 \AxiomC{$T: \poly$}
 \AxiomC{$e : \pathendpoint{A}{R}{T}$}
-\BinaryInfC{$\hrunit{e} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e}{\idE{T}}}{e}$}
+\BinaryInfC{$\hrunit{e} : \homotendpoint{l}{r}{a}{b}{\comp{e}{\idE{T}}}{e}$}
 \end{bprooftree}
 \end{center}
 
@@ -139,7 +139,7 @@
 \AxiomC{$T_1, T_2 : \poly$}
 \AxiomC{$e_1 : \pathendpoint{A}{R}{T_1}$}
 \AxiomC{$e_2 : \pathendpoint{A}{R}{T_2}$}
-\TrinaryInfC{$\hpairprle : \homotendpoint{l}{r}{a_1}{a_2}{\comp{\pair{e_1}{e_2}}{\prle}}{e_1}, \quad \hpairprre : \homotendpoint{l}{r}{a_1}{a_2}{\comp{\pair{e_1}{e_2}}{\prre}}{e_2}$}
+\TrinaryInfC{$\hpairprle : \homotendpoint{l}{r}{a}{b}{\comp{\pair{e_1}{e_2}}{\prle}}{e_1}, \quad \hpairprre : \homotendpoint{l}{r}{a}{b}{\comp{\pair{e_1}{e_2}}{\prre}}{e_2}$}
 \end{bprooftree}
 \end{center}
 
@@ -151,8 +151,8 @@
 \AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
 \AxiomC{$e_3, e_4 : \pathendpoint{A}{R}{T_2}$}
 \noLine
-\TrinaryInfC{$\qquad h_1 : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2} \qquad h_2 : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4} \qquad$}
-\UnaryInfC{$\hpair{h_1}{h_2} : \homotendpoint{l}{r}{a_1}{a_2}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
+\TrinaryInfC{$\qquad h_1 : \homotendpoint{l}{r}{a}{b}{e_1}{e_2} \qquad h_2 : \homotendpoint{l}{r}{a}{b}{e_3}{e_4} \qquad$}
+\UnaryInfC{$\hpair{h_1}{h_2} : \homotendpoint{l}{r}{a}{b}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
 \end{bprooftree}
 \end{center}
 
@@ -164,7 +164,7 @@
 \AxiomC{$e_1 : \pathendpoint{A}{R}{T_1}$}
 \AxiomC{$e_2 : \pathendpoint{A}{T_1}{T_2}$}
 \AxiomC{$e_3 : \pathendpoint{A}{T_1}{T_3}$}
-\QuaternaryInfC{$\hcomppair : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{\pair{e_2}{e_3}}}{\pair{\comp{e_1}{e_2}}{\comp{e_1}{e_3}}}$}
+\QuaternaryInfC{$\hcomppair : \homotendpoint{l}{r}{a}{b}{\comp{e_1}{\pair{e_2}{e_3}}}{\pair{\comp{e_1}{e_2}}{\comp{e_1}{e_3}}}$}
 \end{bprooftree}
 \end{center}
 
@@ -176,7 +176,7 @@
 \AxiomC{$X: \onetypes$}
 \AxiomC{$x: X$}
 \AxiomC{$e : \pathendpoint{A}{R}{T}$}
-\QuaternaryInfC{$\hcompconst e : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e}{\Ce x}}{\Ce x}$}
+\QuaternaryInfC{$\hcompconst e : \homotendpoint{l}{r}{a}{b}{\comp{e}{\Ce x}}{\Ce x}$}
 \end{bprooftree}
 \end{center}
 
@@ -186,23 +186,23 @@
 %% \begin{bprooftree}
 %% \AxiomC{$T_1, T_2 : \poly$}
 %% \AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
-%% \AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
-%% \TrinaryInfC{$\hinl{h} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{\inle}}{\comp{e_2}{\inle}}$}
+%% \AxiomC{$h : \homotendpoint{l}{r}{a}{b}{e_1}{e_2}$}
+%% \TrinaryInfC{$\hinl{h} : \homotendpoint{l}{r}{a}{b}{\comp{e_1}{\inle}}{\comp{e_2}{\inle}}$}
 %% \end{bprooftree}
 \begin{bprooftree}
 \AxiomC{$j : J$}
 \AxiomC{$e : \pathendpoint{A}{R}{Q_j}$}
-\BinaryInfC{$\hconstr{j}{e} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e}{l(j)}}{\comp{e}{r(j)}}$}
+\BinaryInfC{$\hconstr{j}{e} : \homotendpoint{l}{r}{a}{b}{\comp{e}{l(j)}}{\comp{e}{r(j)}}$}
 \end{bprooftree}
 %% \vspace{5pt}
 %% \begin{bprooftree}
 %% \AxiomC{$T_1, T_2 : \poly$}
 %% \AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_2}$}
-%% \AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
-%% \TrinaryInfC{$\hinr{h} : \homotendpoint{l}{r}{a_1}{a_2}{\comp{e_1}{\inre}}{\comp{e_2}{\inre}}$}
+%% \AxiomC{$h : \homotendpoint{l}{r}{a}{b}{e_1}{e_2}$}
+%% \TrinaryInfC{$\hinr{h} : \homotendpoint{l}{r}{a}{b}{\comp{e_1}{\inre}}{\comp{e_2}{\inre}}$}
 %% \end{bprooftree}
 \begin{bprooftree}
-\AxiomC{$\harg : \homotendpoint{l}{r}{a_1}{a_2}{a_1}{a_2}$}
+\AxiomC{$\harg : \homotendpoint{l}{r}{a}{b}{a}{b}$}
 \end{bprooftree}
 \end{center}
 
@@ -239,7 +239,7 @@ Inductive $\torus$ :=
 There is a point constructor $\base$, two paths constructors $\leftLoop, \rightLoop : \base = \base$,
 and a homotopy constructor $\surface : \concat{\leftLoop}{\rightLoop} = \concat{\rightLoop}{\leftLoop}$.
 Note that $\leftLoop$ and $\rightLoop$ refer to $\base$ and that $\surface$ refers to all other constructors.
-Hence, the signatures we define, must be flexible enough to allow such dependencies.
+Hence, the signatures we define must be flexible enough to allow such dependencies.
 
 A similar challenge comes up when defining the bicategory of algebras for a signature.
 For the torus, an algebra would consist of a type $X$, a point $b$, paths $p, q : b = b$, and a 2-path $s : \concat{p}{q} = \concat{q}{p}$.
@@ -279,9 +279,9 @@ Note that the parameter $A$ is only used in the path endpoint $\constr$, which r
 If we have a type $X$ with a function $c : \polyAct{A}{X} \rightarrow X$,
 then each endpoint $e$ gives for every $x : \polyAct{S}{X}$ a point $\pathendpointFun{e}(x) : \polyAct{T}{X}$.
 Note that $\pathendpointFun{e}(x)$ depends on $c$ while we do not write $c$ in the notation.
-Hence, two endpoints $e_l, e_r$ represent the equation
+Hence, two endpoints $l, r : \pathendpoint{A}{S}{T}$ represent the equation
 \[
-\depprod{(x : \polyAct{S}{X})}{\pathendpointAct{e_l}{x} = \pathendpointAct{e_r}{x}}.
+\depprod{(x : \polyAct{S}{X})}{\pathendpointAct{l}{x} = \pathendpointAct{r}{x}}.
 \]
 Note that a HIT could have arbitrarily many path constructors and we index them by the type $J$.
 
@@ -289,8 +289,8 @@ The last part of the signature describes the homotopy constructors
 and these depend on both the point and path constructors.
 A homotopy constructor represents an equation of paths, which is universally quantified over both points and paths of
 the HIT being defined.
-The point argument is represented by a polynomial $R$, and the path argument is represented by a polynomial $T$ and endpoints $a_1, a_2 : \pathendpoint{A}{R}{T}$.
-Lastly, the type of the paths in the equation is described by two endpoints $s_l, s_r : \pathendpoint{A}{R}{W}$ with $W : \poly$.
+The point argument is represented by a polynomial $R$, and the path argument is represented by a polynomial $T$ and endpoints $a, b : \pathendpoint{A}{R}{T}$.
+Lastly, the type of the paths in the equation is described by two endpoints $s, t : \pathendpoint{A}{R}{W}$ with $W : \poly$.
 
 \begin{definition}
 \label{def:homotep}
@@ -299,18 +299,18 @@ Suppose that we have
 	\item A polynomial $A$;
 	\item A type $J$ together with for each $j : J$ a polynomial $Q_j$ and endpoints $l_j, r_j : \pathendpoint{A}{Q_j}{\idP}$;
 	\item A polynomial $R$;
-	\item A polynomial $T$ with endpoints $a_1, a_2 : \pathendpoint{A}{R}{T}$;
-	\item A polynomial $W$ with endpoints $s_1, s_2 : \pathendpoint{A}{R}{W}$.
+	\item A polynomial $T$ with endpoints $a, b : \pathendpoint{A}{R}{T}$;
+	\item A polynomial $W$ with endpoints $s, t : \pathendpoint{A}{R}{W}$.
 \end{itemize}
-Then we define the type $\homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$ of \fat{homotopy endpoint} inductively by the constructors in Figure \ref{fig:homot_ep}.
+Then we define the type $\homotendpoint{l}{r}{a}{b}{s}{t}$ of \fat{homotopy endpoint} inductively by the constructors in Figure \ref{fig:homot_ep}.
 \end{definition}
 
 There are three homotopy endpoints of particular importance.
 The first one is $\constructor{path}$, which represents the path constructor and it makes use of $l_j$ and $r_j$.
-The second one, $\harg$, represents the path argument and it uses $a_1$ and $a_2$.
-The last one is $\constructor{ap}$ and it represents the action of the point constructor on a homotopy endpoint.
+The second one is $\harg$, which represents the path argument and it uses $a$ and $b$.
+The last one is $\constructor{ap}$ and it corresponds to the action of an endpoint on a homotopy endpoint.
 
-The way we represent path arguments allows us to represent equations with any finite number of path arguments by only two path endpoints.
+The way we represent path arguments allows us to specify equations with any finite number of path arguments by only two path endpoints.
 For example, two path arguments $p : x_1 = y_1$ and $q : x_2 = y_2$ is represented by one path argument of type $(x_1, x_2) = (y_1, y_2)$.
 
 From the grammar in Figure \ref{fig:homot_ep}, we can derive
@@ -324,20 +324,20 @@ examples.
 \AxiomC{$T_1, T_2 : \poly$}
 \AxiomC{$e_1, e_2 : \pathendpoint{A}{R}{T_1}$}
 \AxiomC{$e_3, e_4 : \pathendpoint{A}{R}{T_2}$}
-\AxiomC{$h : \homotendpoint{l}{r}{a_1}{a_2}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
-\QuaternaryInfC{$\hprl{h} \eqdef \hconcat{\hinv{\hpairprle}}{\hconcat{\hap {\prle} h}{\hpairprle}} : \homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$}
+\AxiomC{$h : \homotendpoint{l}{r}{a}{b}{\pair{e_1}{e_3}}{\pair{e_2}{e_4}}$}
+\QuaternaryInfC{$\hprl{h} \eqdef \hconcat{\hinv{\hpairprle}}{\hconcat{\hap {\prle} h}{\hpairprle}} : \homotendpoint{l}{r}{a}{b}{e_1}{e_2}$}
 \alwaysNoLine
-\UnaryInfC{$\hprr{h} \eqdef \hconcat{\hinv{\hpairprre}}{\hconcat{\hap {\prre} h}{\hpairprre}} : \homotendpoint{l}{r}{a_1}{a_2}{e_3}{e_4}$}
+\UnaryInfC{$\hprr{h} \eqdef \hconcat{\hinv{\hpairprre}}{\hconcat{\hap {\prre} h}{\hpairprre}} : \homotendpoint{l}{r}{a}{b}{e_3}{e_4}$}
 \end{bprooftree}
 \end{center}
 
 \vspace{5pt}
-Moreover, we have a function $\idtoH$ sending a path between endpoints $e_1 = e_2$ into an homotopy endpoint $\homotendpoint{l}{r}{a_1}{a_2}{e_1}{e_2}$, readily definable by path induction.
+Moreover, we have a function $\idtoH$ sending a path between endpoints $e_1 = e_2$ into an homotopy endpoint $\homotendpoint{l}{r}{a}{b}{e_1}{e_2}$, readily definable by path induction.
 
 Given a type $X$ with a function $c : \polyAct{A}{X} \rightarrow X$ and for each $x : Q_j(X)$ a path $l_j(x) = r_j(x)$,
-a homotopy endpoint $p : \homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$ gives rise for each point $x : \polyAct{R}{X}$ and path $w : a_1(x) = a_2(x)$
-to another path $\homotendpointAct{p}{x, w} : s_1(x) = s_2(x)$.
-Hence, two homotopy endpoints $p, q : \homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$ represent the equation
+a homotopy endpoint $p : \homotendpoint{l}{r}{a}{b}{s}{t}$ gives rise for each point $x : \polyAct{R}{X}$ and path $w : a(x) = b(x)$
+to another path $\homotendpointAct{p}{x, w} : s(x) = t(x)$.
+Hence, two homotopy endpoints $p, q : \homotendpoint{l}{r}{a}{b}{s}{t}$ represent the equation
 \[
 \depprod{(x : \polyAct{R}{X}) (w : a_1(x) = a_2(x))}{\homotendpointAct{p}{x, w} = \homotendpointAct{q}{x, w}}
 \]
@@ -376,7 +376,7 @@ The torus is described by the signature $\torus$.
 	\item Take $\pointconstr[\torus] \eqdef \constantP{\unit}$;
 	\item Take $\pathlabel[\torus] \eqdef \bool$ and for both inhabitants we take $\patharg[\torus] \eqdef \constantP{\unit}$ and $\pathleft[\torus] \eqdef \pathright[\torus] \eqdef \constr$;
 	\item Take $\homotlabel[\torus] \eqdef \unit$.
-	Since there no arguments for this path constructor, we take $\homotpointarg[\torus] \eqdef \constantP{\unit}$ and $\pathargleft[\torus] \eqdef \pathargright[\torus] \eqdef \Ce(\unitt)$.
+	Since there are no arguments for this path constructor, we take $\homotpointarg[\torus] \eqdef \constantP{\unit}$ and $\pathargleft[\torus] \eqdef \pathargright[\torus] \eqdef \Ce(\unitt)$.
 	Now for the left-hand side and right-hand side of this equation, we take $\hconcat{\hconstr{\booltrue}{\idENA}}{\hconstr{\boolfalse}{\idENA}}$ and $\hconcat{\hconstr{\boolfalse}{\idENA}}{\hconstr{\booltrue}{\idENA}}$ respectively. 
 \end{itemize}
 \end{example}
@@ -427,8 +427,8 @@ Inductive $\ST{A}$ :=
 | $\Strunc$ : $\depprod{(x, y : \ST{A}) (p, q : x = y)}{p = q}$
 \end{lstlisting}
 Note that this higher inductive type has a parameter $A$,
-so the signature we define, depends on a 1-type $A$ as well.
-To encode the path arguments of $\Strunc$, we use that two paths $p, q : x = y$ is the same as a path $r : (x, x) = (y, y)$.
+so the signature we define depends on a 1-type $A$ as well.
+To encode the path arguments of $\Strunc$, we use the fact that giving two paths $p, q : x = y$ is the same as giving a path $r : (x, x) = (y, y)$.
 Define a signature $\ST{A}$ such that
 \begin{itemize}
 	\item $\pointconstr[\ST{A}] \eqdef \constantP{A}$;
@@ -521,14 +521,14 @@ Objects of $\pathalgM(\sign)$ and $\pathalgG{\sign}$ are called \fat{path algebr
 
 \begin{problem}
 \label{prob:sem_homendpoint}
-Suppose that we have a homotopy endpoint $h : \homotendpoint{l}{r}{a_1}{a_2}{s_1}{s_2}$.
+Suppose that we have a homotopy endpoint $h : \homotendpoint{l}{r}{a}{b}{s}{t}$.
 Given a 1-type $X$ with $c : \polyAct{A}{X} \rightarrow X$ and $p : \depprod{(j : J) (x : \polyAct{Q_j}{X})}{l_j(x) = r_j(x)}$,
-to construct for each $x : \polyAct{Q}{X}$ and $w : \semE{a_1}(x) = \semE{a_2}(x)$
-an equality $\semH{h}(x, w) : \semE{s_1}(x) = \semE{s_2}(x)$.
+to construct for each $x : \polyAct{Q}{X}$ and $w : \semE{a}(x) = \semE{b}(x)$
+an equality $\semH{h}(x, w) : \semE{s}(x) = \semE{t}(x)$.
 
 In addition, given a groupoid $G$ together with a functor $c : \semPG{A}{(G)} \rightarrow G$ and for each $j : J$ a natural transformation $\semEG{l_j}(G) \twocell \semEG{r_j}(G)$,
-to construct for each object $x : \semPG{Q}{(G)}$ and morphism $w : \semEG{a_1}(G)(x) \rightarrow \semEG{a_2}(G)(x)$
-a morphism $\semHG{h}(x, w) : \semEG{s_1}(G)(x) \rightarrow \semEG{s_2}(G)(x)$.
+to construct for each object $x : \semPG{Q}{(G)}$ and morphism $w : \semEG{a}(G)(x) \rightarrow \semEG{b}(G)(x)$
+a morphism $\semHG{h}(x, w) : \semEG{s}(G)(x) \rightarrow \semEG{t}(G)(x)$.
 \end{problem}
 
 \begin{construction}{prob:sem_homendpoint}
@@ -573,22 +573,22 @@ By unpacking the definition, we see that an algebra $X : \algM(\sign)$ consists 
 	\AlgHomot{X}{j} : \semH{\homotleft}(x, w) = \semH{\homotright}(x, w)
 	$
 \end{itemize}
-Furthermore, a morphism $f : X \onecell Y$ where $X, Y : \algM(\sign)$ consists of
+Furthermore, given two algebras  $X, Y : \algM(\sign)$, an algebra morphism $f : X \onecell Y$ consists of
 \begin{itemize}
 	\item a map $f : X \rightarrow Y$;
 	\item for each $x : \polyAct{\pointconstr[\sign]}{X}$ a path
 	\[
-	\AlgMapPoint{f}(x) : f(\AlgPoint{X}(x)) = \AlgPoint{Y}(\semP{\pointconstr[\sign]}(f) \> x);
+	\AlgMapPoint{f}(x) : f(\AlgPoint{X}(x)) = \AlgPoint{Y}(\semP{\pointconstr[\sign]}(f)(x));
 	\]
 	\item for each $j : \pathlabel[\sign]$ and $x : \polyAct{\patharg[\sign]}{X}$ a 2-path
 	\[
-	\AlgMapPath{f}(j, x) :
-	\ap{f}{\AlgPath{X}{j}(x)} \vcomp \semE{\pathleft[\sign]_j}(\AlgMapPoint{f}) \> x
+	\AlgMapPath{f}{j}(x) :
+	\ap{f}{(\AlgPath{X}{j}(x))} \vcomp \semE{\pathleft[\sign]_j}(\AlgMapPoint{f})(x)
 	=
-	\semE{\pathleft[\sign]_j}(\AlgMapPoint{f}) \> x \vcomp \AlgPath{Y}{j}(\semP{\patharg[\sign]}(f) \> x).
+	\semE{\pathleft[\sign]_j}(\AlgMapPoint{f})(x) \vcomp \AlgPath{Y}{j}(\semP{\patharg[\sign]}(f)(x)).
 	\]
 \end{itemize}
-Lastly, given two algebras $X, Y : \algM(\sign)$ and morphisms $f, g : X \onecell Y$, a 2-cell $\theta : f \twocell g$ consists of
+Lastly, given two algebras $X, Y : \algM(\sign)$ and an algebra morphisms $f, g : X \onecell Y$, a 2-cell $\theta : f \twocell g$ in $\algM(\sign)$ consists of
 \begin{itemize}
 	\item for each $x : X$ a path $\theta : f(x) = g(x)$;
 	\item for each $x : \polyAct{\pointconstr[\sign]}{X}$ a path
@@ -598,6 +598,6 @@ Lastly, given two algebras $X, Y : \algM(\sign)$ and morphisms $f, g : X \onecel
 	=
 	\AlgMapPoint{f}(x)
 	\vcomp
-	\ap{\AlgPoint{Y}}{(\semP{\pointconstr[\sign]}(\theta) \> z)}
+	\ap{\AlgPoint{Y}}{(\semP{\pointconstr[\sign]}(\theta)(x))}
 	\]
 \end{itemize}
