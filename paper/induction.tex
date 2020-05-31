@@ -49,19 +49,19 @@ to construct an equality
 \label{prob:homot_dact}
 Let $\sign$ be a signature.
 Let $X$ be a type with a function $c_X : \polyAct{\pointconstr}{X} \rightarrow X$
-and with for each $j : \pathlabel$ and $x : \polyAct{\patharg}{X}$ a path $p_X(j, x) : \semE{\pathleft}(x) = \semE{\pathright}(x)$.
+and for each $j : \pathlabel$ and $x : \polyAct{\patharg_j}{X}$ a path $p_X(j, x) : \semE{\pathleft_j}(x) = \semE{\pathright_j}(x)$.
 In addition, suppose that $Y$ is a type family on $X$,
 that we have a function $c_Y : \depprod{(x : \polyAct{\pointconstr}{X})}{\polyDact{\pointconstr}{Y}(x) \rightarrow Y(c_X(x))}$,
-and that for all $j  : \pathlabel$ and points $x : \polyAct{\patharg}{X}$ and $\xx : \polyDact{\patharg}{Y}(x)$,
-we have a path $p_Y : \pathover{p_X(j, x)}{\pathendpointDact{\pathleft}{\xx}}{\pathendpointDact{\pathright}{\xx}}$.
-Furthermore, let $x : \homotpointarg$ and $\xx : \polyDact{\homotpointarg}{Y}(x)$ be points
-and let $w : \semE{\pathargleft}(x) = \semE{\pathargright}(x)$
-and $\disp{w} : \pathover{p}{\pathendpointDact{\pathargleft}{\xx}}{\pathendpointDact{\pathargright}{\xx}}$
+and that for all $j  : \pathlabel$ and points $x : \polyAct{\patharg_j}{X}$ and $\xx : \polyDact{\patharg_j}{Y}(x)$,
+we have a path $p_Y : \pathover{p_X(j, x)}{\pathendpointDact{\pathleft_j}{\xx}}{\pathendpointDact{\pathright_j}{\xx}}$.
+Furthermore, let $j : \homotlabel$, let $x : \homotpointarg_j(X)$ and $\xx : \polyDact{\homotpointarg_j}{Y}(x)$ be points
+and let $w : \semE{\pathargleft_j}(x) = \semE{\pathargright_j}(x)$
+and $\disp{w} : \pathover{p}{\pathendpointDact{\pathargleft_j}{\xx}}{\pathendpointDact{\pathargright_j}{\xx}}$
 be paths.
-Then for each homotopy endpoint $h : \homotendpoint{l}{r}{a}{b}{s}{t}$, 
+Then for each homotopy endpoint $h : \homotendpoint{\pathleft_j}{\pathright_j}{\pathargleft_j}{\pathargright_j}{\homotpathleft_j}{\homotpathright_j}$, 
 to construct a path
 \[
-\homotendpointDact{h}{\xx, \disp{w}} : \pathover{\homotendpointAct{h}{x, w}}{\pathendpointDact{\homotpathleft}{\xx}}{\pathendpointDact{\homotpathright}{\xx}}.
+\homotendpointDact{h}{\xx, \disp{w}} : \pathover{\homotendpointAct{h}{x, w}}{\pathendpointDact{\homotpathleft_j}{\xx}}{\pathendpointDact{\homotpathright_j}{\xx}}.
 \]
 \end{problem}
 
@@ -77,13 +77,13 @@ a \fat{displayed algebra} $Y$ over $X$ consists of
 	\item For each $x : \polyAct{\pointconstr}{X}$ a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow Y(\AlgPoint{X}(x))$;
 	\item For each $j : \pathlabel$, $x : \polyAct{\patharg_j}{X}$, and $\pover{x} : \polyDact{\patharg_j}{Y}(x)$, a path
 	$
-	\DispAlgPath{Y}{j} : \pathover{\AlgPath{X}{j}{x}}{\pathendpointDact{l_j}{\pover{x}}}{\pathendpointDact{r_j}{\pover{x}}}
+	\DispAlgPath{Y}{j} : \pathover{\AlgPath{X}{j}{x}}{\pathendpointDact{\pathleft_j}{\pover{x}}}{\pathendpointDact{\pathright_j}{\pover{x}}}
 	$;
-	\item For each $j : \homotlabel$, points $x : \polyAct{\homotpointarg}{X}$ and $\pover{x} : \polyDact{\homotpointarg}{Y}(x)$,
-	and paths $w : \pathargleft(x) = \pathargright(x)$ and $\pover{w} : \pathover{w}{\pathendpointDact{\pathargleft}{\pover{x}}}{\pathendpointDact{\pathargright}{\pover{x}}}$,
+	\item For each $j : \homotlabel$, points $x : \polyAct{\homotpointarg_j}{X}$ and $\pover{x} : \polyDact{\homotpointarg_j}{Y}(x)$,
+	and paths $w : \pathargleft_j(x) = \pathargright_j(x)$ and $\pover{w} : \pathover{w}{\pathendpointDact{\pathargleft_j}{\pover{x}}}{\pathendpointDact{\pathargright_j}{\pover{x}}}$,
 	a globe
 	$
-	\DispAlgHomot{Y}{j} : \globeover{\AlgHomot{X}{j}{(x, w)}}{\homotendpointDact{\homotleft}{\xx}}{\homotendpointDact{\homotright}{\xx}}
+	\DispAlgHomot{Y}{j} : \globeover{\AlgHomot{X}{j}{(x, w)}}{\homotendpointDact{\homotleft_j}{\xx}}{\homotendpointDact{\homotright_j}{\xx}}
 	$
 	over $\AlgHomot{X}{j}{(x, w)}$.
 \end{itemize}
@@ -141,7 +141,7 @@ Our solution to this problem is to define a type of \emph{squares} over a given 
 Let $X$ be a type and let $Y$ be a type family on $X$.
 Suppose that we are given points $x_1, x_2 : X$ and $\overline{x_1}, \overline{x_1}' : Y(x_1)$ and $\overline{x_2}, \overline{x_2}' : Y(x_2)$, paths $p, q : x_1 = x_2$ together with paths $\pover{p} : \pathover{p}{\overline{x_1}}{\overline{x_2}}$ and $\pover{q} : \pathover{q}{\overline{x_1}'}{\overline{x_2}'}$ over $p$ and $q$ respectively.
 If we also have two paths $h_1 : \overline{x_1} = \overline{x_1}'$ and $h_2 : \overline{x_2} = \overline{x_2}'$ and a 2-path $g : p = q$,
-then we define the type of \fat{squares} over $g$ from $\pover{p}$ to $\pover{q}$ with sides $h_1$ and $h_2$ by path induction.
+then we define the type of \fat{squares} over $g$ from $\pover{p}$ to $\pover{q}$ with sides $h_1$ and $h_2$ by path induction on $g$.
 \end{definition}
 
 \begin{definition}
@@ -156,9 +156,9 @@ Then a \fat{section} of $Y$ consists of
 	to
 	$\DispAlgPath{Y}{j}(\polyDmap{\patharg}{f}(x))$
 	with sides
-	$\pathendpointDnat{\pathleft}{f}(x)$
+	$\pathendpointDnat{\pathleft_j}{f}(x)$
 	and
-	$\pathendpointDnat{\pathright}{f}(x)$.
+	$\pathendpointDnat{\pathright_j}{f}(x)$.
 \end{itemize}
 \end{definition}
 
@@ -222,7 +222,7 @@ Then we say $x$ is \fat{biinitial} if
 \end{itemize}
 \end{definition}
 
-Briefly, an object $x$ is biinitial if for each $y$ there is 1-cell from $x$ to $y$, which is unique up to a unique 2-cell.
+Briefly, an object $x$ is biinitial if for each $y$ there is a 1-cell from $x$ to $y$, which is unique up to a unique 2-cell.
 Now we can formulate initial algebra semantics for our signatures.
 
 \begin{proposition}
@@ -235,7 +235,7 @@ Then
 \end{itemize}
 \end{proposition}
 
-One consequence of initial algebra semantics, is that HITs are unique up to equality if the univalence axiom holds.
+One consequence of initial algebra semantics, is that HITs are unique up to path equality if the univalence axiom holds.
 This result is a consequence of the fact that the bicategory of algebras is \emph{univalent}.
 Recall that a bicategory is univalent if
 equality between objects $X$ and $Y$ is equivalent to adjoint equivalences between $X$ and $Y$
@@ -244,10 +244,10 @@ and equality of 1-cells $f$ and $g$ is equivalent to invertible 2-cells between 
 Using the methods employed by Ahrens \etal \ one can show that the bicategory of algebras
 is univalent.
 Since biinitial objects are unique up to adjoint equivalence, one can conclude that HITs are unique up
-to equality.
+to path equality.
 
 \begin{proposition}
-Let $\sign$ be a signature and let $H_1$ and $H_2$ are HITs for $\sign$.
+Let $\sign$ be a signature and let $H_1$ and $H_2$ be HITs for $\sign$.
 Denote the underlying algebras of $H_1$ and $H_2$ by $X_1$ and $X_2$.
 Then $X_1 = X_2$.
 \end{proposition}

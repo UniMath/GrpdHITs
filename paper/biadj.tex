@@ -5,11 +5,11 @@ which is the groupoid quotient on the carrier.
 We do that in such a way that the obtained pseudofunctor preserves biinitiality,
 so that we obtain the HIT by constructing a biinitial object in $\algG{\sign}$.
 
-One class of pseudofunctors which preserve biinitial objects, are left biadjoints.
-Let us state that more precisely, so suppose that we have bicategories $\B$ and $\C$, a left biadjoint pseudofunctor $L : \pseudo(\B, \C)$, and an object $x : \B$.
+One class of pseudofunctors which preserve biinitial objects is given by left biadjoints.
+More precisely, suppose that we have bicategories $\B$ and $\C$, a left biadjoint pseudofunctor $L : \pseudo(\B, \C)$, and an object $x : \B$.
 Then the object $L(x)$ is biinitial if $x$ is.
 
-Instead of just lifting the groupoid quotient to the level of algebras,
+Instead of directly lifting the groupoid quotient to the level of algebras,
 we first show that the groupoid quotient is a left biadjoint and then we lift that biadjunction to the level of algebras.
 To do so, we use the fact we defined the bicategory of algebras via displayed bicategories.
 This way we can define the biadjunction on each part of the structure separately.
@@ -45,10 +45,11 @@ Suppose that we have displayed pseudofunctors $\FF : \disppsfun{\D_1}{\D_2}{F}$ 
 and a pseudotransformation $\theta : \pstrans{F}{G}$.
 Then a \fat{displayed pseudotransformation} $\thetatheta$ from $\FF$ to $\GG$ over $\theta$ consists of
 \begin{itemize}
-	\item For all objects $x : \B$ and $\xx : \D_1(x)$ a displayed 1-cell $\thetatheta_1(x) : \dmor{\FF_0(\xx)}{\GG_0(\xx)}{\theta(x)}$;
+	\item For all objects $x : \B$ and $\xx : \D_1(x)$ a displayed 1-cell $\thetatheta_0(x) : \dmor{\FF_0(\xx)}{\GG_0(\xx)}{\theta(x)}$;
 	\item For all 1-cells $f : x \onecell y$ and $\ff : \dmor{\xx}{\yy}{f}$ a displayed invertible 2-cell
-	$\thetatheta_2(f) : \dtwo{\thetatheta_1(\xx) \cdot \FF_1(\ff)}{\GG_1(\ff) \cdot \thetatheta_1(\yy)}{\theta(f)}$.
+	$\thetatheta_1(f) : \dtwo{\thetatheta_0(\xx) \cdot \FF_1(\ff)}{\GG_1(\ff) \cdot \thetatheta_0(\yy)}{\theta_1(f)}$.
 \end{itemize}
+Here $\theta_1$ denotes the family of invertible 2-cells corresponding to the naturality squares of $\theta$.
 Again several coherencies must be satisfied and the precise formulation can be found in the formalization.
 The type of displayed pseudotransformatons from $\FF$ to $\GG$ over $\theta$ is denoted by $\disppstrans{\FF}{\GG}{\theta}$.
 \end{definition}
@@ -85,16 +86,16 @@ Before we can define displayed biadjunctions, we need several operations on the 
 We have the following
 \begin{itemize}
 	\item We have $\id(\D) : \disppsfun{\D}{\D}{\id(\B)}$
-	where $\id(\B)$ is the identity;
+	where $\id(\B)$ is the identity pseudofunctor;
 	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$ and $\GG : \disppsfun{\D_2}{\D_3}{G}$,
 	we have $\FF \cdot \GG : \disppsfun{\D_1}{\D_3}{F \cdot G}$
-	where $F \cdot G$ is the composition;
+	where $F \cdot G$ is the composition of pseudofunctors;
 	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$,
 	we have $\id_1(\FF) : \disppstrans{\FF}{\FF}{\id_1(F)}$
-	where $\id_1(F)$ is the identity transformation on $F$;
+	where $\id_1(F)$ is the identity pseudotransformation on $F$;
 	\item Given $\thetatheta : \disppstrans{\FF}{\GG}{\theta}$ and $\thetatheta' : \disppstrans{\GG}{\HH}{\theta'}$,
 	we have $\thetatheta \vcomp \thetatheta' : \disppstrans{\FF}{\HH}{\theta \vcomp \theta'}$
-	where $\theta \vcomp \theta'$ is the composition;
+	where $\theta \vcomp \theta'$ is the composition of pseudotrasformations;
 	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$, $\GG : \disppsfun{\D_2}{\D_3}{G}$, $\HH : \disppsfun{\D_2}{\D_3}{H}$, and $\thetatheta : \disppstrans{\GG}{\HH}{\theta}$,
 	we have $\FF \whiskerl \thetatheta : \disppsfun{\FF \cdot \GG}{\FF \cdot \HH}{F \whiskerl \theta}$;
 	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$, $\GG : \disppsfun{\D_1}{\D_2}{G}$, $\HH : \disppsfun{\D_2}{\D_3}{H}$, and $\thetatheta : \disppstrans{\FF}{\GG}{\theta}$,
@@ -103,10 +104,10 @@ We have the following
 	we have
 	\[
 	\lunitor{\FF} : \disppstrans{\id \cdot \FF}{\FF}{\lunitor{F}}, \quad
-	\runitor{\FF} : \disppstrans{\FF \cdot \id}{\FF}{\runitor{\FF}};
-	\]
-	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$,
-	we have
+	\runitor{\FF} : \disppstrans{\FF \cdot \id}{\FF}{\runitor{\FF}},
+ 	\]
+%% 	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$,
+%% 	we have
 	\[
 	\linvunitor{\FF} : \disppstrans{\FF}{\id \cdot \FF}{\linvunitor{F}}, \quad
 	\rinvunitor{\FF} : \disppstrans{\FF}{\FF \cdot \id}{\rinvunitor{\FF}};
@@ -130,7 +131,7 @@ Suppose, that we also have displayed bicategories $\D_1$ and $\D_2$ over $\B_1$ 
 and a displayed pseudofunctor $\LL : \disppsfun{\D_1}{\D_2}{L}$.
 Then we say $\LL$ is a \fat{displayed left biadjoint pseudofunctor} if we have
 \begin{itemize}
-	\item A displayed pseudofunctors
+	\item A displayed pseudofunctor
 	$
 	\RR : \disppsfun{\D_2}{\D_1}{R}
 	$;
