@@ -24,10 +24,8 @@ Inductive $\gquotType$ $(G : \grpd)$ :=
 | $\gcl$ : $\functions{G}{\gquotType(G)}$
 | $\gcleq$ : $\depprod{(x, y : G) (f : \mor{G}{x}{y})}{\gcl(x) = \gcl(y)}$
 | $\ge$ : $\depprod{(x : G)}{\gcleq(\idgrpd{x}) = \refl{\gcl(x)}}$
-| $\gconcat$ : $\depprod{(x, y, z : G)(f : \mor{G}{x}{y})(g : \mor{G}{y}{z})}{}$
-           $\gcleq(\compgrpd{f}{g}) = \concat{\gcleq(f)}{\gcleq(g)}$
-| $\gtrunc$ : $\depprod{(x, y : \gquotType(G))(p, q: x = y) (r, s : p = q)}$
-           ${r = s}$
+| $\gconcat$ : $\depprod{(x, y, z : G)(f : \mor{G}{x}{y})(g : \mor{G}{y}{z})}{\gcleq(\compgrpd{f}{g}) = \concat{\gcleq(f)}{\gcleq(g)}}$
+| $\gtrunc$ : $\depprod{(x, y : \gquotType(G))(p, q: x = y) (r, s : p = q)}{r = s}$
 \end{lstlisting}
 
 To formally add this type to our theory, we need to provide
