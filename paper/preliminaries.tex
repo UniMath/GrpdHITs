@@ -183,10 +183,11 @@ Let $\B_1$ and $\B_2$ be bicategories.
 A \fat{biadjunction} from $\B_1$ to $\B_2$ consists of
 \begin{itemize}
 	\item pseudofunctors $L : \pseudo(\B_1, \B_2)$ and $R : \pseudo(\B_2, \B_1)$;
-	\item pseudotransformations $\eta : \pstrans{\id(\B_1)}{R \circ L}$ and $\varepsilon : \pstrans{L \circ R}{\id(\B_2)}$;
+	\item pseudotransformations $\eta : \pstrans{\id(\B_1)}{L \cdot R}$ and $\varepsilon : \pstrans{R \cdot L}{\id(\B_2)}$;
 	\item invertible modifications
 	\[
-	\tau_1 : \modif{\rho(L)^{-1} \vcomp L \whiskerl \eta \vcomp \alpha(L, R, L) \vcomp \varepsilon \whiskerr L \vcomp \lambda(L)}{\id(L)}
+	\tau_1 : \modif{\rho(R)^{-1} \vcomp R \whiskerl \eta \vcomp \alpha(R, L, R) \vcomp \varepsilon \whiskerr R \vcomp \lambda(R)}{\id(R)}
+	%\tau_1 : \modif{\rho(L)^{-1} \vcomp L \whiskerl \eta \vcomp \alpha(L, R, L) \vcomp \varepsilon \whiskerr L \vcomp \lambda(L)}{\id(L)}
 	\]
 	\[
 	\tau_2 : \modif{\lambda(R)^{-1} \vcomp \eta \whiskerr R \vcomp \alpha(R, L, R)^{-1} \vcomp R \whiskerl \varepsilon \vcomp \rho(R)}{\id(R)}.
