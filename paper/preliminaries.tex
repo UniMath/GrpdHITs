@@ -1,4 +1,71 @@
-\begin{figure*}
+\subsection{Groupoid Quotient}
+Let us start by formally introducing the groupoid quotient \cite{sojakovaPhD}.
+The groupoid quotient is a higher dimensional version of the set quotient,
+so let us quickly recall the set quotient.
+Given a setoid $(X,R)$ (a set $X$ with an equivalence relation $R$ valued in propositions on $X$),
+the set quotient gives a type $\quot{X}{R}$, which is $X$ with the points identified according to $R$.
+Note that $\quot{X}{R}$ always is a set since $R$ becomes the equality.
+
+Instead of a setoid, the groupoid quotient takes a groupoid as input.
+Recall that a groupoid is a category in which every morphism is invertible.
+In particular, each groupoid has identity morphisms, denoted by $\idgrpd{x}$, and a composition operation.
+The composition of $f$ and $g$ is denoted by $\compgrpd{f}{g}$.
+In addition, the type of morphisms from $x$ to $y$ is required to be a set.
+We write $\grpd$ for the type of groupoids.
+
+Given $G : \grpd$, the groupoid quotient gives a 1-type $\gquotType(G)$.
+In this type, the points are objects of $G$
+and these are identified according to the morphisms in $G$.
+In addition, the groupoid structure must be preserved.
+Informally, we define the groupoid quotient as the following HIT.
+
+\begin{lstlisting}[mathescape=true]
+Inductive $\gquotType$ $(G : \grpd)$ :=
+| $\gcl$ : $\functions{G}{\gquotType(G)}$
+| $\gcleq$ : $\depprod{(x, y : G) (f : \mor{G}{x}{y})}{\gcl(x) = \gcl(y)}$
+| $\ge$ : $\depprod{(x : G)}{\gcleq(\idgrpd{x}) = \refl{\gcl(x)}}$
+| $\gconcat$ : $\depprod{(x, y, z : G)(f : \mor{G}{x}{y})(g : \mor{G}{y}{z})}{}$
+           $\gcleq(\compgrpd{f}{g}) = \concat{\gcleq(f)}{\gcleq(g)}$
+| $\gtrunc$ : $\depprod{(x, y : \gquotType(G))(p, q: x = y) (r, s : p = q)}$
+           ${r = s}$
+\end{lstlisting}
+
+To formally add this type to our theory, we need to provide
+introduction, elimination, and computation rules for $\gquotType(G)$.
+Formulating the elimination principle requires two preliminary notions.
+These are inspired by the work of Licata and Brunerie \cite{licata2015cubical}.
+The first of these gives paths in a dependent type over a path in the base.
+
+\begin{definition}
+\label{def:path_over}
+Given a type $X : \Type$,
+a type family $Y : \functions{X}{\Type}$,
+points $x_1, x_2 : X$,
+a path $p : x_1 = x_2$,
+and points $\overline{x_1} : Y(x_1)$ and $\overline{x_2} : Y(x_2)$ over $x_1$ and $x_2$ respectively,
+we define the type $\pathover[Y]{p}{\overline{x_1}}{\overline{x_2}}$ of \fat{paths over} $p$ from $\overline{x_1}$ to $\overline{x_2}$ by path induction on $p$
+by saying that the paths over the identity path $\refl{x}$ from $\overline{x_1}$ to $\overline{x_2}$ are just paths $\overline{x_1} = \overline{x_2}$.
+\end{definition}
+
+Note that the groupoid quotient also has constructors for paths between paths.
+This means that we also need a dependent version of 2-paths,
+and inspired by the terminology of globular sets, we call these \emph{globes} over a given 2-path.
+We define them as follows.
+
+\begin{definition}
+\label{def:globe_over}
+Let $X$, $Y$, and $x_1, x_2$ be as in Definition \ref{def:path_over}.
+Suppose that we have paths $p, q : x_1 = x_2$,
+a 2-path $g : p = q$,
+and paths $\pover{p} : \pathover{p}{\overline{x_1}}{\overline{x_2}}$ and $\pover{q} : \pathover{q}{\overline{x_1}}{\overline{x_2}}$ over $p$ and $q$ respectively.
+We define the type $\globeover{g}{\pover{p}}{\pover{q}}$ of \fat{globes over} $g$ from $\pover{p}$ to $\pover{q}$ by path induction on $g$
+by saying that the paths over the identity path $\refl{p}$ are just paths $\pover{p} = \pover{q}$.
+\end{definition}
+
+From this point on, we assume that our type theory has the groupoid quotient.
+More specifically, we assume the following axiom.
+
+\begin{figure*}[t]
 Introduction rules: 
 
 \vspace{2pt}
@@ -74,73 +141,6 @@ For $\gcleq$: $\apd{(\gind(\gclY, \gcleqY, \geY, \gconcatY))}{(\gcleq(f))} = \gc
 \caption{Introduction, elimination, and computation rules for the groupoid quotient \cite{sojakovaPhD}.}
 \label{fig:gquot}
 \end{figure*}
-		
-\subsection{Groupoid Quotient}
-Let us start by formally introducing the groupoid quotient \cite{sojakovaPhD}.
-The groupoid quotient is a higher dimensional version of the set quotient,
-so let us quickly recall the set quotient.
-Given a setoid $(X,R)$ (a set $X$ with an equivalence relation $R$ valued in propositions on $X$),
-the set quotient gives a type $\quot{X}{R}$, which is $X$ with the points identified according to $R$.
-Note that $\quot{X}{R}$ always is a set since $R$ becomes the equality.
-
-Instead of a setoid, the groupoid quotient takes a groupoid as input.
-Recall that a groupoid is a category in which every morphism is invertible.
-In particular, each groupoid has identity morphisms, denoted by $\idgrpd{x}$, and a composition operation.
-The composition of $f$ and $g$ is denoted by $\compgrpd{f}{g}$.
-In addition, the type of morphisms from $x$ to $y$ is required to be a set.
-We write $\grpd$ for the type of groupoids.
-
-Given $G : \grpd$, the groupoid quotient gives a 1-type $\gquotType(G)$.
-In this type, the points are objects of $G$
-and these are identified according to the morphisms in $G$.
-In addition, the groupoid structure must be preserved.
-Informally, we define the groupoid quotient as the following HIT.
-
-\begin{lstlisting}[mathescape=true]
-Inductive $\gquotType$ $(G : \grpd)$ :=
-| $\gcl$ : $\functions{G}{\gquotType(G)}$
-| $\gcleq$ : $\depprod{(x, y : G) (f : \mor{G}{x}{y})}{\gcl(x) = \gcl(y)}$
-| $\ge$ : $\depprod{(x : G)}{\gcleq(\idgrpd{x}) = \refl{\gcl(x)}}$
-| $\gconcat$ : $\depprod{(x, y, z : G)(f : \mor{G}{x}{y})(g : \mor{G}{y}{z})}{}$
-           $\gcleq(\compgrpd{f}{g}) = \concat{\gcleq(f)}{\gcleq(g)}$
-| $\gtrunc$ : $\depprod{(x, y : \gquotType(G))(p, q: x = y) (r, s : p = q)}$
-           ${r = s}$
-\end{lstlisting}
-
-To formally add this type to our theory, we need to provide
-introduction, elimination, and computation rules for $\gquotType(G)$.
-Formulating the elimination principle requires two preliminary notions.
-These are inspired by the work of Licata and Brunerie \cite{licata2015cubical}.
-The first of these gives paths in a dependent type over a path in the base.
-
-\begin{definition}
-\label{def:path_over}
-Given a type $X : \Type$,
-a type family $Y : \functions{X}{\Type}$,
-points $x_1, x_2 : X$,
-a path $p : x_1 = x_2$,
-and points $\overline{x_1} : Y(x_1)$ and $\overline{x_2} : Y(x_2)$ over $x_1$ and $x_2$ respectively,
-we define the type $\pathover[Y]{p}{\overline{x_1}}{\overline{x_2}}$ of \fat{paths over} $p$ from $\overline{x_1}$ to $\overline{x_2}$ by path induction on $p$
-by saying that the paths over the identity path $\refl{x}$ from $\overline{x_1}$ to $\overline{x_2}$ are just paths $\overline{x_1} = \overline{x_2}$.
-\end{definition}
-
-Note that the groupoid quotient also has constructors for paths between paths.
-This means that we also need a dependent version of 2-paths,
-and inspired by the terminology of globular sets, we call these \emph{globes} over a given 2-path.
-We define them as follows.
-
-\begin{definition}
-\label{def:globe_over}
-Let $X$, $Y$, and $x_1, x_2$ be as in Definition \ref{def:path_over}.
-Suppose that we have paths $p, q : x_1 = x_2$,
-a 2-path $g : p = q$,
-and paths $\pover{p} : \pathover{p}{\overline{x_1}}{\overline{x_2}}$ and $\pover{q} : \pathover{q}{\overline{x_1}}{\overline{x_2}}$ over $p$ and $q$ respectively.
-We define the type $\globeover{g}{\pover{p}}{\pover{q}}$ of \fat{globes over} $g$ from $\pover{p}$ to $\pover{q}$ by path induction on $g$
-by saying that the paths over the identity path $\refl{p}$ are just paths $\pover{p} = \pover{q}$.
-\end{definition}
-
-From this point on, we assume that our type theory has the groupoid quotient.
-More specifically, we assume the following axiom.
 
 \begin{axiom}
 For each groupoid $G$ there is a type $\gquotType(G)$ which satisfies the rules in Figure \ref{fig:gquot}.
