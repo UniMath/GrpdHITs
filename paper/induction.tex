@@ -99,7 +99,7 @@ elimination principle with respect to 1-types.
 \begin{problem}
 \label{prob:total_alg}
 Given an algebra $X$ for a signature $\sign$ and a displayed algebra $Y$ over $X$,
-to construct an algebra $\TotalAlg{Y}$ and a morphism $\pi_1 : \TotalAlg{Y} \onecell X$.
+to construct an algebra $\TotalAlg{Y}$ for $\sign$ and a morphism $\pi_1 : \TotalAlg{Y} \onecell X$ of algebras.
 \end{problem}
 
 \begin{construction}{prob:total_alg}
@@ -136,7 +136,7 @@ Now the computation rule for $\leftLoop$ ought to equate $\apd{f}{\leftLoop}$ an
 However, such an equation does not type check since $\apd{f}{\leftLoop}$ has type $\pathover{\leftLoop}{f(b)}{f(b)}$ while $p_l$ has type $\pathover{\leftLoop}{b}{b}$.
 In conclusion, we cannot formulate the computation rules the same way as we did for the groupoid quotient.
 
-Our solution to this problem is to define a type of \emph{squares} over a given 2-path similarly to Definition \ref{def:globe_over}.
+Our solution to this problem is to define a type of \emph{squares} over a given 2-path similarly to Definition \ref{def:globe_over} \cite{licata2015cubical}.
 
 \begin{definition}
 Let $X$ be a type and let $Y$ be a type family on $X$.
@@ -242,7 +242,7 @@ Recall that a bicategory is univalent if
 equality between objects $X$ and $Y$ is equivalent to adjoint equivalences between $X$ and $Y$
 and equality of 1-cells $f$ and $g$ is equivalent to invertible 2-cells between $f$ and $g$
 \cite{bicatjournal}.
-Using the methods employed by Ahrens \etal \ one can show that the bicategory of algebras
+Using the methods employed by Ahrens \etal \ \cite{bicatjournal} one can show that the bicategory of algebras
 is univalent.
 Since biinitial objects are unique up to adjoint equivalence, one can conclude that HITs are unique up
 to path equality.

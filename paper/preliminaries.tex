@@ -145,7 +145,7 @@ For each groupoid $G$ there is a type $\gquotType(G)$ which satisfies the rules 
 \end{axiom}
 
 Note that there are no computation rules for $\gconcat$, $\ge$, and $\gtrunc$,
-because such rules follow from the fact that $Y$ is a family of 1-types.
+because equations on homotopies follow automatically from the fact that $Y$ is a family of 1-types.
 
 \subsection{Bicategory Theory}
 The upcoming constructions make heavy use of notions from bicategory theory \cite{10.1007/BFb0074299,leinster:basic-bicats}
@@ -155,16 +155,17 @@ Here we recall some examples of bicategories and the basics of displayed bicateg
 A bicategory consists of objects, 1-cells between objects, and 2-cells between 1-cells.
 The type of 1-cells from $x$ to $y$ is denoted by $x \onecell y$ and the type of 2-cells from $f$ to $g$ is denoted by $f \twocell g$.
 Note that the type $f \twocell g$ is required to be a set.
-There are identity 1-cells and 2-cells denoted by $\id_1$ and $\id_2$ respectively, composition of 1-cells $f$ and $g$ is denoted by $f \cdot g$,
+There are identity 1-cells and 2-cells denoted by $\id_1$ and $\id_2$ respectively. Composition of 1-cells $f$ and $g$ is denoted by $f \cdot g$,
 and the vertical composition of 2-cells $\tc$ and $\tc'$ is denoted by $\tc \vcomp \tc'$.
+Note that we use diagrammatic order for composition.
 The left whiskering of a 2-cell $\tc$ with 1-cell $f$ is denoted by $f \whiskerl \tc$ and right whiskering of $\tc$ with a 1-cell $g$ is denoted by $\tc \whiskerr g$. 
-Unitality and associativity of vertical composition of 2-cells hold strictly, while For 1-cells these laws hold only up to invertible 2-cell. Given 1-cell $f : A \onecell B$, there are invertible 2-cells $\lunitor{f} : \id_1(A) \cdot f \twocell f$ and $\runitor{f} : f \cdot \id_1(B) \twocell f$.
+Unitality and associativity of vertical composition of 2-cells hold strictly, while for 1-cells these laws hold only up to invertible 2-cells. Given 1-cell $f : A \onecell B$, there are invertible 2-cells $\lunitor{f} : \id_1(A) \cdot f \twocell f$ and $\runitor{f} : f \cdot \id_1(B) \twocell f$.
 Given three composable 1-cells $f,g$ and $h$, there is an invertible 2-cell $\lassoc{f}{g}{h} : f \cdot (g \cdot h) \twocell (f \cdot g) \cdot h$.
 
 Let us fix some notation before continuing.  Given bicategories $\B_1$
 and $\B_2$, we write $\pseudo(\B_1, \B_2)$ for the type of
 pseudofunctors from $\B_1$ to $\B_2$. Pseudofunctors preserve identity
-and composition of 1-cells up to invertible 2-cell. Given a
+and composition of 1-cells up to an invertible 2-cell. Given a
 pseudofunctor $F : \pseudo(\B_1, \B_2)$ and an object $A$ of $\B_1$,
 there are invertible 2-cells $\identitor{F} :\id_1(F(A)) \twocell
 F(\id_1(A))$ and $\compositor{F} : F(f) \cdot F(g) \twocell F(f \cdot
@@ -200,7 +201,7 @@ If we have $L \dashv R$, we say that $L$ is \fat{left biadjoint} to $R$.
 Before presenting the definition of coherent biadjunction, let us introduce some notation.
 Suppose, that we have a biadjunction $L \dashv R$ where $L : \pseudo(\B_1, \B_2)$.
 For each $x : \B_1$ we get a 1-cell $\eta(x) : x \onecell R(L(x))$ and for $x : \B_2$, we get a 1-cell $\varepsilon(x) : L(R(x)) \onecell x$.
-Given $x : \B_1$, we get an invertible 2-cell $\widehat{\tau_2(x)} : L(\eta(x)) \cdot \varepsilon(L(x)) \twocell \id_1(L(x))$.
+Given $x : \B_1$, we get an invertible 2-cell $\widehat{\tau_2(x)} : L(\eta(x)) \cdot \varepsilon(L(x)) \twocell \id_1(L(x))$ from $\tau_2$.
 Similarly, we define an invertible 2-cell $\widehat{\tau_1(x)} : \eta(R(x)) \cdot R(\varepsilon(x)) \twocell \id_1(R(x))$ for $x : \B_2$.
 
 \begin{definition}
