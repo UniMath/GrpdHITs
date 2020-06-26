@@ -1,5 +1,7 @@
 The algebra structure only represents the introduction rule
 and the next step is to define the elimination and computation rules for higher inductive types.
+Furthermore, we show that biinitial algebras satisfy the induction principle.
+
 Before we can formulate these principles, we need to define dependent actions of polynomials, path endpoints, and homotopy endpoints.
 All of these constructions are done by induction and details can be found in the literature \cite{DBLP:journals/entcs/DybjerM18,hermida1998structural,van2019construction}.
 
@@ -48,25 +50,25 @@ to construct an equality
 \begin{problem}
 \label{prob:homot_dact}
 Let $\sign$ be a signature.
-Let $X$ be a type with a function $c_X : \polyAct{\pointconstr}{X} \rightarrow X$
-and for each $j : \pathlabel$ and $x : \polyAct{\patharg_j}{X}$ a path $p_X(j, x) : \semE{\pathleft_j}(x) = \semE{\pathright_j}(x)$.
+Let $X$ be a type with a function $c_X : \polyAct{\pointconstr[\sign]}{X} \rightarrow X$
+and for each $j : \pathlabel[\sign]$ and $x : \polyAct{\patharg[\sign]_j}{X}$ a path $p_X(j, x) : \semE{\pathleft[\sign]_j}(x) = \semE{\pathright[\sign]_j}(x)$.
 In addition, suppose that $Y$ is a type family on $X$,
-that we have a function $c_Y : \depprod{(x : \polyAct{\pointconstr}{X})}{\polyDact{\pointconstr}{Y}(x) \rightarrow Y(c_X(x))}$,
-and that for all $j  : \pathlabel$ and points $x : \polyAct{\patharg_j}{X}$ and $\xx : \polyDact{\patharg_j}{Y}(x)$,
-we have a path $p_Y : \pathover{p_X(j, x)}{\pathendpointDact{\pathleft_j}{\xx}}{\pathendpointDact{\pathright_j}{\xx}}$.
-Furthermore, let $j : \homotlabel$, let $x : \homotpointarg_j(X)$ and $\xx : \polyDact{\homotpointarg_j}{Y}(x)$ be points
-and let $w : \semE{\pathargleft_j}(x) = \semE{\pathargright_j}(x)$
-and $\disp{w} : \pathover{p}{\pathendpointDact{\pathargleft_j}{\xx}}{\pathendpointDact{\pathargright_j}{\xx}}$
+that we have a function $c_Y : \depprod{(x : \polyAct{\pointconstr[\sign]}{X})}{\polyDact{\pointconstr[\sign]}{Y}(x) \rightarrow Y(c_X(x))}$,
+and that for all $j  : \pathlabel[\sign]$ and points $x : \polyAct{\patharg[\sign]_j}{X}$ and $\xx : \polyDact{\patharg[\sign]_j}{Y}(x)$,
+we have a path $p_Y : \pathover{p_X(j, x)}{\pathendpointDact{\pathleft[\sign]_j}{\xx}}{\pathendpointDact{\pathright[\sign]_j}{\xx}}$.
+Furthermore, let $j : \homotlabel[\sign]$, let $x : \homotpointarg[\sign]_j(X)$ and $\xx : \polyDact{\homotpointarg[\sign]_j}{Y}(x)$ be points
+and let $w : \semE{\pathargleft[\sign]_j}(x) = \semE{\pathargright[\sign]_j}(x)$
+and $\disp{w} : \pathover{p}{\pathendpointDact{\pathargleft[\sign]_j}{\xx}}{\pathendpointDact{\pathargright[\sign]_j}{\xx}}$
 be paths.
-Then for each homotopy endpoint $h : \homotendpoint{\pathleft}{\pathright}{\pathargleft_j}{\pathargright_j}{\homotpathleft_j}{\homotpathright_j}$, 
+Then for each homotopy endpoint $h : \homotendpoint{\pathleft[\sign]}{\pathright[\sign]}{\pathargleft[\sign]_j}{\pathargright[\sign]_j}{\homotpathleft[\sign]_j}{\homotpathright[\sign]_j}$, 
 to construct a path
 \[
-\homotendpointDact{h}{\xx, \disp{w}} : \pathover{\homotendpointAct{h}{x, w}}{\pathendpointDact{\homotpathleft_j}{\xx}}{\pathendpointDact{\homotpathright_j}{\xx}}.
+\homotendpointDact{h}{\xx, \disp{w}} : \pathover{\homotendpointAct{h}{x, w}}{\pathendpointDact{\homotpathleft[\sign]_j}{\xx}}{\pathendpointDact{\homotpathright[\sign]_j}{\xx}}.
 \]
 \end{problem}
 
 With these notions in place, we define \emph{displayed algebras}.
-These represent the input of the elimination rule.
+A displayed algebra represents the input of the elimination rule.
 Furthermore, we show that each displayed algebra gives rise to a total algebra and a projection.
 
 \begin{definition}\label{def:disp_alg}
@@ -164,8 +166,8 @@ Then a \fat{section} of $Y$ consists of
 \end{definition}
 
 \begin{definition}
-Let $\sign$ be a signature and let $X$ be an algebra for $\sign$.
-Then we say that $X$ is a \fat{1-truncated higher inductive type} for $\sign$ if each displayed algebra $Y$ over $X$ has a section.
+Let $\sign$ be a signature.
+Then a \fat{1-truncated higher inductive type} for $\sign$ consists of an algebra $X$ be an algebra for $\sign$ and a proof that each displayed algebra $Y$ over $X$ has a section.
 \end{definition}
 
 Often we just say that $X$ is a HIT for $\sign$ instead of saying that $X$ is 1-truncated HIT.
