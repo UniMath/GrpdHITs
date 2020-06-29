@@ -501,10 +501,10 @@ we interpret path endpoints as pseudotransformations.
 \label{prob:sem_endpoint}
 Given $e : \pathendpoint{A}{P}{Q}$, to construct pseudotransformations
 \[
-\semE{e} : \pstrans{\semP{P} \circ \dproj{\DFAlg(\semP{A})}}{\semP{Q} \circ \dproj{\DFAlg(\semP{A})}},
+\semE{e} : \pstrans{\dproj{\DFAlg(\semP{A})} \cdot \semP{P}}{\dproj{\DFAlg(\semP{A})} \cdot \semP{Q}},
 \]
 \[
-\semEG{e} : \pstrans{\semPG{P} \circ \dproj{\DFAlg(\semPG{A})}}{\semPG{Q} \circ \dproj{\DFAlg(\semPG{A})}}.
+\semEG{e} : \pstrans{\dproj{\DFAlg(\semPG{A})} \cdot \semPG{P}}{\dproj{\DFAlg(\semPG{A})} \cdot \semPG{Q}}.
 \]
 \end{problem}
 
