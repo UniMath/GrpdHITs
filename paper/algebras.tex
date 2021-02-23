@@ -10,8 +10,8 @@ In this section, we study HITs of the following shape
 \begin{lstlisting}[mathescape=true]
 Inductive $H$ :=
 | $c$ : $\functions{\polyAct{P}{H}}{H}$
-| $p$ : $\depprod{(j : I) (x : \polyAct{Q}{H})}{l(x) = r(x)}$
-| $s$ : $\depprod{(j : J) (x : \polyAct{R}{H}) (r : a_1(x) = a_2(x))}{\homotendpointAct{q_1}{x, r} = \homotendpointAct{q_2}{x, r}}$
+| $p$ : $\depprod{(j : I) (x : \polyAct{Q_i}{H})}{l_i(x) = r_i(x)}$
+| $s$ : $\depprod{(j : J) (x : \polyAct{R_j}{H}) (r : a_j(x) = b_j(x))}{\homotendpointAct{p_j}{x, r} = \homotendpointAct{q_j}{x, r}}$
 | $t$ : $\depprod{(x, y : H) (q_1, q_2 : x = y) (r_1, r_2 : q_1 = q_2)}{r_1 = r_2}$
 \end{lstlisting}
 To see what the challenges are when defining such HITs, let us take a closer look at the torus.
