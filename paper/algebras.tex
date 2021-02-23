@@ -1,6 +1,6 @@
 Before we can discuss how to construct 1-truncated higher inductive types,
 we need to define signatures for those.
-Our notion of signature is similar to the one by Dybjer and Moenclaey \cite{DBLP:journals/entcs/DybjerM18}.
+Our notion of signature is similar to the one by Dybjer and Moeneclaey \cite{DBLP:journals/entcs/DybjerM18}.
 However, instead of defining them externally, we define a type of signatures within type theory
 just like what was done for inductive-recursive and inductive-inductive
 definitions \cite{Dybjer1999AFA,forsberg2012finite}. 
@@ -409,12 +409,12 @@ Note that all constructors except $\ZZ$ are recursive.
 We define a signature $\ZT$.
 \begin{itemize}
 	\item Take $\pointconstr[\ZT] \eqdef \sumP{\constantP{\unit}}{\idP}$;
-	\item Take $\pathlabel[\ZT] \eqdef \constantP{\unit}$ and for its unique inhabitant we take $\patharg[\ZT] \eqdef \idP$ and
+	\item Take $\pathlabel[\ZT] \eqdef \unit$ and for its unique inhabitant we take $\patharg[\ZT] \eqdef \idP$ and
 	\[
 	\pathleft[\ZT] \eqdef \comp{(\comp{\inre}{\constr})}{(\comp{\inre}{\constr})}, \quad
 	\pathright[\ZT] \eqdef \idENA;
 	\]
-	\item Take $\homotlabel[\ZT] \eqdef \constantP{\unit}$.
+	\item Take $\homotlabel[\ZT] \eqdef \unit$.
 	Furthermore, we take $\homotpointarg[\ZT] \eqdef \idP$ and $\pathargleft[\ZT] \eqdef \pathargright[\ZT] \eqdef \Ce(\unitt)$.
 	The endpoints $\homotpathleft$ and $\homotpathright$ encode $\ZS(\ZS(\ZS(x)))$ and $\ZS(x)$ respectively,
 	and for the left-hand side and right-hand side of this equation, we take
