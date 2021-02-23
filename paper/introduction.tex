@@ -106,7 +106,10 @@ Awodey \etal \ studied inductive types in homotopy type theory and prove initial
 algebra semantics \cite{AwodeyGS12}.
 Sojakova extended their result to various higher inductive types, among which
 are the groupoid quotient, W-suspensions, and the torus \cite{Sojakova15,sojakovaPhD}.
-In particular, homotopy initiality for the groupoid quotient was proven \cite[Theorem 196]{sojakovaPhD}.
+For these types, Sojakova proves that homotopy initiality is equivalent to the induction principle while we only show that the induction principle follows from homotopy initiality.
+Note that we consider a general types that have higher path constructors but are truncated.
+On the other hand, Sojakova looks at arbitrary types which are not necessarily 1-truncated, but she does not consider a general class of HITs with higher path constructor.
+In particular, homotopy initiality for the groupoid quotient was proven \cite[Theorem 196]{sojakovaPhD} while we prove
 Basold \etal \ \cite{BasoldGW17} defined a scheme for HITs allowing for both point and path constructors,
 but no higher constructors, and a similar scheme is given by
 Moeneclaey \cite{moeneclaey2016schema}. 
@@ -144,6 +147,8 @@ For examples such as real projective spaces and higher spheres, we can only defi
 Several classes of higher inductive types have already been reduced to simpler ones.
 Both Van Doorn and Kraus constructed propositional truncations from non-recursive higher inductive types
 \cite{Doorn16,Kraus16}.
+Van Doorn, Von Raumer, and Buchholtz showed that the groupoid quotient can be constructed using pushouts \cite{DoornRB17}.
+By combining their result with ours, we get that all finitary 1-truncated higher inductive types can be constructed from pushouts.
 Using the join construction, Rijke constructed several examples of HITs, namely $n$-truncations, the Rezk completion,
 and set quotients \cite{rijke2017join}.
 Awodey \etal \ gave an impredicative construction of finitary inductive types and some HITs \cite{awodey2018impredicative}. 
