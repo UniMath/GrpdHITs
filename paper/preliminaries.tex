@@ -13,6 +13,12 @@ The composition of $f$ and $g$ is denoted by $\compgrpd{f}{g}$.
 In addition, the type of morphisms from $x$ to $y$ is required to be a set.
 We write $\grpd$ for the type of groupoids.
 
+In homotopy type theory, groupoids (and more generally categories) are
+usually required to be univalent, meaning that the type of isomorphisms between objects
+in a groupoid is equivalent to to the type of equalities between objects. In this paper we
+do not use this requirement, so the groupoids in $\grpd$ are not
+necessarily univalent.
+
 Given $G : \grpd$, the groupoid quotient gives a 1-type $\gquotType(G)$.
 In this type, the points are objects of $G$
 and these are identified according to the morphisms in $G$.
@@ -242,18 +248,12 @@ We have
 Note that $\onetypes$ and $\grpd$ are actually (2,1)-categories just like the other bicategories that we use in this paper.
 However, in the formalization we do not use this fact so that we could reuse the work by Ahrens \etal \ \cite{bicatjournal}.
 
-In homotopy type theory, groupoids (and more generally categories) are
-usually required to be univalent, meaning that the type of isomorphisms between objects
-in a groupoid is equivalent to to the type of equalities between objects. In this paper we
-do not use this requirement, so the groupoids in $\grpd$ are not
-necessarily univalent.
-
-
 Next we discuss \emph{displayed bicategories}, which is our main tool to define bicategories of algebras for a signature.
 Intuitively, a displayed bicategory $\D$ over $\B$ represents structure and properties to be added to $\B$.
 Displayed bicategories generalize displayed categories to the bicategorical setting \cite{AhrensL19}.
 Each such $\D$ gives rise to a total bicategory $\total{\D}$.
-The full definition can be found in the paper by Ahrens \etal \ \cite{bicatjournal}, and here, we only show a part.
+The full definition can be found in the paper by Ahrens \etal \ \cite{bicatjournal}.
+Here, we only show a part.
 
 \begin{definition}
 Let $\B$ be a bicategory.
