@@ -15,7 +15,7 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 	\item Note  that each polynomial $P$ gives rise to a container $\hat{P}$.
 	Note that each container induces a W-type \cite{abbott2003categories},
 	and we define the type of objects of $G$ to be the W-type induced by $\hat{\pointconstr}$.
-	Denote this type by $\initob$.
+	Denote this type by $\initob$ and let $g_0 : \pointconstr(G_0) \to G_0$ its algebra map.
 	\item The morphisms of $G$ are constructed as a set quotient.
 	We first define for each $x, y : \initob$ a type $\initmor{x}{y}$
 	and for each $x, y : \initob$ and $f, g : \initmor{x}{y}$, we define a type $\initeq{f}{g}$.
@@ -30,6 +30,81 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 	\qedhere	
 \end{itemize}
 \end{construction}
+
+\begin{figure*}[t]
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$x : P(\initob)$}
+\BinaryInfC{$\initmorid{P}{x} : \initmor{x}{x}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$x,y : P(\initob)$}
+\AxiomC{$f : \initmor{x}{y}$}
+\TrinaryInfC{$\initmorinv{P}{f} : \initmor{y}{x}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$x,y,z : P(\initob)$}
+\AxiomC{$f : \initmor{x}{y}$}
+\AxiomC{$g : \initmor{y}{z}$}
+\QuaternaryInfC{$\initmorcomp{P}{f}{g} : \initmor{x}{z}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P,Q:\poly$}
+\AxiomC{$x,y : P(\initob)$}
+\AxiomC{$f : \initmor{x}{y}$}
+\TrinaryInfC{$\initmorinl{P+Q}{f} : \initmor{\inl(x)}{\inl(y)}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P,Q:\poly$}
+\AxiomC{$x,y : Q(\initob)$}
+\AxiomC{$f : \initmor{x}{y}$}
+\TrinaryInfC{$\initmorinr{P+Q}{f} : \initmor{\inr(x)}{\inr(y)}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P,Q : \poly$}
+\AxiomC{$x,y : P(\initob)$}
+\AxiomC{$w,z : Q(\initob)$}
+\AxiomC{$f : \initmor{x}{y}$}
+\AxiomC{$g : \initmor{w}{z}$}
+\QuinaryInfC{$\initmorpair{P\times Q}{f}{g} : \initmor{\pair{x}{w}}{\pair{y}{z}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$j : \pathlabel$}
+\AxiomC{$x : \patharg_j(\initob)$}
+\BinaryInfC{$\initmorpath{\idP}{f} : \initmor{\semE{\pathleft_j}(x)}{\semE{\pathright_j}(x)}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$x,y : \pointconstr(\initob)$}
+\AxiomC{$f : \initmor{x}{y}$}
+\BinaryInfC{$\initmorap{\idP}{f} : \initmor{g_0(x)}{g_0(y)}$}
+\end{bprooftree}
+\end{center}
+\caption{Rules for $\initmor{}{}$.}
+\label{fig:path_ep}
+\end{figure*}
 
 \begin{problem}
 \label{prob:hit_exist}
