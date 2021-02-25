@@ -100,6 +100,7 @@ A path congruence relation $R$ is a \fat{congruence} relation if $\toGrpdPathAlg
 Note that each congruence relation $R$ gives rise to an algebra $\toGrpdAlg{R} : \algG{\sign}$.
 By Construction \ref{constr:alg_biadj}, the groupoid quotient lifts to $\alggquot : \pseudo(\algG{\sign}, \algebra{\sign})$.
 Hence, we can construct an algebra $\alggquot(\toGrpdAlg{R}) : \algebra{\sign}$ from a congruence relation $R$.
+Note that the map $\gcl : X \rightarrow \alggquot(\toGrpdAlg{R})$ is a homomorphism of algebras.
 Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\alggquot(\toGrpdAlg{R})$.
 
 \begin{remark}
@@ -125,7 +126,7 @@ Then $f$ is an adjoint equivalence in $\algM(\sign)$ if its carrier is an adjoin
 \begin{theorem}\label{thm:iso_thm}
 Let $\sign$ be a signature.
 Suppose, we have algebras $X, Y : \algM(\sign)$ and an algebra morphism $f : X \onecell Y$.
-Then we have a congruence relation $R$ on $X$ and an adjoint equivalence $\overline{f} : \alggquot(\toGrpdAlg{R}) \onecell \Im(f)$.
+Then we have a congruence relation $R$ on $X$ and an adjoint equivalence $\overline{f} : \alggquot(\toGrpdAlg{R}) \onecell \Im(f)$ such that for each $x : X$ we have $\pi_1(\overline{f}(\gcl \> x)) = f \> x$.
 \end{theorem}
 
 \begin{proof}
@@ -135,4 +136,8 @@ Second, we factor the map $\ImProj{f}$ from $X$ to the image as a map $\overline
 Lastly, we show that the $\overline{f}$ is an adjoint equivalence using Proposition \ref{prop:algebra_adjequiv}.
 This is done by showing that the fibers are contractible.
 Showing that the fibers are inhabited and propositional is similarly to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
+
+The equality $\pi_1(\overline{f}(\gcl \> x)) = f \> x$ holds by definition of $\overline{f}$.
 \end{proof}
+
+The congruence relation $R$ is called the \fat{kernel} of $f$, and since $R$ is constructed as a groupoid quotient, we obtain the usual universal mapping property of the kernel from Remark \ref{remark:mapping_property_congruence}.
