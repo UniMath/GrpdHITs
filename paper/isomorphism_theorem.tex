@@ -106,8 +106,7 @@ Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\algg
 \begin{remark}
 \label{remark:mapping_property_congruence}
 Suppose that we have two algebras $X, Y : \algebra{\sign}$ and a congruence relation $R$ on $X$.
-From the biadjunction, we get a morphism $\overline{g} : \alggquot{\toGrpdAlg{R}} \onecell Y$ from a functor $g : R \onecell \algpgrpd{Y}$.
-Note that we have a definitional equality $\overline{g}(\gcl \> x) = g \> x$ and a propositional equality $\ap{\overline{g}}{(\gcleq \> p)} = g \> p$ where $p$ is a morphism in $R$ from $x$ to $y$.
+From the biadjunction, we get a unique morphism $\overline{g} : \alggquot{\toGrpdAlg{R}} \onecell Y$ from a functor $g : R \onecell \algpgrpd{Y}$ such that $\overline{g}(\gcl \> x) = g \> x$ and $\ap{\overline{g}}{(\gcleq \> p)} = g \> p$ where $p$ is a morphism in $R$ from $x$ to $y$.
 
 Using this, we can give conditions for when an algebra morphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
 We can unfold the definition to find the necessary ingredients for the factorization.
@@ -135,17 +134,14 @@ Then we have a congruence relation $R$ on $X$ such that
 \end{theorem}
 
 \begin{proof}
-The proof is done in three steps.
-First, we define the congruence relation $R$ on $X$ by setting $R(x, y) \eqdef f(x) = f(y)$.
-Second, we factor the map $\ImProj{f}$ from $X$ to the image as a map $\overline{f}$ from $\alggquot(\toGrpdAlg{R})$ to $\Im(f)$ using Construction \ref{remark:mapping_property_congruence}.
-Lastly, we show that the $\overline{f}$ is an adjoint equivalence using Proposition \ref{prop:algebra_adjequiv}.
-This is done by showing that the fibers are contractible.
-Showing that the fibers are inhabited and propositional is similarly to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
-
-The equality $\pi_1(\overline{f}(\gcl \> x)) = f \> x$ holds by definition of $\overline{f}$.
+We start by defining the congruence relation $R$ on $X$ by setting $R(x, y) \eqdef f(x) = f(y)$.
+Using Remark \ref{remark:mapping_property_congruence}, we can define the maps $\overline{f} : \alggquot(\toGrpdAlg{R}) \onecell Y$ and $\widetilde{f} : \alggquot(\toGrpdAlg{R}) \onecell \Im(f)$.
+Note that from Remark \ref{remark:mapping_property_congruence}, we also get that $\overline{f}$ satisfies the required equalities and that $\overline{f}$ is unique.
+To show that $\overline{f}$ is an adjoint equivalence, we use Proposition \ref{prop:algebra_adjequiv}, and we do that by showing that the fibers are contractible.
+Proving that the fibers are inhabited and propositional is similar to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
 \end{proof}
 
-The congruence relation $R$ is called the \fat{kernel} of $f$, and since $R$ is constructed as a groupoid quotient, we obtain the usual universal mapping property of the kernel from Remark \ref{remark:mapping_property_congruence}.
+The congruence relation $R$ is called the \fat{kernel} of $f$, and since $R$ is constructed as a groupoid quotient, we obtain the usual universal mapping property of the kernel.
 
 \remove{
 \begin{theorem}
