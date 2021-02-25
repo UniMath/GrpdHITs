@@ -122,33 +122,29 @@ The desired object is given in Construction \ref{constr:initial_grpd_alg}.
 \begin{center}
 \begin{bprooftree}
 \AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{f}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f,g : \initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\BinaryInfC{$\initeqgen{P}{g}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f,g,h : \initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\AxiomC{$\initeqgen{P}{g}{h}$}
+\TrinaryInfC{$\initeqgen{P}{f}{h}$}
+\end{bprooftree}
+\end{center}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
 \UnaryInfC{$\initeqgen{P}{\initmorcomp{f}{\initmorid{y}}}{f}$}
 \end{bprooftree}
 \begin{bprooftree}
 \AxiomC{$f : \initmorgen{P}{x}{y}$}
 \UnaryInfC{$\initeqgen{P}{\initmorcomp{\initmorid{x}}{f}}{f}$}
-\end{bprooftree}
-\end{center}
-
-\vspace{5pt}
-
-\begin{center}
-\begin{bprooftree}
-\AxiomC{$j : \pathlabel$}
-\AxiomC{$x, y : \patharg_j(G_0)$}
-\AxiomC{$p : \initmorgen{\patharg_j}{x}{y}$}
-\TrinaryInfC{$\initeqgen{\idP}{\initmorcomp{\initmorpath{j, x}}{\semE{\pathright}(p)}}{\initmorcomp{\semE{\pathleft}{(p)}}{\initmorpath{j, y}}}$}
-\end{bprooftree}
-\end{center}
-
-\vspace{5pt}
-
-\begin{center}
-\begin{bprooftree}
-\AxiomC{$j : \homotlabel$}
-\AxiomC{$x : \homotpointarg_j(G_0)$}
-\AxiomC{$p : \initmorgen{\homotpathtarg}{\semE{\pathargleft}(x)}{\semE{\pathargright}(x)}$}
-\TrinaryInfC{$\initeqgen{\idP}{\semH{\homotleft_j}(x, p)}{\semH{\homotright_j}(x, p)}$}
 \end{bprooftree}
 \end{center}
 
@@ -180,19 +176,26 @@ The desired object is given in Construction \ref{constr:initial_grpd_alg}.
 
 \begin{center}
 \begin{bprooftree}
+\AxiomC{$f,g:\initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\BinaryInfC{$\initeqgen{P}{\initmorinv{f}}{\initmorinv{g}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f_1,f_2 : \initmorgen{P}{x}{y}$}
+\AxiomC{$g : \initmorgen{P}{y}{z}$}
+\AxiomC{$\initeqgen{P}{f_1}{f_2}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f_1}{g}}{\initmorcomp{f_2}{g}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
 \AxiomC{$f : \initmorgen{P}{x}{y}$}
-\UnaryInfC{$\initeqgen{P}{f}{f}$}
-\end{bprooftree}
-\begin{bprooftree}
-\AxiomC{$f,g : \initmorgen{P}{x}{y}$}
-\AxiomC{$\initeqgen{P}{f}{g}$}
-\BinaryInfC{$\initeqgen{P}{g}{f}$}
-\end{bprooftree}
-\begin{bprooftree}
-\AxiomC{$f,g,h : \initmorgen{P}{x}{y}$}
-\AxiomC{$\initeqgen{P}{f}{g}$}
-\AxiomC{$\initeqgen{P}{g}{h}$}
-\TrinaryInfC{$\initeqgen{P}{f}{h}$}
+\AxiomC{$g_1,g_2 : \initmorgen{P}{y}{z}$}
+\AxiomC{$\initeqgen{P}{g_1}{g_2}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f}{g_1}}{\initmorcomp{f}{g_2}}$}
 \end{bprooftree}
 \end{center}
 
@@ -296,15 +299,10 @@ The desired object is given in Construction \ref{constr:initial_grpd_alg}.
 
 \begin{center}
 \begin{bprooftree}
-\AxiomC{$f,g:\initmorgen{P}{x}{y}$}
-\AxiomC{$\initeqgen{P}{f}{g}$}
-\BinaryInfC{$\initeqgen{P}{\initmorinv{f}}{\initmorinv{g}}$}
-\end{bprooftree}
-\begin{bprooftree}
-\AxiomC{$f_1,f_2 : \initmorgen{P}{x}{y}$}
-\AxiomC{$g : \initmorgen{P}{y}{z}$}
-\AxiomC{$\initeqgen{P}{f_1}{f_2}$}
-\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f_1}{g}}{\initmorcomp{f_2}{g}}$}
+\AxiomC{$j : \homotlabel$}
+\AxiomC{$x : \homotpointarg_j(G_0)$}
+\AxiomC{$p : \initmorgen{\homotpathtarg}{\semE{\pathargleft}(x)}{\semE{\pathargright}(x)}$}
+\TrinaryInfC{$\initeqgen{\idP}{\semH{\homotleft_j}(x, p)}{\semH{\homotright_j}(x, p)}$}
 \end{bprooftree}
 \end{center}
 
@@ -312,10 +310,10 @@ The desired object is given in Construction \ref{constr:initial_grpd_alg}.
 
 \begin{center}
 \begin{bprooftree}
-\AxiomC{$f : \initmorgen{P}{x}{y}$}
-\AxiomC{$g_1,g_2 : \initmorgen{P}{y}{z}$}
-\AxiomC{$\initeqgen{P}{g_1}{g_2}$}
-\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f}{g_1}}{\initmorcomp{f}{g_2}}$}
+\AxiomC{$j : \pathlabel$}
+\AxiomC{$x, y : \patharg_j(G_0)$}
+\AxiomC{$p : \initmorgen{\patharg_j}{x}{y}$}
+\TrinaryInfC{$\initeqgen{\idP}{\initmorcomp{\initmorpath{j, x}}{\semE{\pathright}(p)}}{\initmorcomp{\semE{\pathleft}{(p)}}{\initmorpath{j, y}}}$}
 \end{bprooftree}
 \end{center}
 
