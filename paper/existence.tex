@@ -169,8 +169,9 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \AxiomC{$\initeqgen{\idP}{\initmorap{\initmorid{x}}}{\initmorid{\constfont{c}^{\initob}(x)}}$}
 \end{bprooftree}
 \begin{bprooftree}
+\AxiomC{$f,g : \initmorgen{\pointconstr}{x}{y}$}
 \AxiomC{$\initeqgen{\pointconstr}{f}{g}$}
-\UnaryInfC{$\initeqgen{\idP}{\initmorap{f}}{\initmorap{g}}$}
+\BinaryInfC{$\initeqgen{\idP}{\initmorap{f}}{\initmorap{g}}$}
 \end{bprooftree}
 \end{center}
 
@@ -199,8 +200,9 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 
 \begin{center}
 \begin{bprooftree}
+\AxiomC{$f,g:\initmorgen{P}{x}{y}$}
 \AxiomC{$\initeqgen{P}{f}{g}$}
-\UnaryInfC{$\initeqgen{P+Q}{\initmorinl{f}}{\initmorinl{g}}$}
+\BinaryInfC{$\initeqgen{P+Q}{\initmorinl{f}}{\initmorinl{g}}$}
 \end{bprooftree}
 \begin{bprooftree}
 \AxiomC{$f : \initmorgen{P}{x}{y}$}
@@ -213,8 +215,9 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 
 \begin{center}
 \begin{bprooftree}
+\AxiomC{$f,g:\initmorgen{Q}{x}{y}$}
 \AxiomC{$\initeqgen{Q}{f}{g}$}
-\UnaryInfC{$\initeqgen{P+Q}{\initmorinr{f}}{\initmorinr{g}}$}
+\BinaryInfC{$\initeqgen{P+Q}{\initmorinr{f}}{\initmorinr{g}}$}
 \end{bprooftree}
 \begin{bprooftree}
 \AxiomC{$f : \initmorgen{Q}{x}{y}$}
@@ -229,10 +232,17 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \begin{bprooftree}
 \AxiomC{$\initeqgen{P\times Q}{\initmorpair{\initmorid{x}}{\initmorid{y}}}{\initmoridvar{\pair{x}{y}}}$}
 \end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
 \begin{bprooftree}
+\AxiomC{$f_1,f_2:\initmorgen{P}{x_1}{x_2}$}
+\AxiomC{$g_1,g_2:\initmorgen{Q}{y_1}{y_2}$}
 \AxiomC{$\initeqgen{P}{f_1}{f_2}$}
 \AxiomC{$\initeqgen{Q}{g_1}{g_2}$}
-\BinaryInfC{$\initeqgen{P\times Q}{\initmorpair{f_1}{g_1}}{\initmorpair{f_2}{g_2}}$}
+\QuaternaryInfC{$\initeqgen{P\times Q}{\initmorpair{f_1}{g_1}}{\initmorpair{f_2}{g_2}}$}
 \end{bprooftree}
 \end{center}
 
@@ -248,6 +258,32 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \end{bprooftree}
 \end{center}
 
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f,g:\initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\BinaryInfC{$\initeqgen{P}{\initmorinv{f}}{\initmorinv{g}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f_1,f_2 : \initmorgen{P}{x}{y}$}
+\AxiomC{$g : \initmorgen{P}{y}{z}$}
+\AxiomC{$\initeqgen{P}{f_1}{f_2}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f_1}{g}}{\initmorcomp{f_2}{g}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\AxiomC{$g_1,g_2 : \initmorgen{P}{y}{z}$}
+\AxiomC{$\initeqgen{P}{g_1}{g_2}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f}{g_1}}{\initmorcomp{f}{g_2}}$}
+\end{bprooftree}
+\end{center}
 
 \caption{Rules for the type $\initeqgen{P}{f}{g}$.}
 \label{fig:initmor}
