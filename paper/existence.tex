@@ -122,6 +122,28 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 
 \begin{center}
 \begin{bprooftree}
+\AxiomC{$j : \pathlabel$}
+\AxiomC{$x, y : \patharg_j(G_0)$}
+\AxiomC{$p : \initmorgen{\patharg_j}{x}{y}$}
+\TrinaryInfC{$\initeqgen{\idP}{\initmorcomp{\initmorpath{j, x}}{\semE{\pathright}(p)}}{\initmorcomp{\semE{\pathleft}{(p)}}{\initmorpath{j, y}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$j : \homotlabel$}
+\AxiomC{$x : \homotpointarg_j(G_0)$}
+\AxiomC{$p : \initmorgen{\homotpathtarg}{\semE{\pathargleft}(x)}{\semE{\pathargright}(x)}$}
+\TrinaryInfC{$\initeqgen{\idP}{\semH{\homotleft_j}(x, p)}{\semH{\homotright_j}(x, p)}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
 \AxiomC{$f : \initmorgen{P}{w}{x}$}
 \AxiomC{$g : \initmorgen{P}{x}{y}$}
 \AxiomC{$h : \initmorgen{P}{y}{z}$}
