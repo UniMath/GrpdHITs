@@ -15,7 +15,7 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 	\item Note  that each polynomial $P$ gives rise to a container $\hat{P}$.
 	Note that each container induces a W-type \cite{abbott2003categories},
 	and we define the type of objects of $G$ to be the W-type induced by $\hat{\pointconstr}$.
-	Denote this type by $\initob$ and let $g_0 : \pointconstr(G_0) \to G_0$ its algebra map.
+	Denote this type by $\initob$ and let $\constfont{c}^{\initob} : \pointconstr(\initob) \to \initob$ its algebra map.
 	\item The morphisms of $G$ are constructed as a set quotient.
 	First, we define an inductive type $\initmorgen{P}{x}{y}$, for each polynomial $P :\poly$ and elements $x, y : P (\initob)$. Its constructors are given in Figure \ref{fig:initmor}.
         When $P$ is $\idP$ and $x,y : \initob$, we write $\initmor{x}{y}$ instead of $\initmorgen{\idP}{x}{y}$. Afterwards, for each $x, y : \initob$ and $f, g : \initmor{x}{y}$, we define a type $\initeq{f}{g}$.
@@ -99,7 +99,7 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \begin{bprooftree}
 \AxiomC{$x,y : \pointconstr(\initob)$}
 \AxiomC{$f : \initmorgen{\pointconstr}{x}{y}$}
-\BinaryInfC{$\initmorap{f} : \initmorgen{\idP}{g_0(x)}{g_0(y)}$}
+\BinaryInfC{$\initmorap{f} : \initmorgen{\idP}{\constfont{c}^{\initob}(x)}{\constfont{c}^{\initob}(y)}$}
 \end{bprooftree}
 \end{center}
 \caption{Rules for the type $\initmorgen{P}{x}{y}$.}
