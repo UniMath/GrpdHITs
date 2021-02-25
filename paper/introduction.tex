@@ -102,13 +102,13 @@ The contributions of this paper are summarized as follows
 \end{itemize}
 \emph{\textbf{Related Work.}}
 Various schemes of higher inductive types have been defined and studied.
-Awodey \etal \ studied inductive types in homotopy type theory and prove initial
+Awodey \etal \ studied inductive types in homotopy type theory and proved initial
 algebra semantics \cite{AwodeyGS12}.
 Sojakova extended their result to various higher inductive types, among which
 are the groupoid quotient, W-suspensions, and the torus \cite{Sojakova15,sojakovaPhD}.
-For these types, Sojakova proves that homotopy initiality is equivalent to the induction principle while we only show that these two imply each other.
-Note that all the HITs we consider, are 1-truncated, while Sojakova looks at types which are not necessarily 1-truncated.
-However, while we consider a general class of HITs with higher path constructors, she only studies several examples of such HITs, namely the groupoid quotient, the torus, and higher truncations.
+For these types, Sojakova proved that homotopy initiality is equivalent to the induction principle while we only show that these two imply each other.
+Note that all the HITs we consider, are 1-truncated, while Sojakova looked at types which are not necessarily 1-truncated.
+However, while we consider a general class of HITs with higher path constructors, she only studied several examples of such HITs, namely the groupoid quotient, the torus, and higher truncations.
 Basold \etal \ \cite{BasoldGW17} defined a scheme for HITs allowing for both point and path constructors,
 but no higher constructors, and a similar scheme is given by
 Moeneclaey \cite{moeneclaey2016schema}. 
@@ -181,6 +181,7 @@ The formalization uses the version with \texttt{git} hash \href{https://github.c
 \url{https://github.com/nmvdw/GrpdHITs/tree/extended}
 \end{center}
 In our development, we slightly deviate from the UniMath philosophy by employing Coq's support for inductive type families.
+\\
 \emph{\textbf{Overview.}}
 We start by recalling the groupoid quotient and displayed bicategories in Section \ref{sec:prelims}.
 Displayed bicategories are our main tool to construct the bicategory of algebras for a signature.
