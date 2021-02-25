@@ -330,6 +330,7 @@
 % initial groupoid
 \newcommand{\initob}{G_0}
 \newcommand{\initmor}[2]{{#1 \sim #2}}
+\newcommand{\initmorgen}[3]{{#2 \sim_{#1} #3}}
 \newcommand{\initeq}[2]{{#1 \approx #2}}
 \newcommand{\initeqprop}[2]{{#1 \approx_p #2}}
 
@@ -449,13 +450,13 @@
 \newcommand{\remove}[1]{}
 
 % rules for \initmor
-\newcommand{\initmorid}[2]{\constructor{id}^{{\sim}}_{#1}(#2)}
-\newcommand{\initmorinv}[2]{\constructor{inv}^{{\sim}}_{#1}(#2)}
-\newcommand{\initmorcomp}[3]{\constructor{comp}^{{\sim}}_{#1}(#2,#3)}
-\newcommand{\initmorinl}[2]{\constructor{inl}^{{\sim}}_{#1}(#2)}
-\newcommand{\initmorinr}[2]{\constructor{inr}^{{\sim}}_{#1}(#2)}
-\newcommand{\initmorpair}[3]{\constructor{pair}^{{\sim}}_{#1}(#2,#3)}
-\newcommand{\initmorap}[2]{\constructor{ap}^{{\sim}}_{#1}(#2)}
-\newcommand{\initmorpath}[2]{\constructor{path}^{{\sim}}_{#1}(#2)}
+\newcommand{\initmorid}[1]{\constructor{id}_{{\sim}}(#1)}
+\newcommand{\initmorinv}[1]{\constructor{inv}_{{\sim}}(#1)}
+\newcommand{\initmorcomp}[2]{\constructor{comp}_{{\sim}}(#1,#2)}
+\newcommand{\initmorinl}[1]{\constructor{inl}_{{\sim}}(#1)}
+\newcommand{\initmorinr}[1]{\constructor{inr}_{{\sim}}(#1)}
+\newcommand{\initmorpair}[2]{\constructor{pair}_{{\sim}}(#1,#2)}
+\newcommand{\initmorap}[1]{\constructor{ap}_{{\sim}}(#1)}
+\newcommand{\initmorpath}[1]{\constructor{path}_{{\sim}}(#1)}
 
 
