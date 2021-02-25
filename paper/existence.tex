@@ -94,7 +94,7 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \begin{bprooftree}
 \AxiomC{$j : \pathlabel$}
 \AxiomC{$x : \patharg_j(\initob)$}
-\BinaryInfC{$\initmorpath{f} : \initmorgen{\idP}{\semE{\pathleft_j}(x)}{\semE{\pathright_j}(x)}$}
+\BinaryInfC{$\initmorpath{j,x} : \initmorgen{\idP}{\semE{\pathleft_j}(x)}{\semE{\pathright_j}(x)}$}
 \end{bprooftree}
 \begin{bprooftree}
 \AxiomC{$x,y : \pointconstr(\initob)$}
@@ -105,6 +105,83 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \caption{Rules for the type $\initmorgen{P}{x}{y}$.}
 \label{fig:initmor}
 \end{figure*}
+
+\begin{figure*}[t]
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{f}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f,g : \initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\BinaryInfC{$\initeqgen{P}{g}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f,g,h : \initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\AxiomC{$\initeqgen{P}{g}{h}$}
+\TrinaryInfC{$\initeqgen{P}{f}{h}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{\idP}{\initmorap{\initmorid{x}}}{\initmorid{\constfont{c}^{\initob}(x)}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{\pointconstr}{x}{y}$}
+\AxiomC{$g : \initmorgen{\pointconstr}{y}{z}$}
+\BinaryInfC{$\initeqgen{\idP}{\initmorap{\initmorcomp{f}{g}}}{\initmorcomp{\initmorap{f}}{\initmorap{g}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P+Q}{\initmorinl{\initmorid{x}}}{\initmorid{\inl{x}}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P+Q}{\initmorinr{\initmorid{x}}}{\initmorid{\inr{x}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\UnaryInfC{$\initeqgen{P+Q}{\initmorinl{f}}{\initmorinl{g}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\AxiomC{$g : \initmorgen{P}{y}{z}$}
+\BinaryInfC{$\initeqgen{P + Q}{\initmorinl{\initmorcomp{f}{g}}}{\initmorcomp{\initmorinl{f}}{\initmorinl{g}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{Q}{f}{g}$}
+\UnaryInfC{$\initeqgen{P+Q}{\initmorinr{f}}{\initmorinr{g}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{Q}{x}{y}$}
+\AxiomC{$g : \initmorgen{Q}{y}{z}$}
+\BinaryInfC{$\initeqgen{P + Q}{\initmorinr{\initmorcomp{f}{g}}}{\initmorcomp{\initmorinr{f}}{\initmorinr{g}}}$}
+\end{bprooftree}
+\end{center}
+
+
+\caption{Rules for the type $\initeqgen{P}{f}{g}$.}
+\label{fig:initmor}
+\end{figure*}
+
 
 \begin{problem}
 \label{prob:hit_exist}
