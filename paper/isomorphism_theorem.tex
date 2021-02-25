@@ -106,7 +106,9 @@ Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\algg
 \begin{remark}
 \label{remark:mapping_property_congruence}
 Suppose that we have two algebras $X, Y : \algebra{\sign}$ and a congruence relation $R$ on $X$.
-From the biadjunction, we get a morphism $\alggquot{\toGrpdAlg{R}} \onecell Y$ from $R \onecell \algpgrpd{Y}$.
+From the biadjunction, we get a morphism $\overline{g} : \alggquot{\toGrpdAlg{R}} \onecell Y$ from a functor $g : R \onecell \algpgrpd{Y}$.
+Note that we have a definitional equality $\overline{g}(\gcl \> x) = g \> x$ and a propositional equality $\ap{\overline{g}}{(\gcleq \> p)} = g \> p$ where $p$ is a morphism in $R$ from $x$ to $y$.
+
 Using this, we can give conditions for when an algebra morphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
 We can unfold the definition to find the necessary ingredients for the factorization.
 For example, we need to show that $f$ lifts to a functor, which means we need to provide a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$, and equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$.
@@ -124,6 +126,29 @@ Then $f$ is an adjoint equivalence in $\algM(\sign)$ if its carrier is an adjoin
 \end{proposition}
 
 \begin{theorem}\label{thm:iso_thm}
+Let $\sign$ be a signature and suppose we have algebras $X, Y : \algM(\sign)$ and an algebra morphism $f : X \onecell Y$.
+Then we have a congruence relation $R$ on $X$ such that
+\begin{itemize}
+	\item there is a unique map $\overline{f} : \alggquot(\toGrpdAlg{R}) \onecell Y$ such that $\overline{f}(\gcl \> x) = f \> x$ and $\overline{f}(\gcleq \> p) = p$;
+	\item there is an adjoint equivalence $\widetilde{f} : \alggquot(\toGrpdAlg{R}) \onecell \Im(f)$ such that $\pi_1(\widetilde{f} \> x) = \overline{f} \> x$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+The proof is done in three steps.
+First, we define the congruence relation $R$ on $X$ by setting $R(x, y) \eqdef f(x) = f(y)$.
+Second, we factor the map $\ImProj{f}$ from $X$ to the image as a map $\overline{f}$ from $\alggquot(\toGrpdAlg{R})$ to $\Im(f)$ using Construction \ref{remark:mapping_property_congruence}.
+Lastly, we show that the $\overline{f}$ is an adjoint equivalence using Proposition \ref{prop:algebra_adjequiv}.
+This is done by showing that the fibers are contractible.
+Showing that the fibers are inhabited and propositional is similarly to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
+
+The equality $\pi_1(\overline{f}(\gcl \> x)) = f \> x$ holds by definition of $\overline{f}$.
+\end{proof}
+
+The congruence relation $R$ is called the \fat{kernel} of $f$, and since $R$ is constructed as a groupoid quotient, we obtain the usual universal mapping property of the kernel from Remark \ref{remark:mapping_property_congruence}.
+
+\remove{
+\begin{theorem}
 Let $\sign$ be a signature.
 Suppose, we have algebras $X, Y : \algM(\sign)$ and an algebra morphism $f : X \onecell Y$.
 Then we have a congruence relation $R$ on $X$ and an adjoint equivalence $\overline{f} : \alggquot(\toGrpdAlg{R}) \onecell \Im(f)$ such that for each $x : X$ we have $\pi_1(\overline{f}(\gcl \> x)) = f \> x$.
@@ -141,3 +166,4 @@ The equality $\pi_1(\overline{f}(\gcl \> x)) = f \> x$ holds by definition of $\
 \end{proof}
 
 The congruence relation $R$ is called the \fat{kernel} of $f$, and since $R$ is constructed as a groupoid quotient, we obtain the usual universal mapping property of the kernel from Remark \ref{remark:mapping_property_congruence}.
+}
