@@ -110,6 +110,43 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \begin{center}
 \begin{bprooftree}
 \AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{f}{\initmorid{y}}}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{\initmorid{x}}{f}}{f}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{w}{x}$}
+\AxiomC{$g : \initmorgen{P}{x}{y}$}
+\AxiomC{$h : \initmorgen{P}{y}{z}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f}{\initmorcomp{f}{g}}}{\initmorcomp{\initmorcomp{f}{g}}{h}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{f}{\initmorinv{f}}}{\initmorid{x}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{\initmorinv{f}}{f}}{\initmorid{y}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
 \UnaryInfC{$\initeqgen{P}{f}{f}$}
 \end{bprooftree}
 \begin{bprooftree}
