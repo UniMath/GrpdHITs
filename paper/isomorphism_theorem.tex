@@ -134,7 +134,7 @@ Given a signature $\sign$, algebras $X, Y : \algM(\sign)$, and an algebra morphi
 Let $\sign$ be a signature and suppose we have algebras $X, Y : \algM(\sign)$ and an algebra morphism $f : X \onecell Y$.
 Then
 \begin{itemize}
-	\item there is a unique map $\overline{f} : \alggquot(\toGrpdAlg{\Ker(f)}) \onecell Y$ such that we have propositional equalities $p : \overline{f}(\gcl(x)) = f(x)$ for all $x$ and $\concat{\ap{\overline{f}}{(\gcleq(r))}}{p(y)} = \concat{p(x)}{r}$ where $r : f(x) = f(y)$;
+	\item there is a unique map $\overline{f} : \alggquot(\toGrpdAlg{\Ker(f)}) \onecell Y$ such that we have propositional equalities $p : \depprod{(x : X)}{\overline{f}(\gcl(x)) = f(x)}$ and $\concat{\ap{\overline{f}}{(\gcleq(r))}}{p(y)} = \concat{p(x)}{r}$ where $r : f(x) = f(y)$;
 	\item there is an adjoint equivalence $\widetilde{f} : \alggquot(\toGrpdAlg{\Ker(f)}) \onecell \Im(f)$ such that $\pi_1(\widetilde{f}(x)) = \overline{f}(x)$.
 \end{itemize}
 \end{theorem}
