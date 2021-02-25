@@ -107,7 +107,18 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \label{fig:initmor}
 \end{figure*}
 
-\begin{figure*}[t]
+\begin{problem}
+\label{prob:hit_exist}
+Each signature has a HIT.
+\end{problem}
+
+\begin{construction}{prob:hit_exist}
+\label{constr:hit_exist}
+By Propositions \ref{thm:initial_alg_sem} and \ref{prop:biinitial_in_grpd}, it suffices to find a biinitial object in $\algG{\sign}$.
+The desired object is given in Construction \ref{constr:initial_grpd_alg}.
+\end{construction}
+
+\begin{figure*}
 \begin{center}
 \begin{bprooftree}
 \AxiomC{$f : \initmorgen{P}{x}{y}$}
@@ -311,15 +322,3 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \caption{Rules for the type $\initeqgen{P}{f}{g}$.}
 \label{fig:initmoreq}
 \end{figure*}
-
-
-\begin{problem}
-\label{prob:hit_exist}
-Each signature has a HIT.
-\end{problem}
-
-\begin{construction}{prob:hit_exist}
-\label{constr:hit_exist}
-By Propositions \ref{thm:initial_alg_sem} and \ref{prop:biinitial_in_grpd}, it suffices to find a biinitial object in $\algG{\sign}$.
-The desired object is given in Construction \ref{constr:initial_grpd_alg}.
-\end{construction}
