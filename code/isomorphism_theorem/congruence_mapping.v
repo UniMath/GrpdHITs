@@ -517,4 +517,39 @@ Section MapToQuotientFromCongruence.
     }
     exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
   Qed.
+
+  Definition factor_through_gquot_unique
+             (g : quotient_of_congruence R --> Y)
+             (eq_pt : ∏ (x : alg_carrier X),
+                      alg_map_carrier g (gcl (make_groupoid_algebra_carrier R) x)
+                      =
+                      alg_map_carrier f x)
+             (eq_path : ∏ (x y : alg_carrier X)
+                          (p : cong_rel_carrier R x y),
+                        maponpaths
+                          (alg_map_carrier g)
+                          (gcleq
+                             (make_groupoid_algebra_carrier R)
+                             p)
+                        @ eq_pt y
+                        =
+                        eq_pt x @ fR _ _ p)
+    : ∏ x, alg_map_carrier g x = alg_map_carrier factor_through_gquot x.
+  Proof.
+    use gquot_ind_set.
+    - exact eq_pt.
+    - abstract
+        (intros a₁ a₂ x ;
+         simpl ;
+         apply map_PathOver ;
+         unfold square ;
+         specialize (eq_path a₁ a₂ x) ;
+         refine (eq_path @ _) ;
+         apply maponpaths ;
+         refine (!_) ;
+         apply factor_through_gquot_gcleq).
+    - abstract
+        (intros x y z ;
+         exact (one_type_isofhlevel (pr111 Y) _ _ y z)).
+  Defined.
 End MapToQuotientFromCongruence.
