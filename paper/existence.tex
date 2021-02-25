@@ -132,6 +132,15 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \AxiomC{$\initeqgen{\idP}{\initmorap{\initmorid{x}}}{\initmorid{\constfont{c}^{\initob}(x)}}$}
 \end{bprooftree}
 \begin{bprooftree}
+\AxiomC{$\initeqgen{\pointconstr}{f}{g}$}
+\UnaryInfC{$\initeqgen{\idP}{\initmorap{f}}{\initmorap{g}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
 \AxiomC{$f : \initmorgen{\pointconstr}{x}{y}$}
 \AxiomC{$g : \initmorgen{\pointconstr}{y}{z}$}
 \BinaryInfC{$\initeqgen{\idP}{\initmorap{\initmorcomp{f}{g}}}{\initmorcomp{\initmorap{f}}{\initmorap{g}}}$}
@@ -174,6 +183,31 @@ We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
 \AxiomC{$f : \initmorgen{Q}{x}{y}$}
 \AxiomC{$g : \initmorgen{Q}{y}{z}$}
 \BinaryInfC{$\initeqgen{P + Q}{\initmorinr{\initmorcomp{f}{g}}}{\initmorcomp{\initmorinr{f}}{\initmorinr{g}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P\times Q}{\initmorpair{\initmorid{x}}{\initmorid{y}}}{\initmoridvar{\pair{x}{y}}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P}{f_1}{f_2}$}
+\AxiomC{$\initeqgen{Q}{g_1}{g_2}$}
+\BinaryInfC{$\initeqgen{P\times Q}{\initmorpair{f_1}{g_1}}{\initmorpair{f_2}{g_2}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f_1 : \initmorgen{P}{x_1}{y_1}$}
+\AxiomC{$g_1 : \initmorgen{P}{y_1}{z_1}$}
+\AxiomC{$f_2 : \initmorgen{Q}{x_2}{y_2}$}
+\AxiomC{$g_2 : \initmorgen{Q}{y_2}{z_2}$}
+\QuaternaryInfC{$\initeqgen{P \times Q}{\initmorpair{\initmorcomp{f_1}{g_1}}{\initmorcomp{f_2}{g_2}}}{\initmorcomp{\initmorpair{f_1}{f_2}}{\initmorpair{g_1}{g_2}}}$}
 \end{bprooftree}
 \end{center}
 
