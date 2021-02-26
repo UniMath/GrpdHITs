@@ -50,6 +50,8 @@ pseudo/lax/oplax does not matter. We proved in UniMath that the
 definition of initiality we gave in the paper (Definition 4.16) is
 equivalent to the contractibility of the collection of maps x -> y
 (https://github.com/UniMath/UniMath/blob/master/UniMath/Bicategories/Colimits/Initial.v).
+We added a comment after Definition 4.16 which says that the two
+definitions or biinitiality are equivalent.
 
 The choice of pseudo/lax/oplax matters in Section 8.2 where we
 consider inserters. In that definition, there is a choice for the
