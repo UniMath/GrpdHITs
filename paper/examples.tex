@@ -112,7 +112,7 @@ the definition below, $A$ and $B$ are 1-types, $f , g: A \to B$ are
 functions and $\beta$ and $\gamma$ are homotopies between $f$ and $g$.
 \begin{lstlisting}[mathescape=true]
 Inductive $\coequifier \beta \gamma$ :=
-| $\coequifierbase$ : $B \rightarrow \coequifier f g$
+| $\coequifierbase$ : $B \rightarrow \coequifier \beta \gamma$
 | $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(\beta(x))} = \ap {\coequifierbase}{(\gamma(x))}}$
 \end{lstlisting}
 
@@ -271,6 +271,7 @@ monoidal object signature are precisely
 \emph{monoidal groupoids}, the groupoid variant of monoidal
 categories, and $\monobj$ is a presentation of the initial
 monoidal groupoid.
+Note that Piceghello proved coherence for monoidal groupoids \cite{Piceghello19}, and algebras for the signature $\monobj$ correspond to those monoidal groupoids.
 
 \begin{example}
 Let $A$ be a 1-type.
