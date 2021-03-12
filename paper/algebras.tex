@@ -597,14 +597,14 @@ Furthermore, given two algebras  $X, Y : \algM(\sign)$, an algebra morphism $f :
 	\item for each $j : \pathlabel[\sign]$ and $x : \polyAct{\patharg[\sign]}{X}$ a 2-path
 	\[
 	\AlgMapPath{f}{j}(x) :
-	\ap{f}{(\AlgPath{X}{j}(x))} \vcomp \semE{\pathleft[\sign]_j}(\AlgMapPoint{f})(x)
+	\ap{f}{(\AlgPath{X}{j}(x))} \vcomp \semE{\pathright[\sign]_j}(\AlgMapPoint{f})(x)
 	=
 	\semE{\pathleft[\sign]_j}(\AlgMapPoint{f})(x) \vcomp \AlgPath{Y}{j}(\semP{\patharg[\sign]}(f)(x)).
 	\]
 \end{itemize}
 Lastly, given two algebras $X, Y : \algM(\sign)$ and an algebra morphisms $f, g : X \onecell Y$, a 2-cell $\theta : f \twocell g$ in $\algM(\sign)$ consists of
 \begin{itemize}
-	\item for each $x : X$ a path $\theta : f(x) = g(x)$;
+	\item for each $x : X$ a path $\theta(x) : f(x) = g(x)$;
 	\item for each $x : \polyAct{\pointconstr[\sign]}{X}$ a path
 	\[
 	\AlgCellPoint{\theta}(x) : 
