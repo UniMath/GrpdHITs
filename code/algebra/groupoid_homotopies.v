@@ -9,13 +9,18 @@ Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.whiskering.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
+Require Import UniMath.CategoryTheory.Adjunctions.Core.
+Require Import UniMath.CategoryTheory.Equivalences.Core.
+Require Import UniMath.CategoryTheory.Equivalences.FullyFaithful.
 
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Unitors.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.DispInvertibles.
+Require Import UniMath.Bicategories.DisplayedBicats.DispAdjunctions.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
@@ -375,19 +380,13 @@ Proof.
 Defined.
 
 (** Adjoint equivalence of grpd algebra gives fully faithful functors of carriers *)
-Require Import UniMath.Bicategories.Core.Adjunctions.
-Require Import UniMath.Bicategories.DisplayedBicats.DispAdjunctions.
-Require Import UniMath.CategoryTheory.Adjunctions.Core.
-Require Import UniMath.CategoryTheory.Equivalences.Core.
-Require Import UniMath.CategoryTheory.Equivalences.FullyFaithful.
-
 Definition left_adjoint_equivalence_grpd
            {G₁ G₂ : grpd_bicat}
            {F : G₁ --> G₂}
            (Hf : left_adjoint_equivalence F)
-  : adj_equivalence_of_precats F.
+  : adj_equivalence_of_cats F.
 Proof.
-  use make_adj_equivalence_of_precats.
+  use make_adj_equivalence_of_cats.
   - exact (left_adjoint_right_adjoint Hf).
   - exact (left_adjoint_unit Hf).
   - exact (left_adjoint_counit Hf).

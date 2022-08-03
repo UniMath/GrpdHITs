@@ -214,9 +214,9 @@ Section HomotopyCoeq.
             (Yglue : ∏ (a : A),
                      @PathOver
                        _ _ _
+                       (coeq_glue X a)
                        Y
-                       (Ybase (f a)) (Ybase (g a))
-                       (coeq_glue X a)).
+                       (Ybase (f a)) (Ybase (g a))).
     
     Definition make_coeq_disp_algebra
       : disp_algebra X.
@@ -302,8 +302,7 @@ Section HomotopyCoeq.
     Definition coeq_ump1_alg_map
       : coeq_one_types_algebra --> make_coeq_algebra h hcom.
     Proof.
-      exact (biinitial_1cell
-               _
+      exact (is_biinitial_1cell_property
                coeq_one_types_is_initial
                (make_coeq_algebra h hcom)).
     Qed.
@@ -355,10 +354,9 @@ Section HomotopyCoeq.
           m₂base
           (eqtohomot m₂glue).
     Proof.
-      exact (biinitial_2cell
-               _
+      exact (is_biinitial_2cell_property
                coeq_one_types_is_initial
-               _ _).
+               _ _ _).
     Qed.
     
     Definition coeq_ump2
@@ -393,10 +391,9 @@ Section HomotopyCoeq.
     Definition coeq_ump_eq
       : τ₁ = τ₂.
     Proof.
-      pose (biinitial_eq
-                _
+      pose (is_biinitial_eq_property
                 coeq_one_types_is_initial
-                _ _
+                _ _ _
                 (@make_coeq_cell
                    _ _
                    (@make_coeq_map

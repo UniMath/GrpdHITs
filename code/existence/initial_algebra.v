@@ -44,18 +44,17 @@ Definition initial_algebra_is_HIT
   : is_initial Σ X → is_HIT Σ X.
 Proof.
   intros HX Y.
-  pose (is_biinitial_to_is_biinitial' _ _ HX) as HX'.
   use section_to_disp_alg_map_alt.
   - apply HX.
-    exact tt.
-  - pose (is_biinitial'_2cell_property
-            HX'
+  - pose (is_biinitial_2cell_property
+            HX
             X
-            (pr111 (pr1 (HX (total_algebra Y))) tt · projection Y)
+            (pr1 HX (total_algebra Y) · projection Y)
             (id₁ X))
       as b.
-    refine (isotoid_2_1 _ b).
-    apply is_univalent_2_hit_algebra_one_types.
+    refine (isotoid_2_1 _ (b ,, _)).
+    + apply is_univalent_2_hit_algebra_one_types.
+    + apply hit_alg_is_invertible_2cell_one_type.
 Defined.
 
 Definition HIT_2cell_property_help
@@ -488,8 +487,7 @@ Definition HIT_is_initial
 Proof.
   intros HX.
   unfold is_initial.
-  apply is_biinitial'_to_is_biinitial.
-  use make_is_biinitial'.
+  use make_is_biinitial.
   - exact (HIT_1cell_property X HX).
   - exact (HIT_2cell_property X HX).
   - exact (HIT_eq_property X HX).
@@ -502,8 +500,9 @@ Definition HIT_unique
            (HY : is_HIT _ Y)
   : X = Y.
 Proof.
-  apply (biinitial_unique
-           _ _
-           X (HIT_is_initial _ HX)
-           Y (HIT_is_initial _ HY)).
+  use (biinitial_unique
+         _
+         (HIT_is_initial _ HY)
+         (HIT_is_initial _ HX)).
+  apply is_univalent_2_hit_algebra_one_types.
 Defined.

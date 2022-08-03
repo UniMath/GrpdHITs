@@ -37,7 +37,7 @@ Definition globe_over_identity
            {Y : X → UU}
            {x : X}
            {y : Y x}
-           (pp : PathOver y y (idpath x))
+           (pp : PathOver (idpath x) y y)
   : globe_over
       Y
       (idpath (idpath x))
@@ -53,8 +53,8 @@ Definition inv_globe_over
            {p q : x₁ = x₂}
            {g : globe p q}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           {pp : PathOver y₁ y₂ p}
-           {qq : PathOver y₁ y₂ q}
+           {pp : PathOver p y₁ y₂}
+           {qq : PathOver q y₁ y₂}
            (gg : globe_over Y g pp qq)
   : globe_over Y (! g) qq pp.
 Proof.
@@ -69,8 +69,8 @@ Definition inv_globe_over'
            {p q : x₁ = x₂}
            {g : globe p q}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           {pp : PathOver y₁ y₂ p}
-           {qq : PathOver y₁ y₂ q}
+           {pp : PathOver p y₁ y₂}
+           {qq : PathOver q y₁ y₂}
            (gg : globe_over Y (!g) qq pp)
   : globe_over Y g pp qq.
 Proof.
@@ -86,9 +86,9 @@ Definition concat_globe_over
            {g₁ : globe p q}
            {g₂ : globe q r}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           {pp : PathOver y₁ y₂ p}
-           {qq : PathOver y₁ y₂ q}
-           {rr : PathOver y₁ y₂ r}
+           {pp : PathOver p y₁ y₂}
+           {qq : PathOver q y₁ y₂}
+           {rr : PathOver r y₁ y₂}
            (gg₁ : globe_over Y g₁ pp qq)
            (gg₂ : globe_over Y g₂ qq rr) 
   : globe_over Y (g₁ @ g₂) pp rr.
@@ -103,8 +103,8 @@ Definition globe_over_on_inv
            {x₂ x₃ : X}
            {q₁ q₂ : x₂ = x₃}
            {y₂ : Y x₂} {y₃ : Y x₃}
-           {qq₁ : PathOver y₂ y₃ q₁}
-           {qq₂ : PathOver y₂ y₃ q₂}
+           {qq₁ : PathOver q₁ y₂ y₃}
+           {qq₂ : PathOver q₂ y₂ y₃}
            {g : globe q₁ q₂}
            (gg : globe_over Y g qq₁ qq₂)
   : globe_over
@@ -123,9 +123,9 @@ Definition globe_over_compose_left'
            {x₁ x₂ x₃ : X}
            {p : x₁ = x₂} {q₁ q₂ : x₂ = x₃}
            {y₁ : Y x₁} {y₂ : Y x₂} {y₃ : Y x₃}
-           (pp : PathOver y₁ y₂ p)
-           {qq₁ : PathOver y₂ y₃ q₁}
-           {qq₂ : PathOver y₂ y₃ q₂}
+           (pp : PathOver p y₁ y₂)
+           {qq₁ : PathOver q₁ y₂ y₃}
+           {qq₂ : PathOver q₂ y₂ y₃}
            {g : globe q₁ q₂}
            (gg : globe_over Y g qq₁ qq₂)
   : globe_over
@@ -144,9 +144,9 @@ Definition globe_over_compose_left
            {x₁ x₂ x₃ x₄ : X}
            {p : x₁ = x₂} {q₁ q₂ : x₂ = x₃} {r : x₃ = x₄}
            {y₁ : Y x₁} {y₂ : Y x₂} {y₄ : Y x₄}
-           (pp : PathOver y₁ y₂ p)
-           {qq₁ : PathOver y₂ y₄ (q₁ @ r)}
-           {qq₂ : PathOver y₂ y₄ (q₂ @ r)}
+           (pp : PathOver p y₁ y₂)
+           {qq₁ : PathOver (q₁ @ r) y₂ y₄}
+           {qq₂ : PathOver (q₂ @ r) y₂ y₄}
            {g : globe q₁ q₂}
            (gg : globe_over Y (maponpaths (λ z, z @ r) g) qq₁ qq₂)
   : globe_over
@@ -165,9 +165,9 @@ Definition globe_over_compose_right
            {x₁ x₂ x₃ : X}
            {p₁ p₂ : x₁ = x₂} {q : x₂ = x₃} 
            {y₁ : Y x₁} {y₂ : Y x₂} {y₃ : Y x₃}
-           {pp₁ : PathOver y₁ y₂ p₁}
-           {pp₂ : PathOver y₁ y₂ p₂}
-           (qq : PathOver y₂ y₃ q)
+           {pp₁ : PathOver p₁ y₁ y₂}
+           {pp₂ : PathOver p₂ y₁ y₂}
+           (qq : PathOver q y₂ y₃)
            {g : globe p₁ p₂}
            (gg : globe_over Y g pp₁ pp₂)
   : globe_over
@@ -186,7 +186,7 @@ Definition globe_over_id_left
            {x₁ x₂ : X}
            {p : x₁ = x₂}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       Y
       (pathscomp0lid _)
@@ -205,7 +205,7 @@ Definition globe_over_id_right
            {x₁ x₂ : X}
            {p : x₁ = x₂}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       Y
       (pathscomp0rid _)
@@ -224,7 +224,7 @@ Definition globe_over_inv_left
            {x₁ x₂ : X}
            {p : x₁ = x₂}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       Y
       (pathsinv0l _)
@@ -243,7 +243,7 @@ Definition globe_over_inv_right
            {x₁ x₂ : X}
            {p : x₁ = x₂}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       Y
       (pathsinv0r _)
@@ -262,9 +262,9 @@ Definition globe_over_assocl
            {x₁ x₂ x₃ x₄ : X}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃} {p₃ : x₃ = x₄}
            {y₁ : Y x₁} {y₂ : Y x₂} {y₃ : Y x₃} {y₄ : Y x₄}
-           (pp₁ : PathOver y₁ y₂ p₁)
-           (pp₂ : PathOver y₂ y₃ p₂)
-           (pp₃ : PathOver y₃ y₄ p₃)
+           (pp₁ : PathOver p₁ y₁ y₂)
+           (pp₂ : PathOver p₂ y₂ y₃)
+           (pp₃ : PathOver p₃ y₃ y₄)
   : globe_over
       Y
       (path_assoc _ _ _)
@@ -281,9 +281,9 @@ Definition globe_over_assocr
            {x₁ x₂ x₃ x₄ : X}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃} {p₃ : x₃ = x₄}
            {y₁ : Y x₁} {y₂ : Y x₂} {y₃ : Y x₃} {y₄ : Y x₄}
-           (pp₁ : PathOver y₁ y₂ p₁)
-           (pp₂ : PathOver y₂ y₃ p₂)
-           (pp₃ : PathOver y₃ y₄ p₃)
+           (pp₁ : PathOver p₁ y₁ y₂)
+           (pp₂ : PathOver p₂ y₂ y₃)
+           (pp₃ : PathOver p₃ y₃ y₄)
   : globe_over
       Y
       (!(path_assoc _ _ _))
@@ -300,7 +300,7 @@ Definition globe_over_inv_inv
            {x₁ x₂ : X}
            {p : x₁ = x₂}
            {y₁ : Y x₁} {y₂ : Y x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       Y
       (pathsinv0inv0 p)
@@ -317,8 +317,8 @@ Definition globe_over_comp_inv
            {x₁ x₂ x₃ : X}
            {p : x₁ = x₂} {q : x₂ = x₃}
            {y₁ : Y x₁} {y₂ : Y x₂} {y₃ : Y x₃}
-           (pp : PathOver y₁ y₂ p)
-           (qq : PathOver y₂ y₃ q)
+           (pp : PathOver p y₁ y₂)
+           (qq : PathOver q y₂ y₃)
   : globe_over
       Y
       (pathscomp_inv _ _)
@@ -335,8 +335,8 @@ Definition globe_over_move_globe
            {x₁ x₂ : X}
            {p₁ p₂ : x₁ = x₂} 
            {y₁ : Y x₁} {y₂ : Y x₂}
-           {pp₁ : PathOver y₁ y₂ p₁}
-           {pp₂ : PathOver y₁ y₂ p₂}
+           {pp₁ : PathOver p₁ y₁ y₂}
+           {pp₂ : PathOver p₂ y₁ y₂}
            {g₁ g₂ : globe p₁ p₂}
            (h : g₁ = g₂)
            (gg : globe_over Y g₁ pp₁ pp₂)
@@ -353,8 +353,8 @@ Definition globe_over_move_globe_one_type
            {x₁ x₂ : X}
            {p₁ p₂ : x₁ = x₂} 
            {y₁ : Y x₁} {y₂ : Y x₂}
-           {pp₁ : PathOver y₁ y₂ p₁}
-           {pp₂ : PathOver y₁ y₂ p₂}
+           {pp₁ : PathOver p₁ y₁ y₂}
+           {pp₂ : PathOver p₂ y₁ y₂}
            {g₁ g₂ : globe p₁ p₂}
            (gg : globe_over Y g₁ pp₁ pp₂)
   : globe_over Y g₂ pp₁ pp₂.
@@ -370,7 +370,7 @@ Definition TotalPathToPathOver
            {Y : X → UU}
            {x y : ∑ (x : X), Y x}
            (p : x = y)
-  : PathOver (pr2 x) (pr2 y) (maponpaths pr1 p).
+  : PathOver (maponpaths pr1 p) (pr2 x) (pr2 y).
 Proof.
   induction p ; cbn.
   apply idpath.
@@ -381,7 +381,7 @@ Definition PathOverToTotalPath'
            {Y : X → UU}
            {x y : ∑ (x : X), Y x}
            (p : pr1 x = pr1 y)
-           (q : PathOver (pr2 x) (pr2 y) p)
+           (q : PathOver p (pr2 x) (pr2 y))
   : x = y.
 Proof.
   use PathOverToTotalPath.
@@ -394,8 +394,8 @@ Definition globe_over_to_homot
            {Y : X → UU}
            {x y : ∑ (x : X), Y x}
            {p₁ p₂ : pr1 x = pr1 y}
-           (q₁ : PathOver (pr2 x) (pr2 y) p₁)
-           (q₂ : PathOver (pr2 x) (pr2 y) p₂)
+           (q₁ : PathOver p₁ (pr2 x) (pr2 y))
+           (q₂ : PathOver p₂ (pr2 x) (pr2 y))
            (g : globe p₁ p₂)
            (gg : globe_over Y g q₁ q₂)
   : PathOverToTotalPath' _ q₁ = PathOverToTotalPath' _ q₂.
@@ -443,8 +443,8 @@ Definition PathOverToTotalPath'_comp
            {x₁ x₂ x₃ : X}
            {y₁ : Y x₁} {y₂ : Y x₂} {y₃ : Y x₃}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃}
-           (q₁ : PathOver y₁ y₂ p₁)
-           (q₂ : PathOver y₂ y₃ p₂)
+           (q₁ : PathOver p₁ y₁ y₂)
+           (q₂ : PathOver p₂ y₂ y₃)
   : @PathOverToTotalPath' _ _ (x₁ ,, y₁) (x₂ ,, y₂) p₁ q₁
     @ @PathOverToTotalPath' _ _ (x₂ ,, y₂) (x₃ ,, y₃) p₂ q₂
     =
@@ -460,7 +460,7 @@ Definition maponpaths_pr1_PathOverToTotalPath
            {x₁ x₂ : X}
            (p : x₁ = x₂)
            {y₁ : Y x₁} {y₂ : Y x₂}
-           (q : PathOver y₁ y₂ p)
+           (q : PathOver p y₁ y₂)
   : maponpaths pr1 (PathOverToTotalPath q)
     =
     p.
@@ -475,7 +475,7 @@ Definition maponpaths_pr1_PathOverToTotalPath'
            {Y : X → UU}
            {x y : ∑ (x : X), Y x}
            (p : pr1 x = pr1 y)
-           (q : PathOver (pr2 x) (pr2 y) p)
+           (q : PathOver p (pr2 x) (pr2 y))
   : maponpaths pr1 (PathOverToTotalPath' p q)
     =
     p.
@@ -492,7 +492,7 @@ Definition TotalPathToPathOver_PathOverToTotalPath'
            {Y : X → UU}
            {x y : ∑ (x : X), Y x}
            (p : pr1 x = pr1 y)
-           (q : PathOver (pr2 x) (pr2 y) p)
+           (q : PathOver p (pr2 x) (pr2 y))
   : globe_over
       Y
       (maponpaths_pr1_PathOverToTotalPath' p q)
@@ -513,8 +513,8 @@ Definition globe_over_pr1
            {g₁ : p = q}
            {z₁ : poly_dact_UU (P₁ * P₂) Y (x₁ ,, x₂)}
            {z₂ : poly_dact_UU (P₁ * P₂) Y (y₁ ,, y₂)}
-           {pp : PathOver z₁ z₂ p}
-           {pp' : PathOver z₁ z₂ q}
+           {pp : PathOver p z₁ z₂}
+           {pp' : PathOver q z₁ z₂}
            (gg : globe_over
                    (poly_dact_UU (P₁ * P₂) Y)
                    g₁
@@ -548,8 +548,8 @@ Definition globe_over_pr2
            {g₁ : p = q}
            {z₁ : poly_dact_UU (P₁ * P₂) Y (x₁ ,, x₂)}
            {z₂ : poly_dact_UU (P₁ * P₂) Y (y₁ ,, y₂)}
-           {pp : PathOver z₁ z₂ p}
-           {pp' : PathOver z₁ z₂ q}
+           {pp : PathOver p z₁ z₂}
+           {pp' : PathOver q z₁ z₂}
            (gg : globe_over
                    (poly_dact_UU (P₁ * P₂) Y)
                    g₁
@@ -583,8 +583,8 @@ Definition PathOver_pr1_concat
            {y₂ : poly_dact_UU (P₁ * P₂) Y x₂}
            {y₃ : poly_dact_UU (P₁ * P₂) Y x₃}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃}
-           (pp₁ : PathOver y₁ y₂ p₁)
-           (pp₂ : PathOver y₂ y₃ p₂)
+           (pp₁ : PathOver p₁ y₁ y₂)
+           (pp₂ : PathOver p₂ y₂ y₃)
   : globe_over
       (poly_dact P₁ Y)
       (maponpathscomp0 _ _ _)
@@ -603,7 +603,7 @@ Definition PathOver_pr1_inv
            {y₁ : poly_dact_UU (P₁ * P₂) Y x₁}
            {y₂ : poly_dact_UU (P₁ * P₂) Y x₂}
            {p : x₁ = x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       (poly_dact P₁ Y)
       (maponpathsinv0 _ _)
@@ -624,8 +624,8 @@ Definition PathOver_pr1_pair
            {z₁' : poly_dact_UU P₂ Y y₁}
            {z₂' : poly_dact_UU P₂ Y y₂}
            {p : x₁ = x₂} {q : y₁ = y₂}
-           (pp : PathOver z₁ z₂ p)
-           (qq : PathOver z₁' z₂' q)
+           (pp : PathOver p z₁ z₂)
+           (qq : PathOver q z₁' z₂')
   : globe_over
       (poly_dact P₁ Y)
       (maponpaths_pr1_pathsdirprod _ _)
@@ -645,8 +645,8 @@ Definition PathOver_pr2_concat
            {y₂ : poly_dact_UU (P₁ * P₂) Y x₂}
            {y₃ : poly_dact_UU (P₁ * P₂) Y x₃}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃}
-           (pp₁ : PathOver y₁ y₂ p₁)
-           (pp₂ : PathOver y₂ y₃ p₂)
+           (pp₁ : PathOver p₁ y₁ y₂)
+           (pp₂ : PathOver p₂ y₂ y₃)
   : globe_over
       (poly_dact P₂ Y)
       (maponpathscomp0 _ _ _)
@@ -665,7 +665,7 @@ Definition PathOver_pr2_inv
            {y₁ : poly_dact_UU (P₁ * P₂) Y x₁}
            {y₂ : poly_dact_UU (P₁ * P₂) Y x₂}
            {p : x₁ = x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       (poly_dact P₂ Y)
       (maponpathsinv0 _ _)
@@ -686,8 +686,8 @@ Definition PathOver_pr2_pair
            {z₁' : poly_dact_UU P₂ Y y₁}
            {z₂' : poly_dact_UU P₂ Y y₂}
            {p : x₁ = x₂} {q : y₁ = y₂}
-           (pp : PathOver z₁ z₂ p)
-           (qq : PathOver z₁' z₂' q)
+           (pp : PathOver p z₁ z₂)
+           (qq : PathOver q z₁' z₂')
   : globe_over
       (poly_dact P₂ Y)
       (maponpaths_pr2_pathsdirprod _ _)
@@ -707,8 +707,8 @@ Definition globe_over_inl
            {g₁ : p = q}
            {z₁ : poly_dact_UU P₁ Y x}
            {z₂ : poly_dact_UU P₁ Y y}
-           {pp : PathOver z₁ z₂ p}
-           {pp' : PathOver z₁ z₂ q}
+           {pp : PathOver p z₁ z₂}
+           {pp' : PathOver q z₁ z₂}
            (gg : globe_over
                    (poly_dact_UU P₁ Y)
                    g₁
@@ -741,8 +741,8 @@ Definition PathOver_inl_concat
            {y₂ : poly_dact_UU P₁ Y x₂}
            {y₃ : poly_dact_UU P₁ Y x₃}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃}
-           (pp₁ : PathOver y₁ y₂ p₁)
-           (pp₂ : PathOver y₂ y₃ p₂)
+           (pp₁ : PathOver p₁ y₁ y₂)
+           (pp₂ : PathOver p₂ y₂ y₃)
   : globe_over
       (poly_dact (P₁ + P₂) Y)
       (maponpathscomp0 inl p₁ p₂)
@@ -761,7 +761,7 @@ Definition PathOver_inl_inv
            {y₁ : poly_dact_UU P₁ Y x₁}
            {y₂ : poly_dact_UU P₁ Y x₂}
            {p : x₁ = x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       (poly_dact (P₁ + P₂) Y)
       (maponpathsinv0 inl p)
@@ -781,8 +781,8 @@ Definition globe_over_inr
            {g₁ : p = q}
            {z₁ : poly_dact_UU P₂ Y x}
            {z₂ : poly_dact_UU P₂ Y y}
-           {pp : PathOver z₁ z₂ p}
-           {pp' : PathOver z₁ z₂ q}
+           {pp : PathOver p z₁ z₂}
+           {pp' : PathOver q z₁ z₂}
            (gg : globe_over
                    (poly_dact_UU P₂ Y)
                    g₁
@@ -815,8 +815,8 @@ Definition PathOver_inr_concat
            {y₂ : poly_dact_UU P₂ Y x₂}
            {y₃ : poly_dact_UU P₂ Y x₃}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃}
-           (pp₁ : PathOver y₁ y₂ p₁)
-           (pp₂ : PathOver y₂ y₃ p₂)
+           (pp₁ : PathOver p₁ y₁ y₂)
+           (pp₂ : PathOver p₂ y₂ y₃)
   : globe_over
       (poly_dact (P₁ + P₂) Y)
       (maponpathscomp0 inr p₁ p₂)
@@ -835,7 +835,7 @@ Definition PathOver_inr_inv
            {y₁ : poly_dact_UU P₂ Y x₁}
            {y₂ : poly_dact_UU P₂ Y x₂}
            {p : x₁ = x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       (poly_dact (P₁ + P₂) Y)
       (maponpathsinv0 inr p)
@@ -852,7 +852,7 @@ Definition apd2_idfun
            {a₁ a₂ : A}
            {p : a₁ = a₂}
            {y₁ : YA a₁} {y₂ : YA a₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       YA
       (maponpathsidfun p)
@@ -871,8 +871,8 @@ Definition apd2_concat
            {a₁ a₂ a₃ : A}
            {p : a₁ = a₂} {q : a₂ = a₃}
            {y₁ : YA a₁} {y₂ : YA a₂} {y₃ : YA a₃}
-           (pp : PathOver y₁ y₂ p)
-           (qq : PathOver y₂ y₃ q)
+           (pp : PathOver p y₁ y₂)
+           (qq : PathOver q y₂ y₃)
   : globe_over
       YB
       (maponpathscomp0 f p q)
@@ -893,7 +893,7 @@ Definition apd2_inv
            {a₁ a₂ : A}
            {p : a₁ = a₂}
            {y₁ : YA a₁} {y₂ : YA a₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       YB
       (!(maponpathsinv0 f p))
@@ -913,7 +913,7 @@ Definition apd2_comp
            {a₁ a₂ : A}
            {p : a₁ = a₂}
            {y₁ : YA a₁} {y₂ : YA a₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       YC
       (maponpathscomp f g p)
@@ -933,7 +933,7 @@ Definition apd2_globe_over
            {p p' : a₁ = a₂}
            {g : globe p p'}
            {y₁ : YA a₁} {y₂ : YA a₂}
-           {pp : PathOver y₁ y₂ p} {pp' : PathOver y₁ y₂ p'}
+           {pp : PathOver p y₁ y₂} {pp' : PathOver p' y₁ y₂}
            (gg : globe_over YA g pp pp')
   : globe_over
       YB
@@ -952,7 +952,7 @@ Definition apd2_inl
            {a₁ a₂ : poly_act P A}
            {p : a₁ = a₂}
            {y₁ : poly_dact P YA a₁} {y₂ : poly_dact P YA a₂}
-           (pp : @PathOver _ _ _ (poly_dact P YA) y₁ y₂ p)
+           (pp : @PathOver _ _ _ p (poly_dact P YA) y₁ y₂)
   : globe_over
       (poly_dact (P + Q) YA)
       (idpath _)
@@ -977,7 +977,7 @@ Definition apd2_inr
            {a₁ a₂ : poly_act Q A}
            {p : a₁ = a₂}
            {y₁ : poly_dact Q YA a₁} {y₂ : poly_dact Q YA a₂}
-           (pp : @PathOver _ _ _ (poly_dact Q YA) y₁ y₂ p)
+           (pp : @PathOver _ _ _ p (poly_dact Q YA) y₁ y₂)
   : globe_over
       (poly_dact (P + Q) YA)
       (idpath _)
@@ -1006,7 +1006,7 @@ Definition apd2_dep_pair_fun
            {x₁ x₂ : poly_act P X}
            {p : x₁ = x₂}
            {y₁ : poly_dact_UU P Y x₁} {y₂ : poly_dact_UU P Y x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       (poly_dact_UU (Q * R) Y)
       (maponpaths_prod_path f g p)
@@ -1043,7 +1043,7 @@ Definition apd_2_dep_const_fun
            (p : x₁ = x₂)
            {y₁ : poly_dact_UU P Y x₁}
            {y₂ : poly_dact_UU P Y x₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : globe_over
       _
       (maponpaths_const t _)
@@ -1071,10 +1071,10 @@ Definition PathOver_pair_concat
            {y₃' : poly_dact_UU P₂ Y x₃'}
            {p₁ : x₁ = x₂} {p₂ : x₂ = x₃}
            {q₁ : x₁' = x₂'} {q₂ : x₂' = x₃'}
-           (pp₁ : PathOver y₁ y₂ p₁)
-           (pp₂ : PathOver y₂ y₃ p₂)
-           (qq₁ : PathOver y₁' y₂' q₁)
-           (qq₂ : PathOver y₂' y₃' q₂)
+           (pp₁ : PathOver p₁ y₁ y₂)
+           (pp₂ : PathOver p₂ y₂ y₃)
+           (qq₁ : PathOver q₁ y₁' y₂')
+           (qq₂ : PathOver q₂ y₂' y₃')
   : globe_over
       (poly_dact (P₁ * P₂) Y)
       (!(pathsdirprod_concat _ _ _ _))
@@ -1101,8 +1101,8 @@ Definition PathOver_pair_inv
            {y₂' : poly_dact_UU P₂ Y x₂'}
            {p : x₁ = x₂}
            {q : x₁' = x₂'}
-           (pp : PathOver y₁ y₂ p)
-           (qq : PathOver y₁' y₂' q)
+           (pp : PathOver p y₁ y₂)
+           (qq : PathOver q y₁' y₂')
   : globe_over
       (poly_dact (P₁ * P₂) Y)
       (!(pathsdirprod_inv _ _))
@@ -1125,12 +1125,12 @@ Definition globe_over_PathOver_pair
            {y₂' : poly_dact_UU P₂ Y x₂'}
            {p p' : x₁ = x₂}
            {q q' : x₁' = x₂'}
-           {pp : PathOver y₁ y₂ p}
-           {pp' : PathOver y₁ y₂ p'}
+           {pp : PathOver p y₁ y₂}
+           {pp' : PathOver p' y₁ y₂}
            {g₁ : globe p p'}
            (gg₁ : globe_over (poly_dact P₁ Y) g₁ pp pp')
-           {qq : PathOver y₁' y₂' q}
-           {qq' : PathOver y₁' y₂' q'}
+           {qq : PathOver q y₁' y₂'}
+           {qq' : PathOver q' y₁' y₂'}
            {g₂ : globe q q'}
            (gg₂ : globe_over (poly_dact P₂ Y) g₂ qq qq')
   : globe_over
@@ -1152,11 +1152,11 @@ Definition PathOver_natural
            {gg : ∏ (a : A), YA a → YB (g a)}
            {p : f ~ g}
            (pp : ∏ (a : A) (y : YA a),
-                 PathOver (ff a y) (gg a y) (p a))
+                 PathOver (p a) (ff a y) (gg a y))
            {a b : A}
            {ya : YA a} {yb : YA b}
            {q : a = b}
-           (qq : PathOver ya yb q)
+           (qq : PathOver q ya yb)
   : globe_over
       YB
       (maponpaths (λ z, (z @ _) @ _) (!(maponpathsinv0 f q))

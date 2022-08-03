@@ -10,7 +10,7 @@ Definition PathOver_to_path
            {A : UU} {C : A → UU}
            {a₁ a₂ : A} {p : a₁ = a₂}
            {c₁ : C a₁} {c₂ : C a₂}
-           (q : PathOver c₁ c₂ p)
+           (q : PathOver p c₁ c₂)
   : transportf C p c₁ = c₂.
 Proof.
   induction p.
@@ -21,7 +21,7 @@ Definition path_to_PathOver
            {A : UU} {C : A → UU}
            {a₁ a₂ : A} {p : a₁ = a₂}
   : ∏ {c₁ : C a₁} {c₂ : C a₂} (q : transportf C p c₁ = c₂),
-    PathOver c₁ c₂ p.
+    PathOver p c₁ c₂.
 Proof.
   induction p.
   exact (λ _ _ q, q).
@@ -49,7 +49,7 @@ Section operations.
              {A : UU} {C : A → UU}
              {a₁ a₂ : A} (p : a₁ = a₂)
              {c₁ : C a₁} {c₂ : C a₂}
-             (q : PathOver c₁ c₂ p)
+             (q : PathOver p c₁ c₂)
     : (a₁ ,, c₁) = (a₂ ,, c₂).
   Proof.
     induction p.
@@ -62,7 +62,7 @@ Section operations.
              {A C : UU}
              {a₁ a₂ : A} {p : a₁ = a₂}
              {c₁ c₂ : C}
-             (q : PathOver c₁ c₂ p)
+             (q : PathOver p c₁ c₂)
     : c₁ = c₂.
   Proof.
     induction p.
@@ -76,7 +76,7 @@ Section operations.
     : isweq (@PathOver_const A C a₁ a₂ p c₁ c₂).
   Proof.
     use gradth.
-    - exact (PathOver_inConstantFamily p).
+    - exact (PathOverConstant_map1 p).
     - intros q.
       induction p.
       exact (idpath q).
@@ -90,8 +90,8 @@ Section operations.
              {A B : UU} {C : B → UU} (f : A → B)
              {a₁ a₂ : A} {p : a₁ = a₂}
              {c₁ : C (f a₁)} {c₂ : C (f a₂)}
-             (q : @PathOver _ _ _ (λ z, C(f z)) c₁ c₂ p)
-    : @PathOver _ _ _ C c₁ c₂ (maponpaths f p).
+             (q : @PathOver _ _ _ p (λ z, C(f z)) c₁ c₂)
+    : @PathOver _ _ _ (maponpaths f p) C c₁ c₂.
   Proof.
     induction p.
     exact q.
@@ -101,8 +101,8 @@ Section operations.
              {A B : UU} {C : B → UU} (f : A → B)
              {a₁ a₂ : A} {p : a₁ = a₂}
     : ∏ {c₁ : C (f a₁)} {c₂ : C (f a₂)}
-        (q : @PathOver _ _ _ C c₁ c₂ (maponpaths f p)),
-      @PathOver _ _ _ (λ z, C(f z)) c₁ c₂ p.
+        (q : @PathOver _ _ _ (maponpaths f p) C c₁ c₂),
+      @PathOver _ _ _ p (λ z, C(f z)) c₁ c₂.
   Proof.
     induction p.
     exact (λ _ _ q, q).
@@ -131,9 +131,9 @@ Definition PathOver_inConstantFamily_inv
            {a₁ a₂ : A} {p : a₁ = a₂}
            {c₁ c₂ : C}
            (q : c₁ = c₂)
-  : PathOver_inConstantFamily (!p) (!q)
+  : PathOverConstant_map1 (!p) (!q)
     =
-    inversePathOver (PathOver_inConstantFamily p q).
+    inversePathOver (PathOverConstant_map1 p q).
 Proof.
   induction p.
   exact (idpath (!q)).
@@ -146,11 +146,11 @@ Definition PathOver_inConstantFamily_concat
            {p₁ : a₁ = a₂} {p₂ : a₂ = a₃}
            {c₁ c₂ c₃ : C}
            (q₁ : c₁ = c₂) (q₂ : c₂ = c₃)
-  : PathOver_inConstantFamily (p₁ @ p₂) (q₁ @ q₂)
+  : PathOverConstant_map1 (p₁ @ p₂) (q₁ @ q₂)
     =
     composePathOver
-      (PathOver_inConstantFamily p₁ q₁)
-      (PathOver_inConstantFamily p₂ q₂).
+      (PathOverConstant_map1 p₁ q₁)
+      (PathOverConstant_map1 p₂ q₂).
 Proof.
   induction p₁, p₂.
   exact (idpath _).
@@ -161,7 +161,7 @@ Definition apd_const
            {A C : UU}
            (f : A → C)
            {a₁ a₂ : A} (p : a₁ = a₂)
-  : apd f p = PathOver_inConstantFamily p (maponpaths f p).
+  : apd f p = PathOverConstant_map1 p (maponpaths f p).
 Proof.
   induction p.
   exact (idpath _).
@@ -174,7 +174,7 @@ Definition PathOver_inConstantFamily_inj
            (p : a₁ = a₂)
            {c₁ c₂ : C}
            (q₁ q₂ : c₁ = c₂)
-           (h : PathOver_inConstantFamily p q₁ = PathOver_inConstantFamily p q₂)
+           (h : PathOverConstant_map1 p q₁ = PathOverConstant_map1 p q₂)
   : q₁ = q₂.
 Proof.
   induction p.
@@ -189,7 +189,7 @@ Definition PathOver_hprop
        {a₁ a₂ : A}
        (p : a₁ = a₂)
        (c₁ : Y a₁) (c₂ : Y a₂)
-  : isaprop (PathOver c₁ c₂ p).
+  : isaprop (PathOver p c₁ c₂).
 Proof.
   induction p.
   exact (Yisaset _ _ _). 
@@ -203,7 +203,7 @@ Definition PathOver_path_hprop
        {a₁ a₂ : A}
        (p : a₁ = a₂)
        (c₁ : Y a₁) (c₂ : Y a₂)
-  : PathOver c₁ c₂ p.
+  : PathOver p c₁ c₂.
 Proof.
   induction p.
   apply Yisaprop.
@@ -216,8 +216,8 @@ Definition PathOver_arrow
            {a₁ a₂ : A}
            (p : a₁ = a₂)
            (f₁ : Y₁ a₁ → Y₂ a₁) (f₂ : Y₁ a₂ → Y₂ a₂)
-           (q : ∏ (x : Y₁ a₂), PathOver (f₁ (transportb _ p x)) (f₂ x) p)
-  : @PathOver _ _ _ (λ a, Y₁ a → Y₂ a) f₁ f₂ p.
+           (q : ∏ (x : Y₁ a₂), PathOver p (f₁ (transportb _ p x)) (f₂ x))
+  : @PathOver _ _ _ p (λ a, Y₁ a → Y₂ a) f₁ f₂.
 Proof.
   induction p.
   use funextsec.
@@ -239,12 +239,12 @@ Definition globe_over
            {c₁ : Y a₁} {c₂ : Y a₂}
            {p₁ p₂ : a₁ = a₂}
            (h : globe p₁ p₂)
-           (q₁ : PathOver c₁ c₂ p₁)
-           (q₂ : PathOver c₁ c₂ p₂)
+           (q₁ : PathOver p₁ c₁ c₂)
+           (q₂ : PathOver p₂ c₁ c₂)
   : UU
   := PathOver_to_path
        (transportf
-          (λ z, PathOver c₁ c₂ z)
+          (λ z, PathOver z c₁ c₂)
           h
           q₁)
      =
@@ -261,8 +261,8 @@ Definition const_globe_over
            (h₂ : globe q₁ q₂) 
   : globe_over
       (λ _, B) h₁
-      (PathOver_inConstantFamily _ q₁)
-      (PathOver_inConstantFamily _ q₂).
+      (PathOverConstant_map1 _ q₁)
+      (PathOverConstant_map1 _ q₂).
 Proof.
   induction h₁, h₂.
   apply idpath.
@@ -276,8 +276,8 @@ Definition globe_over_whisker
            {c₁ : Y a₁} {c₂ : Y a₂}
            {p₁ p₂ : a₁ = a₂}
            (h : globe p₁ p₂)
-           {q₁ q₃ : PathOver c₁ c₂ p₁}
-           {q₂ q₄ : PathOver c₁ c₂ p₂}
+           {q₁ q₃ : PathOver p₁ c₁ c₂}
+           {q₂ q₄ : PathOver p₂ c₁ c₂}
            (s₁ : q₁ = q₃) (s₂ : q₂ = q₄)
   : globe_over Y h q₁ q₂ → globe_over Y h q₃ q₄.
 Proof.
@@ -294,8 +294,8 @@ Definition path_globe_over_hset
            {c₁ : Y a₁} {c₂ : Y a₂}
            {p₁ p₂ : a₁ = a₂}
            (h : globe p₁ p₂)
-           (q₁ : PathOver c₁ c₂ p₁)
-           (q₂ : PathOver c₁ c₂ p₂)
+           (q₁ : PathOver p₁ c₁ c₂)
+           (q₂ : PathOver p₂ c₁ c₂)
   : globe_over Y h q₁ q₂.
 Proof.
   apply Yisaset.
@@ -323,9 +323,9 @@ Definition square_to_PathOver
            (s : square t l r d)             
   : @PathOver
       (A × A) (ld ,, lt) (rd ,, rt)
+      (pathsdirprod d t)
       (λ (x : A × A), pr1 x = pr2 x)
-      l r
-      (pathsdirprod d t).
+      l r.
 Proof.
   induction d.
   induction t ; cbn.
@@ -338,7 +338,7 @@ Definition PathOver_to_square
            {x₁ x₂ : X}
            {p : x₁ = x₂}
            {q₁ : f x₁ = g x₁} {q₂ : f x₂ = g x₂}
-           (s : @PathOver _ _ _ (λ z, f z = g z) q₁ q₂ p)
+           (s : @PathOver _ _ _ p (λ z, f z = g z) q₁ q₂)
   : square q₂ (maponpaths f p) (maponpaths g p) q₁.
 Proof.
   induction p, s.
@@ -418,8 +418,9 @@ Section operations.
       →
       @PathOver
         _ _ _
+        p
         (λ z, f z = g z)
-        l r p.
+        l r.
   Proof.
     intros s.
     apply path_to_PathOver.

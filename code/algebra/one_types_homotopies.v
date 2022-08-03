@@ -446,7 +446,7 @@ Proof.
              (pr1 X) (pr1 Y)
              (pr1 f) (pr1 g)
              (make_invertible_2cell
-                (one_type_2cell_iso (pr1 α)))
+                (one_type_2cell_iso _ _ _ _ (pr1 α)))
              (pr2 X) (pr2 Y)
              (pr2 f) (pr2 g)
              (pr2 α)).

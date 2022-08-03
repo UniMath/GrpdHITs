@@ -53,8 +53,8 @@ Definition globe_PathOver_inConstantFamily
   : globe_over
       (λ (x : A), B)
       g
-      (PathOver_inConstantFamily p₁ q₁)
-      (PathOver_inConstantFamily p₂ q₂).
+      (PathOverConstant_map1 p₁ q₁)
+      (PathOverConstant_map1 p₂ q₂).
 Proof.
   induction g, p₁.
   exact h.
@@ -67,7 +67,7 @@ Definition apd_2_1
            (cc : ∏ (a : A), Y (c a))
            {a₁ a₂ : A}
            (p : a₁ = a₂)
-  : PathOver (cc a₁) (cc a₂) (maponpaths c p).
+  : PathOver (maponpaths c p) (cc a₁) (cc a₂).
 Proof.
   induction p ; apply idpath.
 Defined.
@@ -81,7 +81,7 @@ Definition apd_2_first
            {a₁ a₂ : A}
            {p : a₁ = a₂}
            {y₁ : Y₁ a₁} {y₂ : Y₁ a₂}
-           (q : PathOver y₁ y₂ p)
+           (q : PathOver p y₁ y₂)
   : globe_over
       Y₂
       (idpath _)
@@ -179,10 +179,11 @@ Definition homot_endpoint_dact_fmap_eq
                  @PathOver
                    _
                    (sem_endpoint_UU (l j) (pr21 X) x)
-                   _ _
+                   _
+                   (pr2 X j x)
+                   _
                    (endpoint_dact (pr1 X) Y (l j) cX y)
-                   (endpoint_dact (pr1 X) Y (r j) cX y)
-                   (pr2 X j x))
+                   (endpoint_dact (pr1 X) Y (r j) cX y))
            {TR : poly_code}
            {al ar : endpoint A (C B₁) TR}
            {b₁ b₂ : B₁}
@@ -190,16 +191,17 @@ Definition homot_endpoint_dact_fmap_eq
            (pp_arg : @PathOver
                        _
                        (sem_endpoint_UU al _ _)
-                       _ _
+                       _
+                       p_arg
+                       _
                        (endpoint_dact (pr1 X) Y al cX b₂)
-                       (endpoint_dact (pr1 X) Y ar cX b₂)
-                       p_arg)
+                       (endpoint_dact (pr1 X) Y ar cX b₂))
            (p : f = g)
   : globe_over
       (λ _, B₂)
       (idpath _)
       (homot_endpoint_dact (fmap_eq p) cX pX _ pp_arg)
-      (PathOver_inConstantFamily _ (toforallpaths _ _ _ p b₂)).
+      (PathOverConstant_map1 _ (toforallpaths _ _ _ p b₂)).
 Proof.
   induction p.
   apply idpath.
@@ -230,10 +232,11 @@ Definition homot_endpoint_dact_funext_fmap_eq
                  @PathOver
                    _
                    (sem_endpoint_UU (l j) (pr21 X) x)
-                   _ _
+                   _
+                   (pr2 X j x)
+                   _
                    (endpoint_dact (pr1 X) Y (l j) cX y)
-                   (endpoint_dact (pr1 X) Y (r j) cX y)
-                   (pr2 X j x))
+                   (endpoint_dact (pr1 X) Y (r j) cX y))
            {TR : poly_code}
            {al ar : endpoint A (C B₁) TR}
            {b₁ b₂ : B₁}
@@ -241,16 +244,17 @@ Definition homot_endpoint_dact_funext_fmap_eq
            (pp_arg : @PathOver
                        _
                        (sem_endpoint_UU al _ _)
-                       _ _
+                       _
+                       p_arg
+                       _
                        (endpoint_dact (pr1 X) Y al cX b₂)
-                       (endpoint_dact (pr1 X) Y ar cX b₂)
-                       p_arg)
+                       (endpoint_dact (pr1 X) Y ar cX b₂))
            (p : f ~ g)
   : globe_over
       (λ _, B₂)
       (sem_fmap_funextsec_eq p (pr2 X) p_arg)
       (homot_endpoint_dact (fmap_eq (funextsec _ _ _ p)) cX pX _ pp_arg)
-      (PathOver_inConstantFamily _ (p b₂)).
+      (PathOverConstant_map1 _ (p b₂)).
 Proof.
   refine (concat_globe_over
             (homot_endpoint_dact_fmap_eq _ _ _ _)
@@ -476,12 +480,12 @@ Section CoequifierSignature.
                            (λ z, B)
                            Y
                            (λ b _, Yinc b)
-                           (PathOver_inConstantFamily _ (p x)))
+                           (PathOverConstant_map1 _ (p x)))
                         (apd_depfun
                            (λ z, B)
                            Y
                            (λ b _, Yinc b)
-                           (PathOver_inConstantFamily _ (q x)))).
+                           (PathOverConstant_map1 _ (q x)))).
 
     Definition make_coequifier_disp_alg
       : disp_algebra X.
@@ -507,7 +511,7 @@ Section CoequifierSignature.
             ** exact (p z).
             ** apply sem_fmap_funextsec_eq.
             ** unfold dep_constfun_fun in *.
-               apply PathOver_inConstantFamily.
+               apply PathOverConstant_map1.
                exact (p zz).
             ** apply homot_endpoint_dact_funext_fmap_eq.
           * refine (concat_globe_over
@@ -522,7 +526,7 @@ Section CoequifierSignature.
             ** exact (q z).
             ** apply sem_fmap_funextsec_eq.
             ** unfold dep_constfun_fun in *.
-               apply PathOver_inConstantFamily.
+               apply PathOverConstant_map1.
                exact (q zz).
             ** apply homot_endpoint_dact_funext_fmap_eq.
           * refine (concat_globe_over
@@ -591,8 +595,7 @@ Section CoequifierSignature.
         -->
         coequifier_ump_1_Y_alg.
     Proof.
-      exact (biinitial_1cell
-               _
+      exact (is_biinitial_1cell_property
                coequifier_one_types_is_initial
                coequifier_ump_1_Y_alg).
     Defined.
@@ -628,10 +631,9 @@ Section CoequifierSignature.
            (make_coequifier_algebra Yinc (λ x, eqtohomot Yhomot x))
            ψ
            ψinc
-      := biinitial_2cell
-           _
+      := is_biinitial_2cell_property
            coequifier_one_types_is_initial
-           _ _.
+           _ _ _.
 
     Definition coequifier_ump_2
       : φ ==> ψ
@@ -662,9 +664,9 @@ Section CoequifierSignature.
       : ρ = σ.
     Proof.
       pose
-        (@biinitial_eq
+        (@is_biinitial_eq_property
            _ _
-           _ coequifier_one_types_is_initial
+           coequifier_one_types_is_initial
            _
            _ _
            (@make_coequifier_cell

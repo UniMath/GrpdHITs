@@ -239,7 +239,7 @@ Section CongruenceRelation.
       : is_pregroupoid make_groupoid_algebra_carrier_category.
     Proof.
       intros x y f.
-      use is_iso_qinv.
+      use make_is_z_isomorphism.
       - exact (cong_rel_inv R f).
       - split.
         + exact (cong_rel_rinv R f).

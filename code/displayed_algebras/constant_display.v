@@ -121,12 +121,12 @@ Definition PathOver_poly_dact_const
            {y₁ : poly_dact_UU P (λ _ : X, Y) x₁}
            {y₂ : poly_dact_UU P (λ _ : X, Y) x₂}
            (H : PathOver_poly_dact_const_eq y₁ y₂)
-  : PathOver y₁ y₂ p.
+  : PathOver p y₁ y₂.
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - induction p ; cbn in *.
     exact H.
-  - apply PathOver_inConstantFamily.
+  - apply PathOverConstant_map1.
     exact H.
   - induction p.
     induction x₁ as [x₁ | x₁].
@@ -213,14 +213,14 @@ Definition pathsdirprod_inversePathOver
            {y₁ y₂ : poly_dact_UU (P₁ * P₂) Y a}
            (p : @PathOver
                   _ _ _
+                  (idpath _)
                   (poly_dact_UU P₁ Y)
-                  (pr1 y₁) (pr1 y₂)
-                  (idpath _))
+                  (pr1 y₁) (pr1 y₂))
            (q : @PathOver
                   _ _ _
+                  (idpath _)
                   (poly_dact_UU P₂ Y)
-                  (pr2 y₁) (pr2 y₂)
-                  (idpath _))
+                  (pr2 y₁) (pr2 y₂))
   : pathsdirprod
       (inversePathOver p)
       (inversePathOver q)
@@ -388,10 +388,10 @@ Definition PathOver_cases
   : UU.
 Proof.
   induction a₁ as [a₁ | a₁], a₂ as [a₂ | a₂].
-  - exact (@PathOver _ _ _ (poly_dact_UU P₁ Y) y₁ y₂ (ii1_injectivity p)).
+  - exact (@PathOver _ _ _ (ii1_injectivity p) (poly_dact_UU P₁ Y) y₁ y₂).
   - exact ∅.
   - exact ∅.
-  - exact (@PathOver _ _ _ (poly_dact_UU P₂ Y) y₁ y₂ (ii2_injectivity p)).
+  - exact (@PathOver _ _ _ (ii2_injectivity p) (poly_dact_UU P₂ Y) y₁ y₂).
 Defined.
 
 Definition PathOver_by_case
@@ -402,7 +402,7 @@ Definition PathOver_by_case
            {y₁ : poly_dact_UU (P₁ + P₂) Y a₁}
            {y₂ : poly_dact_UU (P₁ + P₂) Y a₂}
            {p : a₁ = a₂}
-           (pp : PathOver y₁ y₂ p)
+           (pp : PathOver p y₁ y₂)
   : PathOver_cases Y y₁ y₂ p.
 Proof.
   induction p.
@@ -420,7 +420,7 @@ Definition PathOver_poly_dact_const_inv
            (p : x₁ = x₂)
            (y₁ : poly_dact_UU P (λ _ : X, Y) x₁)
            (y₂ : poly_dact_UU P (λ _ : X, Y) x₂)
-           (H : PathOver y₁ y₂ p)
+           (H : PathOver p y₁ y₂)
   : PathOver_poly_dact_const_eq y₁ y₂.
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
@@ -457,7 +457,7 @@ Definition PathOver_poly_dact_const_PathOver_poly_dact_const_inv
            (p : x₁ = x₂)
            (y₁ : poly_dact_UU P (λ _ : X, Y) x₁)
            (y₂ : poly_dact_UU P (λ _ : X, Y) x₂)
-           (H : PathOver y₁ y₂ p)
+           (H : PathOver p y₁ y₂)
   : PathOver_poly_dact_const _ (PathOver_poly_dact_const_inv _ _ _ H) = H.
 Proof.
   induction p.
@@ -490,8 +490,8 @@ Definition path_PathOverPair
            {p : x₁ = y₁} {q : x₂ = y₂}
            {z₁ : poly_dact P₁ Y x₁} {z₁' : poly_dact P₁ Y y₁}
            {z₂ : poly_dact P₂ Y x₂} {z₂' : poly_dact P₂ Y y₂}
-           {pp pp' : @PathOver _ _ _ (poly_dact P₁ Y) z₁ z₁' p}
-           {qq qq' : @PathOver _ _ _ (poly_dact P₂ Y) z₂ z₂' q}
+           {pp pp' : @PathOver _ _ _ p (poly_dact P₁ Y) z₁ z₁'}
+           {qq qq' : @PathOver _ _ _ q (poly_dact P₂ Y) z₂ z₂'}
            (s₁ : pp = pp') (s₂ : qq = qq')
   : PathOver_pair pp qq = PathOver_pair pp' qq'.
 Proof.
@@ -661,7 +661,7 @@ Definition apd_2_const
       y₁ y₂
       (PathOver_poly_dact_const p H)
     =
-    PathOver_inConstantFamily
+    PathOverConstant_map1
       (maponpaths cA p)
       (maponpaths cB H).
 Proof.
@@ -905,14 +905,14 @@ Section ConstantDispAlgebra.
         (y : poly_dact (path_source Σ j) const_disp_algebra_fam x),
       @PathOver
         _ _ _
+        (alg_path X j x)
         const_disp_algebra_fam
         (endpoint_dact
            (pr11 X) _ (path_left Σ j) const_disp_algebra_constr y)
         (endpoint_dact
            (pr11 X) _ (path_right Σ j) const_disp_algebra_constr y)
-        (alg_path X j x)
     := λ j x z,
-       PathOver_inConstantFamily
+       PathOverConstant_map1
          (alg_path X j x)
          ((endpoint_dact_const _ _ (path_left Σ j) z)
             @ alg_path Y j (poly_dact_const (path_source Σ j) x z)
@@ -930,6 +930,10 @@ Section ConstantDispAlgebra.
              {p_arg : sem_endpoint_one_types al _ z = sem_endpoint_one_types ar _ z}
              (pp_arg : @PathOver
                          _ _ _
+                         (sem_homot_endpoint_one_types
+                            path_arg
+                            (pr11 X) (pr21 X)
+                            z p_arg)
                          (poly_dact_UU TR (λ _, alg_carrier Y))
                          (endpoint_dact
                             (pr11 X)
@@ -942,11 +946,7 @@ Section ConstantDispAlgebra.
                             (λ _, pr111 Y)
                             ar
                             const_disp_algebra_constr
-                            zz)
-                         (sem_homot_endpoint_one_types
-                            path_arg
-                            (pr11 X) (pr21 X)
-                            z p_arg))
+                            zz))
     : homot_endpoint_dact p _ const_disp_algebra_PathOver zz pp_arg
       =
       PathOver_poly_dact_const
@@ -1293,6 +1293,10 @@ Section ConstantDispAlgebra.
                     z)
              (pp : @PathOver
                      _ _ _
+                     (sem_homot_endpoint_one_types
+                        path_arg (pr11 X)
+                        (pr21 X)
+                        z p)
                      (poly_dact
                         (homot_path_arg_target Σ j)
                         const_disp_algebra_fam)
@@ -1305,11 +1309,7 @@ Section ConstantDispAlgebra.
                         (pr11 X)
                         const_disp_algebra_fam
                         (homot_path_arg_right Σ j)
-                        const_disp_algebra_constr zz)
-                     (sem_homot_endpoint_one_types
-                        path_arg (pr11 X)
-                        (pr21 X)
-                        z p))
+                        const_disp_algebra_constr zz))
     : globe_over
         (const_disp_algebra_fam)
         (pr2 X j z p)
@@ -1364,8 +1364,8 @@ Definition const_PathOver_square
            {p : x₁ = x₂}
            {y₁ : Y} {y₂ : Y} 
            {y₁' : Y} {y₂' : Y} 
-           {q : PathOver y₁ y₂ p}
-           {q' : PathOver y₁' y₂' p}
+           {q : PathOver p y₁ y₂}
+           {q' : PathOver p y₁' y₂'}
            {l : y₁ = y₁'} {r : y₂ = y₂'}
            (s : PathOver_square
                   (λ (x : X), Y)

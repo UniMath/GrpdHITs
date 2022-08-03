@@ -244,7 +244,7 @@ Section GroupQuotient.
             (Y : alg_carrier X → one_type)
             (Ybase : Y (group_quot_base X))
             (Yloop : ∏ (g : G),
-                     @PathOver _ _ _ Y Ybase Ybase (group_quot_loop X g))
+                     @PathOver _ _ _ (group_quot_loop X g) Y Ybase Ybase)
             (Yunit : globe_over
                        Y
                        (group_quot_loop_unit X)
@@ -270,7 +270,7 @@ Section GroupQuotient.
           (x : pr1 G),
         pr1 G
         →
-        @PathOver _ _ _ Y Ybase Ybase (alg_path X j x).
+        @PathOver _ _ _ (alg_path X j x) Y Ybase Ybase.
     Proof.
       intros j x y.
       induction j.

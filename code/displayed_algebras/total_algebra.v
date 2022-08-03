@@ -80,10 +80,10 @@ Definition PathOver_poly_pr2
            (p : x = y)
   : @PathOver
       _ _ _
+      (maponpaths (poly_pr1 _) p)
       (poly_dact P Y)
       (poly_pr2 P x)
-      (poly_pr2 P y)
-      (maponpaths (poly_pr1 _) p).
+      (poly_pr2 P y).
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂] ; simpl in *.
   - induction p.
@@ -293,10 +293,10 @@ Section TotalAlgebra.
         (x : poly_act P carrier)
     : @PathOver
         _ _ _
+        (pr1_endpoint e _)
         (poly_dact Q (pr1 Y))
         (endpoint_dact _ _ e (disp_alg_constr Y) (poly_pr2 P x))
-        (poly_pr2 Q (sem_endpoint_UU e operation x))
-        (pr1_endpoint e _).
+        (poly_pr2 Q (sem_endpoint_UU e operation x)).
   Proof.
     induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
                     | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ].

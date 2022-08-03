@@ -48,7 +48,7 @@ Module Export gquot.
 
   Definition ginv
     : ∏ (G : groupoid) {a₁ a₂ : G} (g : a₁ --> a₂),
-      gcleq G (inv_from_iso (g ,, pr2 G _ _ g)) = !(gcleq G g).
+      gcleq G (inv_from_z_iso (g ,, pr2 G _ _ g)) = !(gcleq G g).
   Proof.
     intros G a₁ a₂ g.
     apply path_inverse_from_right.
@@ -57,7 +57,7 @@ Module Export gquot.
     etrans.
     {
       apply maponpaths.
-      exact (iso_inv_after_iso (g ,, pr2 G a₁ a₂ g)).
+      exact (z_iso_inv_after_z_iso (g ,, pr2 G a₁ a₂ g)).
     }
     exact (ge _ a₁).
   Qed.
@@ -70,7 +70,7 @@ Module Export gquot.
              (Y : gquot G → UU)
              (gclY : ∏ (a : G), Y(gcl G a))
              (gcleqY : ∏ (a₁ a₂ : G) (g : a₁ --> a₂),
-                 PathOver (gclY a₁) (gclY a₂) (gcleq G g))
+                 PathOver (gcleq G g) (gclY a₁) (gclY a₂))
              (geY : ∏ (a : G), globe_over
                                       Y
                                       (ge G a)

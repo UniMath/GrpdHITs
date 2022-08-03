@@ -1,5 +1,5 @@
-COQC = coqc
-COQDEP = coqdep
+COQC = ~/Code/altUniMath/UniMath/sub/coq/bin/coqc
+COQDEP = ~/Code/altUniMath/UniMath/sub/coq/bin/coqdep
 -R . "sem"
 
 -arg "-type-in-type"

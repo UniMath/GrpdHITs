@@ -15,7 +15,7 @@ Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 Require Import UniMath.Bicategories.Core.Examples.Groupoids.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Unitors.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
@@ -271,7 +271,7 @@ Section FirstIsomorphismTheorem.
   Proof.
     induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
     - apply idpath.
-    - exact (!(pathscomp0rid _)).
+    - apply idpath.
     - induction x as [x | x], y as [y | y].
       + simpl.
         refine (_ @ IHP₁ _ _ _).

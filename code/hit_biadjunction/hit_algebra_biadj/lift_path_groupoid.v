@@ -14,7 +14,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -285,7 +285,7 @@ Proof.
   - apply idpath.
   - simpl.
     refine (_ @ id_left _).
-    rewrite (iso_inv_after_iso (make_iso (id₁ x) _)).
+    rewrite (z_iso_inv_after_z_iso (id₁ x ,, _)).
     apply idpath.
   - induction x as [x  | x].
     + exact (IHP₁ x).

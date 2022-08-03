@@ -13,7 +13,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 Require Import UniMath.Bicategories.Colimits.Initial.
 
@@ -101,7 +101,7 @@ Section GroupQuotient.
     : is_pregroupoid group_quot_initial_algebra_category.
   Proof.
     intros ? ? x.
-    use is_iso_qinv.
+    use make_is_z_isomorphism.
     - exact (grinv G x).
     - split.
       + exact (grrinvax G x).
@@ -184,13 +184,13 @@ Section GroupQuotient.
     intros j x ?.
     induction j.
     - simpl; cbn.
+      rewrite !(lunax G _).
       rewrite (grlinvax G _).
-      repeat rewrite (lunax G _).
       apply idpath.
-    - simpl; cbn.
-      repeat rewrite (grlinvax G _).
-      repeat rewrite (lunax G _).
-      repeat rewrite (runax G _).
+    - simpl ; cbn.
+      rewrite (grrinvax G).
+      rewrite !(lunax G _).
+      rewrite !(runax G _).
       apply idpath.
   Qed.  
 
@@ -239,7 +239,7 @@ Section GroupQuotient.
       repeat rewrite id_left.
       repeat rewrite id_right.
       refine (maponpaths (λ z, z · Hmor _) (!_ @ id_right _)).
-      refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+      use z_iso_inv_on_right.
       exact (! id_right _).
     Qed.
     
@@ -255,7 +255,7 @@ Section GroupQuotient.
           rewrite (functor_id (pr211 H)).
           repeat rewrite id_left.
           repeat rewrite id_right.
-          refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+          use z_iso_inv_on_right.
           rewrite id_left.
           exact (idpath _).
         + simpl.
@@ -265,12 +265,12 @@ Section GroupQuotient.
           etrans.
           {
             apply maponpaths.
-            refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+            use z_iso_inv_on_right.
             rewrite id_left.
             exact (idpath _).
           }
           apply maponpaths_2.
-          refine (iso_inv_on_right _ _ _ _ _ _ _ _).
+          use z_iso_inv_on_right.
           rewrite id_left.
           exact (idpath _).
     Qed.
@@ -471,9 +471,9 @@ Section GroupQuotient.
   End GroupQuotInitialAlgUMPEq.
 
   Definition group_quot_initial_algebra_unique_maps
-    : unique_maps group_quot_initial_algebra.
+    : is_biinitial group_quot_initial_algebra.
   Proof.
-    use make_unique_maps.
+    use make_is_biinitial.
     - exact group_quot_initial_algebra_ump_1.
     - intros H f g.
       use make_invertible_2cell.
@@ -493,10 +493,9 @@ Section GroupQuotient.
     : group_quot_path_space_base ≃ G.
   Proof.
     pose (left_adjoint_equivalence_grpd_algebra_is_fully_faithful
-            (unique_maps_unique_adj_eqv
-               _ _ _
-               (initial_groupoid_algebra_is_initial _)
-               group_quot_initial_algebra_unique_maps)
+            (biinitial_unique_adj_eqv
+               group_quot_initial_algebra_unique_maps
+               (initial_groupoid_algebra_is_initial _))
             (poly_initial_alg group_quot_point_constr tt)
             (poly_initial_alg group_quot_point_constr tt))
       as f.

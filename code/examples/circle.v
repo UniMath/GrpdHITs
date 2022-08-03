@@ -88,7 +88,7 @@ Section CircleInduction.
   Context {X : hit_algebra_one_types circle_signature}
           (Y : alg_carrier X → one_type)
           (Ybase : Y (circle_base X))
-          (Yloop : @PathOver _ _ _ Y Ybase Ybase (circle_loop X)).
+          (Yloop : @PathOver _ _ _ (circle_loop X) Y Ybase Ybase).
   
   Definition make_circle_disp_algebra
     : disp_algebra X.

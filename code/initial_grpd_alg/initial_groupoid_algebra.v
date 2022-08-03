@@ -3,6 +3,7 @@ Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
 Require Import UniMath.CategoryTheory.Core.Categories.
+Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
@@ -2453,10 +2454,19 @@ Section InitialGroupoidAlg.
                 (initial_groupoid_algebra_mor_el_poly_to_poly_act_rel
                    (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
                       (sem_homot_endpoint_initial h z p_arg)))
-              @ _).
-      do 2 apply maponpaths.
-      apply maponpaths.
-      apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel_spec.
+                @ _).
+      cbn.
+      etrans.
+      {
+        do 3 apply maponpaths.
+        apply initial_groupoid_algebra_mor_el_poly_to_poly_act_rel_spec.
+      }
+      unfold poly_act_inverse.
+      refine (maponpaths (λ f, poly_act_rel_inv T _ f _) _).
+      use funextsec ; intro x.
+      use funextsec ; intro y.
+      use funextsec ; intro f.
+      apply initial_groupoid_algebra_carrier_left_unit.
     - simpl.
       etrans.
       {

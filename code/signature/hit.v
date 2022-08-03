@@ -36,10 +36,10 @@ Section SetInduction.
                  (y : poly_dact_UU (path_source Σ j) Y x),
                @PathOver
                  _ _ _
+                 (alg_path X j x)
                  Y
                  (endpoint_dact_UU _ Y (path_left Σ j) c y)
-                 (endpoint_dact_UU _ Y (path_right Σ j) c y) 
-                 (alg_path X j x)).
+                 (endpoint_dact_UU _ Y (path_right Σ j) c y)).
 
   Definition set_disp_algebra
     : disp_algebra X.
@@ -98,4 +98,4 @@ Definition is_initial
            (Σ : hit_signature)
            (X : hit_algebra_one_types Σ)
   : UU
-  := is_biinitial (pr2 (is_univalent_2_hit_algebra_one_types Σ)) X.
+  := is_biinitial X.

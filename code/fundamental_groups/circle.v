@@ -12,7 +12,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 Require Import UniMath.Bicategories.Colimits.Initial.
 
@@ -98,7 +98,7 @@ Definition circle_initial_algebra_is_pregroupoid
   : is_pregroupoid circle_initial_algebra_category.
 Proof.
   intros tt1 tt2 z.
-  use is_iso_qinv.
+  use make_is_z_isomorphism.
   - exact (hzsign z).
   - split.
     + exact (hzrminus z).
@@ -492,9 +492,9 @@ Section CircleInitialAlgUMPEq.
 End CircleInitialAlgUMPEq.
 
 Definition circle_initial_algebra_unique_maps
-  : unique_maps circle_initial_algebra.
+  : is_biinitial circle_initial_algebra.
 Proof.
-  use make_unique_maps.
+  use make_is_biinitial.
   - exact circle_initial_algebra_ump_1.
   - intros G f g.
     use make_invertible_2cell.
@@ -514,10 +514,9 @@ Definition circle_path_space_base_is_Z
   : circle_path_space_base ≃ hz.
 Proof.
   pose (left_adjoint_equivalence_grpd_algebra_is_fully_faithful
-          (unique_maps_unique_adj_eqv
-             _ _ _
-             (initial_groupoid_algebra_is_initial _)
-             circle_initial_algebra_unique_maps)
+          (biinitial_unique_adj_eqv
+             circle_initial_algebra_unique_maps
+             (initial_groupoid_algebra_is_initial _))
           (poly_initial_alg circle_point_constr tt)
           (poly_initial_alg circle_point_constr tt))
     as f.

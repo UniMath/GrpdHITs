@@ -50,7 +50,7 @@ Definition PathOver_transport
            {a₁ a₂ : A}
            (p : a₁ = a₂)
            (y : Y a₁)
-  : PathOver Y y (transportf Y p y) p.
+  : PathOver p Y y (transportf Y p y).
 Proof.
   induction p.
   apply idpath.
@@ -82,10 +82,10 @@ Definition poly_pr2_is_poly_dmap
            (p : (λ x, pr1(f x)) = (λ x, x))
            (x : poly_act P A)
   : PathOver
+      (poly_pr1_is_id f p x)
       (poly_dact_UU P Y)
       (poly_pr2 P _)
-      (poly_dmap P Y (transport_depmap (λ z, pr2 (f z)) p) x)
-      (poly_pr1_is_id f p x).
+      (poly_dmap P Y (transport_depmap (λ z, pr2 (f z)) p) x).
 Proof.
   induction P as [ T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
   - apply idpath.
@@ -104,12 +104,12 @@ Definition PathOver_to_PathOver_transport
            {a₁ a₂ : A}
            {q : a₁ = a₂}
            {y₁ : Y(f a₁)} {y₂ : Y(f a₂)}
-           (pp : PathOver (λ a, Y(f a)) y₁ y₂ q)
+           (pp : PathOver q (λ a, Y(f a)) y₁ y₂)
   : PathOver
+      q
       Y
       (transportf Y (eqtohomot p a₁) y₁)
-      (transportf Y (eqtohomot p a₂) y₂)
-      q.
+      (transportf Y (eqtohomot p a₂) y₂).
 Proof.
   induction q.
   simpl in *.
@@ -179,14 +179,14 @@ Definition PathOver_square_PathOver_pair
            {p₁ p₂ : a₁ = a₂}
            {aa₁ aa₁' : poly_dact P Y a₁} {aa₂ aa₂' : poly_dact P Y a₂}
            {hh₁ : aa₁ = aa₁'} {hh₂ : aa₂ = aa₂'}
-           {pp₁ : PathOver (poly_dact P Y) aa₁ aa₂ p₁}
-           {pp₂ : PathOver (poly_dact P Y) aa₁' aa₂' p₂}
+           {pp₁ : PathOver p₁ (poly_dact P Y) aa₁ aa₂}
+           {pp₂ : PathOver p₂ (poly_dact P Y) aa₁' aa₂'}
            {b₁ b₂ : poly_act Q A}
            {q₁ q₂ : b₁ = b₂}
            {bb₁ bb₁' : poly_dact Q Y b₁} {bb₂ bb₂' : poly_dact Q Y b₂}
            {hh₃ : bb₁ = bb₁'} {hh₄ : bb₂ = bb₂'}
-           {qq₁ : PathOver (poly_dact Q Y) bb₁ bb₂ q₁}
-           {qq₂ : PathOver (poly_dact Q Y) bb₁' bb₂' q₂}
+           {qq₁ : PathOver q₁ (poly_dact Q Y) bb₁ bb₂}
+           {qq₂ : PathOver q₂ (poly_dact Q Y) bb₁' bb₂'}
            {s₁ : p₁ = p₂} {s₂ : q₁ = q₂}
            (ps : PathOver_square
                    (poly_dact P Y)
@@ -219,7 +219,7 @@ Definition PathOver_square_id
            {a₁ a₂ : A}
            {p : a₁ = a₂}
            {y₁ :Y a₁} {y₂ : Y a₂}
-           (pp : PathOver Y y₁ y₂ p)
+           (pp : PathOver p Y y₁ y₂)
   : PathOver_square
       Y
       (idpath _)
@@ -239,9 +239,9 @@ Definition PathOver_square_concat
            {h₁ : p₁ = p₂} {h₂ : p₂ = p₃}
            {x₁ y₁ z₁ : Y a₁}
            {x₂ y₂ z₂ : Y a₂}
-           {pp₁ : PathOver Y x₁ x₂ p₁}
-           {pp₂ : PathOver Y y₁ y₂ p₂}
-           {pp₃ : PathOver Y z₁ z₂ p₃}
+           {pp₁ : PathOver p₁ Y x₁ x₂}
+           {pp₂ : PathOver p₂ Y y₁ y₂}
+           {pp₃ : PathOver p₃ Y z₁ z₂}
            {q₁ : x₁ = y₁} {q₂ : x₂ = y₂}
            {r₁ : y₁ = z₁} {r₂ : y₂ = z₂}
            (s₁ : PathOver_square Y h₁ pp₁ pp₂ q₁ q₂)
@@ -276,8 +276,8 @@ Definition PathOver_square_1_type
            {h₁ h₂ : p₁ = p₂}
            {x₁ y₁ : Y a₁}
            {x₂ y₂ : Y a₂}
-           {pp₁ : PathOver Y x₁ x₂ p₁}
-           {pp₂ : PathOver Y y₁ y₂ p₂}
+           {pp₁ : PathOver p₁ Y x₁ x₂}
+           {pp₂ : PathOver p₂ Y y₁ y₂}
            {q₁ : x₁ = y₁} {q₂ : x₂ = y₂}
            (s : PathOver_square Y h₁ pp₁ pp₂ q₁ q₂)
   : PathOver_square Y h₂ pp₁ pp₂ q₁ q₂.
@@ -354,9 +354,9 @@ Definition PathOver_square_comp_l
            {x₂ : Y a₂}
            {x₃ x₃' : Y a₃}
            {sl : x₃ = x₃'}
-           {pp : PathOver Y x₂ x₃ p₂}
-           {qq : PathOver Y x₂ x₃' p₃}
-           (rr : PathOver Y x₁ x₂ p₁)
+           {pp : PathOver p₂ Y x₂ x₃}
+           {qq : PathOver p₃ Y x₂ x₃'}
+           (rr : PathOver p₁ Y x₁ x₂)
            (s : PathOver_square Y h pp qq (idpath _) sl)
   : PathOver_square
       Y
@@ -379,9 +379,9 @@ Definition PathOver_square_comp_r
            {x₁ : Y a₁}
            {x₂ : Y a₂}
            {x₃ : Y a₃}
-           {pp : PathOver Y x₁ x₂ p₁}
-           {qq : PathOver Y x₁ x₂ p₂}
-           (rr : PathOver Y x₂ x₃ p₃)
+           {pp : PathOver p₁ Y x₁ x₂}
+           {qq : PathOver p₂ Y x₁ x₂}
+           (rr : PathOver p₃ Y x₂ x₃)
            (s : PathOver_square Y h pp qq (idpath _) (idpath _))
   : PathOver_square
       Y
@@ -401,9 +401,9 @@ Definition composePathOver_assocl
            {a₁ a₂ a₃ a₄ : A}
            {p₁ : a₁ = a₂} {p₂ : a₂ = a₃} {p₃ : a₃ = a₄}
            {x₁ : Y a₁} {x₂ : Y a₂} {x₃ : Y a₃} {x₄ : Y a₄}
-           (pp : PathOver Y x₁ x₂ p₁)
-           (qq : PathOver Y x₂ x₃ p₂)
-           (rr : PathOver Y x₃ x₄ p₃)
+           (pp : PathOver p₁ Y x₁ x₂)
+           (qq : PathOver p₂ Y x₂ x₃)
+           (rr : PathOver p₃ Y x₃ x₄)
   : PathOver_square
       Y
       (path_assoc _ _ _)
@@ -422,9 +422,9 @@ Definition composePathOver_assocr
            {a₁ a₂ a₃ a₄ : A}
            {p₁ : a₁ = a₂} {p₂ : a₂ = a₃} {p₃ : a₃ = a₄}
            {x₁ : Y a₁} {x₂ : Y a₂} {x₃ : Y a₃} {x₄ : Y a₄}
-           (pp : PathOver Y x₁ x₂ p₁)
-           (qq : PathOver Y x₂ x₃ p₂)
-           (rr : PathOver Y x₃ x₄ p₃)
+           (pp : PathOver p₁ Y x₁ x₂)
+           (qq : PathOver p₂ Y x₂ x₃)
+           (rr : PathOver p₃ Y x₃ x₄)
   : PathOver_square
       Y
       (!(path_assoc _ _ _))
@@ -443,7 +443,7 @@ Definition TotalPathToPathOver_PathOverToTotalPath
            {a₁ a₂ : A}
            {y₁ : Y a₁} {y₂ : Y a₂}
            {p : a₁ = a₂}
-           (pp : PathOver Y y₁ y₂ p)
+           (pp : PathOver p Y y₁ y₂)
   : PathOver_square
       Y
       (maponpaths_pr1_PathOverToTotalPath p pp)
@@ -469,8 +469,8 @@ Definition apd_depfun
            {aa : YA a}
            {bb : YA b}
            {q : a = b}
-           (qq : PathOver YA aa bb q)
-  : PathOver YB (ff a aa) (ff b bb) (maponpaths f q)
+           (qq : PathOver q YA aa bb)
+  : PathOver (maponpaths f q) YB (ff a aa) (ff b bb)
   := apd_2 ff q qq.
 
 Definition apd_depfun_idfun
@@ -480,7 +480,7 @@ Definition apd_depfun_idfun
            {aa : YA a}
            {bb : YA b}
            {q : a = b}
-           (qq : PathOver YA aa bb q)
+           (qq : PathOver q YA aa bb)
   : PathOver_square
       YA
       (!(maponpathsidfun _))
@@ -502,7 +502,7 @@ Definition apd_depfun_inv
            {aa : YA a}
            {bb : YA b}
            {q : a = b}
-           (qq : PathOver YA aa bb q)
+           (qq : PathOver q YA aa bb)
   : PathOver_square
       YB
       (!(maponpathsinv0 _ _))
@@ -525,8 +525,8 @@ Definition apd_depfun_concat
            {bb : YA b}
            {cc : YA c}
            {q : a = b} {q' : b = c}
-           (qq : PathOver YA aa bb q)
-           (qq' : PathOver YA bb cc q')
+           (qq : PathOver q YA aa bb)
+           (qq' : PathOver q' YA bb cc)
   : PathOver_square
       YB
       (!(maponpathscomp0 f q q'))
@@ -551,8 +551,8 @@ Definition apd_depfun_concat_inv
            {bb : YA b}
            {cc : YA c}
            {q : a = b} {q' : b = c}
-           (qq : PathOver YA aa bb q)
-           (qq' : PathOver YA bb cc q')
+           (qq : PathOver q YA aa bb)
+           (qq' : PathOver q' YA bb cc)
   : PathOver_square
       YB
       (maponpathscomp0 f q q')
@@ -575,8 +575,8 @@ Definition apd_depfun_pr1_PathOver_pair
            {p₁ : x₁ = y₁} {p₂ : x₂ = y₂}
            {a₁ : poly_dact_UU P₁ YA x₁} {a₂ : poly_dact_UU P₂ YA x₂}
            {b₁ : poly_dact_UU P₁ YA y₁} {b₂ : poly_dact_UU P₂ YA y₂}
-           (pp₁ : PathOver (poly_dact P₁ YA) a₁ b₁ p₁)
-           (pp₂ : PathOver (poly_dact P₂ YA) a₂ b₂ p₂)
+           (pp₁ : PathOver p₁ (poly_dact P₁ YA) a₁ b₁)
+           (pp₂ : PathOver p₂ (poly_dact P₂ YA) a₂ b₂)
   : PathOver_square
       (poly_dact P₁ YA)
       (!(maponpaths_pr1_pathsdirprod _ _))
@@ -600,8 +600,8 @@ Definition apd_depfun_pr2_PathOver_pair
            {p₁ : x₁ = y₁} {p₂ : x₂ = y₂}
            {a₁ : poly_dact_UU P₁ YA x₁} {a₂ : poly_dact_UU P₂ YA x₂}
            {b₁ : poly_dact_UU P₁ YA y₁} {b₂ : poly_dact_UU P₂ YA y₂}
-           (pp₁ : PathOver (poly_dact P₁ YA) a₁ b₁ p₁)
-           (pp₂ : PathOver (poly_dact P₂ YA) a₂ b₂ p₂)
+           (pp₁ : PathOver p₁ (poly_dact P₁ YA) a₁ b₁)
+           (pp₂ : PathOver p₂ (poly_dact P₂ YA) a₂ b₂)
   : PathOver_square
       (poly_dact P₂ YA)
       (!(maponpaths_pr2_pathsdirprod _ _))
@@ -625,7 +625,7 @@ Definition apd_dep_inl_fun
            {a : poly_dact_UU P₁ YA x}
            {b : poly_dact_UU P₁ YA y}
            {p : x = y}
-           (pp : PathOver (poly_dact P₁ YA) a b p)
+           (pp : PathOver p (poly_dact P₁ YA) a b)
   : PathOver_square
       (poly_dact_UU (P₁ + P₂) YA)
       (idpath _)
@@ -649,7 +649,7 @@ Definition apd_dep_inr_fun
            {a : poly_dact_UU P₂ YA x}
            {b : poly_dact_UU P₂ YA y}
            {p : x = y}
-           (pp : PathOver (poly_dact P₂ YA) a b p)
+           (pp : PathOver p (poly_dact P₂ YA) a b)
   : PathOver_square
       (poly_dact_UU (P₁ + P₂) YA)
       (idpath _)
@@ -679,7 +679,7 @@ Definition apd_dep_pair_fun
            {a : poly_dact_UU P Y x}
            {b : poly_dact_UU P Y y}
            {p : x = y}
-           (pp : PathOver (poly_dact P Y) a b p)
+           (pp : PathOver p (poly_dact P Y) a b)
   : PathOver_square
       (poly_dact_UU (Q * R) Y)
       (!(maponpaths_prod_path f g p))
@@ -707,7 +707,7 @@ Definition apd_dep_comp_fun
            {a : YA x}
            {b : YA y}
            {p : x = y}
-           (pp : PathOver YA a b p)
+           (pp : PathOver p YA a b)
   : PathOver_square
       YC
       (maponpathscomp f g p)
@@ -748,7 +748,7 @@ Definition apd_depfun_const
            {aa : YA a}
            {bb : YA b}
            {q : a = b}
-           (qq : PathOver YA aa bb q)
+           (qq : PathOver q YA aa bb)
   : PathOver_square
       (λ _, T)
       (!(maponpaths_for_constant_function t _))
@@ -774,7 +774,7 @@ Definition PathOver_idpath
   : PathOver_square
       Y
       (idpath _)
-      (p : PathOver Y y₁ y₂ (idpath x))
+      (p : PathOver (idpath x) Y y₁ y₂)
       (identityPathOver y₁)
       (idpath _)
       (!p).
@@ -790,11 +790,11 @@ Definition PathOver_eq_idpath_to_path
            {y₁ y₂ : Y x}
            {p : x = x}
            (h : idpath x = p)
-           (pp : PathOver Y y₁ y₂ p)
+           (pp : PathOver p Y y₁ y₂)
   : y₁ = y₂.
 Proof.
   exact (transportf
-           (PathOver Y y₁ y₂)
+           (λ q, PathOver q Y y₁ y₂)
            (!h)
            pp).
 Defined.
@@ -806,7 +806,7 @@ Definition PathOver_eq_idpath_to_path_square
            {y y' : Y x}
            {p : x = x}
            (h : idpath x = p)
-           (pp : PathOver Y y y' p)
+           (pp : PathOver p Y y y')
   : PathOver_square
       Y
       (!h)
@@ -825,7 +825,7 @@ Definition PathOver_natural_help
            {b₁ b₂ : B}
            {bb₁ : YB b₁} {bb₂ : YB b₂}
            {p : b₁ = b₂}
-           (pp : PathOver YB bb₁ bb₂ p)
+           (pp : PathOver p YB bb₁ bb₂)
   : PathOver_square
       YB
       (! (! pathscomp0rid p))
@@ -849,12 +849,12 @@ Definition PathOver_natural
            {ff : ∏ (a : A), YA a → YB (f a)}
            {gg : ∏ (a : A), YA a → YB (g a)}
            {p : f ~ g}
-           (pp : ∏ (z : A) (zz : YA z), PathOver YB (ff z zz) (gg z zz) (p z))
+           (pp : ∏ (z : A) (zz : YA z), PathOver (p z) YB (ff z zz) (gg z zz))
            {a b : A}
            {aa : YA a}
            {bb : YA b}
            {q : a = b}
-           (qq : PathOver YA aa bb q)
+           (qq : PathOver q YA aa bb)
   : PathOver_square
       YB
       (!(homotsec_natural p q))
@@ -879,8 +879,8 @@ Definition PathOver_square_idpath_r
            {h : p₁ = p₂}
            {x₁ x₁' : Y a₁}
            {x₂ x₂' : Y a₂}
-           {pp : PathOver Y x₁ x₂ p₁}
-           {qq : PathOver Y x₁' x₂' p₂}
+           {pp : PathOver p₁ Y x₁ x₂}
+           {qq : PathOver p₂ Y x₁' x₂'}
            {h₁ : x₁  = x₁'} {h₂ : x₂ = x₂'}
            (s : PathOver_square Y h pp qq (h₁ @ idpath _) (h₂ @ idpath _))
   : PathOver_square
@@ -900,7 +900,7 @@ Definition PathOver_square_inv_left
            {p : a₁ = a₂}
            {x₁ : Y a₁}
            {x₂ : Y a₂}
-           (pp : PathOver Y x₁ x₂ p)
+           (pp : PathOver p Y x₁ x₂)
   : PathOver_square
       Y
       (!(pathsinv0l _))
@@ -920,7 +920,7 @@ Definition PathOver_square_id_left
            {p : a₁ = a₂}
            {x₁ : Y a₁}
            {x₂ : Y a₂}
-           (pp : PathOver Y x₁ x₂ p)
+           (pp : PathOver p Y x₁ x₂)
   : PathOver_square
       Y
       (idpath _)
@@ -940,7 +940,7 @@ Definition PathOver_square_id_right
            {p : a₁ = a₂}
            {x₁ : Y a₁}
            {x₂ : Y a₂}
-           (pp : PathOver Y x₁ x₂ p)
+           (pp : PathOver p Y x₁ x₂)
   : PathOver_square
       Y
       (pathscomp0rid _)
@@ -960,7 +960,7 @@ Definition PathOver_square_id_left_inv
            {p : a₁ = a₂}
            {x₁ : Y a₁}
            {x₂ : Y a₂}
-           (pp : PathOver Y x₁ x₂ p)
+           (pp : PathOver p Y x₁ x₂)
   : PathOver_square
       Y
       (idpath _)
@@ -981,8 +981,8 @@ Definition PathOver_square_move_left
            {h : p₁ = p₂}
            {y₁ : Y a₁}
            {y₂ y₂' : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y y₁ y₂' p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y y₁ y₂'}
            {hr : y₂ = y₂'}
            (ps : PathOver_square
                    Y
@@ -1012,8 +1012,8 @@ Definition PathOver_square_move_right
            {h : p₁ = p₂}
            {y₁ y₁' : Y a₁}
            {y₂ : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y y₁' y₂ p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y y₁' y₂}
            {hr : y₁ = y₁'}
            (ps : PathOver_square
                    Y
@@ -1043,8 +1043,8 @@ Definition inversePathOver_compose
            {x₁ : Y a₁}
            {x₂ : Y a₂}
            {x₃ : Y a₃}
-           (pp : PathOver Y x₁ x₂ p)
-           (qq : PathOver Y x₂ x₃ q)
+           (pp : PathOver p Y x₁ x₂)
+           (qq : PathOver q Y x₂ x₃)
   : PathOver_square
       Y
       (pathscomp_inv p q)
@@ -1064,7 +1064,7 @@ Definition inversePathOver_inversePathOver
            {p : a₁ = a₂}
            {x₁ : Y a₁}
            {x₂ : Y a₂}
-           (pp : PathOver Y x₁ x₂ p)
+           (pp : PathOver p Y x₁ x₂)
   : PathOver_square
       Y
       (pathsinv0inv0 p)
@@ -1084,8 +1084,8 @@ Definition inversePathOver_PathOver_square
            {p₁ p₂ : a₁ = a₂}
            {h : p₁ = p₂}
            {y₁ z₁ : Y a₁} {y₂ z₂ : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y z₁ z₂ p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y z₁ z₂}
            {h₁ : y₁ = z₁}
            {h₂ : y₂ = z₂}
            (ps : PathOver_square Y h pp₁ pp₂ h₁ h₂)
@@ -1109,8 +1109,8 @@ Definition inverse_PathOver_square
            {p₁ p₂ : a₁ = a₂}
            {h : p₁ = p₂}
            {y₁ z₁ : Y a₁} {y₂ z₂ : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y z₁ z₂ p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y z₁ z₂}
            {h₁ : z₁ = y₁}
            {h₂ : z₂ = y₂}
            (ps : PathOver_square Y h pp₁ pp₂ (!h₁) (!h₂))
@@ -1134,8 +1134,8 @@ Definition PathOver_square_inverse
            {p₁ p₂ : a₁ = a₂}
            {h : p₁ = p₂}
            {y₁ z₁ : Y a₁} {y₂ z₂ : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y z₁ z₂ p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y z₁ z₂}
            {h₁ : y₁ = z₁}
            {h₂ : y₂ = z₂}
            (ps : PathOver_square Y h pp₁ pp₂ h₁ h₂)
@@ -1159,8 +1159,8 @@ Definition inversePathOver_PathOver_square_inj
            {p₁ p₂ : a₁ = a₂}
            {h : ! p₁ = ! p₂}
            {y₁ z₁ : Y a₁} {y₂ z₂ : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y z₁ z₂ p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y z₁ z₂}
            {h₁ : y₁ = z₁}
            {h₂ : y₂ = z₂}
            (ps : PathOver_square
@@ -1224,10 +1224,10 @@ Definition poly_dact_TotalPathToPathOver
            {x y : poly_act P (total2_one_type Y)}
            (p : x = y)
   : PathOver
+      (maponpaths (poly_pr1 P) p)
       (poly_dact P Y)
       (poly_pr2 P x)
-      (poly_pr2 P y)
-      (maponpaths (poly_pr1 P) p).
+      (poly_pr2 P y).
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂] ; simpl.
   - induction p.
@@ -1303,10 +1303,10 @@ Definition poly_dact_PathOver_transport
            (p : x₁ = x₂)
            (y : poly_dact_UU P Y x₁)
   : PathOver
+      p
       (poly_dact_UU P Y)
       y
-      (transportf (poly_dact_UU P Y) p y)
-      p.
+      (transportf (poly_dact_UU P Y) p y).
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂] ; simpl.
   - induction p.
@@ -1349,9 +1349,9 @@ Definition PathOver_square_conj
            {h₁ : p₁ = q₁} {h₃ : p₃ = q₃}
            {y₁ z₁ : Y a₁} {y₂ : Y a₂}
            {y₃ : Y a₃} {y₄ z₄ : Y a₄}
-           {pp₁ : PathOver Y y₁ y₂ p₁} {pp₁' : PathOver Y z₁ y₂ q₁}
-           (pp₂ : PathOver Y y₂ y₃ p₂)
-           {pp₃ : PathOver Y y₃ y₄ p₃} {pp₃' : PathOver Y y₃ z₄ q₃}
+           {pp₁ : PathOver p₁ Y y₁ y₂} {pp₁' : PathOver q₁ Y z₁ y₂}
+           (pp₂ : PathOver p₂ Y y₂ y₃)
+           {pp₃ : PathOver p₃ Y y₃ y₄} {pp₃' : PathOver q₃ Y y₃ z₄}
            {l₁ : y₁ = z₁} {l₄ : y₄ = z₄}
            (sq₁ : PathOver_square
                     Y
@@ -1396,7 +1396,7 @@ Definition apd_depfun_inl_help
            {p : x = y}
            {a : poly_dact_UU P₁ YA x}
            {b : poly_dact_UU P₁ YA y}
-           (pp : PathOver (poly_dact P₁ YA) a b p)
+           (pp : PathOver p (poly_dact P₁ YA) a b)
   : transportf (poly_dact_UU (P₁ + P₂) (λ x0 : A, YA x0)) (maponpaths inl p) a = b.
 Proof.
   induction p.
@@ -1411,7 +1411,7 @@ Definition apd_depfun_inl
            {p : x = y}
            {a : poly_dact_UU P₁ YA x}
            {b : poly_dact_UU P₁ YA y}
-           (pp : PathOver (poly_dact P₁ YA) a b p)
+           (pp : PathOver p (poly_dact P₁ YA) a b)
   : PathOver_square
       (poly_dact (P₁ + P₂) YA)
       (idpath _)
@@ -1443,7 +1443,7 @@ Definition apd_depfun_inr_help
            {p : x = y}
            {a : poly_dact_UU P₂ YA x}
            {b : poly_dact_UU P₂ YA y}
-           (pp : PathOver (poly_dact P₂ YA) a b p)
+           (pp : PathOver p (poly_dact P₂ YA) a b)
   : transportf (poly_dact_UU (P₁ + P₂) (λ x0 : A, YA x0)) (maponpaths inr p) a = b.
 Proof.
   induction p.
@@ -1458,7 +1458,7 @@ Definition apd_depfun_inr
            {p : x = y}
            {a : poly_dact_UU P₂ YA x}
            {b : poly_dact_UU P₂ YA y}
-           (pp : PathOver (poly_dact P₂ YA) a b p)
+           (pp : PathOver p (poly_dact P₂ YA) a b)
   : PathOver_square
       (poly_dact (P₁ + P₂) YA)
       (idpath _)
@@ -1489,8 +1489,8 @@ Definition PathOver_square_path_left
            {p₁ p₂ : a₁ = a₂}
            {h : p₁ = p₂}
            {y₁ y₁' : Y a₁} {y₂ y₂' : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y y₁' y₂' p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y y₁' y₂'}
            {h₁ h₁' : y₁ = y₁'} {h₂ : y₂ = y₂'}
            (ps : PathOver_square
                    Y
@@ -1515,8 +1515,8 @@ Definition PathOver_square_path_right
            {p₁ p₂ : a₁ = a₂}
            {h : p₁ = p₂}
            {y₁ y₁' : Y a₁} {y₂ y₂' : Y a₂}
-           {pp₁ : PathOver Y y₁ y₂ p₁}
-           {pp₂ : PathOver Y y₁' y₂' p₂}
+           {pp₁ : PathOver p₁ Y y₁ y₂}
+           {pp₂ : PathOver p₂ Y y₁' y₂'}
            {h₁ : y₁ = y₁'} {h₂ h₂' : y₂ = y₂'}
            (ps : PathOver_square
                    Y
@@ -1543,15 +1543,15 @@ Definition compose_PathOver_pair
            {ya₁ : poly_dact P₁ Y a₁}
            {ya₂ : poly_dact P₁ Y a₂}
            {ya₃ : poly_dact P₁ Y a₃}
-           (ppa₁ : PathOver (poly_dact P₁ Y) ya₁ ya₂ pa₁)
-           (ppa₂ : PathOver (poly_dact P₁ Y) ya₂ ya₃ pa₂)
+           (ppa₁ : PathOver pa₁ (poly_dact P₁ Y) ya₁ ya₂)
+           (ppa₂ : PathOver pa₂ (poly_dact P₁ Y) ya₂ ya₃)
            {b₁ b₂ b₃ : poly_act P₂ A}
            {pb₁ : b₁ = b₂} {pb₂ : b₂ = b₃}
            {yb₁ : poly_dact P₂ Y b₁}
            {yb₂ : poly_dact P₂ Y b₂}
            {yb₃ : poly_dact P₂ Y b₃}
-           (ppb₁ : PathOver (poly_dact P₂ Y) yb₁ yb₂ pb₁)
-           (ppb₂ : PathOver (poly_dact P₂ Y) yb₂ yb₃ pb₂)
+           (ppb₁ : PathOver pb₁ (poly_dact P₂ Y) yb₁ yb₂)
+           (ppb₂ : PathOver pb₂ (poly_dact P₂ Y) yb₂ yb₃)
   : PathOver_square
       (poly_dact_UU (P₁ * P₂) Y)
       (pathsdirprod_concat _ _ _ _)
@@ -1576,12 +1576,12 @@ Definition inverse_PathOverPair
            {pa : a₁ = a₂}
            {ya₁ : poly_dact P₁ Y a₁}
            {ya₂ : poly_dact P₁ Y a₂}
-           (ppa : PathOver (poly_dact P₁ Y) ya₁ ya₂ pa)
+           (ppa : PathOver pa (poly_dact P₁ Y) ya₁ ya₂)
            {b₁ b₂ : poly_act P₂ A}
            {pb : b₁ = b₂}
            {yb₁ : poly_dact P₂ Y b₁}
            {yb₂ : poly_dact P₂ Y b₂}
-           (ppb : PathOver (poly_dact P₂ Y) yb₁ yb₂ pb)
+           (ppb : PathOver pb (poly_dact P₂ Y) yb₁ yb₂)
   : PathOver_square
       (poly_dact_UU (P₁ * P₂) Y)
       (pathsdirprod_inv _ _)
@@ -1670,8 +1670,8 @@ Definition PathOver_square_PathOver_inl
            {y₁ y₁' : poly_dact P Y a₁}
            {y₂ y₂' : poly_dact P Y a₂}
            {hl : y₁ = y₁'} {hr : y₂ = y₂'}
-           (pp : PathOver (poly_dact P Y) y₁ y₂ p)
-           (qq : PathOver (poly_dact P Y) y₁' y₂' q)
+           (pp : PathOver p (poly_dact P Y) y₁ y₂)
+           (qq : PathOver q (poly_dact P Y) y₁' y₂')
            (ps : PathOver_square
                    (poly_dact P Y)
                    h
@@ -1701,8 +1701,8 @@ Definition PathOver_square_PathOver_inr
            {y₁ y₁' : poly_dact Q Y a₁}
            {y₂ y₂' : poly_dact Q Y a₂}
            {hl : y₁ = y₁'} {hr : y₂ = y₂'}
-           (pp : PathOver (poly_dact Q Y) y₁ y₂ p)
-           (qq : PathOver (poly_dact Q Y) y₁' y₂' q)
+           (pp : PathOver p (poly_dact Q Y) y₁ y₂)
+           (qq : PathOver q (poly_dact Q Y) y₁' y₂')
            (ps : PathOver_square
                    (poly_dact Q Y)
                    h
@@ -1730,7 +1730,7 @@ Definition PathOver_inl_inverse
            {p : a₁ = a₂}
            {y₁ : poly_dact P Y a₁}
            {y₂ : poly_dact P Y a₂}
-           (pp : PathOver (poly_dact P Y) y₁ y₂ p)
+           (pp : PathOver p (poly_dact P Y) y₁ y₂)
   : PathOver_square
       (poly_dact (P + Q) Y)
       (!(maponpathsinv0 inl p))
@@ -1751,7 +1751,7 @@ Definition PathOver_inr_inverse
            {p : a₁ = a₂}
            {y₁ : poly_dact Q Y a₁}
            {y₂ : poly_dact Q Y a₂}
-           (pp : PathOver (poly_dact Q Y) y₁ y₂ p)
+           (pp : PathOver p (poly_dact Q Y) y₁ y₂)
   : PathOver_square
       (poly_dact (P + Q) Y)
       (!(maponpathsinv0 inr p))
@@ -1773,8 +1773,8 @@ Definition PathOver_inl_compose
            {y₁ : poly_dact P Y a₁}
            {y₂ : poly_dact P Y a₂}
            {y₃ : poly_dact P Y a₃}
-           (pp : PathOver (poly_dact P Y) y₁ y₂ p)
-           (qq : PathOver (poly_dact P Y) y₂ y₃ q)
+           (pp : PathOver p (poly_dact P Y) y₁ y₂)
+           (qq : PathOver q (poly_dact P Y) y₂ y₃)
   : PathOver_square
       (poly_dact (P + Q) Y)
       (!(maponpathscomp0 inl p q))
@@ -1798,8 +1798,8 @@ Definition PathOver_inr_compose
            {y₁ : poly_dact Q Y a₁}
            {y₂ : poly_dact Q Y a₂}
            {y₃ : poly_dact Q Y a₃}
-           (pp : PathOver (poly_dact Q Y) y₁ y₂ p)
-           (qq : PathOver (poly_dact Q Y) y₂ y₃ q)
+           (pp : PathOver p (poly_dact Q Y) y₁ y₂)
+           (qq : PathOver q (poly_dact Q Y) y₂ y₃)
   : PathOver_square
       (poly_dact (P + Q) Y)
       (!(maponpathscomp0 inr p q))
@@ -1825,8 +1825,8 @@ Definition apd_depfun2
            {aa aa' : YA a} {bb bb' : YA b}
            {p₁ p₂ : a = b}
            {h : p₁ = p₂}
-           {pp₁ : PathOver YA aa bb p₁}
-           {pp₂ : PathOver YA aa' bb' p₂}
+           {pp₁ : PathOver p₁ YA aa bb}
+           {pp₂ : PathOver p₂ YA aa' bb'}
            {hl : aa = aa'} {hr : bb = bb'}
            (ps : PathOver_square
                    YA
@@ -2118,7 +2118,7 @@ Definition poly_dact_PathOver_transport_inl_alt
             _ _
             (maponpaths inl p)
             xx₁)
-         (transportf_poly_dact_inl _ _ : PathOver _ _ _ (idpath _)))
+         (transportf_poly_dact_inl _ _ : PathOver (idpath _) _ _ _))
       (PathOver_inl (poly_dact_PathOver_transport p xx₁))
       (idpath _)
       (idpath _).
@@ -2168,7 +2168,7 @@ Definition poly_dact_PathOver_transport_inr_alt
             _ _
             (maponpaths inr p)
             xx₁)
-         (transportf_poly_dact_inr _ _ : PathOver _ _ _ (idpath _)))
+         (transportf_poly_dact_inr _ _ : PathOver (idpath _) _ _ _))
       (PathOver_inr (poly_dact_PathOver_transport p xx₁))
       (idpath _)
       (idpath _).
@@ -2226,7 +2226,7 @@ Definition poly_dact_PathOver_transport_pathsdirprod_alt
             _ _
             (pathsdirprod p q)
             (xx₁ ,, yy₁))
-         (transportf_poly_dact_pair p q _ _ : PathOver _ _ _ (idpath _)))
+         (transportf_poly_dact_pair p q _ _ : PathOver (idpath _) _ _ _))
       (PathOver_pair
          (poly_dact_PathOver_transport p xx₁)
          (poly_dact_PathOver_transport q yy₁))
@@ -2606,6 +2606,7 @@ Section SectionToDispAlgMap.
              (P : poly_code)
              (x : poly_act P (alg_carrier X))
     : PathOver
+        (idpath _)
         (poly_dact P (pr1 Y))
         (transportf
            (poly_dact_UU P (pr1 Y))
@@ -2615,7 +2616,6 @@ Section SectionToDispAlgMap.
            P (pr1 Y)
            (transport_depmap (λ z, pr2 ((pr111 f) z)) p_path)
            x)
-        (idpath _)
     := transportf_poly_pr1_is_id x.
   
   Definition poly_dact_PathOver_transport_transportf_poly_pr1_is_id_PathOver
@@ -2663,7 +2663,7 @@ Section SectionToDispAlgMap.
                  (transportf_poly_dact_inl
                     (poly_pr1_is_id (pr111 f) p_path x)
                     (poly_pr2 P₁ (poly_map P₁ (pr111 f) x))
-                  : PathOver _ _ _ (idpath _))
+                  : PathOver (idpath _) _ _ _ )
                  _).
       + apply PathOver_square_idpath_r.
         refine (@PathOver_square_1_type
@@ -2691,7 +2691,7 @@ Section SectionToDispAlgMap.
                  (transportf_poly_dact_inr
                     (poly_pr1_is_id (pr111 f) p_path x)
                     (poly_pr2 P₂ (poly_map P₂ (pr111 f) x))
-                  : PathOver _ _ _ (idpath _))
+                  : PathOver (idpath _) _ _ _)
                  _).
     - apply PathOver_square_idpath_r.
       refine (@PathOver_square_1_type
@@ -2720,7 +2720,7 @@ Section SectionToDispAlgMap.
                   (poly_pr1_is_id (pr111 f) p_path (pr2 x))
                   (poly_pr2 P₁ (poly_map P₁ (pr111 f) (pr1 x)))
                   (poly_pr2 P₂ (poly_map P₂ (pr111 f) (pr2 x)))
-                : PathOver _ _ _ (idpath _))
+                : PathOver (idpath _) _ _ _)
                _).
   Qed.
 

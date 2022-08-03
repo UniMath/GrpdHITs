@@ -5,7 +5,7 @@ Require Import UniMath.CategoryTheory.Core.Categories.
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
-Require Import UniMath.Bicategories.Colimits.Final.
+Require Import UniMath.Bicategories.Limits.Final.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 
 Require Import prelude.all.
@@ -105,11 +105,10 @@ Section TerminalAlgebra.
   Qed.
   
   Definition terminal_algebra_ump
-    : BiFinal (pr2 (is_univalent_2_hit_algebra_one_types Σ)).
+    : bifinal_obj (hit_algebra_one_types Σ).
   Proof.
     refine (terminal_algebra ,, _).
-    use is_bifinal'_to_is_bifinal.
-    use make_is_bifinal'.
+    use make_is_bifinal.
     - exact terminal_algebra_ump_1.
     - exact terminal_algebra_ump_2.
     - exact terminal_algebra_ump_eq.

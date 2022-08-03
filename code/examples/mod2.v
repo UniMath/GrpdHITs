@@ -213,7 +213,7 @@ Section Mod2Induction.
           (YZ : Y (mod2_Z X))
           (YS : ∏ (n : alg_carrier X), Y n → Y (mod2_S X n))
           (Ymod : ∏ (n : alg_carrier X) (y : Y n),
-                  @PathOver _ _ _ Y (YS _ (YS n y)) y (mod2_mod X n))
+                  @PathOver _ _ _ (mod2_mod X n) Y (YS _ (YS n y)) y)
           (Yap_mod : ∏ (n : alg_carrier X)
                        (nn : Y n),
                      globe_over

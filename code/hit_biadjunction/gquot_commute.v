@@ -366,10 +366,10 @@ Definition poly_gquot_gquot_poly_po
            (g : poly_act_groupoid P X ⟦ a₁, a₂ ⟧)
   : @PathOver
       _ _ _
+      (gcleq (poly_act_groupoid P X) g)
       (λ a, _)
       (poly_gquot_gquot_poly_comp P a₁)
-      (poly_gquot_gquot_poly_comp P a₂)
-      (gcleq (poly_act_groupoid P X) g).
+      (poly_gquot_gquot_poly_comp P a₂).
 Proof.
   use map_PathOver.
   refine (whisker_square

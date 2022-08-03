@@ -389,6 +389,7 @@ Section Equalizer.
                     (λ z : alg_carrier A, alg_map_carrier f z = alg_map_carrier g z)
                     x)
     : PathOver
+        (alg_path A j x)
         (endpoint_dact_UU
            (alg_constr A)
            (λ z : alg_carrier A, alg_map_carrier f z = alg_map_carrier g z) 
@@ -400,8 +401,7 @@ Section Equalizer.
            (λ z : alg_carrier A, alg_map_carrier f z = alg_map_carrier g z) 
            (path_right Σ j)
            equalizer_disp_alg_constr
-           y)
-        (alg_path A j x).
+           y).
   Proof.
     apply map_PathOver ; unfold square.
     etrans.
@@ -582,9 +582,9 @@ Section Equalizer.
     Definition equalizer_ump_1_preserves_point_pr2
                (x : poly_act (point_constr Σ) (alg_carrier C))
       : PathOver
+          (equalizer_ump_1_preserves_point_pr1 x)
           (pr2 (equalizer_ump_1_comp (prealg_constr x)))
-          (pr2 (prealg_constr (poly_map (point_constr Σ) equalizer_ump_1_comp x)))
-          (equalizer_ump_1_preserves_point_pr1 x).
+          (pr2 (prealg_constr (poly_map (point_constr Σ) equalizer_ump_1_comp x))).
     Proof.
       simpl.
       pose (eqtohomot (pr211 Cpath) x) as p.
@@ -1018,9 +1018,9 @@ Section Equalizer.
     Definition equalizer_ump_2_on_pr2
                (c : alg_carrier C)
       : PathOver
+          (equalizer_ump_2_on_pr1 c)
           (pr2 (alg_map_carrier φ c))
-          (pr2 (alg_map_carrier ψ c))
-          (equalizer_ump_2_on_pr1 c).
+          (pr2 (alg_map_carrier ψ c)).
     Proof.
       apply map_PathOver ; unfold square.
       assert (equalizer_path_component (alg_map_carrier φ c)

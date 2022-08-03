@@ -1741,8 +1741,7 @@ Section FreeAlg.
 
       Definition free_alg_ump_1_free_alg_map
         : X --> make_free_alg_algebra Y Yinc
-        := biinitial_1cell
-             _
+        := is_biinitial_1cell_property
              HX
              (make_free_alg_algebra Y Yinc).
       
@@ -1769,13 +1768,12 @@ Section FreeAlg.
 
       Definition free_alg_ump_2_alg_cell
         : make_free_alg_mor Yinc f Hf ==> make_free_alg_mor Yinc g Hg
-        := pr1 (@biinitial_2cell
-                  _ _
-                  X
-                  HX
-                  (make_free_alg_algebra Y Yinc)
-                  (make_free_alg_mor Yinc f Hf)
-                  (make_free_alg_mor Yinc g Hg)).
+        := @is_biinitial_2cell_property
+             _ _
+             HX
+             (make_free_alg_algebra Y Yinc)
+             (make_free_alg_mor Yinc f Hf)
+             (make_free_alg_mor Yinc g Hg).
 
       Definition free_alg_ump_2
         : f ==> g
@@ -1936,8 +1934,8 @@ Section FreeAlg.
       Proof.
         use algebra_2cell_eq.
         intro x.
-        pose (@biinitial_eq
-                _ _ X HX
+        pose (@is_biinitial_eq_property
+                _ _ HX
                 (make_free_alg_algebra Y Yinc)
                 (make_free_alg_mor Yinc f Hf)
                 (make_free_alg_mor Yinc g Hg)

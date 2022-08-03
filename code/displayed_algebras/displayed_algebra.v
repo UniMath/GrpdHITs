@@ -204,15 +204,15 @@ Definition PathOver_pr1
            {y₂ : poly_dact_UU P₁ Y (pr1 x₂) × poly_dact_UU P₂ Y (pr2 x₂)}
   : @PathOver
       _ _ _
+      p
       (poly_dact (P₁ * P₂) Y)
       y₁ y₂
-      p
     →
     @PathOver
       _ _ _
+      (maponpaths pr1 p)
       (poly_dact P₁ Y)
-      (pr1 y₁) (pr1 y₂)
-      (maponpaths pr1 p).
+      (pr1 y₁) (pr1 y₂).
 Proof.
   induction p.
   exact (λ p, maponpaths pr1 p).
@@ -228,15 +228,15 @@ Definition PathOver_pr2
            {y₂ : poly_dact_UU P₁ Y (pr1 x₂) × poly_dact_UU P₂ Y (pr2 x₂)}
   : @PathOver
       _ _ _
+      p
       (poly_dact (P₁ * P₂) Y)
       y₁ y₂
-      p
     →
     @PathOver
       _ _ _
+      (maponpaths dirprod_pr2 p)
       (poly_dact P₂ Y)
-      (pr2 y₁) (pr2 y₂)
-      (maponpaths dirprod_pr2 p).
+      (pr2 y₁) (pr2 y₂).
 Proof.
   induction p.
   exact (λ p, maponpaths dirprod_pr2 p).
@@ -253,20 +253,21 @@ Definition PathOver_pair
            {b₁ : poly_dact_UU P₁ Y y₁} {b₂ : poly_dact_UU P₂ Y y₂}
   : @PathOver
       _ x₁ y₁
+      p₁
       (poly_dact P₁ Y)
       a₁ b₁
-      p₁
-    → @PathOver
-        _ x₂ y₂
-        (poly_dact P₂ Y)
-        a₂ b₂
-        p₂
+    →
+    @PathOver
+      _ x₂ y₂
+      p₂
+      (poly_dact P₂ Y)
+      a₂ b₂
     →
     @PathOver
       _ (x₁ ,, x₂) (y₁ ,, y₂)
+      (pathsdirprod p₁ p₂)
       (poly_dact (P₁ * P₂) Y)
-      (a₁ ,, a₂) (b₁ ,, b₂)
-      (pathsdirprod p₁ p₂).
+      (a₁ ,, a₂) (b₁ ,, b₂).
 Proof.
   induction p₁ ; induction p₂.
   exact pathsdirprod.
@@ -282,15 +283,15 @@ Definition PathOver_inl
            {y₂ : poly_dact_UU P₁ Y x₂}
   : @PathOver
       _ _ _
+      p
       (poly_dact P₁ Y)
       y₁ y₂
-      p
     →
     @PathOver
       _ (inl x₁) (inl x₂)
+      (maponpaths inl p)
       (poly_dact (P₁ + P₂) Y)
-      y₁ y₂
-      (maponpaths inl p).
+      y₁ y₂.
 Proof.
   induction p.
   exact (λ q, q).
@@ -306,15 +307,15 @@ Definition PathOver_inr
            {y₂ : poly_dact_UU P₂ Y x₂}
   : @PathOver
       _ _ _
+      p
       (poly_dact P₂ Y)
       y₁ y₂
-      p
     →
     @PathOver
       _ (inr x₁) (inr x₂)
+      (maponpaths inr p)
       (poly_dact (P₁ + P₂) Y)
-      y₁ y₂
-      (maponpaths inr p).
+      y₁ y₂.
 Proof.
   induction p.
   exact (λ q, q).
@@ -329,11 +330,11 @@ Definition apd_2
            {a₁ a₂ : A}
            (p : a₁ = a₂)
            {y₁ : Y₁ a₁} {y₂ : Y₁ a₂}
-           (q : PathOver y₁ y₂ p)
+           (q : PathOver p y₁ y₂)
   : PathOver
+      (maponpaths c p)
       (cc a₁ y₁)
-      (cc a₂ y₂)
-      (maponpaths c p).
+      (cc a₂ y₂).
 Proof.
   induction p.
   exact (maponpaths (cc a₁) q).
@@ -366,25 +367,25 @@ Definition homot_endpoint_dact
                    (y : poly_dact (S j) Y x),
                  @PathOver
                    _ _ _
+                   (pr2 X j x)
                    Y
                    (endpoint_dact _ Y (l j) c y)
-                   (endpoint_dact _ Y (r j) c y)
-                   (pr2 X j x))
+                   (endpoint_dact _ Y (r j) c y))
            {z : poly_act Q (pr11 X : one_type)}
            (zz : poly_dact_UU Q (λ x, Y x) z)
            {p_arg : sem_endpoint_one_types al _ z = sem_endpoint_one_types ar _ z}
            (pp_arg : @PathOver
                        _ _ _
+                       (sem_homot_endpoint_one_types path_arg (pr1 X) (pr2 X) z p_arg)
                        (poly_dact TR Y)
                        (endpoint_dact (pr1 X) Y al c zz)
-                       (endpoint_dact (pr1 X) Y ar c zz)
-                       (sem_homot_endpoint_one_types path_arg (pr1 X) (pr2 X) z p_arg))
+                       (endpoint_dact (pr1 X) Y ar c zz))
   : @PathOver
       _ _ _
+      (sem_homot_endpoint_one_types p (pr1 X) (pr2 X) _ p_arg)
       (poly_dact T Y)
       (endpoint_dact (pr1 X) Y sl c zz)
-      (endpoint_dact (pr1 X) Y sr c zz)
-      (sem_homot_endpoint_one_types p (pr1 X) (pr2 X) _ p_arg).
+      (endpoint_dact (pr1 X) Y sr c zz).
 Proof.
   induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
                   | T₁ T₂ e₁ e₂ e₃ h IHh
@@ -446,10 +447,10 @@ Definition disp_algebra
                (y : poly_dact (path_source Σ j) Y x),
              @PathOver
                _ _ _
+               (alg_path X j x)
                Y
                (endpoint_dact (pr11 X) Y (path_left Σ j) c y)
-               (endpoint_dact (pr11 X) Y (path_right Σ j) c y)
-               (alg_path X j x)),
+               (endpoint_dact (pr11 X) Y (path_right Σ j) c y)),
      ∏ (j : homot_label Σ)
        (z : poly_act (homot_point_arg Σ j) (alg_carrier X))
        (zz : poly_dact_UU (homot_point_arg Σ j) Y z)
@@ -458,10 +459,10 @@ Definition disp_algebra
                 sem_endpoint_one_types (homot_path_arg_right Σ j) _ z)
        (pp_arg : @PathOver
                    _ _ _
+                   (sem_homot_endpoint_one_types path_arg (pr11 X) (pr21 X) z p_arg)
                    (poly_dact _ Y)
                    (endpoint_dact (pr11 X) Y (homot_path_arg_left Σ j) c zz)
-                   (endpoint_dact (pr11 X) Y (homot_path_arg_right Σ j) c zz)
-                   (sem_homot_endpoint_one_types path_arg (pr11 X) (pr21 X) z p_arg)),
+                   (endpoint_dact (pr11 X) Y (homot_path_arg_right Σ j) c zz)),
      globe_over
        Y
        (pr2 X j z p_arg)
@@ -498,10 +499,10 @@ Section DispAlgebraProjections.
         (y : poly_dact (path_source Σ j) (pr1 Y) x),
       @PathOver
         _ _ _
+        (alg_path X j x)
         Y
         (endpoint_dact (pr11 X) (pr1 Y) (path_left Σ j) (pr12 Y) y)
         (endpoint_dact (pr11 X) (pr1 Y) (path_right Σ j) (pr12 Y) y) 
-        (alg_path X j x)
     := pr122 Y.
 
   Definition disp_alg_homot
@@ -513,14 +514,14 @@ Section DispAlgebraProjections.
                   (sem_endpoint_one_types (homot_path_arg_right Σ j)) (pr11 X) z)
          (pp_arg : @PathOver
                      _ _ _
+                     (sem_homot_endpoint_one_types path_arg (pr11 X) (pr21 X) z p_arg)
                      (poly_dact _ (pr1 Y))
                      (endpoint_dact
                         (pr11 X) (pr1 Y)
                         (homot_path_arg_left Σ j) (pr12 Y) zz)
                      (endpoint_dact
                         (pr11 X) (pr1 Y)
-                        (homot_path_arg_right Σ j) (pr12 Y) zz)
-                     (sem_homot_endpoint_one_types path_arg (pr11 X) (pr21 X) z p_arg)),
+                        (homot_path_arg_right Σ j) (pr12 Y) zz)),
        globe_over
          Y
          (pr2 X j z p_arg)
@@ -549,10 +550,10 @@ Definition make_disp_algebra
                   (y : poly_dact (path_source Σ j) Y x),
                 @PathOver
                   _ _ _
+                  (alg_path X j x)
                   Y
                   (endpoint_dact (pr11 X) Y (path_left Σ j) c y)
-                  (endpoint_dact (pr11 X) Y (path_right Σ j) c y) 
-                  (alg_path X j x))
+                  (endpoint_dact (pr11 X) Y (path_right Σ j) c y) )
            (h : ∏ (j : homot_label Σ)
                   (z : poly_act (homot_point_arg Σ j) (alg_carrier X))
                   (zz : poly_dact_UU (homot_point_arg Σ j) Y z)
@@ -563,15 +564,15 @@ Definition make_disp_algebra
                               (homot_path_arg_right Σ j)) (pr11 X) z)
                   (pp_arg : @PathOver
                               _ _ _
+                              (sem_homot_endpoint_one_types
+                                 path_arg (pr11 X) (pr21 X) z p_arg)
                               (poly_dact _ Y)
                               (endpoint_dact
                                  (pr11 X) Y
                                  (homot_path_arg_left Σ j) c zz)
                               (endpoint_dact
                                  (pr11 X) Y
-                                 (homot_path_arg_right Σ j) c zz)
-                              (sem_homot_endpoint_one_types
-                                 path_arg (pr11 X) (pr21 X) z p_arg)),
+                                 (homot_path_arg_right Σ j) c zz)),
                 globe_over
                   Y
                   (pr2 X j z p_arg)
@@ -650,8 +651,8 @@ Definition PathOver_square
            (h : p₁ = p₂)
            {y₁ z₁ : Y a₁}
            {y₂ z₂ : Y a₂}
-           (q₁ : PathOver y₁ y₂ p₁)
-           (q₂ : PathOver z₁ z₂ p₂)
+           (q₁ : PathOver p₁ y₁ y₂)
+           (q₂ : PathOver p₂ z₁ z₂)
            (s₁ : y₁ = z₁)
            (s₂ : y₂ = z₂)
   : UU.

@@ -116,8 +116,8 @@ Section TorusInduction.
   Context {X : hit_algebra_one_types torus_signature}
           (Y : alg_carrier X → one_type)
           (Ybase : Y (torus_base X))
-          (Yleft : @PathOver _ _ _ Y Ybase Ybase (torus_path_left X))
-          (Yright : @PathOver _ _ _ Y Ybase Ybase (torus_path_right X))
+          (Yleft : @PathOver _ _ _ (torus_path_left X) Y Ybase Ybase)
+          (Yright : @PathOver _ _ _ (torus_path_right X) Y Ybase Ybase)
           (Ysurface : globe_over
                         Y
                         (torus_surface X)

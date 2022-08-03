@@ -12,7 +12,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -517,8 +517,7 @@ Proof.
       refine (!_).
       apply ginv.
     }
-    apply maponpaths.
-    apply poly_act_id_right.
+    apply idpath.
   - (* transitivity *)
     simpl.
     etrans.
