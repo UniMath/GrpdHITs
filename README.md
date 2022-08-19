@@ -8,4 +8,4 @@ We show that all finitary 1-truncated higher inductive types can be constructed 
 - coq_makefile -f _CoqProject -o Makefile
 - make
 
-To decrease the compilation time, it is suggested to do `make -j 3` instead of `make`.
+To decrease the compilation time, it is suggested to do `make -j 3` instead of `make`.# RezkCompletion
