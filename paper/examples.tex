@@ -1,0 +1,343 @@
+In this section we present some additional examples, which complement the
+ones introduced in Section \ref{sec:signs}. Remember that our higher
+inductive types are all 1-truncated, and we always omit the 1-truncation
+constructor from their syntax.
+
+\subsection{Coinserter}
+\label{sec:coinserter}
+
+The coinserter is a bicategorical generalization of the coequalizer in
+a category. In the bicategory of 1-types, coinserters can be constructed as
+ homotopy coequalizer \cite[Chapter 6]{hottbook}.
+
+\begin{definition}
+Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
+$f,g : A \onecell B$. The \fat{coinserter} of $f$ and $g$ is an
+object $Q$ together with a 1-cell $q : B \onecell Q$ and a 2-cell
+$\theta : f \cdot q\twocell g \cdot q$.
+The triple $(Q,q,\theta)$ must satisfy the following universal
+property. Suppose that we have
+\begin{itemize}
+\item an object $Q'$;
+\item a 1-cell $q' : B \onecell Q'$;
+\item a 2-cell $\theta' : f \cdot q' \twocell g \cdot q'$.
+\end{itemize}
+Then there exists a 1-cell $h : Q \onecell Q'$ together with a 2-cell
+$\phi : q \cdot h \twocell q'$ with a path $\theta \whiskerr h \vcomp
+g \whiskerl \phi = \lassoc{f}{q}{h} \vcomp f \whiskerl \phi \vcomp
+\theta'$. The pair $(h,\phi)$ is unique up to unique 2-cell, which means that
+%% \footnote{Notice that this path would type-check also without the
+%%   left associator $\lassoc{}{}{}$, since function composition is
+%%   stricly associative. But the presence of the left associator is
+%%   necessary if we consider algebras for the coinserter in
+%%   bicategories more general than the one of 1-types and groupoids.}.
+given another 1-cell $h' : Q \onecell Q'$ and another 2-cell $\phi' :
+q \cdot h' \twocell q'$ with a path $\theta \whiskerr h' \vcomp g
+\whiskerl \phi' = \lassoc{f}{q}{h'} \vcomp f \whiskerl \phi' \vcomp
+\theta'$, then there exists a unique 2-cell $\tau : h
+\twocell h'$ such that $q \whiskerl \tau \vcomp \phi' = \phi$.
+\end{definition}
+
+Next we show how to construct coinserters in the bicategory of 1-types.  Given two 1-types $A$ and $B$ and two
+functions $f , g: A \to B$, the coinserter of $f$ and $g$ is
+given by the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\coequalizer f g$ :=
+| $\coequalizerbase$ : $B \rightarrow \coequalizer f g$
+| $\coequalizerglue$ : $\depprod{(x : A)}{\coequalizerbase(f(x)) = \coequalizerbase(g(x))}$
+\end{lstlisting}
+
+Here are all the ingredients needed to specify the signature $\coequalizer f g$ for the coinserter:
+%is constructed as follows:
+\begin{itemize}
+\item $\pointconstr[\coequalizer f g] \eqdef \constantP{B}$;
+\item $\pathlabel[\coequalizer f g] \eqdef \unit$, and for its unique inhabitant take $\patharg[\coequalizer f g] \eqdef \constantP{A}$ and endpoints
+  \[
+  \pathleft[\coequalizer f g] \eqdef \comp{\fmap(f)}{\constr}, \quad
+  \pathright[\coequalizer f g] \eqdef \comp{\fmap(g)}{\constr}; 
+  \]
+\item $\homotlabel[\coequalizer f g]$ is the empty type.
+\end{itemize}
+
+%% The coequalizer satisfies the following universal property. Assume
+%% given a 1-type $C$, a function $h : B \rightarrow C$ and a homotopy
+%% $p$ between $f \cdot h$ and $g \cdot h$. Then there exists a function
+%% $h' : \coequalizer f g \rightarrow C$ together with a homotopy $p'$
+%% between $\coequalizerbase \cdot h'$ and $h$, and a path
+%% $\coequalizerglue \whiskerr h' \vcomp g \whiskerl p' = \lassoc{}{}{}
+%% \vcomp f \whiskerl p' \vcomp p$\footnote{Notice that this path would
+%%   type-check also without the left associator $\lassoc{}{}{}$, since
+%%   function composition is stricly associative. But the presence of the
+%%   left associator is necessary if we consider algebras for the
+%%   coequalizer in bicategories more general than the one of 1-types and
+%%   groupoids.}.  Given another function $h'' : \coequalizer f g
+%% \rightarrow C$ with homotopy $p''$ between $\coequalizerbase \cdot
+%% h''$ and $h$ such that $\coequalizerglue \whiskerr h'' \vcomp g
+%% \whiskerl p'' = \lassoc{}{}{} \vcomp f \whiskerl p'' \vcomp p$, then
+%% there exists a unique homotopy $\tau$ between $h'$ and $h''$ such that
+%% $\coequalizerbase \whiskerl \tau \vcomp p'' = p'$.
+
+
+
+\subsection{Coequifier}
+\label{sec:coequifier}
+
+The coequifier is a finite colimit in a bicategory, corresponding to a
+higher version of the coequalizer.
+While the coinserter makes a diagram of 1-cell commute up to a 2-cell,
+the coequifier makes a diagram of 2-cells commute strictly.
+
+\begin{definition}
+Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$, let $f,
+g : A \onecell B$ be 1-cells and $\beta,\gamma : f \twocell
+g$ be 2-cells. The \fat{coequifier} of $\beta$ and $\gamma$ is an object $Q$
+together with a 1-cell $q : B \onecell Q$ and a path
+$\beta \whiskerr q = \gamma \whiskerr q$.
+The pair $(Q,q)$ must satisfy the following universal
+property. Suppose that we have
+\begin{itemize}
+\item an object $Q'$,
+\item a 1-cell $q' : B \onecell Q'$, and
+\item a path $\beta \whiskerr q' = \gamma \whiskerr q'$.
+\end{itemize}
+Then there exists a 1-cell $h : Q \onecell Q'$ together with a 2-cell
+$\phi : q \cdot h \twocell q'$. The pair $(h,\phi)$ is unique up to a unique 2-cell, which means that
+given another 1-cell $h' : Q \onecell Q'$ and another 2-cell $\phi' :
+q \cdot h' \twocell q'$, there exists a unique 2-cell $\tau : h
+\twocell h'$ such that $q \whiskerl \tau \vcomp \phi' = \phi$.
+\end{definition}
+
+In the bicategory of 1-types, the coequifier can also be constructed as a HIT. In
+the definition below, $A$ and $B$ are 1-types, $f , g: A \to B$ are
+functions and $\beta$ and $\gamma$ are homotopies between $f$ and $g$.
+\begin{lstlisting}[mathescape=true]
+Inductive $\coequifier \beta \gamma$ :=
+| $\coequifierbase$ : $B \rightarrow \coequifier \beta \gamma$
+| $\coequifierglue$ : $\depprod{(x : A)}{\ap {\coequifierbase}{(\beta(x))} = \ap {\coequifierbase}{(\gamma(x))}}$
+\end{lstlisting}
+
+The signature $\coequifier \beta \gamma$ for the coequifier of $\beta$
+and $\gamma$ is given as follows:
+\begin{itemize}
+\item $\pointconstr[\coequifier f g] \eqdef \constantP{B}$;
+\item $\pathlabel[\coequifier f g]$ is the empty type; 
+\item $\homotlabel[\coequifier f g] \eqdef \unit$, and take 
+  $\homotpointarg[\coequifier f g] \eqdef \constantP{A}$.
+  The homotopy constructor $\coequifierglue$ does not have path arguments, so we take  
+  $\homotpathtarg[\coequifier f g] \eqdef \constantP{\unit}$ and
+  $\pathargleft[\coequifier f g] \eqdef \pathargright[\coequifier f g] \eqdef \Ce(\unitt)$.
+  The endpoints $\homotpathleft[\coequifier f g]$ and $\homotpathright[\coequifier f g]$ are:
+  \[
+  \homotpathleft[\coequifier f g] \eqdef \comp{\fmap(f)}{\constr}, \quad
+  \homotpathright[\coequifier f g] \eqdef \comp{\fmap(g)}{\constr},
+  \]
+  while the left and right homotopy endpoints are:
+  \[
+  \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(\beta))}))}, \quad
+  \hap{\constr}{(\idtoH(\ap{\fmap}{(\funextsec(\gamma))}))}.
+  \]
+\end{itemize}
+In the construction of the homotopy endpoints we used the function
+$\idtoH$ introduced in Section~\ref{sec:signatures}, which embeds
+paths between endpoints into homotopy endpoints. Notice also the
+difference between $\constructor{ap}$ and $\constfont{ap}$: the first
+is an homotopy endpoint constructor, the second indicates the
+application of a function to a path.
+
+
+\subsection{Group Quotient}
+\label{sec:group_quotient}
+
+Now we introduce a particular instance of the groupoid quotient, that
+we call the \emph{group quotient}. We start with a group $G$ and we write $\id$ 
+for its unit and $\cdot$ for multiplication in $G$. Define a groupoid $\widehat{G}$
+with only one object and with $G$ as the only homset. The group
+quotient of $G$ is the groupoid quotient of $\widehat{G}$, and it
+corresponds to the following HIT:
+\begin{lstlisting}[mathescape=true]
+Inductive $\groupquot G$ :=
+| $\groupquotbase$ : $\groupquot G$
+| $\groupquotloop$ : $G \rightarrow \groupquotbase = \groupquotbase$
+| $\groupquotloope$ : $\groupquotloop(\id)= \refl \groupquotbase$
+| $\groupquotloopm$ : $\depprod{(x,y : G)}{\groupquotloop(x \cdot y)= \concat{\groupquotloop(x)}{\groupquotloop(y)}}$
+\end{lstlisting}
+
+The signature $\groupquot G$ for the group quotient is defined as follows:
+\begin{itemize}
+\item $\pointconstr \eqdef \constantP{\unit}$;
+\item $\pathlabel \eqdef \unit$, and for its unique inhabitant take $\patharg \eqdef \constantP{G}$ and both endpoints $\pathleft$ and $\pathright$ equal to $\comp{\Ce(\unitt)}{\constr}$.
+\item $\homotlabel \eqdef \bool$, where $\bool$ is the type of
+booleans with inhabitants $\booltrue$ and $\boolfalse$. This means
+that there are two homotopy constructors: $\groupquotloope$, with
+associated label $\booltrue$, and $\groupquotloopm$, with associated
+label $\boolfalse$.
+\item The constructor $\groupquotloope$ does not have
+point arguments, so we take $\homotpointarg_{\booltrue}
+\eqdef \constantP{\unit}$. It also does not have path arguments, therefore
+$\homotpathtarg_{\booltrue} \eqdef \constantP{\unit}$ and
+$\pathargleft_{\booltrue} \eqdef \pathargright_{\booltrue} \eqdef \Ce(\unitt)$.
+The endpoints $\homotpathleft_{\booltrue}$ and
+$\homotpathright_{\booltrue}$ are both equal to
+$\comp{\Ce(\unitt)}{\constr}$. The left homotopy endpoint is
+\[
+\hconcat{\hap{\constr}{\hinv{(\hcompconst{\Ce(\id)})}}}{
+\hconcat{\hinv{\hassocN}}{
+\hconcat{\hconstr{}{\Ce(\id)}}{
+\hconcat{\hassocN}{\hap{\constr}{(\hcompconst{\Ce(\id)})}}
+}}},
+\]
+while the right homotopy endpoint is $\hrefl{\constr}$.
+\item The constructor $\groupquotloopm$ has two point
+arguments of type $G$, so we take $\homotpointarg_{\boolfalse}
+\eqdef \constantP{G \times G}$. It does not have path arguments, therefore
+$\homotpathtarg_{\boolfalse} \eqdef \constantP{\unit}$ and
+$\pathargleft_{\boolfalse} \eqdef \pathargright_{\boolfalse}
+\eqdef \Ce(\unitt)$.  The endpoints $\homotpathleft_{\boolfalse}$ and
+$\homotpathright_{\boolfalse}$ are both equal to
+$\comp{\Ce(\unitt)}{\constr}$. The left homotopy endpoint is
+%%\begin{align*}
+%%\hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}}}{
+%%& \hinv{\hassocN}} \\
+%%\hconcat{}{& \hconstr{}{\fmap(\Lam {x,y}. x \cdot y)}} \\
+%%\hconcat{}{& \hassocN} \\
+%%\hconcat{}{& \hap{\constr}{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}},
+%%\end{align*}
+%%while the right endpoint is
+%%\begin{align*}
+%%\hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\projl)})}}}{
+%%& \hinv{\hassocN}} \\
+%%\hconcat{}{& \hconstr{}{\fmap(\projl)}} \\
+%%\hconcat{}{& \hassocN} \\
+%%\hconcat{}{& \hap{\constr}{(\hcompconst{\fmap(\projl)})}} \\
+%%\hconcat{}{& \hap{\constr}{\hinv{(\hcompconst{\fmap(\projr)})}}} \\
+%%\hconcat{}{& \hinv{\hassocN}} \\
+%%\hconcat{}{& \hconstr{}{\fmap(\projr)}} \\
+%%\hconcat{}{& \hassocN} \\
+%%\hconcat{}{& \hap{\constr}{(\hcompconst{\fmap(\projr)})}}
+%%\end{align*}
+\begin{align*}
+& \hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}}}{\hinv{\hassocN}} \\
+& \quad \hconcat{}{\hconstr{}{\fmap(\Lam {x,y}. x \cdot y)}} \\
+& \quad \hconcat{}{\hconcat{\hassocN}{\hap{\constr}{(\hcompconst{\fmap(\Lam {x,y}. x \cdot y)})}}},
+\end{align*}
+while the right endpoint is
+\begin{align*}
+& \hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\projl)})}}}{
+\hinv{\hassocN}} \\
+& \quad \hconcat{}{\hconstr{}{\fmap(\projl)}} \\
+& \quad \hconcat{}{\hconcat{\hassocN}{\hap{\constr}{(\hcompconst{\fmap(\projl)})}}} \\
+& \quad \hconcat{}{\hconcat{\hap{\constr}{\hinv{(\hcompconst{\fmap(\projr)})}}}{\hinv{\hassocN}}} \\
+& \quad \hconcat{}{\hconstr{}{\fmap(\projr)}} \\
+& \quad \hconcat{}{\hconcat{\hassocN}}{\hap{\constr}{(\hcompconst{\fmap(\projr)})}}
+\end{align*}
+\end{itemize}
+
+The signature for the groupoid quotient is obtainable as a slight
+generalization of the signature for the group quotient. We do not show
+the more general construction here, since this is not conceptually
+more enlightening than the (already quite complicated) signature for
+the group quotient.
+
+\subsection{Monoidal Object}
+\label{sec:monoidal_object}
+Next we look at two other examples of signatures.
+Here we are not interested in the HIT described by the signature, but instead, we are interested in the algebras.
+We first discuss the signature whose algebras are \emph{monoidal objects}.
+\begin{lstlisting}[mathescape=true]
+Inductive $\monobj$ :=
+| $\monobjunit$ : $\monobj$
+| $\monobjtensor$ : $\monobj \rightarrow \monobj \rightarrow \monobj$
+| $\monobjlambda$ : $\depprod{(x : \monobj)}{\monobjtensor(\monobjunit,x) = x}$
+| $\monobjrho$ : $\depprod{(x : \monobj)}{\monobjtensor(x,\monobjunit) = x}$
+| $\monobjalpha$ : $\depprod{(x ,y,z: \monobj)}{\monobjtensor(x,(\monobjtensor(y,z)))=\monobjtensor(\monobjtensor(x,y),z)}$
+| $\monobjtr$ : $\depprod{(x,y : \monobj)}{\ap{(\Lam z. \monobjtensor(x,z))}{(\monobjlambda(y))}} = \concat{\monobjalpha(x,\monobjunit,y)}{\ap{(\Lam z. \monobjtensor(z,y))}{(\monobjrho(x))}}$
+| $\monobjpent$ : $\depprod{(w,x,y,z : \monobj)}{}$
+    $\concat{\monobjalpha(w,x,\monobjtensor(y,z))}{\monobjalpha(\monobjtensor(w,x),y,z)}$
+    =
+    $\concat{\ap{(\Lam v. \monobjtensor(w,v))}{(\monobjalpha(x,y,z))}}{\concat{\monobjalpha(w,\monobjtensor(x,y),z)}{\ap{(\Lam v. \monobjtensor(v,z))}{(\monobjalpha(w,x,y))}}}$
+\end{lstlisting}
+We do not show the signature associated to this HIT here. We redirect
+the interested reader to our formalization for the complete
+definition.
+
+In the constructors of $\monobj$, one can recognize the data of a
+monoidal category. The point constructors $\monobjunit$ and
+$\monobjtensor$ correspond to unit object and tensor. The path
+constructors $\monobjlambda$, $\monobjrho$ and $\monobjalpha$ are left
+unitor, right unitor and associator respectively, while the homotopy constructors
+$\monobjtr$ and $\monobjpent$ are the two coherence laws of
+monoidal categories. And in fact, algebras in groupoids of the
+monoidal object signature are precisely
+\emph{monoidal groupoids}, the groupoid variant of monoidal
+categories, and $\monobj$ is a presentation of the initial
+monoidal groupoid.
+Note that Piceghello proved coherence for monoidal groupoids \cite{Piceghello19}, and algebras for the signature $\monobj$ correspond to those monoidal groupoids.
+
+\begin{example}
+Let $A$ be a 1-type.
+We can construct an algebra of $\monobj$ whose carrier is the type $\List(A)$ of lists of $A$.
+The unit is the empty list, the tensor is concatenation, and the laws and coherencies are proven by induction.
+\end{example}
+
+%%The importance of this example stems from the fact that algebras in
+%%groupoids of the monoidal object signaturecorrespond precisely
+%%to
+%%\emph{monoidal groupoids}, the groupoid variant of monoidal
+%%categories. $\monobj$ is therefore a presentation of the initial
+%%monoidal groupoid.
+
+We also define a signature $\cohgroup$ whose algebras are \emph{coherent 2-groups} \cite{baez2004groups}.
+Its definition includes all the constructors of the monoidal object, plus a new point constructor
+$\cohgroupinv$ : $\cohgroup \rightarrow \cohgroup$, two new path
+constructors
+\[
+\cohgrouplinv : \depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupinv(x),x) = \cohgroupunit},
+\quad\quad
+\cohgrouprinv : \depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))},
+\]
+and two new homotopy constructors similar to the coherencies given by Baez and Lauda \cite{baez2004groups}.
+
+We look at two examples of coherent 2-groups.
+The first is based on the work of Buchholtz \etal \ \cite{DBLP:conf/lics/BuchholtzDR18} and Kraus and Altenkirch~\cite{KA18}.
+They define higher groups as loop spaces and for 1-truncated types, the loop space is a coherent 2-group in our sense.
+
+\begin{example}
+Suppose, $A$ is a 2-type and $a$ is a point of $A$.
+Then we can construct an algebra of $\cohgroup$ whose carrier is given by $a = a$.
+\end{example}
+
+The second example is the automorphism group on a 1-type whose elements are equivalences on a given 1-type.
+Note that this group is the loop space of the 2-type of 1-types due to univalence.
+
+\begin{example}
+Let $A$ be a 1-type.
+We have an algebra of $\cohgroup$ whose carrier is given by equivalences $f : A \to A$.
+The unit element is the identity function, the tensor is the concatenation, and the inverse is just the inverse of an equivalence.
+\end{example}
+
+%% \subsection{Coherent Group}
+%% \label{sec:coeherent_group}
+%% 
+%% The coherent group is defined by the following HIT:
+%% \begin{lstlisting}[mathescape=true]
+%% Inductive $\cohgroup$ :=
+%% | $\cohgroupunit$ : $\cohgroup$
+%% | $\cohgrouptensor$ : $\cohgroup \rightarrow \cohgroup \rightarrow \cohgroup$
+%% | $\cohgroupinv$ : $\cohgroup \rightarrow \cohgroup$
+%% | $\cohgrouplambda$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupunit,x) = x}$
+%% | $\cohgrouprho$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(x,\cohgroupunit) = x}$
+%% | $\cohgroupalpha$ : $\depprod{(x ,y,z: \cohgroup)}{\cohgrouptensor(x,(\cohgrouptensor(y,z)))=\cohgrouptensor(\cohgrouptensor(x,y),z)}$
+%% | $\cohgrouplinv$ : $\depprod{(x : \cohgroup)}{\cohgrouptensor(\cohgroupinv(x),x) = \cohgroupunit}$
+%% | $\cohgrouprinv$ : $\depprod{(x : \cohgroup)}{\cohgroupunit = \cohgrouptensor(x,\cohgroupinv(x))}$
+%% | $\cohgrouptr$ : $\depprod{(x,y : \cohgroup)}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplambda(y))}} = \concat{\cohgroupalpha(x,\cohgroupunit,y)}{\ap{(\Lam z. \cohgrouptensor(z,y))}{(\cohgrouprho(x))}}$
+%% | $\cohgrouppent$ : $\depprod{(w,x,y,z : \cohgroup)}{}$
+%%     $\concat{\cohgroupalpha(w,x,\cohgrouptensor(y,z))}{\cohgroupalpha(\cohgrouptensor(w,x),y,z)}=\concat{\ap{(\Lam v. \cohgrouptensor(w,v))}{(\cohgroupalpha(x,y,z))}}{\concat{\cohgroupalpha(w,\cohgrouptensor(x,y),z)}{\ap{(\Lam v. \cohgrouptensor(v,z))}{(\cohgroupalpha(w,x,y))}}}$
+%% | $\cohgroupinvadjtrl$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(z,x))}{(\cohgrouprinv(x))}}{\concat{\inverse{(\cohgroupalpha(x,\cohgroupinv(x),x))}}{\ap{(\Lam z. \cohgrouptensor(x,z))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouplambda(x)}{\inverse{(\cohgrouprho(x))}}}$
+%% | $\cohgroupinvadjtrr$ : $\depprod{(x : \cohgroup)}{\concat{\ap{(\Lam z. \cohgrouptensor(\cohgroupinv(x),z))}{(\cohgrouprinv(x))}}{\concat{\cohgroupalpha(\cohgroupinv(x),x,\cohgroupinv(x))}{\ap{(\Lam z. \cohgrouptensor(z,\cohgroupinv(x)))}{(\cohgrouplinv(x))}}}=\concat{\cohgrouprho(\cohgroupinv(x))}{\inverse{(\cohgrouplambda(\cohgroupinv(x)))}}}$
+%% \end{lstlisting}
+%% 
+%% 
+%% 
+%% 
+%% 
+%% Signature for the coherent group

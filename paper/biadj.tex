@@ -1,0 +1,243 @@
+To construct higher inductive types, we use Proposition \ref{thm:initial_alg_sem}, which says that biinitial objects satisfy the induction principle.
+We use the groupoid quotient to acquire the desired algebra.
+More specifically, we construct a pseudofunctor from $\algG{\sign}$ to $\algM(\sign)$,
+which is the groupoid quotient on the carrier.
+We do that in such a way that the obtained pseudofunctor preserves biinitiality,
+so that we obtain the HIT by constructing a biinitial object in $\algG{\sign}$.
+
+One class of pseudofunctors which preserve biinitial objects is given by left biadjoints.
+More precisely, suppose that we have bicategories $\B$ and $\C$, a left biadjoint pseudofunctor $L : \pseudo(\B, \C)$, and an object $x : \B$.
+Then the object $L(x)$ is biinitial if $x$ is.
+
+Instead of directly lifting the groupoid quotient to the level of algebras,
+we first show that the groupoid quotient specifies a left biadjoint pseudofunctor and then we lift that biadjunction to the level of algebras.
+To do so, we use the fact we defined the bicategory of algebras via displayed bicategories.
+This way we can define the biadjunction on each part of the structure separately.
+
+More specifically, we define the notion of \emph{displayed biadjunction} between two displayed bicategories over a biadjunction in the base,
+and we show that each displayed biadjunction gives rise to a total biadjunction between the total bicategories.
+Defining displayed biadjunctions requires defining displayed analogues of pseudofunctors, pseudotransformations, and invertible modification,
+which were defined by Ahrens \etal \ \cite{bicatjournal}.
+For this, we make use of \emph{displayed invertible 2-cells} \cite{bicatjournal}.
+
+\begin{definition}
+Let $\D_1$ and $\D_2$ be displayed bicategories over $\B_1$ and $\B_2$ respectively and let $F : \pseudo(\B_1, \B_2)$ be a pseudofunctor.
+Then a \fat{displayed pseudofunctor} $\FF$ from $\D_1$ to $\D_2$ over $F$ consist of
+\begin{itemize}
+	\item For each $x : \B_1$ a map $\FF_0 : \D_1(x) \rightarrow \D_2(F(x))$;
+	\item For all 1-cells $f : x \onecell y$, objects $\xx : \D_1(x)$ and $\yy : \D_1(y)$,
+	and displayed 1-cells $\ff : \dmor{\xx}{\yy}{f}$, a displayed 1-cell $\FF_1(\ff) :  \dmor{\FF_0(\xx)}{\FF_0(\yy)}{F(f)}$;
+	\item For all 2-cells $\tc : f \twocell g$, displayed 1-cells $\ff : \dmor{\xx}{\yy}{f}$ and $\gg : \dmor{\xx}{\yy}{g}$,
+	and displayed 2-cells $\dtc : \dtwo{\ff}{\gg}{\tc}$, a displayed 2-cell $\FF_2(\dtc) : \dtwo{\FF_1(\ff)}{\FF_2(\gg)}{F(\tc)}$;
+	\item For each $x : \B$ and $\xx : \D(x)$, a displayed invertible 2-cell
+	$\identitor{\FF}(\xx) : \dmor{\id_1(\FF_0(\xx))}{\FF_1(\id_1(\xx))}{\identitor{F}(x)}$;
+	\item For all $\ff : \dmor{\xx}{\yy}{f}$ and $\gg : \dmor{\yy}{\zz}{g}$. a displayed invertible 2-cell
+	$\compositor{\FF}(\ff, \gg) : \dmor{\FF_1(\ff) \cdot \FF_1(\gg)}{\FF_1(\ff \cdot \gg)}{\compositor{F}(f, g)}$.
+\end{itemize}
+Here $\identitor{F}$ and $\compositor{F}$ denote the identitor and compositor of $F$.
+In addition, several coherencies, which can be found in the formalization, need to be hold.
+We denote the type of displayed pseudofunctors from $\D_1$ to $\D_2$ over $F$ by $\disppsfun{\D_1}{\D_2}{F}$.
+\end{definition}
+
+\begin{definition}
+Let $\D_1$ and $\D_2$ be displayed bicategories over $\B_1$ and $\B_2$ respectively.
+Suppose that we have displayed pseudofunctors $\FF : \disppsfun{\D_1}{\D_2}{F}$ and $\GG : \disppsfun{\D_1}{\D_2}{G}$
+and a pseudotransformation $\theta : \pstrans{F}{G}$.
+Then a \fat{displayed pseudotransformation} $\thetatheta$ from $\FF$ to $\GG$ over $\theta$ consists of
+\begin{itemize}
+	\item For all objects $x : \B$ and $\xx : \D_1(x)$ a displayed 1-cell $\thetatheta_0(x) : \dmor{\FF_0(\xx)}{\GG_0(\xx)}{\theta(x)}$;
+	\item For all 1-cells $f : x \onecell y$ and $\ff : \dmor{\xx}{\yy}{f}$ a displayed invertible 2-cell
+	$\thetatheta_1(f) : \dtwo{\thetatheta_0(\xx) \cdot \FF_1(\ff)}{\GG_1(\ff) \cdot \thetatheta_0(\yy)}{\theta_1(f)}$.
+\end{itemize}
+Here $\theta_1$ denotes the family of invertible 2-cells corresponding to the naturality squares of $\theta$.
+Again several coherencies must be satisfied and the precise formulation can be found in the formalization.
+The type of displayed pseudotransformatons from $\FF$ to $\GG$ over $\theta$ is denoted by $\disppstrans{\FF}{\GG}{\theta}$.
+\end{definition}
+
+\begin{definition}
+Suppose that we have displayed bicategories $\D_1$ and  $\D_2$ over $\B_1$ and $\B_2$, displayed pseudofunctors $\FF$ and $\GG$ from $\D_1$ to $\D_2$ over $F$ and $G$ respectively, and displayed pseudotransformations $\thetatheta$ and $\thetatheta'$ from $\FF$ to $\GG$ over $\theta$ and $\theta'$ respectively.
+In addition, let $m$ be an invertible modification from $\theta$ to $\theta'$.
+Then a \fat{displayed invertible modification} $\mm$ from $\thetatheta$ to $\thetatheta'$ over $m$ consists of a displayed invertible 2-cell
+$\mm_2(\xx) :  \dtwo{\thetatheta(\xx)}{\thetatheta'(\xx)}{m(x)}$ for each $x : \B_1$ and $\xx : \D_1(x)$,
+In addition, a coherency must be satisfied, which can be found in the formalization.
+The type of displayed invertible modifications from $\thetatheta$ to $\thetatheta'$ over $m$ is denoted by $\dispmodif{\thetatheta}{\thetatheta'}{m}$.
+\end{definition}
+
+Each of these gadgets has a total version.
+
+\begin{problem}
+\label{prob:total}
+We have
+\begin{enumerate}
+	\item Given a displayed pseudofunctor $\FF : \disppsfun{\D_1}{\D_2}{F}$, to construct a pseudofunctor $\total{\FF} : \pseudo(\total{\D_1}, \total{\D_2})$;
+	\item Given a displayed pseudotransformation $\thetatheta : \disppstrans{\FF}{\GG}{\theta}$, to construct a pseudotransformation $\total{\thetatheta} : \pstrans{\total{\FF}}{\total{\GG}}$;
+	\item Given a displayed invertible modification $\mm : \xymatrix@C=1em{\thetatheta \ar@3[r]^-{m} & \thetatheta',}$ to construct an invertible modificaton $\total{\mm} : \modif{\total{\thetatheta}}{\total{\thetatheta'}}$.
+\end{enumerate}
+\end{problem}
+
+\begin{construction}{prob:total}
+\label{constr:biadj}
+By pairing.
+\end{construction}
+
+Before we can define displayed biadjunctions, we need several operations on the displayed gadgets we introduced.
+
+\begin{example}
+We have the following
+\begin{itemize}
+	\item We have $\id(\D) : \disppsfun{\D}{\D}{\id(\B)}$
+	where $\id(\B)$ is the identity pseudofunctor;
+	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$ and $\GG : \disppsfun{\D_2}{\D_3}{G}$,
+	we have $\FF \cdot \GG : \disppsfun{\D_1}{\D_3}{F \cdot G}$
+	where $F \cdot G$ is the composition of pseudofunctors;
+	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$,
+	we have $\id_1(\FF) : \disppstrans{\FF}{\FF}{\id_1(F)}$
+	where $\id_1(F)$ is the identity pseudotransformation on $F$;
+	\item Given $\thetatheta : \disppstrans{\FF}{\GG}{\theta}$ and $\thetatheta' : \disppstrans{\GG}{\HH}{\theta'}$,
+	we have $\thetatheta \vcomp \thetatheta' : \disppstrans{\FF}{\HH}{\theta \vcomp \theta'}$
+	where $\theta \vcomp \theta'$ is the composition of pseudotrasformations;
+	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$, $\GG : \disppsfun{\D_2}{\D_3}{G}$, $\HH : \disppsfun{\D_2}{\D_3}{H}$, and $\thetatheta : \disppstrans{\GG}{\HH}{\theta}$,
+	we have
+	\[
+	\FF \whiskerl \thetatheta : \disppsfun{\FF \cdot \GG}{\FF \cdot \HH}{F \whiskerl \theta};
+	\]
+	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$, $\GG : \disppsfun{\D_1}{\D_2}{G}$, $\HH : \disppsfun{\D_2}{\D_3}{H}$, and $\thetatheta : \disppstrans{\FF}{\GG}{\theta}$,
+	we have
+	\[
+	\thetatheta \whiskerr \HH : \disppsfun{\FF \cdot \HH}{\GG \cdot \HH}{\theta \whiskerr H};
+	\]
+	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$,
+	we have
+	\[
+	\lunitor{\FF} : \disppstrans{\id \cdot \FF}{\FF}{\lunitor{F}}, \quad
+	\runitor{\FF} : \disppstrans{\FF \cdot \id}{\FF}{\runitor{\FF}},
+ 	\]
+%% 	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$,
+%% 	we have
+	\[
+	\linvunitor{\FF} : \disppstrans{\FF}{\id \cdot \FF}{\linvunitor{F}}, \quad
+	\rinvunitor{\FF} : \disppstrans{\FF}{\FF \cdot \id}{\rinvunitor{\FF}};
+	\]
+	\item Given $\FF : \disppsfun{\D_1}{\D_2}{F}$, $\GG : \disppsfun{\D_2}{\D_3}{G}$, and $\HH : \disppsfun{\D_3}{\D_4}{H}$,
+	we have
+	\[
+	\lassoc{\FF}{\GG}{\HH} : \disppstrans{(\FF \cdot \GG) \cdot \HH}{\FF \cdot (\GG \cdot \HH)}{\lassoc{F}{G}{H}},
+	\]
+	\[
+	\rassoc{\FF}{\GG}{\HH} : \disppstrans{\FF \cdot (\GG \cdot \HH)}{(\FF \cdot \GG) \cdot \HH}{\rassoc{F}{G}{H}}.
+	\]
+\end{itemize}
+\end{example}
+
+\begin{definition}
+Suppose we have bicategories $\B_1$ and $\B_2$ and a biadjunction $L \dashv R$ from $\B_1$ to $\B_2$.
+We write $\eta$ and $\epsilon$ for the unit and counit of $L \dashv R$ respectively,
+and we write $\tau_1$ and $\tau_2$ for the left and right triangle respectively.
+Suppose, that we also have displayed bicategories $\D_1$ and $\D_2$ over $\B_1$ and $\B_2$ respectively
+and a displayed pseudofunctor $\LL : \disppsfun{\D_1}{\D_2}{L}$.
+Then we say $\LL$ is a \fat{displayed left biadjoint pseudofunctor} if we have
+\begin{itemize}
+	\item A displayed pseudofunctor
+	$
+	\RR : \disppsfun{\D_2}{\D_1}{R}
+	$;
+	\item Displayed pseudotransformations
+	\[
+	\etaeta : \disppstrans{\id}{\LL \cdot \RR}{\eta}, \quad
+	\epseps : \disppstrans{\RR \cdot \LL}{\id}{\epsilon};
+	\]
+	\item Displayed invertible modifications
+	\[
+	\tautaul : \dispmodif{\rho^{-1} \vcomp \RR \whiskerl \etaeta \vcomp \alpha \vcomp \epseps \whiskerr \RR \vcomp \lambda}{\id_1(\RR),}{\tau_1}
+	\]
+	\[
+	\tautaur : \dispmodif{\lambda^{-1} \vcomp \etaeta \whiskerr \LL \vcomp \alpha^{-1} \vcomp \LL \whiskerl \epseps \vcomp \rho}{\id_1(\LL).}{\tau_2}
+	\]
+\end{itemize}
+\end{definition}
+
+From Construction \ref{constr:biadj}, we get
+
+\begin{proposition}
+\label{prop:total_biadj}
+Given a displayed left biadjoint pseudofunctor $\LL$,
+then $\total{\LL}$ is a left biadjoint pseudofunctor.
+\end{proposition}
+
+\begin{figure}
+\[
+\xymatrix
+{
+	\algebra{\sign} \ar@/^/[rr]_-{\top}^-{\algpgrpd} \ar[d] & & \algG{\sign} \ar@/^/[ll]^-{\alggquot} \ar[d] \\
+	\pathalg{\sign} \ar@/^/[rr]_-{\top}^-{\pathpgrpd} \ar[d] & & \pathalgG{\sign} \ar@/^/[ll]^-{\pathgquot} \ar[d] \\
+	\prealg{\sign} \ar@/^/[rr]_-{\top}^-{\prepgrpd} \ar[d] & & \prealgG{\sign} \ar@/^/[ll]^-{\pregquot} \ar[d]\\
+	\onetypes \ar@/^/[rr]_-{\top}^-{\pgrpd} & & \grpd \ar@/^/[ll]^-{\gquot}
+}
+\]
+\caption{The biadjunction}
+\label{fig:biadj}
+\end{figure}
+
+Now let us use the introduced notions to construct the biadjunction on the level of algebras.
+Our approach is summarized in Figure \ref{fig:biadj}.
+We start by showing that the groupoid quotient gives rise to a biadjunction.
+
+\begin{problem}
+\label{prob:gquit_biadj}
+To construct $\gquot \dashv \pgrpd$ where $\gquot : \pseudo(\grpd, \onetypes)$.
+\end{problem}
+
+\begin{construction}{prob:gquit_biadj}
+\label{constr:gquit_biadj}
+We only show how the involved pseudofunctors are defined.
+The pseudofunctor $\gquot$ is the groupoid quotient
+while $\pgrpd$ sends a 1-type $X$ to the groupoid whose objects are points of $X$ and morphisms from $x$ to $y$ are paths $x = y$.
+\end{construction}
+Notice that the above biadjunction turns into a biequivalence if we consider the bicategory of univalent groupoids in place of $\grpd$. This implies that the biadjunction of Problem \ref{prob:gquit_biadj} cannot be a biequivalence, since not every groupoid is equivalent to a univalent groupoid.
+
+Next we lift this biadjunction to the level of algebras using the displayed machinery introduced in this section.
+
+\begin{problem}
+\label{prob:alg_biadj}
+Given a signature $\sign$, to construct a biadjunction $\alggquot \dashv \algpgrpd$ where $\alggquot : \pseudo(\algG{\sign}, \algebra{\sign})$.
+\end{problem}
+
+\begin{construction}{prob:alg_biadj}
+\label{constr:alg_biadj}
+We only give a very brief outline of the construction.
+
+We start by constructing a displayed biadjunction
+from $\DFAlg(\semPG{\pointconstr[\sign]})$
+to $\DFAlg(\semP{\pointconstr[\sign]})$
+over the biadjunction from
+Construction \ref{constr:gquit_biadj}.
+To do so, we first need to lift the pseudofunctors, and for that, we generalize the approach of Hermida and Jacobs
+to the bicategorical setting \cite[Theorem 2.14]{hermida1998structural}.
+This requires us to construct two pseudotransformations.
+\[
+p_1 : \pstrans{\semP{P} \cdot \gquot}{\gquot \cdot \semPG{P}},
+\]
+\[
+p_2 : \pstrans{\semPG{P} \cdot \pgrpd}{\pgrpd \cdot \semP{P}}.
+\]
+We denote the total biadjunction of the resulting displayed biadjunction by $\pregquot \dashv \prepgrpd$.
+
+Next we lift the biadjunction to the level of path algebras
+and for that, we construct a displayed biadjunction between 
+$\DCell(\semEG{\pathleft[\sign](i)},\semEG{\pathright[\sign](i)})$
+and $\DCell(\semE{\pathleft[\sign](i)},\semE{\pathright[\sign](i)}$
+for all $j : \pathlabel$.
+Denote the resulting total biadjunction by $\pathgquot \dashv \pathpgrpd$.
+
+To finish the proof, we need to construct one more displayed biadjunction.
+For that, we only need to show that if $G : \pathalgG{\sign}$ is an algebra, then $\pathgquot(G)$ also is an algebra,
+and if $X : \pathalg{\sign}$ is an algebra, then so is $\pathpgrpd(X)$.
+\end{construction}
+
+The next proposition concludes this section.
+
+\begin{proposition}
+\label{prop:biinitial_in_grpd}
+If $G$ is an biinitial object in $\algG{\sign}$,
+then $\alggquot(G)$ is a biinitial object in $\algebra{\sign}$.
+\end{proposition}

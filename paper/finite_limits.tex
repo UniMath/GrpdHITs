@@ -1,0 +1,237 @@
+This section is dedicated to the construction of PIE limits in the
+bicategory $\alg(\sign)$ of algebras in 1-types for the signature
+$\sign$ \cite{power1991characterization}.
+Note that $\alg(\sign)$ also has a terminal object whose carrier is the unit type.
+
+\subsection{Products}
+
+Binary products in a bicategory generalize the notion of binary
+product in a category.
+
+\begin{definition}\label{def:product}
+Let $\B$ be a bicategory and let $A$ and $B$ be two objects of
+$\B$. The \fat{product} of $A$ and $B$ is given by an object $\prodB
+A B$ together with 1-cells $\projlB : \prodB A B \onecell A$ and
+$\projrB : \prodB A B \onecell B$.
+
+The triple $(\prodB A B,\projlB, \projrB)$ must satisfy the following
+universal property. Given an object $X$ and 1-cells $f : X
+\onecell A$ and $g : X \onecell B$, there exist a 1-cell
+$\mappair f g : X \onecell \prodB A B$ and two 2-cells $\theta :
+\mappair f g \cdot \projlB \twocell f$ and $\theta' : \mappair f g
+\cdot \projrB \twocell g$.
+
+Moreover, given two 1-cells $h_1,h_2 : X \onecell \prodB A B$ with
+2-cells $\theta_i : h_i \cdot \projlB \twocell f$ and $\theta'_i : h_i
+\cdot \projrB \twocell g$, for $i= 1,2$, there exists a unique
+2-cell $\tau : h_1 \twocell h_2$ such that $\tau \whiskerr
+\projlB \vcomp \theta_2 = \theta_1$ and $\tau \whiskerr \projrB \vcomp
+\theta'_2 = \theta'_1$.
+\end{definition} 
+
+\begin{problem}
+\label{prob:product}
+Given algebras $A$ and $B$ for $\sign$, to construct their product in $\alg(\sign)$.
+\end{problem}
+
+\begin{construction}{prob:product}\label{cons:product}
+Let $A$ and $B$ be two algebras for $\sign$. The product of $A$ and
+$B$ consists of the following data:
+\begin{itemize}
+\item The carrier is $A \times B$, the product of the carriers of $A$ and $B$.
+\item The function $\AlgPoint{A \times B} : \polyAct{\pointconstr}{A \times B} \rightarrow A \times B$ is
+\[
+\AlgPoint{A \times B}(x) \eqdef (\AlgPoint{A}(\polyAct{\pointconstr}{\projl}(x)),\AlgPoint{B}(\polyAct{\pointconstr}{\projr}(x))).
+\]
+\item For all labels $j : \pathlabel$ we are given pseudonatural
+transformations $\semE{\pathleft_j}$ and $\semE{\pathright_j}$. We
+write $\semE{\pathleft_j}_X$ for the component of $\semE{\pathleft_j}$
+at object $X$. Given a
+1-cell $f : X \onecell Y$ in $\alg(\sign)$, we write
+$\semE{\pathleft_j}(f)$ for the 2-cell of type
+$\semE{\pathleft_j}_X \cdot
+f \twocell \polyAct{\patharg_j}{f} \cdot \semE{\pathleft_j}_Y$ (this is the same notation used in Example~\ref{ex:DCell}).
+We write similarly for $\semE{\pathright_j}$.
+
+For each point $x : \polyAct{\patharg_j}{A \times B}$, we are required
+to construct a path $\AlgPath{A \times B}{j}(x)
+: \semE{\pathleft_j}_{A \times B}(x) = \semE{\pathright_j}_{A \times
+B}(x)$. This is a path in $A \times B$, so it is enough to construct
+two paths $\projl(\semE{\pathleft_j}_{A \times B}(x))
+= \projl(\semE{\pathright_j}_{A \times B}(x))$ and
+$\projr(\semE{\pathleft_j}_{A \times B}(x))
+= \projr(\semE{\pathright_j}_{A \times B}(x))$. The first of these is
+defined as the following concatenation of paths:
+\begin{align*}
+\projl(\semE{\pathleft_j}_{A \times B}(x))
+&\stackrel{\semE{\pathleft_j}(\projl)(x)}{=}
+\semE{\pathleft_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) \\
+&\stackrel{\AlgPath{A}{j}(\polyAct{\patharg_j}{\projl}(x))}{=}
+\semE{\pathright_j}_{A}(\polyAct{\patharg_j}{\projl}(x)) \\
+&\stackrel{\inverse{(\semE{\pathright_j}(\projl)(x))}}{=}
+\projl(\semE{\pathright_j}_{A \times B}(x))
+\end{align*}
+The second path is defined analogously.
+\item The construction of the required homotopies is more involved and we refer the reader to the formalization for all the details.
+\end{itemize}
+
+It is not difficult to show that the projections $\projlB : \prodB A
+B \onecell A$ and $\projrB : \prodB A B \onecell B$ are morphisms of
+algebras.  Moreover, the product of algebras satisfies the required
+universal property of Definition~\ref{def:product}. Given
+two algebra morphisms $f : X \onecell A$ and $g : X \onecell B$, we
+have a function $\mappair f g : X \to A \times B$ by the universal
+property of the product (of types). We refer the reader to the formalization for the proof that
+$\mappair f g$ is  a morphism of algebras. 
+\end{construction}
+
+\subsection{Inserter}
+The inserter in a bicategory is a generalization of the equalizer in
+a category.
+%% This is typically called inserter. We call it equalizer
+%% instead, to keep the terminology consistent with the one of
+%% Section~\ref{sec:coequalizer}, where coequalizer is used in place of
+%% coinserter.
+
+\begin{definition}\label{def:inserter}
+Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$ and let
+$f,g : A \onecell B$. The \fat{inserter} of $f$ and $g$ is an
+object $E$ together with a 1-cell $e : E \onecell A$ and a 2-cell
+$\epsilon : e \cdot f\twocell e \cdot g$.
+The triple $(E,e,\epsilon)$ must satisfy the following universal
+property. Suppose we have
+\begin{itemize}
+\item an object $E'$;
+\item a 1-cell $e' : E' \onecell A$;
+\item a 2-cell $\epsilon' : e' \cdot f \twocell e' \cdot g$.
+\end{itemize}
+Then there exists a 1-cell $h : E' \onecell E$ together with a 2-cell
+$\phi : h \cdot e \twocell e'$ and a path $\rassoc{h}{e}{f} \vcomp
+h \whiskerl \epsilon \vcomp \lassoc{h}{e}{g} \vcomp \phi \whiskerr g
+= \phi \whiskerr f \vcomp \epsilon'$.
+The pair $(h,\phi)$ is unique up to unique 2-cell, which means that
+given another 1-cell $h' : E' \onecell E$, another 2-cell $\phi' :
+h' \cdot e \twocell e'$, and a path $\rassoc{h'}{e}{f} \vcomp
+h' \whiskerl \epsilon \vcomp \lassoc{h'}{e}{g} \vcomp \phi' \whiskerr g
+= \phi' \whiskerr f \vcomp \epsilon'$, there exists a unique 2-cell $\tau : h
+\twocell h'$ such that $\tau \whiskerr e \vcomp \phi' = \phi$.
+\end{definition}
+
+Note that there is a choice for the direction of the 2-cell $\epsilon : e \cdot f\twocell e \cdot g$ since we could also have chosen $\epsilon : e \cdot g\twocell e \cdot f$ or we could have required this 2-cell to be inevrtible.
+However, since we only consider bicategories in which all 2-cells are invertible, this choice does not matter.
+
+\begin{problem}
+\label{prob:inserter}
+Given algebras $A$ and $B$ for $\sign$ and
+algebra morphisms $f,g : A \onecell B$, to construct the inserter of $f$ and $g$ in $\alg(\sign)$.
+\end{problem}
+
+\begin{construction}{prob:inserter}\label{cons:inserter}
+The inserter of $f$ and $g$ is defined as the total algebra $\TotalAlg Y$ of a
+displayed algebra $Y$ over $A$. Displayed algebras were
+introduced in Definition~\ref{def:disp_alg}. $Y$ is defined as follows:
+\begin{itemize}
+\item The underlying family $Y$ of 1-types over $A$ is $Y(x) \eqdef f(x) = g(x)$.
+\item
+For each $x : \polyAct{\pointconstr}{A}$, we are required to construct
+a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow
+f(\AlgPoint{A}(x)) = g (\AlgPoint{A}(x))$. Suppose we have $\pover{x}
+: \polyDact{\pointconstr}{Y}(x)$. By induction on the polynomial
+$\pointconstr$, it is possible to derive from $\pover{x}$ a path $p
+: \polyAct{\pointconstr}{f}(x) = \polyAct{\pointconstr}{g}(x)$.  We
+define $\DispAlgPoint{Y}(\pover{x})$ as the following concatenation of paths:
+\[
+f(\AlgPoint{A}(x))
+\stackrel{\AlgPoint{f}(x)}{=} \AlgPoint{B}(\polyAct{\pointconstr}{f}(x))
+\stackrel{\ap{\AlgPoint{B}}{p}}{=} \AlgPoint{B}(\polyAct{\pointconstr}{g}(x))
+\stackrel{\inverse{(\AlgPoint{g}(x))}}{=} g (\AlgPoint{A}(x))
+\]
+%% The family of invertible 2-cells $\tcC$ underlying the algebra
+%% morphism $\AlgPoint{}$ was introduced in Example~\ref{ex:DFAlg}.
+\item The construction of paths $\DispAlgPath{Y}{j}$ is relatively involved, and we refer to the formalization for the details.
+\item
+The construction of globes $\DispAlgHomot{Y}{j}$ is
+straightforward. These are paths between paths in $Y(x)$, for some
+point $x$. Since $Y(x)$ is a set, the required paths exist.
+\end{itemize}
+
+The 1-cell $e$ is the first projection out of the total algebra
+$\TotalAlg Y$, which is an algebra morphism by construction. The
+2-cell $\epsilon$ is the second projection out of $\TotalAlg Y$. The
+algebra $\TotalAlg Y$ satisfies the required universal property of the
+inserter spelled out in Definition~\ref{def:inserter}.
+\end{construction}
+
+\subsection{Equifier}
+
+The equifier is finite limit in a bicategory, corresponding to a
+higher version of the equalizer.
+
+\begin{definition}\label{def:equifier}
+Let $\B$ be a bicategory. Let $A$ and $B$ be objects of $\B$, let $f,
+g : A \onecell B$ and $\beta,\gamma : f \twocell
+g$. The \fat{equifier} of $\beta$ and $\gamma$ is an object $E$
+together with a 1-cell $e : E \onecell A$ and a path
+$e \whiskerl \beta = e \whiskerl \gamma$.
+The pair $(E,e)$ must satisfy the following universal
+property. Suppose we have
+\begin{itemize}
+\item an object $E'$;
+\item a 1-cell $e' : E' \onecell A$;
+\item a path $e' \whiskerl \beta = e' \whiskerl \gamma$.
+\end{itemize}
+Then there exists a 1-cell $h : E' \onecell E$ together with a 2-cell
+$\phi : h \cdot e \twocell e'$. The pair $(h,\phi)$ is unique up to unique 2-cell, which means that
+given another 1-cell $h' : E' \onecell E$ and another 2-cell $\phi' :
+h' \cdot e \twocell e'$, there exists a unique 2-cell $\tau : h
+\twocell h'$ such that $\tau \whiskerr e \vcomp \phi' = \phi$.
+\end{definition}
+
+\begin{problem}
+\label{prob:equifier}
+Given algebras $A$ and $B$ for $\sign$, given 1-cells $f,g :
+A \onecell B$ and 2-cells $\beta,\gamma : f \twocell g$, to construct the
+equifier of $\beta$ and $\gamma$ in $\alg(\sign)$.
+\end{problem}
+
+\begin{construction}{prob:equifier}\label{cons:equifier}
+Similar to the construction of the inserter, we define the equifier
+of $\beta$ and $\gamma$ as the total algebra $\TotalAlg Y$ of the following
+displayed algebra $Y$ over $A$.
+\begin{itemize}
+\item The underlying family $Y$ of 1-types over $A$ is $Y(x) \eqdef \beta(x) = \gamma(x)$.
+\item
+For each $x : \polyAct{\pointconstr}{A}$, we are required to construct
+a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow
+\beta(\AlgPoint{A}(x)) = \gamma (\AlgPoint{A}(x))$. Assume given $\pover{x}
+: \polyDact{\pointconstr}{Y}(x)$. By induction on the polynomial
+$\pointconstr$, it is possible to derive from $\pover{x}$ a path $p
+: \polyAct{\pointconstr}{\beta}(x) = \polyAct{\pointconstr}{\gamma}(x)$.  We
+define $\DispAlgPoint{Y}(\pover{x})$ as the following concatenation of
+paths:
+\begin{align*}
+\beta(\AlgPoint{A}(x))
+&= \hconcat{\beta(\AlgPoint{A}(x))}{\refl{g(\AlgPoint{A}(x))}} \\
+&= \hconcat{\beta(\AlgPoint{A}(x))}{(\hconcat{\AlgMapPoint{g}(x)}{\inverse{(\AlgMapPoint{g}(x))}})} \\
+&= \hconcat{(\hconcat{\beta(\AlgPoint{A}(x))}{\AlgMapPoint{g}(x)})}{\inverse{(\AlgMapPoint{g}(x))}} \\
+&= \hconcat{(\hconcat{\AlgMapPoint{f}(x)}{\ap{\AlgPoint{B}}{(\polyAct{\pointconstr}{\beta}(x))}})}{\inverse{(\AlgMapPoint{g}(x))}}
+& \text{(by $\AlgCellPoint{\beta}(x)$)}\\
+&= \hconcat{(\hconcat{\AlgMapPoint{f}(x)}{\ap{\AlgPoint{B}}{(\polyAct{\pointconstr}{\gamma}(x))}})}{\inverse{(\AlgMapPoint{g}(x))}}
+& \text{(by $p$)}\\
+&= \hconcat{(\hconcat{\gamma(\AlgPoint{A}(x))}{\AlgMapPoint{g}(x)})}{\inverse{(\AlgMapPoint{g}(x))}}
+& \text{(by $\AlgCellPoint{\gamma}(x)$)}\\
+&= \hconcat{\gamma(\AlgPoint{A}(x))}{(\hconcat{\AlgMapPoint{g}(x)}{\inverse{(\AlgMapPoint{g}(x))}})} \\
+&= \hconcat{\gamma(\AlgPoint{A}(x))}{\refl{g(\AlgPoint{A}(x))}} \\
+&= \gamma(\AlgPoint{A}(x))
+\end{align*}
+\item The construction of paths $\DispAlgPath{Y}{j}$ and globes $\DispAlgHomot{Y}{j}$ is
+straightforward. These are respectively paths and paths between paths
+in $Y(x)$ for some point $x$. Since $Y(x)$ is a proposition,
+these constructions are all trivial.
+\end{itemize}
+
+The 1-cell $e$ is the first projection out of the total algebra $\TotalAlg Y$, which
+is an algebra morphism by construction. The 2-cell $\epsilon$ is the
+second projection out of $\TotalAlg Y$. The algebra $\TotalAlg Y$ satisfies the required
+universal property of the equifier spelled out in Definition~\ref{def:equifier}.
+\end{construction}

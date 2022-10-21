@@ -1,0 +1,322 @@
+From Theorem \ref{thm:initial_alg_sem} we know that initiality implies the induction principle.
+Hence, it suffices to construct a biinitial object in the bicategory of algebras in 1-types.
+By Proposition \ref{prop:biinitial_in_grpd}, it suffices to construct a biinitial object in $\algG{\sign}$.
+To do so, we adapt the semantics by Dybjer and Moeneclaey to our setting \cite{DBLP:journals/entcs/DybjerM18}.
+
+\begin{problem}
+\label{prob:initial_grpd_alg}
+Given a signature $\sign$, to construct a biinitial object  $\constfont{G}$ in $\algG{\sign}$.
+\end{problem}
+
+\begin{construction}{prob:initial_grpd_alg}
+\label{constr:initial_grpd_alg}
+We only discuss how the carrier $G$ of $\constfont{G}$ is defined.
+\begin{itemize}
+	\item Note  that each polynomial $P$ gives rise to a container $\hat{P}$.
+	Note that each container induces a W-type \cite{abbott2003categories},
+	and we define the type of objects of $G$ to be the W-type induced by $\hat{\pointconstr}$.
+	Denote this type by $\initob$ and let $\constfont{c}^{\initob} : \pointconstr(\initob) \to \initob$ its algebra map.
+	\item The morphisms of $G$ are constructed as a set quotient.
+	The main idea is to define the type of morphisms and equalities between them so that the groupoid has the desired structure.
+	For each part of the structure, we add a constructor, so concretely, we have constructors witnessing the path constructors, identity, composition, and all other laws.
+	First, we define an inductive type $\initmorgen{P}{x}{y}$, for each polynomial $P :\poly$ and elements $x, y : P (\initob)$. Its constructors are given in Figure \ref{fig:initmor}.
+    When $P$ is $\idP$, we write $\initmor{x}{y}$ instead of $\initmorgen{\idP}{x}{y}$.
+	Afterwards, for each $P:\poly$,$x, y : P(\initob)$ and $f, g : \initmorgen{P}{x}{y}$, we define a type $\initeqgen{P}{f}{g}$.
+	Again this type is defined inductively, and its constructors can be found in Figure \ref{fig:initmoreq}.
+	Note that given $p : \initmorgen{P}{x}{y}$, we can define $\semE{e}(p) : \initeqgen{Q}{\semE{e}(x)}{\semE{e}(y)}$ where $e$ is an endpoint. When $P$ is $\idP$, we write $\initeq{f}{g}$ instead of $\initeqgen{\idP}{f}{g}$.
+	
+	Note that the input of the quotient is an equivalence relation, which is valued in propositions.
+	For this reason, we define $\initeqprop{f}{g}$ to be the propositional truncation of $\initeq{f}{g}$.
+	All in all, we define the morphisms from $x$ to $y$ to be the set quotient of $\initmor{x}{y}$ by $\approx^p$.
+	\qedhere	
+\end{itemize}
+\end{construction}
+
+\begin{figure*}[t]
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$x : P(\initob)$}
+\BinaryInfC{$\initmorid{x} : \initmorgen{P}{x}{x}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$x,y : P(\initob)$}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\TrinaryInfC{$\initmorinv{f} : \initmorgen{P}{y}{x}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P : \poly$}
+\AxiomC{$x,y,z : P(\initob)$}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\AxiomC{$g : \initmorgen{P}{y}{z}$}
+\QuaternaryInfC{$\initmorcomp{f}{g} : \initmorgen{P}{x}{z}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P,Q:\poly$}
+\AxiomC{$x,y : P(\initob)$}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\TrinaryInfC{$\initmorinl{f} : \initmorgen{P+Q}{\inl(x)}{\inl(y)}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$P,Q:\poly$}
+\AxiomC{$x,y : Q(\initob)$}
+\AxiomC{$f : \initmorgen{Q}{x}{y}$}
+\TrinaryInfC{$\initmorinr{f} : \initmorgen{P+Q}{\inr(x)}{\inr(y)}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$P,Q : \poly$}
+\AxiomC{$x,y : P(\initob)$}
+\AxiomC{$w,z : Q(\initob)$}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\AxiomC{$g : \initmorgen{Q}{w}{z}$}
+\QuinaryInfC{$\initmorpair{f}{g} : \initmorgen{P\times Q}{\pair{x}{w}}{\pair{y}{z}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$j : \pathlabel$}
+\AxiomC{$x : \patharg_j(\initob)$}
+\BinaryInfC{$\initmorpath{j,x} : \initmorgen{\idP}{\semE{\pathleft_j}(x)}{\semE{\pathright_j}(x)}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$x,y : \pointconstr(\initob)$}
+\AxiomC{$f : \initmorgen{\pointconstr}{x}{y}$}
+\BinaryInfC{$\initmorap{f} : \initmorgen{\idP}{\constfont{c}^{\initob}(x)}{\constfont{c}^{\initob}(y)}$}
+\end{bprooftree}
+\end{center}
+\caption{Rules for the type $\initmorgen{P}{x}{y}$.}
+\label{fig:initmor}
+\end{figure*}
+
+\begin{problem}
+\label{prob:hit_exist}
+Each signature has a HIT.
+\end{problem}
+
+\begin{construction}{prob:hit_exist}
+\label{constr:hit_exist}
+By Propositions \ref{thm:initial_alg_sem} and \ref{prop:biinitial_in_grpd}, it suffices to find a biinitial object in $\algG{\sign}$.
+The desired object is given in Construction \ref{constr:initial_grpd_alg}.
+\end{construction}
+
+\begin{figure*}
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{f}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f,g : \initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\BinaryInfC{$\initeqgen{P}{g}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f,g,h : \initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\AxiomC{$\initeqgen{P}{g}{h}$}
+\TrinaryInfC{$\initeqgen{P}{f}{h}$}
+\end{bprooftree}
+\end{center}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{f}{\initmorid{y}}}{f}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{\initmorid{x}}{f}}{f}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{w}{x}$}
+\AxiomC{$g : \initmorgen{P}{x}{y}$}
+\AxiomC{$h : \initmorgen{P}{y}{z}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f}{\initmorcomp{f}{g}}}{\initmorcomp{\initmorcomp{f}{g}}{h}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{f}{\initmorinv{f}}}{\initmorid{x}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\UnaryInfC{$\initeqgen{P}{\initmorcomp{\initmorinv{f}}{f}}{\initmorid{y}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f,g:\initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\BinaryInfC{$\initeqgen{P}{\initmorinv{f}}{\initmorinv{g}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f_1,f_2 : \initmorgen{P}{x}{y}$}
+\AxiomC{$g : \initmorgen{P}{y}{z}$}
+\AxiomC{$\initeqgen{P}{f_1}{f_2}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f_1}{g}}{\initmorcomp{f_2}{g}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\AxiomC{$g_1,g_2 : \initmorgen{P}{y}{z}$}
+\AxiomC{$\initeqgen{P}{g_1}{g_2}$}
+\TrinaryInfC{$\initeqgen{P}{\initmorcomp{f}{g_1}}{\initmorcomp{f}{g_2}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{\idP}{\initmorap{\initmorid{x}}}{\initmorid{\constfont{c}^{\initob}(x)}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f,g : \initmorgen{\pointconstr}{x}{y}$}
+\AxiomC{$\initeqgen{\pointconstr}{f}{g}$}
+\BinaryInfC{$\initeqgen{\idP}{\initmorap{f}}{\initmorap{g}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{\pointconstr}{x}{y}$}
+\AxiomC{$g : \initmorgen{\pointconstr}{y}{z}$}
+\BinaryInfC{$\initeqgen{\idP}{\initmorap{\initmorcomp{f}{g}}}{\initmorcomp{\initmorap{f}}{\initmorap{g}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P+Q}{\initmorinl{\initmorid{x}}}{\initmorid{\inl{x}}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P+Q}{\initmorinr{\initmorid{x}}}{\initmorid{\inr{x}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f,g:\initmorgen{P}{x}{y}$}
+\AxiomC{$\initeqgen{P}{f}{g}$}
+\BinaryInfC{$\initeqgen{P+Q}{\initmorinl{f}}{\initmorinl{g}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{P}{x}{y}$}
+\AxiomC{$g : \initmorgen{P}{y}{z}$}
+\BinaryInfC{$\initeqgen{P + Q}{\initmorinl{\initmorcomp{f}{g}}}{\initmorcomp{\initmorinl{f}}{\initmorinl{g}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f,g:\initmorgen{Q}{x}{y}$}
+\AxiomC{$\initeqgen{Q}{f}{g}$}
+\BinaryInfC{$\initeqgen{P+Q}{\initmorinr{f}}{\initmorinr{g}}$}
+\end{bprooftree}
+\begin{bprooftree}
+\AxiomC{$f : \initmorgen{Q}{x}{y}$}
+\AxiomC{$g : \initmorgen{Q}{y}{z}$}
+\BinaryInfC{$\initeqgen{P + Q}{\initmorinr{\initmorcomp{f}{g}}}{\initmorcomp{\initmorinr{f}}{\initmorinr{g}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$\initeqgen{P\times Q}{\initmorpair{\initmorid{x}}{\initmorid{y}}}{\initmoridvar{\pair{x}{y}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f_1,f_2:\initmorgen{P}{x_1}{x_2}$}
+\AxiomC{$g_1,g_2:\initmorgen{Q}{y_1}{y_2}$}
+\AxiomC{$\initeqgen{P}{f_1}{f_2}$}
+\AxiomC{$\initeqgen{Q}{g_1}{g_2}$}
+\QuaternaryInfC{$\initeqgen{P\times Q}{\initmorpair{f_1}{g_1}}{\initmorpair{f_2}{g_2}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$f_1 : \initmorgen{P}{x_1}{y_1}$}
+\AxiomC{$g_1 : \initmorgen{P}{y_1}{z_1}$}
+\AxiomC{$f_2 : \initmorgen{Q}{x_2}{y_2}$}
+\AxiomC{$g_2 : \initmorgen{Q}{y_2}{z_2}$}
+\QuaternaryInfC{$\initeqgen{P \times Q}{\initmorpair{\initmorcomp{f_1}{g_1}}{\initmorcomp{f_2}{g_2}}}{\initmorcomp{\initmorpair{f_1}{f_2}}{\initmorpair{g_1}{g_2}}}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$j : \homotlabel$}
+\AxiomC{$x : \homotpointarg_j(G_0)$}
+\AxiomC{$p : \initmorgen{\homotpathtarg}{\semE{\pathargleft}(x)}{\semE{\pathargright}(x)}$}
+\TrinaryInfC{$\initeqgen{\idP}{\semH{\homotleft_j}(x, p)}{\semH{\homotright_j}(x, p)}$}
+\end{bprooftree}
+\end{center}
+
+\vspace{5pt}
+
+\begin{center}
+\begin{bprooftree}
+\AxiomC{$j : \pathlabel$}
+\AxiomC{$x, y : \patharg_j(G_0)$}
+\AxiomC{$p : \initmorgen{\patharg_j}{x}{y}$}
+\TrinaryInfC{$\initeqgen{\idP}{\initmorcomp{\initmorpath{j, x}}{\semE{\pathright}(p)}}{\initmorcomp{\semE{\pathleft}{(p)}}{\initmorpath{j, y}}}$}
+\end{bprooftree}
+\end{center}
+
+\caption{Rules for the type $\initeqgen{P}{f}{g}$.}
+\label{fig:initmoreq}
+\end{figure*}

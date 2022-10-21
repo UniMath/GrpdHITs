@@ -12,7 +12,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -466,12 +466,14 @@ Definition sem_homot_endpoint_one_types_sem_homot_endpoint_grpd
     @ !(gquot_endpoint_help_gcl sr G x).
 Proof.
   unfold gquot_endpoint_help_gcl.
-  induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+  induction p as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                  | T₁ T₂ e₁ e₂ e₃
                   | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
+                  | P R e₁ e₂ | P R e₁ e₂
+                  | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                  | P₁ P₂ P₃ e₁ e₂ e₃
+                  | W w T e
+                  | j e | ].
   - (* identity *)
     refine (!_).
     etrans.
@@ -486,7 +488,7 @@ Proof.
     simpl.
     etrans.
     {
-      exact (maponpaths (λ z, ! z) IHp).
+      exact (maponpaths (λ z, ! z) IHh).
     }
     etrans.
     {
@@ -515,19 +517,18 @@ Proof.
       refine (!_).
       apply ginv.
     }
-    apply maponpaths.
-    apply poly_act_id_right.
+    apply idpath.
   - (* transitivity *)
     simpl.
     etrans.
     {
       apply maponpaths_2.
-      exact IHP₁.
+      exact IHh₁.
     }
     etrans.
     {
       apply maponpaths.
-      exact IHP₂.
+      exact IHh₂.
     }
     refine (!(path_assoc _ _ _) @ _).
     apply maponpaths.
@@ -550,6 +551,74 @@ Proof.
     apply maponpaths.
     refine (!_).
     apply gconcat.
+  - (* ap endpoint *)
+    simpl.
+    etrans.
+    {
+      apply maponpaths.
+      exact IHp.
+    }
+    clear IHp.
+    etrans.
+    {
+      apply (maponpathscomp0 (sem_endpoint_UU e₃ _)).
+    }
+    refine (_ @ path_assoc _ _ _).
+    apply maponpaths.    
+    etrans.
+    {
+      apply (maponpathscomp0 (sem_endpoint_UU e₃ _)).
+    }
+    refine (!_).
+    refine (path_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths.
+      apply pathscomp_inv.
+    }
+    refine (path_assoc _ _ _ @ _).
+    etrans.
+    {
+      apply maponpaths.
+      refine (!_).
+      apply maponpathsinv0.
+    }
+    apply maponpaths_2.
+    cbn.
+    etrans.
+    {
+      apply maponpaths_2.
+      pose (homotsec_natural'
+              (λ z, gquot_endpoint_help e₃ z)
+              (gcleq
+                 (poly_act_groupoid T₁ (pr1 G))
+                 (sem_homot_endpoint_grpd p G pG x (path_arg_to_mor x y))))
+        as q.
+      simpl in q.
+      refine (_ @ !q).
+      apply maponpaths.
+      refine (!_).
+      etrans.
+      {
+        exact (!(maponpathscomp
+                   (gquot_functor_map (sem_endpoint_grpd e₃ G))
+                   gquot_poly
+                   (gcleq
+                      (poly_act_groupoid T₁ (pr1 G))
+                      (sem_homot_endpoint_grpd p G pG x (path_arg_to_mor x y))))).
+      }
+      apply maponpaths.
+      exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+    }
+    refine (!(path_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      apply pathsinv0r.
+    }
+    refine (pathscomp0rid _ @ _).
+    refine (!_).
+    apply maponpathscomp.
   - (* associativity *)
     simpl.
     refine (!_).
@@ -629,105 +698,50 @@ Proof.
     }
     apply pathsinv0r.
   - (* first projection *)
-    simpl ; simpl in IHp.
+    simpl.
+    refine (!_).
     etrans.
     {
-      apply maponpaths.
-      apply IHp.
-    }
-    etrans.
-    {
+      apply maponpaths_2.
       etrans.
       {
-        exact (maponpathscomp0
-                 pr1
-                 (pathsdirprod _ _)
-                 (_ @ !(pathsdirprod _ _))).
-      }
-      etrans.
-      {
-        apply maponpaths_2.
-        apply maponpaths_pr1_pathsdirprod.
-      }
-      apply maponpaths.
-      etrans.
-      {
-        exact (maponpathscomp0
-                 pr1
-                 (maponpaths
-                    (gquot_prod gquot_poly gquot_poly)
-                    (gcleq _ (sem_homot_endpoint_grpd p G pG x _)))
-                 (!(pathsdirprod _ _))).
-      }
-      apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        apply pathsdirprod_inv.
+        apply pathscomp0rid.
       }
       apply maponpaths_pr1_pathsdirprod.
     }
-    apply maponpaths.
-    apply maponpaths_2.
     etrans.
     {
       apply maponpaths.
-      exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+      apply maponpaths_2.
+      apply maponpaths.
+      apply ge.
     }
-    apply maponpaths_pr1_pathsdirprod.
+    apply pathsinv0r.
   - (* second projection *)
-    simpl ; simpl in IHp.
+    simpl.
+    refine (!_).
     etrans.
     {
-      apply maponpaths.
-      apply IHp.
-    }
-    etrans.
-    {
+      apply maponpaths_2.
       etrans.
       {
-        exact (maponpathscomp0
-                 dirprod_pr2
-                 (pathsdirprod _ _)
-                 (_ @ !(pathsdirprod _ _))).
-      }
-      simpl.
-      etrans.
-      {
-        apply maponpaths_2.
-        apply maponpaths_pr2_pathsdirprod.
-      }
-      apply maponpaths.
-      etrans.
-      {
-        exact (maponpathscomp0
-                 dirprod_pr2
-                 (maponpaths
-                    (gquot_prod gquot_poly gquot_poly)
-                    (gcleq _ (sem_homot_endpoint_grpd p G pG x _)))
-                 (!(pathsdirprod _ _))).
-      }
-      apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        apply pathsdirprod_inv.
+        apply pathscomp0rid.
       }
       apply maponpaths_pr2_pathsdirprod.
     }
-    apply maponpaths.
-    apply maponpaths_2.
     etrans.
     {
       apply maponpaths.
-      exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+      apply maponpaths_2.
+      apply maponpaths.
+      apply ge.
     }
-    apply maponpaths_pr2_pathsdirprod.
+    apply pathsinv0r.
   - (* pair of endpoints *)
     simpl.
     etrans.
     {
-      exact (paths_pathsdirprod IHp₁ IHp₂).
+      exact (paths_pathsdirprod IHh₁ IHh₂).
     }
     refine (!_).
     etrans.
@@ -747,88 +761,59 @@ Proof.
       apply pathsdirprod_concat.
     }
     apply pathsdirprod_concat.
-  - (* left inclusion *)
+  - (* composition pair *)
     simpl.
-    etrans.
-    {
-      apply maponpaths.
-      exact IHp.
-    }
-    etrans.
-    {
-      apply (maponpathscomp0 inl).
-    }
-    etrans.
-    {
-      apply maponpaths.
-      apply (maponpathscomp0 inl).
-    }
-    etrans.
-    {
-      do 2 apply maponpaths.
-      apply maponpathsinv0.
-    }
     refine (!_).
     etrans.
     {
       apply maponpaths_2.
-      apply pathscomp0rid.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths_prod_path.
+      }
+      apply pathsdirprod_concat.
     }
     etrans.
     {
-      do 3 apply maponpaths.
-      apply pathscomp0rid.
+      apply maponpaths.
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths.
+        apply ge.
+      }
+      simpl.
+      apply pathsdirprod_inv.
     }
-    apply maponpaths.
-    apply maponpaths_2.
-    refine (!_).
     etrans.
     {
-      apply maponpathscomp.
+      apply pathsdirprod_concat.
     }
-    refine (!_).
-    exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
-  - (* right inclusion *)
+    exact (paths_pathsdirprod (pathsinv0r _) (pathsinv0r _)).
+  - (* composition constant *)
     simpl.
+    refine (!_).
     etrans.
     {
       apply maponpaths.
-      exact IHp.
-    }
-    etrans.
-    {
-      apply (maponpathscomp0 inr).
-    }
-    etrans.
-    {
+      etrans.
+      {
+        apply pathscomp0rid.
+      }
       apply maponpaths.
-      apply (maponpathscomp0 inr).
+      apply ge.
     }
     etrans.
     {
-      do 2 apply maponpaths.
-      apply maponpathsinv0.
-    }
-    refine (!_).
-    etrans.
-    {
-      apply maponpaths_2.
+      simpl.
+      etrans.
+      {
+        apply pathscomp0rid.
+      }
       apply pathscomp0rid.
     }
-    etrans.
-    {
-      do 3 apply maponpaths.
-      apply pathscomp0rid.
-    }
-    apply maponpaths.
-    apply maponpaths_2.
-    refine (!_).
-    etrans.
-    {
-      apply maponpathscomp.
-    }
-    refine (!_).
-    exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
+    apply maponpaths_for_constant_function.
   - (* path constructor *)
     refine (!_).
     etrans.
@@ -1078,87 +1063,6 @@ Proof.
     }
     do 2 refine (path_assoc _ _ _ @ _).
     apply idpath.
-  - (* point constructor *)
-    simpl.
-    etrans.
-    {
-      apply maponpaths.
-      exact IHp.
-    }
-    etrans.
-    {
-      apply (maponpathscomp0 (prealg_gquot_map A (pr1 G) (pr2 G))).
-    }
-    refine (_ @ path_assoc _ _ _).
-    apply maponpaths.
-    etrans.
-    {
-      apply (maponpathscomp0 (prealg_gquot_map A (pr1 G) (pr2 G))).
-    }
-    refine (!_).
-    refine (path_assoc _ _ _ @ _).
-    etrans.
-    {
-      apply maponpaths.
-      apply pathscomp_inv.
-    }
-    refine (path_assoc _ _ _ @ _).
-    etrans.
-    {
-      apply maponpaths.
-      refine (!_).
-      apply maponpathsinv0.
-    }
-    apply maponpaths_2.
-    etrans.
-    {
-      apply maponpaths_2.
-      apply maponpaths.
-      exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
-    }
-    simpl.
-    unfold prealg_gquot_map.
-    simpl.
-    refine (!_).
-    etrans.
-    {
-      etrans.
-      {
-        exact (!(maponpathscomp
-                   (poly_gquot A (pr1 G))
-                   (gquot_functor_map (pr2 G))
-                   _)).
-      }
-      apply maponpaths.
-      etrans.
-      {
-        apply maponpathscomp.
-      }
-      apply (maponpaths_homot
-               poly_gquot_gquot_poly).
-    }
-    etrans.
-    {
-      apply maponpathscomp0.
-    }
-    refine (_ @ path_assoc _ _ _).
-    apply maponpaths.
-    etrans.
-    {
-      apply maponpathscomp0.
-    }
-    etrans.
-    {
-      apply maponpaths.
-      apply maponpathsinv0.
-    }
-    apply maponpaths_2.
-    etrans.
-    {
-      apply maponpaths.
-      apply maponpathsidfun.
-    }
-    exact (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _).
   - (* path argument *)
     simpl.
     unfold gquot_endpoint_help_gcl.

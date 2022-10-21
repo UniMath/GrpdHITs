@@ -14,7 +14,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -216,6 +216,42 @@ Proof.
   exact p.
 Defined.
 
+(* NEEDS TO BE CHANGED *)
+
+Definition poly_path_groupoid_poly_act_morphism_to_path
+           {A P Q : poly_code}
+           {X : one_type}
+           {a₁ a₂ : poly_act P (path_groupoid X : groupoid)}
+           (c : poly_act A X → X)
+           (e : endpoint A P Q)
+           (w : a₁ = a₂)
+  : sem_endpoint_grpd_data_functor_morphism
+      e
+      (prealg_path_groupoid_map A X c)
+      (poly_act_morphism_to_path w)
+    =
+    poly_act_morphism_to_path
+      (maponpaths
+         (sem_endpoint_UU e _)
+         w).
+Proof.
+  induction w.
+  etrans.
+  {
+    apply maponpaths.
+    exact (poly_act_morphism_to_path_idpath _).
+  }
+  simpl.
+  etrans.
+  {
+    exact (functor_id
+             (sem_endpoint_grpd e (path_groupoid X ,, prealg_path_groupoid_map A X c))
+             a₁).
+  }
+  exact (!(poly_act_morphism_to_path_idpath (sem_endpoint_UU e _ a₁))).
+Qed.
+    
+(*
 Definition poly_path_groupoid_poly_act_morphism_to_path
            {P : poly_code}
            {X : one_type}
@@ -233,6 +269,7 @@ Proof.
   }
   exact (functor_id (poly_path_groupoid P X) _).
 Qed.
+ *)
 
 Definition poly_act_morphism_to_path_inv
            {P : poly_code}
@@ -248,7 +285,7 @@ Proof.
   - apply idpath.
   - simpl.
     refine (_ @ id_left _).
-    rewrite (iso_inv_after_iso (make_iso (id₁ x) _)).
+    rewrite (z_iso_inv_after_z_iso (id₁ x ,, _)).
     apply idpath.
   - induction x as [x  | x].
     + exact (IHP₁ x).
@@ -294,11 +331,14 @@ Definition sem_homot_endpoint_grpd_one_type
        @ !(path_groupoid_endpoint r z)).
 Proof.
   induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                  | T₁ T₂ e₁ e₂ e₃
                   | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ h IHh | T₁ T₂ e₁ e₂ e₃ e₄ h IHh
+                  | P R e₁ e₂ | P R e₁ e₂
                   | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
+                  | P₁ P₂ P₃ e₁ e₂ e₃
+                  | W w T e
+                  | j e | ].
+
   - refine (!_).
     etrans.
     {
@@ -343,6 +383,123 @@ Proof.
     refine (_ @ pathscomp0lid _).
     apply maponpaths_2.
     apply pathsinv0l.
+  - simpl.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      etrans.
+      {
+        do 2 apply maponpaths.
+        etrans.
+        {
+          apply pathscomp_inv.
+        }
+        apply maponpaths_2.
+        exact (!(maponpathsinv0 (sem_endpoint_UU e₃ (pr21 X)) _)).
+      }
+      do 2 refine (path_assoc _ _ _ @ _).
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpaths_2.
+        refine (!_).
+        apply (maponpathscomp0 (sem_endpoint_UU e₃ (pr21 X))).
+      }
+      refine (!_).
+      apply (maponpathscomp0 (sem_endpoint_UU e₃ (pr21 X))).
+    }
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      exact IHh.
+    }
+    clear IHh.
+    etrans.
+    {
+      apply poly_path_groupoid_poly_act_morphism_to_path.
+    }
+    apply maponpaths.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      apply maponpaths_2.
+      etrans.
+      {
+        apply maponpathscomp0.
+      }
+      apply maponpaths_2.
+      apply maponpathscomp0.
+    }
+    etrans.
+    {
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths.
+        exact (!(path_assoc _ _ _)).
+      }
+      apply maponpaths_2.
+      apply path_assoc.
+    }
+    etrans.
+    {
+      pose (homotsec_natural'
+              (λ z, path_groupoid_endpoint e₃ z)
+              (path_groupoid_endpoint e₁ z))
+        as q.
+      cbn in q.
+      do 2 apply maponpaths_2.
+      exact (!q).
+    }
+    do 2 refine (!(path_assoc _ _ _) @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpathscomp0.
+    }
+    apply maponpaths.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths.
+      refine (!(path_assoc _ _ _) @ _).
+      apply maponpaths.
+      pose (homotsec_natural'
+              (λ z, !(path_groupoid_endpoint e₃ z))
+              (!(path_groupoid_endpoint e₂ z)))
+        as q.
+      cbn in q.
+      exact q.
+    }
+    do 2 refine (path_assoc _ _ _ @ _).
+    refine (!_).
+    etrans.
+    {
+      apply maponpathscomp0.
+    }
+    apply maponpaths_2.
+    refine (!_).
+    etrans.
+    {
+      apply maponpaths_2.
+      refine (!_).
+      apply (homotsec_natural'
+               (λ z, path_groupoid_endpoint e₃ z)
+               (sem_homot_endpoint_one_types h (pr1 X) (pr2 X) z (path_groupoid_path_arg p))).
+    }
+    refine (!(path_assoc _ _ _) @ _).
+    etrans.
+    {
+      apply maponpaths.
+      apply pathsinv0r.
+    }
+    apply pathscomp0rid.
   - refine (!_).
     etrans.
     {
@@ -423,60 +580,32 @@ Proof.
       apply pathsinv0r.
     }
     exact (poly_act_morphism_to_path_idpath _).
-  - refine (maponpaths pr1 IHh @ _).
-    refine (maponpaths poly_act_morphism_to_path _).
-    etrans.
-    {
-      apply maponpathscomp0.
-    }
-    etrans.
-    {
-      apply maponpaths_2.
-      apply maponpaths_pr1_pathsdirprod.
-    }
+  - simpl.
+    refine (!_).
     etrans.
     {
       apply maponpaths.
-      apply maponpathscomp0.
-    }
-    etrans.
-    {
-      apply maponpaths ; apply maponpaths.
       etrans.
       {
-        apply maponpaths.
-        apply pathsdirprod_inv.
+        apply maponpaths_2.
+        apply maponpaths_pr1_pathsdirprod.
       }
-      apply maponpaths_pr1_pathsdirprod.
+      apply pathsinv0r.
     }
-    apply idpath.
-  - refine (maponpaths dirprod_pr2 IHh @ _).
-    refine (maponpaths poly_act_morphism_to_path _).
-    etrans.
-    {
-      apply maponpathscomp0.
-    }
-    etrans.
-    {
-      apply maponpaths_2.
-      apply maponpaths_pr2_pathsdirprod.
-    }
+    apply poly_act_morphism_to_path_idpath.
+  - simpl.
+    refine (!_).
     etrans.
     {
       apply maponpaths.
-      apply maponpathscomp0.
-    }
-    etrans.
-    {
-      apply maponpaths ; apply maponpaths.
       etrans.
       {
-        apply maponpaths.
-        apply pathsdirprod_inv.
+        apply maponpaths_2.
+        apply maponpaths_pr2_pathsdirprod.
       }
-      apply maponpaths_pr2_pathsdirprod.
+      apply pathsinv0r.
     }
-    apply idpath.
+    apply poly_act_morphism_to_path_idpath.
   - refine (pathsdirprod (IHh₁ @ !_) (IHh₂ @ !_)).
     + apply maponpaths.
       etrans.
@@ -512,68 +641,79 @@ Proof.
         apply pathsdirprod_concat.
       }
       apply maponpaths_pr2_pathsdirprod.
-  - refine (!_).
-    etrans.
-    {
-      refine (maponpaths poly_act_morphism_to_path _).
-      simpl.
+  - simpl.
+    apply pathsdirprod.
+    + refine (!_).
       etrans.
       {
-        do 2 apply maponpaths.
-        refine (!_).
-        apply (maponpathsinv0 inl).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              apply maponpaths.
+              apply maponpaths_prod_path.
+            }
+            apply pathsdirprod_concat.
+          }
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply maponpaths_pr1_pathsdirprod.
       }
       etrans.
       {
         apply maponpaths.
-        refine (!_).
-        apply (maponpathscomp0 inl).
+        apply pathsinv0r.
       }
-      refine (!_).
-      apply (maponpathscomp0 inl).
-    }
-    etrans.
-    {
-      refine (maponpaths
-                (λ z, @poly_act_morphism_to_path
-                        T₁
-                        (one_type_to_groupoid (pr11 X))
-                        _ _
-                        z) _).
-      apply ii1_injectivity_maponpaths_inl.
-    }
-    exact (!IHh).
-  - refine (!_).
-    etrans.
-    {
-      refine (maponpaths poly_act_morphism_to_path _).
-      simpl.
+      apply poly_act_morphism_to_path_idpath.
+    + refine (!_).
       etrans.
       {
-        do 2 apply maponpaths.
-        refine (!_).
-        apply (maponpathsinv0 inr).
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths.
+          etrans.
+          {
+            apply maponpaths_2.
+            etrans.
+            {
+              apply maponpaths.
+              apply maponpaths_prod_path.
+            }
+            apply pathsdirprod_concat.
+          }
+          etrans.
+          {
+            apply maponpaths.
+            apply pathsdirprod_inv.
+          }
+          apply pathsdirprod_concat.
+        }
+        apply maponpaths_pr2_pathsdirprod.
       }
       etrans.
       {
         apply maponpaths.
-        refine (!_).
-        apply (maponpathscomp0 inr).
+        apply pathsinv0r.
       }
-      refine (!_).
-      apply (maponpathscomp0 inr).
-    }
+      apply poly_act_morphism_to_path_idpath.
+  - simpl.
+    refine (!_).
     etrans.
     {
-      refine (maponpaths
-                (λ z, @poly_act_morphism_to_path
-                        T₂
-                        (one_type_to_groupoid (pr11 X))
-                        _ _
-                        z) _).
-      apply ii2_injectivity_maponpaths_inr.
+      apply pathscomp0rid.
     }
-    exact (!IHh).
+    apply maponpaths_for_constant_function.
   - refine (!_).
     etrans.
     {
@@ -636,6 +776,7 @@ Proof.
       apply pathsinv0r.
     }
     apply idpath.
+    (*
   - refine (!_).
     etrans.
     {
@@ -750,6 +891,7 @@ Proof.
       apply path_assoc.
     }
     apply idpath.
+     *)
   - refine (!_).
     etrans.
     {

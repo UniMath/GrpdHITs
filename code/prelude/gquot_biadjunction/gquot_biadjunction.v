@@ -11,7 +11,6 @@ Require Import UniMath.CategoryTheory.PrecategoryBinProduct.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Examples.BicatOfCats.
-Require Import UniMath.Bicategories.Core.Adjunctions.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -169,13 +168,13 @@ Definition gquot_counit_data_po
   : @PathOver
       _
       (gcl (path_groupoid X) x₁) (gcl (path_groupoid X) x₂)
+      (gcleq (one_type_to_groupoid X) p)
       (λ z : gquot (path_groupoid X),
              (gquot_counit_map X · # (id_psfunctor one_types) f) z
              =
              (# (comp_psfunctor gquot_psfunctor path_groupoid) f · gquot_counit_map Y) z)
       (idpath _)
-      (idpath _)
-      (gcleq (one_type_to_groupoid X) p).
+      (idpath _).
 Proof.
   use map_PathOver.
   unfold square ; cbn.
@@ -276,13 +275,13 @@ Definition gquot_biadj_triangle_l_data_po
   : @PathOver
       _
       (gcl G x₁) (gcl G x₂)
+      (gcleq G f)
       (λ z,
        biadj_triangle_l_lhs gquot_biadj_unit_counit G z
        =
        id_pstrans gquot_psfunctor G z)
       (idpath ((biadj_triangle_l_lhs gquot_biadj_unit_counit) G (gcl G x₁)))
-      (idpath ((biadj_triangle_l_lhs gquot_biadj_unit_counit) G (gcl G x₂)))
-      (gcleq G f).
+      (idpath ((biadj_triangle_l_lhs gquot_biadj_unit_counit) G (gcl G x₂))).
 Proof.
   apply map_PathOver.
   unfold square.

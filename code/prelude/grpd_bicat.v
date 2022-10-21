@@ -211,7 +211,7 @@ Proof.
            exact (!(ccX w x y z f g h)).
     + exact isasetM.
   - intros x y f.
-    use is_iso_qinv.
+    use make_is_z_isomorphism.
     + exact (invX _ _ f).
     + split.
       * exact (cinvX _ _ f).
@@ -228,23 +228,23 @@ Proof.
   use make_is_invertible_2cell.
   - use make_nat_trans.
     + intros X.
-      exact (inv_from_iso (_ ,, pr2 G₂ _ _ (pr1 α X))).
+      exact (inv_from_z_iso (_ ,, pr2 G₂ _ _ (pr1 α X))).
     + abstract
         (intros X Y f ; cbn ;
          refine (!_) ;
-         apply iso_inv_on_right ;
+         apply z_iso_inv_on_right ;
          rewrite !assoc ;
-         apply iso_inv_on_left ;
+         apply z_iso_inv_on_left ;
          simpl ;
          exact (!(pr2 α X Y f))).
   - abstract
       (apply nat_trans_eq ; try apply homset_property ;
        intro x ; cbn ;
-       exact (iso_inv_after_iso (_ ,, _))).
+       exact (z_iso_inv_after_z_iso (_ ,, _))).
   - abstract
       (apply nat_trans_eq ; try apply homset_property ;
        intro x ; cbn ;
-       exact (iso_after_iso_inv (_ ,, _))).
+       exact (z_iso_after_z_iso_inv (_ ,, _))).
 Defined.
 
 Definition groupoid_cancel
@@ -256,12 +256,12 @@ Definition groupoid_cancel
 Proof.
   intro H.
   refine (!(id_right _) @ _).
-  simple refine (maponpaths (λ x, _ · x) (!(iso_inv_after_iso (make_iso g _))) @ _).
+  simple refine (maponpaths (λ x, _ · x) (!(z_iso_inv_after_z_iso (g ,, _))) @ _).
   { apply G. }
   simpl.
   refine (assoc _ _ _ @ _).
   refine (maponpaths (λ x, x · _) H @ _).
   refine (assoc' _ _ _ @ _).
-  refine (maponpaths (λ x, _ · x) (iso_inv_after_iso (make_iso g _)) @ _).
+  refine (maponpaths (λ x, _ · x) (z_iso_inv_after_z_iso (g ,, _)) @ _).
   apply id_right.
 Qed.

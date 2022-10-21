@@ -12,7 +12,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -64,6 +64,7 @@ Definition gquot_endpoint_help_constr
            (g : a₁ --> a₂)
   : @PathOver
       _ _ _
+      (gcleq (poly_act_groupoid A (pr1 G)) g)
       (λ z,
        sem_endpoint_one_types
          constr
@@ -76,8 +77,7 @@ Definition gquot_endpoint_help_constr
          (poly_gquot_gquot_poly (gcl (poly_act_groupoid A (pr1 G)) a₁)))
       (maponpaths
          (gquot_functor_map (pr2 G))
-         (poly_gquot_gquot_poly (gcl (poly_act_groupoid A (pr1 G)) a₂)))
-      (gcleq (poly_act_groupoid A (pr1 G)) g).
+         (poly_gquot_gquot_poly (gcl (poly_act_groupoid A (pr1 G)) a₂))).
 Proof.
   apply map_PathOver.
   refine (whisker_square
@@ -172,6 +172,7 @@ Definition gquot_endpoint_help_pair
            (g : poly_act_groupoid P (pr1 G) ⟦ a₁, a₂ ⟧)
   : @PathOver
       _ _ _
+      (gcleq (poly_act_groupoid P (pr1 G)) g)
       (λ z,
        (sem_endpoint_one_types (pair e₁ e₂)) (total_prealg_gquot A G) (gquot_poly z)
        =
@@ -183,8 +184,7 @@ Definition gquot_endpoint_help_pair
       ((λ z,
         pathsdirprod
           (IHe₁ (gcl (poly_act_groupoid P (pr1 G)) z))
-          (IHe₂ (gcl (poly_act_groupoid P (pr1 G)) z))) a₂)
-      (gcleq (poly_act_groupoid P (pr1 G)) g).
+          (IHe₂ (gcl (poly_act_groupoid P (pr1 G)) z))) a₂).
 Proof.
   apply map_PathOver.
   refine (whisker_square
@@ -284,6 +284,7 @@ Definition gquot_endpoint_help_comp
       _
       (gcl (poly_act_groupoid P (pr1 G)) a₁)
       (gcl (poly_act_groupoid P (pr1 G)) a₂)
+      (gcleq (poly_act_groupoid P (pr1 G)) g)
       (λ q,
        (sem_endpoint_one_types (comp e₁ e₂))
          (gquot_functor_obj (pr1 G),, prealg_gquot_map A (pr1 G) (pr2 G)) 
@@ -303,8 +304,7 @@ Definition gquot_endpoint_help_comp
        @ IHe₂
            (gcl
               (poly_act_groupoid Q (pr1 G))
-              (sem_endpoint_UU e₁ (λ z, pr12 G z) a₂)))
-      (gcleq (poly_act_groupoid P (pr1 G)) g).
+              (sem_endpoint_UU e₁ (λ z, pr12 G z) a₂))).
 Proof.
   use map_PathOver.
   refine (whisker_square
@@ -713,6 +713,7 @@ Definition gquot_functor_map_gquot_poly_sem_endpoint_grpd_help_po
       _
       (gcl (poly_act_groupoid S (pr1 G₁)) a₁)
       (gcl (poly_act_groupoid S (pr1 G₁)) a₂)
+      (gcleq (poly_act_groupoid S (pr1 G₁)) g)
       (λ q,
        gquot_functor_map
          (pr1 F)
@@ -726,8 +727,7 @@ Definition gquot_functor_map_gquot_poly_sem_endpoint_grpd_help_po
             ((sem_endpoint_grpd e) G₂)
             (gquot_functor_map (poly_act_functor S (pr1 F)) q)))
     (gcleq (pr1 G₂) (gquot_functor_map_gquot_poly_sem_endpoint_grpd_mor e F a₁))
-    (gcleq (pr1 G₂) (gquot_functor_map_gquot_poly_sem_endpoint_grpd_mor e F a₂))
-    (gcleq (poly_act_groupoid S (pr1 G₁)) g).
+    (gcleq (pr1 G₂) (gquot_functor_map_gquot_poly_sem_endpoint_grpd_mor e F a₂)).
 Proof.
   use map_PathOver.
   refine (whisker_square
@@ -872,13 +872,13 @@ Definition gquot_poly_gquot_functor_map_po
       _
       (gcl (poly_act_groupoid P G₁) a₁)
       (gcl (poly_act_groupoid P G₁) a₂)
+      (gcleq (poly_act_groupoid P G₁) g)
       (λ q,
        gquot_poly (gquot_functor_map (poly_act_functor P F) q)
        =
        poly_map P (gquot_functor_map F) (gquot_poly q))
       (gquot_poly_gquot_functor_map_help F a₁)
-      (gquot_poly_gquot_functor_map_help F a₂)
-      (gcleq (poly_act_groupoid P G₁) g).
+      (gquot_poly_gquot_functor_map_help F a₂).
 Proof.
   use map_PathOver.
   refine (whisker_square
@@ -2516,7 +2516,7 @@ Definition sem_endpoint_UU_natural_gquot_endpoint'
     @ ! gquot_endpoint e (poly_map S (gquot_functor_map (pr1 F)) z).
 Proof.
   refine (!_).
-  use hornRotation.  
+  use hornRotation_rr.  
   refine (_ @ path_assoc _ _ _).
   refine (!_).
   etrans.

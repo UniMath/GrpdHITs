@@ -37,3 +37,7 @@ Makefile.conf
 *.out
 *.bbl
 *.blg
+*.vok
+*.vos
+.DS_STORE
+*.v~

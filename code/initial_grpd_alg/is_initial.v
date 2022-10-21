@@ -10,14 +10,20 @@ Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.categories.StandardCategories.
 Require Import UniMath.CategoryTheory.Equivalences.Core.
 Require Import UniMath.CategoryTheory.Equivalences.CompositesAndInverses.
+Require Import UniMath.CategoryTheory.Equivalences.FullyFaithful.
 Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
+Require Import UniMath.CategoryTheory.Adjunctions.Core.
+
 Require Import UniMath.Bicategories.Core.Bicat.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
+Require Import UniMath.Bicategories.Core.Examples.BicatOfCats.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.Core.EquivToAdjequiv.
 Require Import UniMath.Bicategories.Colimits.Initial.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.DispInvertibles.
@@ -25,6 +31,7 @@ Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.FullSub.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -91,17 +98,17 @@ Proof.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
   - apply pathscomp_inv.
   - simpl.
-    use iso_inv_on_left.
+    use z_iso_inv_on_left.
     simpl.
     refine (!_).
-    use iso_inv_on_right.
+    use z_iso_inv_on_right.
     simpl.
     refine (!_).
     etrans.
     {
       refine (assoc' _ _ _ @ _).
       apply maponpaths.
-      exact (iso_inv_after_iso (make_iso g _)).
+      exact (z_iso_inv_after_z_iso (g ,, _)).
     }
     apply id_right.
   - induction x as [x | x], y as [y | y], z as [z | z]
@@ -124,8 +131,8 @@ Proof.
   - apply pathsinv0inv0.
   - simpl.
     refine (!_).
-    use inv_iso_unique'.
-    apply iso_after_iso_inv.
+    use inv_z_iso_unique'.
+    apply z_iso_after_z_iso_inv.
   - induction x as [x | x], y as [y | y]
     ; try induction f.
     + apply IHP₁.
@@ -138,7 +145,7 @@ Definition grpd_inv
            {x y : G}
            (f : x --> y)
   : y --> x
-  := inv_from_iso (make_iso f (pr2 G _ _ f)).
+  := inv_from_z_iso (f ,, pr2 G _ _ f).
 
 Definition poly_act_inverse_functor
            {P : poly_code}
@@ -154,10 +161,10 @@ Proof.
   etrans.
   {
     refine (!_).
-    exact (functor_on_inv_from_iso' F (pr2 G₁ _ _ m)).
+    exact (functor_on_inv_from_z_iso' F (pr2 G₁ _ _ m)).
   }
   refine (!_).
-  use inv_iso_unique'.
+  use inv_z_iso_unique'.
   apply poly_act_inv_right.
 Qed.
 
@@ -172,7 +179,7 @@ Proof.
   induction P as [ A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂ ].
   - apply idpath.
   - refine (!_).
-    use inv_iso_unique'.
+    use inv_z_iso_unique'.
     apply id_left.
   - induction x as [x | x].
     + apply IHP₁.
@@ -188,7 +195,7 @@ Definition is_grpd_inv
   : f · g = identity _ → g = grpd_inv f.
 Proof.
   intro p.
-  use inv_iso_unique'.
+  use inv_z_iso_unique'.
   exact p.
 Qed.
 
@@ -199,7 +206,7 @@ Definition move_grpd_inv_left
   : h = f · g → f = h · grpd_inv g.
 Proof.
   intro p.  
-  apply iso_inv_on_left.
+  apply z_iso_inv_on_left.
   exact p.
 Qed.
 
@@ -211,7 +218,7 @@ Definition move_grpd_inv_right
 Proof.
   intro p.
   refine (!_).
-  apply iso_inv_on_right.
+  apply z_iso_inv_on_right.
   exact p.
 Qed.
 
@@ -319,82 +326,6 @@ Proof.
     + exact (IHP₂ x Hx).
   - exact (pathsdirprod (IHP₁ _ (pr1 Hx)) (IHP₂ _ (pr2 Hx))).
 Defined.
-
-Section ConstrUniqueMaps.
-  Variable (B : bicat).
-  
-  Definition biinitial_1cell_property_help (X : B) : UU
-    := ∏ (Y : B), X --> Y.
-
-  Definition biinitial_2cell_property_help
-             (X Y : B)
-    : UU
-    := ∏ (f g : X --> Y), invertible_2cell f g.
-
-  Definition biinitial_eq_property_help (X Y : B) : UU
-    := ∏ (f g : X --> Y) (α β : f ==> g), α = β.
-
-  Definition make_unique_maps_help
-             (X : B)
-             (H₁ : biinitial_1cell_property_help X)
-             (H₂ : ∏ (Y : B), biinitial_2cell_property_help X Y)
-             (H₃ : ∏ (Y : B), biinitial_eq_property_help X Y)
-             (Y : B)
-    : equivalence_of_precats (hom X Y) unit_category.
-  Proof.
-    use tpair.
-    - use tpair.
-      + exact (functor_to_unit (hom X Y)).
-      + use tpair.
-        * use make_functor.
-          ** use make_functor_data.
-             *** exact (λ _, H₁ Y).
-             *** exact (λ _ _ _, id₂ _).
-          ** split.
-             *** abstract
-                   (intro ; simpl ;
-                    apply idpath).
-             *** abstract
-                   (intros ? ? ? ? ? ; cbn ;
-                    rewrite id2_left ;
-                    apply idpath).
-        * split.
-          ** use make_nat_trans.
-             *** intro x.
-                 apply (H₂ Y).
-             *** abstract
-                   (intros x y f ; cbn ;
-                    rewrite id2_right ;
-                    apply H₃).
-          ** use make_nat_trans.
-             *** intro x.
-                 apply isapropunit.
-             *** abstract
-                   (intros x y f ; cbn ;
-                    apply isasetunit).
-    - split.
-      + intro ; simpl.
-        apply inv2cell_to_iso.
-      + intro ; simpl.
-        apply path_univalent_groupoid.
-  Defined.
-  
-  Definition make_unique_maps
-             (X : B)
-             (H₁ : biinitial_1cell_property_help X)
-             (H₂ : ∏ (Y : B), biinitial_2cell_property_help X Y)
-             (H₃ : ∏ (Y : B), biinitial_eq_property_help X Y)
-    : unique_maps X.
-  Proof.
-    intro Y.
-    refine (@adjointificiation
-              (make_category (hom X Y) _)
-              unit_category
-              (make_unique_maps_help X H₁ H₂ H₃ Y)).
-    intros ? ?.
-    apply B.
-  Defined.
-End ConstrUniqueMaps.
 
 Section GrpdAlgUMP.
   Variable (Σ : hit_signature).
@@ -531,10 +462,8 @@ Section GrpdAlgUMP.
                           (pr121 (pr1 Y)))
                        x)
                 · _) ; simpl.
-        refine (inv_from_iso
-                  (make_iso
-                     (univ1_functor_data_endpoint (path_right Σ j) x)
-                     _)).
+        refine (inv_from_z_iso
+                  (univ1_functor_data_endpoint (path_right Σ j) x ,, _)).
         apply (alg_carrier_grpd Y).
       - (* inl *)
         exact IHf.
@@ -545,7 +474,7 @@ Section GrpdAlgUMP.
       - (* ap *)
         refine (_ · (#(pr211 Y : _ ⟶ _) IHf) · _) ; clear IHf.
         + exact (poly_initial_comp_mor x).
-        + refine (inv_from_iso (make_iso (poly_initial_comp_mor y) _)).
+        + refine (inv_from_z_iso (poly_initial_comp_mor y ,, _)).
           apply idtoiso.
     Defined.
 
@@ -610,7 +539,7 @@ Section GrpdAlgUMP.
       - simpl.
         apply maponpaths.
         use subtypePath.
-        { intro ; apply isaprop_is_iso. }
+        { intro ; apply isaprop_is_z_isomorphism. }
         simpl.
         apply maponpaths.
         exact (initial_groupoid_algebra_mor_el_poly_to_poly_act_rel_spec f).
@@ -795,7 +724,7 @@ Section GrpdAlgUMP.
         etrans.
         {
           apply maponpaths.
-          apply iso_after_iso_inv.
+          apply z_iso_after_z_iso_inv.
         }
         etrans.
         {
@@ -804,7 +733,144 @@ Section GrpdAlgUMP.
         do 2 apply maponpaths.
         apply univ1_functor_data_help_eq_constr.
     Qed.
-    
+
+    Definition univ1_functor_data_help_homot_endpoint_ap
+               {T₁ T₂ : poly_code}
+               (e : endpoint (point_constr Σ) T₁ T₂)
+               {x y : poly_act T₁ (poly_initial (point_constr Σ))}
+               (p : poly_act_rel
+                      T₁
+                      (initial_groupoid_algebra_mor_el_poly (path_left Σ) (path_right Σ) I)
+                      x y)
+      : poly_act_compose
+          (univ1_functor_data_endpoint
+             e
+             x)
+          (poly_act_compose
+             (sem_endpoint_grpd_data_functor_morphism
+                e (pr211 Y)
+                (univ1_functor_data_help
+                   (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+                      p)))
+             (poly_act_inverse
+                (univ1_functor_data_endpoint
+                   e
+                   y)))
+        =
+        univ1_functor_data_help
+          (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
+             (poly_act_rel_ap_endpoint e p)).
+    Proof.
+      induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P Q | P Q | P Q | P Q
+                      | P Q R e₁ IHe₁ e₂ IHe₂
+                      | P T t | C₁ C₂ g | ].
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        refine (_ @ IHe₂ _ _ _) ; clear IHe₂.
+        refine (!(poly_act_assoc _ _ _) @ _).
+        apply maponpaths.
+        etrans.
+        {
+          do 2 apply maponpaths.
+          apply poly_act_inverse_compose.
+        }
+        do 2 refine (poly_act_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          exact (!(IHe₁ _ _ _)).
+        }
+        clear IHe₁.
+        etrans.
+        {
+          apply (functor_comp (sem_endpoint_grpd e₂ (_ ,, pr211 Y))).
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply (functor_comp (sem_endpoint_grpd e₂ (_ ,, pr211 Y))).
+        }
+        cbn.
+        refine (poly_act_assoc _ _ _ @ _).
+        apply maponpaths.
+        refine (!_).
+        etrans.
+        {
+          apply (poly_act_inverse_functor (sem_endpoint_grpd e₂ (_ ,, pr211 Y))).
+        }
+        apply idpath.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        etrans.
+        {
+          apply poly_act_id_left.
+        }
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_inverse_identity.
+        }        
+        apply poly_act_id_right.
+      - simpl.
+        apply pathsdirprod.
+        + apply IHe₁.
+        + apply IHe₂.
+      - apply idpath.
+      - induction p.
+        apply idpath.
+      - simpl.
+        refine (assoc _ _ _ @ _).
+        do 2 apply maponpaths.
+        use subtypePath.
+        { intro ; apply isaprop_is_z_isomorphism. }
+        apply idpath.
+    Qed.
+      
     Definition univ1_functor_data_help_homot_endpoint
                {Q : poly_code}
                {TR : poly_code}
@@ -851,12 +917,14 @@ Section GrpdAlgUMP.
              (poly_act_inverse
                 (univ1_functor_data_endpoint sr _))).
     Proof.
-      induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+      induction p as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                      | T₁ T₂ e₁ e₂ e₃
                       | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                      | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
-                      | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                      | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                      | j e | el er | ].
+                      | P R e₁ e₂ | P R e₁ e₂
+                      | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
+                      | P₁ P₂ P₃ e₁ e₂ e₃
+                      | W w T e
+                      | j e | ].
       - simpl.
         refine (!_).
         etrans.
@@ -870,7 +938,7 @@ Section GrpdAlgUMP.
         }
         exact (!(univ1_functor_data_help_eq_id _)).
       - simpl.
-        refine (_ @ maponpaths poly_act_inverse IHp @ _).
+        refine (_ @ maponpaths poly_act_inverse IHh @ _).
         + apply univ1_functor_data_help_eq_inv.
         + etrans.
           {
@@ -885,8 +953,8 @@ Section GrpdAlgUMP.
           apply maponpaths_2.
           apply poly_act_inverse_inverse.
       - simpl.
-        refine (_ @ maponpaths (λ z, poly_act_compose z _) IHP₁
-                  @ maponpaths (λ z, poly_act_compose _ z) IHP₂
+        refine (_ @ maponpaths (λ z, poly_act_compose z _) IHh₁
+                  @ maponpaths (λ z, poly_act_compose _ z) IHh₂
                   @ _).
         + apply univ1_functor_data_help_eq_comp.
         + refine (!(poly_act_assoc _ _ _) @ _).
@@ -900,6 +968,49 @@ Section GrpdAlgUMP.
             apply poly_act_inv_left.
           }
           apply poly_act_id_right.
+      - simpl.
+        refine (!_).
+        etrans.
+        {
+          etrans.
+          {
+            refine (!_).
+            apply poly_act_assoc.
+          }
+          apply maponpaths.
+          etrans.
+          {
+            do 2 apply maponpaths.
+            apply poly_act_inverse_compose.
+          }
+          do 2 refine (poly_act_assoc _ _ _ @ _).
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            refine (!_).
+            apply (functor_comp (sem_endpoint_grpd e₃ (_ ,, pr211 Y))).
+          }
+          simpl.
+          etrans.
+          {
+            apply maponpaths.
+            apply (poly_act_inverse_functor
+                     (sem_endpoint_grpd e₃ (_ ,, pr211 Y))).
+          }
+          simpl.
+          etrans.
+          {
+            refine (!_).
+            apply (functor_comp (sem_endpoint_grpd e₃ (_ ,, pr211 Y))).
+          }
+          cbn.
+          apply maponpaths.
+          refine (!(poly_act_assoc _ _ _) @ _).
+          exact (!IHp).
+        }
+        clear IHp.
+        apply univ1_functor_data_help_homot_endpoint_ap.
       - simpl.
         etrans.
         {
@@ -992,40 +1103,70 @@ Section GrpdAlgUMP.
         }
         exact (!(univ1_functor_data_help_eq_id _)).        
       - simpl.
-        refine (_ @ maponpaths pr1 IHp).
-        pose (sem_homot_endpoint_initial p z p_arg).
-        induction (sem_homot_endpoint_initial p z p_arg)
-        ; apply idpath.
-      - simpl.
-        refine (_ @ maponpaths dirprod_pr2 IHp).
-        induction (sem_homot_endpoint_initial p z p_arg)
-        ; apply idpath.
-      - exact (pathsdirprod IHp₁ IHp₂).
-      - simpl.
-        refine (IHp @ _).
         refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_id_left.
+        }
         etrans.
         {
           apply maponpaths_2.
           apply poly_act_id_left.
         }
-        do 3 apply maponpaths.
-        apply poly_act_id_left.
+        etrans.
+        {
+          apply poly_act_inv_right.
+        }
+        exact (!(univ1_functor_data_help_eq_id _)).        
       - simpl.
-        refine (IHp @ _).
         refine (!_).
+        etrans.
+        {
+          apply maponpaths.
+          apply poly_act_id_left.
+        }
         etrans.
         {
           apply maponpaths_2.
           apply poly_act_id_left.
         }
-        do 3 apply maponpaths.
-        apply poly_act_id_left.
+        etrans.
+        {
+          apply poly_act_inv_right.
+        }
+        exact (!(univ1_functor_data_help_eq_id _)).        
+      - exact (pathsdirprod IHh₁ IHh₂).
+      - simpl.
+        apply pathsdirprod.
+        + refine (!_).
+          etrans.
+          {
+            apply maponpaths.
+            apply poly_act_id_left.
+          }
+          etrans.
+          {
+            apply poly_act_inv_right.
+          }
+          exact (!(univ1_functor_data_help_eq_id _)).        
+        + refine (!_).
+          etrans.
+          {
+            apply maponpaths.
+            apply poly_act_id_left.
+          }
+          etrans.
+          {
+            apply poly_act_inv_right.
+          }
+          exact (!(univ1_functor_data_help_eq_id _)).        
+      - apply idpath.
       - simpl.
         refine (_ @ assoc _ _ _).
         apply maponpaths.
         refine (_ @ assoc' _ _ _).
-        use iso_inv_on_left.
+        use z_iso_inv_on_left.
         simpl.
         refine (!_).
         etrans.
@@ -1036,62 +1177,12 @@ Section GrpdAlgUMP.
           etrans.
           {
             apply maponpaths_2.
-            apply iso_after_iso_inv.
+            apply z_iso_after_z_iso_inv.
           }
           apply id_left.
         }
         refine (!_).
         apply (pr2 (pr21 Y j)).
-      - simpl.
-        refine (assoc' _ _ _ @ _).
-        refine (_ @ assoc _ _ _).
-        apply maponpaths.
-        refine (_ @ assoc' _ _ _).
-        etrans.
-        {
-          apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            exact IHp.
-          }
-          etrans.
-          {
-            apply (functor_comp (pr211 Y)).
-          }
-          apply maponpaths.
-          apply (functor_comp (pr211 Y)).
-        }
-        refine (assoc' _ _ _ @ _).
-        refine (_ @ assoc _ _ _).
-        apply maponpaths.
-        refine (assoc' _ _ _ @ _).
-        apply maponpaths.
-        use inv_iso_unique'.
-        simpl ; unfold precomp_with.
-        refine (assoc' _ _ _ @ _).
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            refine (assoc _ _ _ @ _).
-            apply maponpaths_2.
-            etrans.
-            {
-              refine (!_).
-              apply (functor_comp (pr211 Y)).
-            }
-            etrans.
-            {
-              apply maponpaths.
-              apply poly_act_inv_right.
-            }
-            apply (functor_id (pr211 Y)).
-          }
-          apply id_left.
-        }
-        apply iso_inv_after_iso.
       - simpl.
         refine (!_).
         etrans.
@@ -1155,7 +1246,7 @@ Section GrpdAlgUMP.
       - exact (IHr₁ @ IHr₂).
       - simpl.
         refine (_
-                @ iso_inv_after_iso
+                @ z_iso_inv_after_z_iso
                     (idtoiso
                        (poly_initial_comp
                           (point_constr Σ)
@@ -1182,7 +1273,7 @@ Section GrpdAlgUMP.
           apply maponpaths.
           refine (assoc _ _ _ @ _).
           apply maponpaths_2.
-          apply iso_after_iso_inv.
+          apply z_iso_after_z_iso_inv.
         }
         rewrite id_left.
         etrans.
@@ -1230,9 +1321,9 @@ Section GrpdAlgUMP.
         refine (_ @ assoc _ _ _).
         apply maponpaths.
         refine (!_).
-        use iso_inv_on_right ; simpl.
+        use z_iso_inv_on_right ; simpl.
         refine (_ @ assoc' _ _ _).
-        use iso_inv_on_left ; simpl.
+        use z_iso_inv_on_left ; simpl.
         refine (!_).
         exact (univ1_functor_data_help_eq_natural (path_right Σ j) p).
       - refine (univ1_functor_data_help_homot_endpoint _ _ _ @ _).
@@ -1468,7 +1559,7 @@ Section GrpdAlgUMP.
           etrans.
           {
             apply maponpaths.
-            apply iso_after_iso_inv.
+            apply z_iso_after_z_iso_inv.
           }
           etrans.
           {
@@ -1533,13 +1624,12 @@ Section GrpdAlgUMP.
       refine (!(id_right _) @ _).
       apply maponpaths.
       refine (!_).
-      apply iso_after_iso_inv.
+      apply z_iso_after_z_iso_inv.
     Qed.
   End Univ1.
 
   Definition initial_groupoid_algebra_univ_1
-    : biinitial_1cell_property_help
-        (hit_algebra_grpd Σ)
+    : biinitial_1cell_property
         (initial_groupoid_algebra Σ).
   Proof.
     intro Y.
@@ -1682,11 +1772,6 @@ Section GrpdAlgUMP.
         }
         cbn.
         apply maponpaths.
-        etrans.
-        {
-          apply maponpaths.
-          apply poly_act_id_right.
-        }
         refine (!(poly_act_assoc _ _ _) @ _).
         refine (!(IHe₁ x) @ _) ; clear IHe₁.
         apply initial_groupoid_algebra_univ_2_nat_trans_data_help_poly_dmap.
@@ -1861,8 +1946,14 @@ Section GrpdAlgUMP.
         =
         poly_act_inverse (initial_groupoid_algebra_univ_2_is_nat_trans_help_arg p).
     Proof.
-      apply quot_rel_poly_act_inv.
-    Qed.    
+      refine (quot_rel_poly_act_inv Σ _ @ _).
+      unfold poly_act_inverse.
+      refine (maponpaths (λ f, poly_act_rel_inv _ _ f _) _).
+      use funextsec ; intro.
+      use funextsec ; intro.
+      use funextsec ; intro.
+      apply initial_groupoid_algebra_carrier_left_unit.
+    Qed.
 
     Definition initial_groupoid_algebra_univ_2_is_nat_trans_help_arg_comp
                {P : poly_code}
@@ -2029,7 +2120,7 @@ Section GrpdAlgUMP.
         }
         refine (!_).
         refine (assoc _ _ _ @ _).
-        cbn.
+        cbn -[inv_from_z_iso].
         etrans.
         {
           apply maponpaths_2.
@@ -2051,9 +2142,9 @@ Section GrpdAlgUMP.
         refine (assoc' _ _ _ @ _ @ assoc _ _ _).
         apply maponpaths.
         refine (!_).
-        use iso_inv_on_right.
+        use z_iso_inv_on_right.
         refine (_ @ assoc' _ _ _).
-        use iso_inv_on_left.
+        use z_iso_inv_on_left.
         refine (!_).
         simpl.
         refine (_ @ grpd_map_path_rule_pointwise g j x).
@@ -2213,7 +2304,7 @@ Section GrpdAlgUMP.
       etrans.
       {
         apply maponpaths.
-        apply iso_after_iso_inv.
+        apply z_iso_after_z_iso_inv.
       }
       etrans.
       {
@@ -2226,7 +2317,7 @@ Section GrpdAlgUMP.
 
   Definition initial_groupoid_algebra_univ_2
              (Y : hit_algebra_grpd Σ)
-    : biinitial_2cell_property_help (hit_algebra_grpd Σ) (initial_groupoid_algebra Σ) Y.
+    : biinitial_2cell_property (initial_groupoid_algebra Σ) Y.
   Proof.
     intros f g.
     use make_invertible_2cell.
@@ -2240,7 +2331,7 @@ Section GrpdAlgUMP.
 
   Definition initial_groupoid_algebra_univ_eq
              (Y : hit_algebra_grpd Σ)
-    : biinitial_eq_property_help (hit_algebra_grpd Σ) (initial_groupoid_algebra Σ) Y.
+    : biinitial_eq_property (initial_groupoid_algebra Σ) Y.
   Proof.
     intros f g p q.
     use subtypePath.
@@ -2270,9 +2361,9 @@ Section GrpdAlgUMP.
   Qed.
   
   Definition initial_groupoid_algebra_is_initial
-    : unique_maps (initial_groupoid_algebra Σ).
+    : is_biinitial (initial_groupoid_algebra Σ).
   Proof.
-    use make_unique_maps.
+    use make_is_biinitial.
     - exact initial_groupoid_algebra_univ_1.
     - exact initial_groupoid_algebra_univ_2.
     - exact initial_groupoid_algebra_univ_eq.

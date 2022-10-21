@@ -30,7 +30,7 @@ Section gquot_rec.
     simple refine (gquot_ind
                      (λ _, Y)
                      gclY
-                     (λ a₁ a₂ g, PathOver_inConstantFamily _ (gcleqY g))
+                     (λ a₁ a₂ g, PathOverConstant_map1 _ (gcleqY g))
                      (λ a, const_globe_over
                                  (ge G a)
                                  (gcleqY (identity a))
@@ -70,7 +70,7 @@ Section gquot_ind_set.
            (Y : gquot G → UU)
            (gclY : ∏ (a : G), Y(gcl G a))
            (gcleqY : ∏ (a₁ a₂ : G) (g : a₁ --> a₂),
-               PathOver (gclY a₁) (gclY a₂) (gcleq G g))
+               PathOver (gcleq G g) (gclY a₁) (gclY a₂))
            (truncY : ∏ (x : gquot G), isaset (Y x)).
 
   Definition gquot_ind_set : ∏ (g : gquot G), Y g.
@@ -266,14 +266,14 @@ Section gquot_double_ind_set.
   
   Variable (f : ∏ (a : G₁) (b : G₂), Y (gcl G₁ a) (gcl G₂ b))
            (fr : ∏ (a : G₁) (b₁ b₂ : G₂) (g : b₁ --> b₂),
-                 PathOver (f a b₁) (f a b₂) (gcleq G₂ g))
+                 PathOver (gcleq G₂ g) (f a b₁) (f a b₂))
            (fl : ∏ (a₁ a₂ : G₁) (b : G₂) (g : a₁ --> a₂),
                  @PathOver
                    _ _ _
+                   (gcleq G₁ g)
                    (λ z : gquot G₁, Y z (gcl G₂ b))
                    (f a₁ b)
-                   (f a₂ b)
-                   (gcleq G₁ g)).
+                   (f a₂ b)).
 
   Definition gquot_double_ind_set : ∏ (a : gquot G₁) (b : gquot G₂), Y a b.
   Proof.

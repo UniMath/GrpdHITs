@@ -1,0 +1,84 @@
+In this section, we discuss the free algebra for a signature $\sign$ and show that it gives rise to a left biadjoint pseudofunctor from 1-types to algebras in 1-types for $\sign$.
+From this, we conclude that each signature generates a pseudomonad on the bicategory of 1-types \cite{LACK2000179}.
+
+We construct the free algebra for $\sign$ as a biinitial algebra for a modified version of $\sign$.
+More specifically, suppose that we have a signature $\sign$ and a 1-type $A$.
+We first construct another signature, called the \emph{free signature}, which has all the constructors of $\sign$ and an additional point constructor with arguments from $A$.
+Then we define the free $\sign$-algebra on $A$ to be the biinitial algebra for the free signature.
+
+\begin{definition}\label{def:free_alg}
+Let $\sign$ be a signature and let $A$ be a 1-type.
+Define the \fat{free signature} $\freesign{\sign}{A}$ as follows
+\begin{itemize}
+	\item $\pointconstr[\freesign{\sign}{A}] \eqdef \sumP{\pointconstr[\sign]}{\constantP{A}}$
+	\item Note that each path endpoint $e : \pathendpoint{\pointconstr[\sign]}{P}{Q}$ gives rise to another path endpoint $\freepath{e} : \pathendpoint{\pointconstr[\freesign{\sign}{A}]}{P}{Q}$.
+	We choose $\pathlabel[\freesign{\sign}{A}] \eqdef\pathlabel[\sign]$ and $\patharg[\freesign{\sign}{A}] \eqdef \patharg[\sign]$.
+%and for each $j : \pathlabel[\sign]$ we take $\patharg[\freesign{\sign}{A}]{j} = \patharg[\sign]{j}$.
+	Lastly, we define the endpoints $\pathleft[\freesign{\sign}{A}]_j$ and $\pathright[\freesign{\sign}{A}]_j$ to be $\freepath{\pathleft[\sign]_j}$ and $\freepath{\pathright[\sign]_j}$ respectively.
+	\item To define the homotopy endpoints of $\freesign{\sign}{A}$, we first note that each $h : \homotendpoint{\pathleft[\sign]}{\pathright[\sign]}{a}{b}{s}{t}$ gives rise to a homotopy endpoint $\freehomot{h} : \homotendpoint{\pathleft[\freesign{\sign}{A}]}{\pathright[\freesign{\sign}{A}]}{\freepath{a}}{\freepath{b}}{\freepath{s}}{\freepath{t}}$.
+	Now we define $\homotleft[\freesign{\sign}{A}]$ and $\homotright[\freesign{\sign}{A}]$ to be $\freehomot{\homotleft[\sign]}$ and $\freehomot{\homotright[\sign]}$ respectively.
+\end{itemize}
+We define the \fat{free $\sign$-algebra} on $A$ to be the biinitial $\freesign{\sign}{A}$-algebra.
+The free $\sign$-algebra on $A$ is denoted by $\freealg{\sign}{A}$ and the inclusion is denoted by $\freealginc{\sign} : A \rightarrow \freealg{\sign}{A}$.
+\end{definition}
+
+Note that the free algebra exists by Construction \ref{constr:hit_exist}.
+The free signature of the signature for monoidal objects (Subsection \ref{sec:monoidal_object}) is given as follows
+
+\begin{lstlisting}[mathescape=true]
+Inductive $\freemonoid{A}$ :=
+| $\freemonoidinc$ : $A \rightarrow \freemonoid{A}$
+| $\monobjunit$ : $\freemonoid{A}$
+| $\monobjtensor$ : $\freemonoid{A} \rightarrow \freemonoid{A} \rightarrow \freemonoid{A}$
+| $\monobjlambda$ : $\depprod{(x : \freemonoid{A})}{\monobjtensor(\monobjunit,x) = x}$
+| $\monobjrho$ : $\depprod{(x : \freemonoid{A})}{\monobjtensor(x,\monobjunit) = x}$
+| $\monobjalpha$ : $\depprod{(x ,y,z: \freemonoid{A})}{\monobjtensor(x,(\monobjtensor(y,z)))=\monobjtensor(\monobjtensor(x,y),z)}$
+| $\monobjtr$ : $\depprod{(x,y : \freemonoid{A})}{\ap{(\Lam z. \monobjtensor(x,z))}{(\monobjlambda(y))}} = \concat{\monobjalpha(x,\monobjunit,y)}{\ap{(\Lam z. \monobjtensor(z,y))}{(\monobjrho(x))}}$
+| $\monobjpent$ : $\depprod{(w,x,y,z : \freemonoid{A})}{}$
+    $\concat{\monobjalpha(w,x,\monobjtensor(y,z))}{\monobjalpha(\monobjtensor(w,x),y,z)}$
+    =
+    $\concat{\ap{(\Lam v. \monobjtensor(w,v))}{(\monobjalpha(x,y,z))}}{\concat{\monobjalpha(w,\monobjtensor(x,y),z)}{\ap{(\Lam v. \monobjtensor(v,z))}{(\monobjalpha(w,x,y))}}}$
+\end{lstlisting}
+
+Note that this corresponds to the free monoidal groupoid as given by Piceghello \cite{Piceghello19}.
+To construct the desired left biadjoint pseudofunctor, we first give a more convenient formulation of the biinitiality of $\freealg{\sign}{A}$.
+By stating the mapping properties with algebras for $\sign$, we can apply them directly when constructing the biadjunction.
+
+\begin{corollary}
+\label{cor:free_alg_ump}
+Let $\sign$ be a signature and let $A$ be a 1-type.
+Suppose that we have $Y : \algM(\sign)$ and $\iota_Y : A \rightarrow Y$.
+\begin{itemize}
+	\item There is an algebra morphism $f : \freealg{\sign}{A} \onecell Y$ such that for all $a : A$, we have $f(\freealginc{\sign}(a)) = \iota_Y(a)$.
+	\item
+	Given algebra morphisms $f_1, f_2 : \freealg{\sign}{A} \onecell Y$
+	and paths $p_1 : f_1(\freealginc{\sign}(a)) = \iota_Y(a)$ and $p_2 : f_2(\freealginc{\sign}(a)) = \iota_Y(a)$ for each $a : A$,
+	there is a unique 2-cell $\tc : f_1 \twocell f_2$
+	such that $\tc(\freealginc{\sign}(a)) \vcomp \AlgMapPoint{f}(\inr(a)) = \AlgMapPoint{g}(\inr(a))$ for each $a : A$.
+\end{itemize} 
+\end{corollary}
+
+Now we have enough in place to construct the desired biadjunction.
+
+\begin{problem}
+\label{prob:free_alg}
+Given a signature $\sign$, to construct a coherent biadjunction $\freealgpsfun{\sign} \dashv \underlying_{\sign}$ where $\underlying_{\sign} : \pseudo(\algM(\sign), \onetypes)$ is the forgetful pseudofunctor.
+\end{problem}
+
+\begin{construction}{prob:free_alg}
+We only indicate how to construct the left biadjoint.
+To construct $\freealgpsfun{\sign} : \pseudo(\onetypes, \algM(\sign))$, we need to give an algebra $\freealgpsfun{\sign}(A)$ for $A : \onetypes$.
+We define $\freealgpsfun{\sign}(A)$ to be the biinitial algebra for $\freesign{\sign}{A}$.
+Pseudofunctoriality follows from Corollary \ref{cor:free_alg_ump}.
+\end{construction}
+
+From all of this, we conclude that each signature gives rise to a pseudomonad on 1-types.
+
+\begin{proposition}[Proposition 5.1 in \cite{LACK2000179}]
+Each coherent biadjunction gives rise to a pseudomonad.
+\end{proposition}
+
+\begin{corollary}
+\label{cor:pseudomonadofsig}
+Each signature gives rise to a pseudomonad on 1-types.
+\end{corollary}

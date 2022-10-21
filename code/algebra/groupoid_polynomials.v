@@ -8,8 +8,6 @@ Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 
-Require Import UniMath.CategoryTheory.DisplayedCats.Auxiliary.
-
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
@@ -133,7 +131,7 @@ Definition poly_act_inverse
        P
        _
        (@precategory_morphisms G)
-       (λ _ _ f, inv_from_iso (make_iso _ (pr2 G _ _ f))).
+       (λ _ _ f, inv_from_z_iso (make_z_iso _ _ (pr2 G _ _ f))).
 
 Definition poly_act_compose
            {P : poly_code}
@@ -227,7 +225,7 @@ Definition poly_act_inv_right
 Proof.
   induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - apply pathsinv0r.
-  - exact (iso_inv_after_iso (make_iso f (pr2 G x y f))).
+  - exact (z_iso_inv_after_z_iso (make_z_iso f _ (pr2 G x y f))).
   - induction x as [x | x], y as [y | y].
     + exact (IHP₁ x y f).
     + induction f.
@@ -247,7 +245,7 @@ Definition poly_act_inv_left
 Proof.
   induction P as [A | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂].
   - apply pathsinv0l.
-  - exact (iso_after_iso_inv (make_iso f (pr2 G x y f))).
+  - exact (z_iso_after_z_iso_inv (make_z_iso f _ (pr2 G x y f))).
   - induction x as [x | x], y as [y | y].
     + exact (IHP₁ x y f).
     + induction f.

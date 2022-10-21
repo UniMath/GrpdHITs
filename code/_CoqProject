@@ -1,5 +1,5 @@
-COQC = coqc
-COQDEP = coqdep
+COQC = ~/Code/altUniMath/UniMath/sub/coq/bin/coqc
+COQDEP = ~/Code/altUniMath/UniMath/sub/coq/bin/coqdep
 -R . "sem"
 
 -arg "-type-in-type"
@@ -15,6 +15,8 @@ prelude/groupoid_quotient/gquot_encode_decode.v
 prelude/gquot_biadjunction/path_groupoid.v
 prelude/gquot_biadjunction/gquot_functor.v
 prelude/gquot_biadjunction/gquot_biadjunction.v
+
+prelude/biadjunctions/coherent_biadjunction.v
 
 prelude/all.v
 
@@ -83,7 +85,39 @@ hit_biadjunction/hit_algebra_biadj.v
 existence/initial_algebra.v
 existence/hit_existence.v
 
+lim_algebra/terminal.v
+lim_algebra/prod_alg.v
+lim_algebra/equalizer_alg.v
+lim_algebra/equifier_alg.v
+
 examples/circle.v
-examples/torus.v
-examples/set_trunc.v
+examples/coequalizer.v
+examples/coequifier.v
+examples/coherent_group.v
+examples/free_algebra.v
+examples/group_quotient.v
 examples/mod2.v
+examples/monoidal.v
+examples/set_trunc.v
+examples/torus.v
+
+free_alg_biadj/free_alg_functor.v
+free_alg_biadj/free_alg_unit.v
+free_alg_biadj/free_alg_counit.v
+free_alg_biadj/free_alg_biadjunction_unit_counit.v
+free_alg_biadj/free_alg_left_triangle.v
+free_alg_biadj/free_alg_right_triangle.v
+free_alg_biadj/free_alg_biadjunction.v
+
+algebra/one_types_adjoint_equivalence.v
+
+isomorphism_theorem/congruence_relation.v
+isomorphism_theorem/image.v
+isomorphism_theorem/gcl_homomorphism.v
+isomorphism_theorem/congruence_mapping.v
+isomorphism_theorem/isomorphism_theorem.v
+
+fundamental_groups/loops.v
+fundamental_groups/circle.v
+fundamental_groups/torus.v
+fundamental_groups/group_quotient.v

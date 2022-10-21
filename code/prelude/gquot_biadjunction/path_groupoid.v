@@ -68,9 +68,9 @@ Definition one_type_inverses
            {X : one_type}
            {x y : X}
            (p : one_type_to_groupoid_precategory X ⟦ x, y ⟧)
-  : is_iso p.
+  : is_z_isomorphism p.
 Proof.
-  use is_iso_qinv ; simpl in *.
+  use make_is_z_isomorphism ; simpl in *.
   - exact (!p).
   - split ; cbn.
     + exact (pathsinv0r p).

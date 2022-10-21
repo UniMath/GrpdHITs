@@ -7,6 +7,7 @@ Require Import UniMath.CategoryTheory.Core.Functors.
 Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
+Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
@@ -14,9 +15,11 @@ Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Unitors.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
+Import DispBicat.Notations.
 Require Import UniMath.Bicategories.DisplayedBicats.DispUnivalence.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
+Require Import UniMath.Bicategories.DisplayedBicats.Examples.DisplayedCatToBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.FullSub.
 Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
@@ -99,6 +102,16 @@ Proof.
   - exact f.
 Defined.
 
+Definition preserves_point
+           {Σ : hit_signature}
+           {X Y : hit_prealgebra_one_types Σ}
+           (f : prealg_carrier X → prealg_carrier Y)
+  : UU
+  := ∏ (x : poly_act (point_constr Σ) (prealg_carrier X)),
+     f (prealg_constr x)
+     =
+     prealg_constr (poly_map (point_constr Σ) f x).
+
 Section HITPreAlgebraMorProjections.
   Context {Σ : hit_signature}
           {X Y : hit_prealgebra_one_types Σ}
@@ -109,10 +122,7 @@ Section HITPreAlgebraMorProjections.
     := pr1 f.
 
   Definition prealg_map_commute
-    : ∏ (x : poly_act (point_constr Σ) (prealg_carrier X)),
-      prealg_map_carrier (prealg_constr x)
-      =
-      prealg_constr (poly_map (point_constr Σ) prealg_map_carrier x)
+    : preserves_point prealg_map_carrier
     := pr12 f.
 End HITPreAlgebraMorProjections.
 
@@ -120,10 +130,7 @@ Definition make_hit_prealgebra_mor
            {Σ : hit_signature}
            {X Y : hit_prealgebra_one_types Σ}
            (f : prealg_carrier X → prealg_carrier Y)
-           (Hf : ∏ (x : poly_act (point_constr Σ) (prealg_carrier X)),
-                 f (prealg_constr x)
-                 =
-                 prealg_constr (poly_map (point_constr Σ) f x))
+           (Hf : preserves_point f)
   : X --> Y.
 Proof.
   use tpair.
@@ -186,8 +193,22 @@ Proof.
   use tpair.
   - exact X.
   - exact pX.
-Defined.           
+Defined.
 
+Definition preserves_path
+           {Σ : hit_signature}
+           {X Y : hit_path_algebra_one_types Σ}
+           (f : pr1 X --> pr1 Y)
+           (Hf : preserves_point (pr1 f))
+  : UU
+  := ∏ (j : path_label Σ)
+       (x : poly_act (path_source Σ j) (path_alg_carrier X)),
+     maponpaths (prealg_map_carrier f) (path_alg_path X j x)
+     @ sem_endpoint_UU_natural (path_right Σ j) Hf x
+     =
+     sem_endpoint_UU_natural (path_left Σ j) Hf x
+     @ path_alg_path Y j (poly_map (path_source Σ j) _ x).
+  
 Section HITPathAlgebraMorProjections.
   Context {Σ : hit_signature}
           {X Y : hit_path_algebra_one_types Σ}
@@ -205,28 +226,15 @@ Section HITPathAlgebraMorProjections.
     := prealg_map_commute (pr1 f).
 
   Definition path_alg_map_path
-             (j : path_label Σ)
-             (x : poly_act (path_source Σ j) (path_alg_carrier X))
-    : maponpaths
-        (pr11 f) (pr2 X j x) @
-        pr1 (psnaturality_of (sem_endpoint_one_types (path_right Σ j)) (pr1 f)) x
-      =
-      pr1 (psnaturality_of (sem_endpoint_one_types (path_left Σ j)) (pr1 f)) x @
-          pr2 Y j (poly_map (path_source Σ j) (pr11 f) x)
-    := eqtohomot (pr2 f j) x.
+    : preserves_path (pr1 f) path_alg_map_commute
+    := λ j x, eqtohomot (pr2 f j) x.
 End HITPathAlgebraMorProjections.
 
 Definition make_hit_path_alg_map
            {Σ : hit_signature}
            {X Y : hit_path_algebra_one_types Σ}
            (f : pr1 X --> pr1 Y)
-           (pf : ∏ (i : path_label Σ)
-                   (j : poly_act (path_source Σ i) (path_alg_carrier X)),
-                 (maponpaths (pr1 f) (pr2 X i j))
-                   @ pr1 (psnaturality_of (sem_endpoint_one_types (path_right Σ i)) f) j
-                 =
-                 (pr1 (psnaturality_of (sem_endpoint_one_types (path_left Σ i)) f) j)
-                   @ pr2 Y i (poly_map (path_source Σ i) (pr1 f) j))
+           (pf : preserves_path _ (prealg_map_commute f))
   : X --> Y
   := f ,, λ i, funextsec _ _ _ (pf i).
 
@@ -293,12 +301,103 @@ Definition make_algebra
   : hit_algebra_one_types Σ
   := X ,, hX.
 
+(** Projections of algebra maps *)
+Section HITAlgebraMapProjections.
+  Context {Σ : hit_signature}
+          {X Y : hit_algebra_one_types Σ}
+          (f : X --> Y).
+
+  Definition alg_map_carrier
+    : alg_carrier X → alg_carrier Y
+    := path_alg_map_carrier (pr1 f).
+
+  Definition alg_map_commute
+    : preserves_point alg_map_carrier
+    := path_alg_map_commute (pr1 f).
+
+  Definition alg_map_path
+    : preserves_path _ alg_map_commute
+    := path_alg_map_path (pr1 f).
+End HITAlgebraMapProjections.
+
 Definition make_algebra_map
            {Σ : hit_signature}
            {X Y : hit_algebra_one_types Σ}
            (f : pr1 X --> pr1 Y)
   : X --> Y
   := f ,, tt.
+
+Definition is_algebra_2cell
+           {Σ : hit_signature}
+           {X Y : hit_algebra_one_types Σ}
+           {f g : X --> Y}
+           (α : alg_map_carrier f ~ alg_map_carrier g)
+  : UU
+  := ∏ (z : poly_act (point_constr Σ) (alg_carrier X)),
+     α (alg_constr X z)
+     @ alg_map_commute g z
+     =
+     alg_map_commute f z
+     @ maponpaths (alg_constr Y) (poly_homot (point_constr Σ) α z).
+
+(** Projections of algebra 2-cells *)
+Section HITAlgebraCellProjections.
+  Context {Σ : hit_signature}
+          {X Y : hit_algebra_one_types Σ}
+          {f g : X --> Y}
+          (α : f ==> g).
+
+  Definition alg_2cell_carrier
+    : alg_map_carrier f ~ alg_map_carrier g
+    := pr111 α.
+
+  Definition alg_2cell_commute
+    : is_algebra_2cell alg_2cell_carrier
+    := eqtohomot (pr211 α).
+End HITAlgebraCellProjections.
+
+(** Equality of algebra 2-cells *)
+Definition algebra_2cell_eq
+           {Σ : hit_signature}
+           {X Y : hit_algebra_one_types Σ}
+           {f g : X --> Y}
+           {α β : f ==> g}
+           (p : alg_2cell_carrier α ~ alg_2cell_carrier β)
+  : α = β.
+Proof.
+  use subtypePath.
+  { intro ; apply isapropunit. }
+  use subtypePath.
+  { intro ; use impred ; intro ; apply isapropunit. }
+  use subtypePath.
+  { intro ; apply one_types. }
+  use funextsec.
+  exact p.
+Qed.
+
+Definition alg_2cell_eq_component
+           {Σ : hit_signature}
+           {X Y : hit_algebra_one_types Σ}
+           {f g : X --> Y}
+           {α β : f ==> g}
+           (p : α = β)
+  : alg_2cell_carrier α ~ alg_2cell_carrier β.
+Proof.
+  exact (eqtohomot (maponpaths (λ z, pr111 z) p)).
+Qed.
+
+(** Builder of 2-cells of algebras *)
+Definition make_algebra_2cell
+           {Σ : hit_signature}
+           {X Y : hit_algebra_one_types Σ}
+           {f g : X --> Y}
+           (α : alg_map_carrier f ~ alg_map_carrier g)
+           (Hα : is_algebra_2cell α)
+  : f ==> g.
+Proof.
+  simple refine (((α ,, _) ,, λ _, tt) ,, tt).
+  abstract (use funextsec ; exact Hα).
+Defined.
 
 (** Univalence of the bicategory of algebras *)
 Definition is_univalent_2_hit_algebra_one_types
@@ -347,7 +446,7 @@ Proof.
              (pr1 X) (pr1 Y)
              (pr1 f) (pr1 g)
              (make_invertible_2cell
-                (one_type_2cell_iso (pr1 α)))
+                (one_type_2cell_iso _ _ _ _ (pr1 α)))
              (pr2 X) (pr2 Y)
              (pr2 f) (pr2 g)
              (pr2 α)).

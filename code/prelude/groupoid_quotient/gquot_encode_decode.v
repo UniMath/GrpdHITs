@@ -28,7 +28,7 @@ Section encode_decode.
         {a₁ a₂ : G} (b : G)
         (g : a₁ --> a₂)
     : a₁ --> b → a₂ --> b
-    := λ h, inv_from_iso (g ,, pr2 G _ _ g) · h.
+    := λ h, inv_from_z_iso (g ,, pr2 G _ _ g) · h.
 
   Definition right_action_inv
              {a₁ a₂ : G} (b : G)
@@ -47,13 +47,13 @@ Section encode_decode.
         (intros h ; cbn ;
          unfold right_action, right_action_inv ; cbn ;
          rewrite !assoc ;
-         rewrite (iso_inv_after_iso (g ,, _)) ;
+         rewrite (z_iso_inv_after_z_iso (g ,, _)) ;
          apply id_left).
     - abstract
         (intros h ; cbn ;
          unfold right_action, right_action_inv ; cbn ;
          rewrite !assoc ;
-         rewrite (iso_after_iso_inv (g ,, _)) ;
+         rewrite (z_iso_after_z_iso_inv (g ,, _)) ;
          apply id_left).
   Defined.
 
@@ -67,7 +67,7 @@ Section encode_decode.
              (a : G) {b₁ b₂ : G}
              (g : b₁ --> b₂)
     : a --> b₂ → a --> b₁
-    := λ h, h · (inv_from_iso (g ,, pr2 G _ _ g)).
+    := λ h, h · (inv_from_z_iso (g ,, pr2 G _ _ g)).
 
   Definition left_action_isweq
              (a : G) {b₁ b₂ : G}
@@ -80,13 +80,13 @@ Section encode_decode.
         (intros h ; cbn ;
          unfold left_action, left_action_inv ; cbn ;
          rewrite <- assoc ;
-         rewrite (iso_inv_after_iso (g ,, _)) ;
+         rewrite (z_iso_inv_after_z_iso (g ,, _)) ;
          apply id_right).
     - abstract
         (intros h ; cbn ;
          unfold left_action, left_action_inv ; cbn ;
          rewrite <- assoc ;
-         rewrite (iso_after_iso_inv (g ,, _)) ;
+         rewrite (z_iso_after_z_iso_inv (g ,, _)) ;
          apply id_right).
   Defined.
 
@@ -104,7 +104,7 @@ Section encode_decode.
     refine (_ @ id_left g).
     apply maponpaths_2.
     refine (!_).
-    use inv_iso_unique'.
+    use inv_z_iso_unique'.
     unfold precomp_with ; cbn.
     apply id_left.
   Qed.
@@ -120,17 +120,17 @@ Section encode_decode.
     rewrite assoc.
     apply maponpaths_2.
     refine (!_).
-    use inv_iso_unique'.
+    use inv_z_iso_unique'.
     unfold precomp_with ; cbn.
     etrans.
     {
       rewrite !assoc.
       apply maponpaths_2.
       rewrite <- !assoc.
-      rewrite (iso_inv_after_iso (g₂ ,, _)).
+      rewrite (z_iso_inv_after_z_iso (g₂ ,, _)).
       apply id_right.
     }
-    rewrite (iso_inv_after_iso (g₁ ,, _)).
+    rewrite (z_iso_inv_after_z_iso (g₁ ,, _)).
     apply idpath.
   Qed.
 
@@ -200,7 +200,7 @@ Section encode_decode.
       + refine (transport_path_hset _ _ @ _) ; simpl.
         unfold right_action, left_action ; simpl.
         refine (maponpaths (λ z, _ · z) (id_left _) @ _).
-        exact (iso_after_iso_inv (g ,, _)).
+        exact (z_iso_after_z_iso_inv (g ,, _)).
     - intro.
       apply g_fam.
   Defined.
@@ -234,7 +234,7 @@ Section encode_decode.
                    ((!(id_right _))
                       @ maponpaths
                       (λ p, z · p)
-                      (!(iso_after_iso_inv (g ,, pr2 G _ _ g)))
+                      (!(z_iso_after_z_iso_inv (g ,, pr2 G _ _ g)))
                       @ assoc _ _ _)
                    @ gconcat _ _ _)
              ).

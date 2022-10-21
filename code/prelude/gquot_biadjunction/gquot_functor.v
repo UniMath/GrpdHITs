@@ -55,10 +55,10 @@ Section GQuotFunctor.
     : @PathOver
         (gquot G₁)
         (gcl G₁ x₁) (gcl G₁ x₂)
+        (gcleq G₁ f)
         (λ z : gquot G₁, gquot_functor_map F₁ z = gquot_functor_map F₂ z) 
         (gcleq G₂ (α x₁))
-        (gcleq G₂ (α x₂))
-        (gcleq G₁ f).
+        (gcleq G₂ (α x₂)).
   Proof.
     apply map_PathOver.
     refine (whisker_square (idpath _)
@@ -92,10 +92,10 @@ Section GQuotFunctor.
     : @PathOver
         _
         (gcl G x₁) (gcl G x₂)
+        (gcleq G f)
         (λ z, z = gquot_functor_map (functor_identity G) z) 
         (idpath (gcl G x₁))
-        (idpath (gcl G x₂))
-        (gcleq G f).
+        (idpath (gcl G x₂)).
   Proof.
     apply map_PathOver.
     refine (whisker_square (idpath _)
@@ -126,13 +126,13 @@ Section GQuotFunctor.
     : @PathOver
         _
         (gcl G₁ x₁) (gcl G₁ x₂)
+        (gcleq G₁ f)
         (λ z,
          gquot_functor_map F₂ (gquot_functor_map F₁ z)
          =
          gquot_functor_map (F₁ ∙ F₂) z)
         (idpath (gcl G₃ (F₂ (F₁ x₁))))
-        (idpath (gcl G₃ (F₂ (F₁ x₂))))
-        (gcleq G₁ f).
+        (idpath (gcl G₃ (F₂ (F₁ x₂)))).
   Proof.
     apply map_PathOver.
     refine (whisker_square (idpath _)

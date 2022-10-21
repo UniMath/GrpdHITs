@@ -46,16 +46,21 @@ Defined.
 Type of endpoints
  *)
 Inductive endpoint (A : poly_code) : poly_code → poly_code → UU :=
-| id_e : forall (P : poly_code), endpoint A P P
-| comp : forall (P Q R : poly_code), endpoint A P Q → endpoint A Q R → endpoint A P R
-| ι₁ : forall (P Q : poly_code), endpoint A P (P + Q)
-| ι₂ : forall (P Q : poly_code), endpoint A Q (P + Q)
-| π₁ : forall (P Q : poly_code), endpoint A (P * Q) P
-| π₂ : forall (P Q : poly_code), endpoint A (P * Q) Q
-| pair : forall (P Q R : poly_code),
+(** endpoints for identity and composition *)
+| id_e : ∏ (P : poly_code), endpoint A P P
+| comp : ∏ (P Q R : poly_code), endpoint A P Q → endpoint A Q R → endpoint A P R
+(** endpoints for sums *)
+| ι₁ : ∏ (P Q : poly_code), endpoint A P (P + Q)
+| ι₂ : ∏ (P Q : poly_code), endpoint A Q (P + Q)
+(** endpoints for products *)
+| π₁ : ∏ (P Q : poly_code), endpoint A (P * Q) P
+| π₂ : ∏ (P Q : poly_code), endpoint A (P * Q) Q
+| pair : ∏ (P Q R : poly_code),
     endpoint A P Q -> endpoint A P R → endpoint A P (Q * R)
-| c : forall (P : poly_code) (T : one_type), T → endpoint A P (C T)
-| fmap : forall {X Y : one_type} (f : X → Y), endpoint A (C X) (C Y)
+(** endpoints for constant *)
+| c : ∏ (P : poly_code) (T : one_type), T → endpoint A P (C T)
+| fmap : ∏ {X Y : one_type} (f : X → Y), endpoint A (C X) (C Y)
+(** constructor *)
 | constr : endpoint A A I.
 
 Arguments id {_} _.
@@ -80,8 +85,8 @@ Definition sem_endpoint_UU
   : poly_act P X → poly_act Q X.
 Proof.
   induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
-                  | P Q | P Q | P Q | P Q
-                  | P Q R e₁ IHe₁ e₂ IHe₂
+                  | P Q | P Q
+                  | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂
                   | P T t | C₁ C₂ f | ].
   - (* Identity *)
     exact (λ x, x).
@@ -126,6 +131,7 @@ Inductive homot_endpoint
   : ∏ {T : poly_code},
     endpoint A Q T → endpoint A Q T → UU
   :=
+  (** operations on 2-cells *)
   | refl_e : ∏ (T : poly_code)
                (e : endpoint A Q T),
              homot_endpoint l r al ar e e
@@ -141,6 +147,17 @@ Inductive homot_endpoint
               homot_endpoint l r al ar e₂ e₃
               →
               homot_endpoint l r al ar e₁ e₃
+  | ap_e : ∏ (T₁ T₂ : poly_code)
+             (e₁ e₂ : endpoint A Q T₁)
+             (e₃ : endpoint A T₁ T₂),
+           homot_endpoint
+             l r al ar
+             e₁ e₂
+           →
+           homot_endpoint
+             l r al ar
+             (comp e₁ e₃) (comp e₂ e₃)
+  (** Associator and unitors *)
   | comp_assoc : ∏ (R₁ R₂ T : poly_code)
                    (e₁ : endpoint A Q R₁)
                    (e₂ : endpoint A R₁ R₂)
@@ -161,22 +178,21 @@ Inductive homot_endpoint
                   l r al ar
                   (comp e (id_e _ _))
                   e
-  | path_pr1 : ∏ (T₁ T₂ : poly_code)
-                 (e₁ e₂ : endpoint A Q T₁)
-                 (e₃ e₄ : endpoint A Q T₂),
-               homot_endpoint
-                 l r al ar
-                 (pair e₁ e₃) (pair e₂ e₄)
-               →
-               homot_endpoint l r al ar e₁ e₂
-  | path_pr2 : ∏ (T₁ T₂ : poly_code)
-                 (e₁ e₂ : endpoint A Q T₁)
-                 (e₃ e₄ : endpoint A Q T₂),
-               homot_endpoint
-                 l r al ar
-                 (pair e₁ e₃) (pair e₂ e₄)
-               →
-               homot_endpoint l r al ar e₃ e₄
+  (** Beta rules for product *)
+  | pair_π₁ : ∏ (P R : poly_code)
+                (e₁ : endpoint A Q P)
+                (e₂ : endpoint A Q R),
+              homot_endpoint
+                l r al ar
+                (comp (pair e₁ e₂) (π₁ _ _))
+                e₁
+  | pair_π₂ : ∏ (P R : poly_code)
+                (e₁ : endpoint A Q P)
+                (e₂ : endpoint A Q R),
+              homot_endpoint
+                l r al ar
+                (comp (pair e₁ e₂) (π₂ _ _))
+                e₂
   | path_pair : ∏ (T₁ T₂ : poly_code)
                   (e₁ e₂ : endpoint A Q T₁)
                   (e₃ e₄ : endpoint A Q T₂),
@@ -187,35 +203,31 @@ Inductive homot_endpoint
                 homot_endpoint
                   l r al ar
                   (pair e₁ e₃) (pair e₂ e₄)
-  | path_inl : ∏ (T₁ T₂ : poly_code)
-                 (e₁ e₂ : endpoint A Q T₁),
-               homot_endpoint l r al ar e₁ e₂
-               →
-               homot_endpoint
-                 l r al ar
-                 (comp e₁ (ι₁ _ _))
-                 (comp e₂ (ι₁ _ T₂))
-  | path_inr : ∏ (T₁ T₂ : poly_code)
-                 (e₁ e₂ : endpoint A Q T₂),
-               homot_endpoint l r al ar e₁ e₂
-               →
-               homot_endpoint
-                 l r al ar
-                 (comp e₁ (ι₂ _ _))
-                 (comp e₂ (ι₂ T₁ _))
+  (** In categories, this one follows from uniqueness *) 
+  | comp_pair : ∏ {P₁ P₂ P₃ : poly_code}
+                  (e₁ : endpoint A Q P₁)
+                  (e₂ : endpoint A P₁ P₂)
+                  (e₃ : endpoint A P₁ P₃),
+                homot_endpoint
+                  l r
+                  al ar
+                  (comp e₁ (pair e₂ e₃))
+                  (pair (comp e₁ e₂) (comp e₁ e₃))
+  (** Rules for constant *)
+  | comp_constant : ∏ (X : one_type)
+                      (x : X)
+                      (T : poly_code)
+                      (e : endpoint A Q T),
+                    homot_endpoint
+                      l r al ar
+                      (comp e (c T x)) (c Q x)
+  (** Path constructor and path argument *)                
   | path_constr : ∏ (j : J)
                     (e : endpoint A Q (S j)),
                   homot_endpoint
                     l r al ar
                     (comp e (l j))
                     (comp e (r j))
-  | ap_constr : ∏ (el er : endpoint A Q A),
-                homot_endpoint l r al ar el er
-                →
-                homot_endpoint
-                  l r al ar
-                  (comp el constr)
-                  (comp er constr)
   | path_arg : homot_endpoint
                  l r
                  al ar
@@ -224,17 +236,76 @@ Inductive homot_endpoint
 Arguments refl_e {_ _ _ _ _ _ _ _ _ _}.
 Arguments inv_e {_ _ _ _ _ _ _ _ _ _ _ _} _.
 Arguments trans_e {_ _ _ _ _ _ _ _ _ _ _ _ _} _ _.
+Arguments ap_e {_ _ _ _ _ _ _ _ _ _ _ _ _} _ _.
 Arguments comp_assoc {_ _ _ _ _ _ _ _ _ _ _ _} _ _ _.
 Arguments comp_id_l {_ _ _ _ _ _ _ _ _ _} _.
 Arguments comp_id_r {_ _ _ _ _ _ _ _ _ _} _.
-Arguments path_pr1 {_ _ _ _ _ _ _ _ _ _ _ _ _ _ _} _.
-Arguments path_pr2 {_ _ _ _ _ _ _ _ _ _ _ _ _ _ _} _.
+Arguments pair_π₁ {_ _ _ _ _ _ _ _ _ _ _} _ _.
+Arguments pair_π₂ {_ _ _ _ _ _ _ _ _ _ _} _ _.
 Arguments path_pair {_ _ _ _ _ _ _ _ _ _ _ _ _ _ _} _ _.
-Arguments path_inl {_ _ _ _ _ _ _ _ _ _} _ {_ _} _.
-Arguments path_inr {_ _ _ _ _ _ _ _ _} _ {_ _ _} _.
+Arguments comp_pair {_ _ _ _ _ _ _ _ _ _ _ _} _ _ _.
+Arguments comp_constant {_ _ _ _ _ _ _ _ _ _} _ {_} _.
 Arguments path_constr {_ _ _ _ _ _ _ _ _} _ _.
-Arguments ap_constr {_ _ _ _ _ _ _ _ _ _ _} _.
 Arguments path_arg {_ _ _ _ _ _ _ _ _}.
+
+Section MoreHomotopyEndpoints.
+  Context {A : poly_code}
+          {J : UU}
+          {S : J → poly_code}
+          {l : ∏ (j : J), endpoint A (S j) I}
+          {r : ∏ (j : J), endpoint A (S j) I}
+          {Q : poly_code}
+          {TR : poly_code}
+          {al ar : endpoint A Q TR}.
+
+  Definition path_pr1
+             {T₁ T₂ : poly_code}
+             {e₁ e₂ : endpoint A Q T₁}
+             {e₃ e₄ : endpoint A Q T₂}
+             (h : homot_endpoint
+                    l r al ar
+                    (pair e₁ e₃) (pair e₂ e₄))
+    : homot_endpoint l r al ar e₁ e₂
+    := trans_e
+         (trans_e
+            (inv_e (pair_π₁ _ _))
+            (ap_e (π₁ _ _) h))
+         (pair_π₁ _ _).
+
+  Definition path_pr2
+             {T₁ T₂ : poly_code}
+             {e₁ e₂ : endpoint A Q T₁}
+             {e₃ e₄ : endpoint A Q T₂}
+             (h : homot_endpoint
+                    l r al ar
+                    (pair e₁ e₃) (pair e₂ e₄))
+    : homot_endpoint l r al ar e₃ e₄
+    := trans_e
+         (trans_e
+            (inv_e (pair_π₂ _ _))
+            (ap_e (π₂ _ _) h))
+         (pair_π₂ _ _).
+
+  Definition path_inl
+             (T₁ T₂ : poly_code)
+             (e₁ e₂ : endpoint A Q T₁)
+             (h : homot_endpoint l r al ar e₁ e₂)
+    : homot_endpoint
+        l r al ar
+        (comp e₁ (ι₁ _ _))
+        (comp e₂ (ι₁ _ T₂))
+    := ap_e (ι₁ _ _) h.
+
+  Definition path_inr
+             (T₁ T₂ : poly_code)
+             (e₁ e₂ : endpoint A Q T₁)
+             (h : homot_endpoint l r al ar e₁ e₂)
+    : homot_endpoint
+        l r al ar
+        (comp e₁ (ι₂ _ _))
+        (comp e₂ (ι₂ T₁ _))
+    := ap_e (ι₂ _ _) h.
+End MoreHomotopyEndpoints.
 
 (**
 The definition of a HIT signature
@@ -380,23 +451,38 @@ Definition sem_homot_endpoint_UU
   : sem_endpoint_UU sl c z = sem_endpoint_UU sr c z.
 Proof.
   induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+                  | T₁ T₂ e₁ e₂ e₃ h IHh
                   | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
+                  | P R e₁ e₂ | P R e₁ e₂
                   | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
-  - exact (idpath _).
-  - exact (!IHp).
-  - exact (IHP₁ @ IHP₂).
-  - apply idpath.
-  - apply idpath.
-  - apply idpath.
-  - exact (maponpaths pr1 IHp).
-  - exact (maponpaths dirprod_pr2 IHp).
-  - exact (pathsdirprod IHp₁ IHp₂).
-  - exact (maponpaths inl IHp).
-  - exact (maponpaths inr IHp).
-  - exact (pX j _).
-  - exact (maponpaths c IHp).
-  - exact p_arg.
+                  | P₁ P₂ P₃ e₁ e₂ e₃
+                  | Z x T e | j e | ].
+  - (** identity path *)
+    exact (idpath _).
+  - (** inverse path *)
+    exact (!IHp).
+  - (** concatenation of paths *)
+    exact (IHP₁ @ IHP₂).
+  - (** ap on paths *)
+    exact (maponpaths (sem_endpoint_UU e₃ c) IHh).
+  - (** associator *)
+    apply idpath.
+  - (** left unitor *)
+    apply idpath.
+  - (** right unitor *)
+    apply idpath.
+  - (** first projection *)
+    apply idpath.
+  - (** second projection *)
+    apply idpath.
+  - (** pairing *)
+    exact (pathsdirprod IHp₁ IHp₂).
+  - (** composition before pair *)
+    apply idpath.
+  - (** composition with constant *)
+    apply idpath.
+  - (** path constructor *)
+    exact (pX j _).
+  - (** path argument *)
+    exact p_arg.
 Defined.

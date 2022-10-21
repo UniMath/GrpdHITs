@@ -1,0 +1,147 @@
+The first isomorphism theorem is one of the classical results in universal algebra.
+While this statement is usually about algebraic structures in sets \cite{lynge2019}, we look at a generalization to the 1-truncated case.
+More specifically, we formulate and prove this theorem for algebras for the signatures defined in Definition \ref{def:signature}.
+
+Before stating and proving the isomorphism theorem, we need to generalize several notions from universal algebra to the 1-truncated case.
+First of all, following the approach of Section \ref{sec:finite_limits}, we define the image of an algebra morphism using displayed algebras.
+Second of all, we define congruence relations and their quotients.
+The main idea here is to use Construction \ref{constr:alg_biadj}, where
+we lifted the groupoid quotient to a biadjunction from $\algG{\sign}$ to $\algebra{\sign}$.
+This result also indicates how congruence relations will be defined.
+Basically, a congruence relation on $X : \algebra{\sign}$ is a groupoid structure on $X$ which gives an algebra of groupoids.
+Once these notions are in place, we can formulate and prove the first isomorphism theorem similarly to the set-theoretical version.
+
+\subsection{The Image}
+We start by defining the image of an algebra morphism.
+For each $f : A \onecell B$ we are after a factorization $A \onecell \Im{f} \onecell B$.
+
+\begin{problem}
+\label{prob:image}
+Given algebras $A$ and $B$ for a signature $\sign$ and an algebra morphism $f : A \onecell B$,
+to construct an algebra $\Im(f)$ and morphisms $\ImProj{f} : A \onecell \Im{f}$ and $\ImInc{f} : \Im(f) \onecell B$. 
+\end{problem}
+
+\begin{construction}{prob:image}
+We define $\Im(f)$ to be the total algebra $\TotalAlg Y$ of the following displayed algebra $Y$ over $B$:
+\begin{itemize}
+\item The underlying family of 1-types over $B$ is $Y(x) \eqdef \exists a : A.\ f(a) = x$.
+\item For each $x : \polyAct{\pointconstr}{A}$, we are required to construct
+a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow
+\exists a : A.\ f(a) = \AlgPoint{B}(x)$. Suppose we have $\pover{x}
+: \polyDact{\pointconstr}{Y}(x)$. By induction on the polynomial
+$\pointconstr$, it is possible to derive from $\pover{x}$ an
+inhabitant of $\exists y
+: \polyAct{\pointconstr}{A}.\ \polyAct{\pointconstr}{f}(y) = x$. By
+invoking the elimination principle of propositional truncation, it is sufficient to
+construct a map $f : \Sum {y
+: \polyAct{\pointconstr}{A}}.\ \polyAct{\pointconstr}{f}(y) =
+x \rightarrow \Sum {a : A}.\ f(a) = \AlgPoint{B}(x)$ in
+order to define the map $\DispAlgPoint{Y}$.  So, assume that we have
+$y : \polyAct{\pointconstr}{A}$ and a path $p
+: \polyAct{\pointconstr}{f}(y) = x$. Take $f(y,p)$ to be the pair
+consisting of $\AlgPoint{A}(y)$ and the path
+\[
+f(\AlgPoint{A}(y))
+\stackrel{\AlgMapPoint{f}(y)}{=}
+\AlgPoint{B}(\polyAct{\pointconstr}{f}(y))
+\stackrel{\ap {\AlgPoint{B}} p}{=}
+\AlgPoint{B}(x)
+\]
+\item Since $Y(x)$ is a proposition for all $x : B$, the construction of
+paths $\DispAlgPath{Y}{j}$ and globes $\DispAlgHomot{Y}{j}$ is
+straightforward.
+\end{itemize}
+
+The map $\ImInc{f}$ is the first projection and $\ImProj{f}$ sends $x : A$ to
+$(f(x),\PC(x,\refl{f(x)}))$, where $\PC$ is the point constructor of
+propositional truncation. 
+\end{construction}
+
+\subsection{Congruence Relations}
+Next we define congruence relations and we show that each such relation gives an algebra in groupoids.
+The difficulty here is constructing the homotopy constructor of that algebra.
+For this reason, we define congruence relations in two steps, and we start by defining \emph{path congruence relations} and showing that these give rise to path algebras in groupoids.
+
+\begin{definition}
+Let $\sign$ be a signature and let $X : \algebra{\sign}$.
+A \fat{path congruence relation} $R$ on $X$ consists of
+\begin{itemize}
+	\item a groupoid structure $R$ on $X$;
+	\item for each $x, y : \polyAct{\pointconstr[\sign]}{X}$ and $f : \mor{\polyAct{\pointconstr[\sign]}{R}}{x}{y}$, a morphism $\AlgPoint{R} : \mor{R}{\AlgPoint{X}(x)}{\AlgPoint{X}(y)}$ and a proof that this assignment is functorial;
+	\item a proof that the assignment $\Lam x, \idtoiso(\AlgPath{X}{j}(x))$ gives a natural transformation $\semEG{\pathleft[\sign]_j} \twocell \semEG{\pathright[\sign]_j}$ for each $j : \pathlabel[\sign]$.
+\end{itemize}
+\end{definition}
+
+\begin{problem}
+\label{prob:path_congruence_relation_to_grpd}
+Given a path congruence relation $R$,
+to construct $\toGrpdPathAlg{R} : \pathalgG{\sign}$.
+\end{problem}
+
+\begin{construction}{prob:path_congruence_relation_to_grpd}
+We only discuss the data involved.
+\begin{itemize}
+	\item The carrier $\toGrpdPathAlg{R}$ is the groupoid whose type of objects is $X$ and whose morphisms are given by $R$.
+	\item Next we define a functor $\semPG{\pointconstr[\sign]}(\toGrpdPathAlg{R}) \onecell \toGrpdPathAlg{R}$. It is defined to be $\AlgPoint{X}$ on objects and $\AlgPoint{R}$ on morphisms.
+	\item Lastly, we define a natural transformation $\semEG{\pathleft[\sign]_j} \twocell \semEG{\pathright[\sign]_j}$ for each $j : \pathlabel[\sign]$. The component function of this transformation is $\Lam x, \idtoiso(\AlgPath{X}{j}(x))$. \qedhere
+\end{itemize}
+\end{construction}
+
+To show that $\toGrpdPathAlg{R}$ is an algebra, we also need to give the homotopy constructor.
+Since this constructor has both a point and a path constructor, we need to check an equality of morphisms of $\toGrpdPathAlg{R}$, which depend on points of $X$ and morphisms of $\toGrpdPathAlg{R}$.
+As a result, we cannot reuse the homotopy constructor of $X$, because it only depends on points of $X$ and paths in $X$.
+This means that to construct the groupoid algebra, the homotopy constructor needs to be constructed from scratch.
+This is reflected in the following definition.
+
+\begin{definition}
+A path congruence relation $R$ is a \fat{congruence} relation if $\toGrpdPathAlg{R}$ is an algebra in groupoids.
+\end{definition}
+
+Note that each congruence relation $R$ gives rise to an algebra $\toGrpdAlg{R} : \algG{\sign}$.
+By Construction \ref{constr:alg_biadj}, the groupoid quotient lifts to $\alggquot : \pseudo(\algG{\sign}, \algebra{\sign})$.
+Hence, we can construct an algebra $\alggquot(\toGrpdAlg{R}) : \algebra{\sign}$ from a congruence relation $R$.
+Note that the map $\gcl : X \rightarrow \alggquot(\toGrpdAlg{R})$ is a homomorphism of algebras.
+Since $\alggquot$ is a left biadjoint, we also get a mapping property for $\alggquot(\toGrpdAlg{R})$.
+
+\begin{remark}
+\label{remark:mapping_property_congruence}
+Suppose that we have two algebras $X, Y : \algebra{\sign}$ and a congruence relation $R$ on $X$.
+From the biadjunction, we get a unique morphism $\overline{g} : \alggquot{\toGrpdAlg{R}} \onecell Y$ from a functor $g : R \onecell \algpgrpd{Y}$ such that $\overline{g}(\gcl(x)) = g(x)$ and $\ap{\overline{g}}{(\gcleq(p))} = g(p)$ where $p$ is a morphism in $R$ from $x$ to $y$.
+
+Using this, we can give conditions for when an algebra morphism $f : X \onecell Y$ factors through $\alggquot{\toGrpdAlg{R}}$.
+We can unfold the definition to find the necessary ingredients for the factorization.
+For example, we need to show that $f$ lifts to a functor, which means we need to provide a path $f_2 : f(x) = f(y)$ for each $x, y : X$ and $p : \mor{R}{x}{y}$, and equalities $f_2(\idpath(x)) =\idpath(f_2(x))$ and $f_2(p \cdot q) = f_2(p) \vcomp f_2(q)$.
+\end{remark}
+
+\subsection{The First Isomorphism Theorem}
+Now let us prove a generalization of the first isomorphism theorem to the 1-truncated case.
+Note that our proof follows the same steps as the proof of the first isomorphism theorem for sets.
+Let us start by characterizing adjoint equivalences in $\algM(\sign)$.
+
+\begin{proposition}
+\label{prop:algebra_adjequiv}
+Suppose we have a signature $\sign$, algebras $X, Y : \algM(\sign)$, and an algebra morphism $f : X \onecell Y$.
+Then $f$ is an adjoint equivalence in $\algM(\sign)$ if its carrier is an adjoint equivalence in $\onetypes$.
+\end{proposition}
+
+Before we state and prove the isomorphism theorem, we define the kernel of algebra morphisms.
+
+\begin{definition}[Kernel]
+Given a signature $\sign$, algebras $X, Y : \algM(\sign)$, and an algebra morphism $f : X \onecell Y$, we define a groupoid algebra $\Ker(f)$ on $X$, called the \fat{kernel} of $f$, by setting $R(x, y) \eqdef f(x) = f(y)$.
+\end{definition}
+
+\begin{theorem}\label{thm:iso_thm}
+Let $\sign$ be a signature and suppose we have algebras $X, Y : \algM(\sign)$ and an algebra morphism $f : X \onecell Y$.
+Then
+\begin{itemize}
+	\item there is a unique map $\overline{f} : \alggquot(\toGrpdAlg{\Ker(f)}) \onecell Y$ such that we have propositional equalities $p : \depprod{(x : X)}{\overline{f}(\gcl(x)) = f(x)}$ and $\concat{\ap{\overline{f}}{(\gcleq(r))}}{p(y)} = \concat{p(x)}{r}$ where $r : f(x) = f(y)$;
+	\item there is an adjoint equivalence $\widetilde{f} : \alggquot(\toGrpdAlg{\Ker(f)}) \onecell \Im(f)$ such that $\pi_1(\widetilde{f}(x)) = \overline{f}(x)$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+Using Remark \ref{remark:mapping_property_congruence}, we can define the maps $\overline{f} : \alggquot(\toGrpdAlg{\Ker(f)}) \onecell Y$ and $\widetilde{f} : \alggquot(\toGrpdAlg{\Ker(f)}) \onecell \Im(f)$.
+Note that from Remark \ref{remark:mapping_property_congruence}, we also get that $\overline{f}$ satisfies the required equalities and that $\overline{f}$ is unique.
+To show that $\overline{f}$ is an adjoint equivalence, we use Proposition \ref{prop:algebra_adjequiv}, and we do that by showing that the fibers are contractible.
+Proving that the fibers are inhabited and propositional is similar to proving the surjectivity and injectivity for the set-theoretical first isomorphism theorem \cite{lynge2019}.
+\end{proof}

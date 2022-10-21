@@ -1,0 +1,152 @@
+\documentclass{lmcs}
+
+\keywords{
+higher inductive types,
+homotopy type theory,
+Coq,
+bicategories}
+
+\usepackage{hyperref}
+
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{bussproofs}
+\usepackage{listings}
+\usepackage{coq}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{stmaryrd}
+
+\usepackage{xspace}
+\usepackage{xifthen}
+
+\usepackage[all,cmtip]{xy}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+
+\theoremstyle{definition}
+\newtheorem{constrInternal}[theorem]{Construction}
+
+\newenvironment{construction}[2][]
+{\pushQED{\qed}\begin{constrInternal}[{for Problem~\ref{#2}\ifthenelse{\isempty{#1}}{}{; #1}}]}
+	{\popQED\end{constrInternal}}
+
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{remark}[theorem]{Remark}
+
+\newenvironment{bprooftree}
+{\leavevmode\hbox\bgroup}
+{\DisplayProof\egroup}
+
+\input{macros}
+
+\def\eg{{\em e.g.}}
+\def\cf{{\em cf.}}
+
+\begin{document}
+	
+\lstset{language=Coq}
+
+%% Title information
+\title{Constructing Higher Inductive Types as Groupoid Quotients}
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+\author{Niccol{\`o} Veltri}
+%\orcid{0000−0002−7230−3436}             %% \orcid is optional
+%\affiliation{
+%  \department{Department of Software Science}
+%  \institution{Tallinn University of Technology}
+%  \city{Tallinn}
+%  \country{Estonia}
+%}
+\address{Tallinn University of Technology, Estonia}
+\email{niccolo@cs.ioc.ee}
+
+\author{Niels van der Weide}
+\address{Radboud University, Nijmegen, The Netherlands}
+\email{nweide@cs.ru.nl}
+
+\begin{abstract}
+In this paper, we study finitary 1-truncated higher inductive types (HITs) in homotopy type theory. We start by showing that all these types can be constructed from the groupoid quotient. We define an internal notion of signatures for HITs, and for each signature, we construct a bicategory of algebras in 1-types and in groupoids. We continue by proving initial algebra semantics for our signatures. After that, we show that the groupoid quotient induces a biadjunction between the bicategories of algebras in 1-types and in groupoids. Then we construct a biinitial object in the bicategory of algebras in groupoids, which gives the desired algebra. From all this, we conclude that all finitary 1-truncated HITs can be constructed from the groupoid quotient.
+
+We present several examples of HITs which are definable using our notion of signature. In particular, we show that each signature gives rise to a HIT corresponding to the freely generated algebraic structure over it. We also start the development of universal algebra in 1-types. We show that the bicategory of algebras has PIE limits, i.e. products, inserters and equifiers, and we prove a version of the first isomorphism theorem for 1-types. Finally, we give an alternative characterization of the foundamental groups of some HITs, exploiting our construction of HITs via the groupoid quotient. All the results are formalized over the UniMath library of univalent mathematics in Coq.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+\input{introduction}
+
+\section{Preliminaries}
+\label{sec:prelims}
+\input{preliminaries}
+
+\section{Signatures and their Algebras}
+\label{sec:signs}
+\input{algebras}
+
+\section{Induction and Biinitiality}
+\label{sec:induction}
+\input{induction}
+
+\section{Lifting the Groupoid Quotient}
+\label{sec:biadj}
+\input{biadj}
+
+\section{HIT Existence}
+\label{sec:existence}
+\input{existence}
+
+\section{Additional Examples}
+\label{sec:examples}
+\input{examples}
+
+\section{PIE Limits of Algebras}
+\label{sec:finite_limits}
+\input{finite_limits}
+
+\section{The Free Algebra}
+\label{sec:free_algebra}
+\input{free_algebra}
+
+\section{The First Isomorphism Theorem}
+\label{sec:isomorphism_theorem}
+\input{isomorphism_theorem}
+
+\section{Calculating Fundamental Groups}
+\label{sec:fundamental_groups}
+\input{fundamental_groups}
+
+\section{Conclusion and Further Work}
+\label{sec:conclusion}
+\input{conclusion}
+
+
+\section*{Acknowledgments}
+The authors thank Herman Geuvers, Dan Frumin, Benedikt Ahrens, and Ali Caglayan for helpful comments and discussions.
+The authors also thank the anonymous reviewers for their helpful comments and suggestions.
+Niccol{\`o} Veltri was supported by the Estonian Research Council grant PSG659 and by the ESF funded
+Estonian IT Academy research measure (project 2014-2020.4.05.19-0001).
+
+\bibliographystyle{alpha}
+\bibliography{literature}
+
+\end{document}

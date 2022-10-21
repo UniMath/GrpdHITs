@@ -9,6 +9,7 @@ Require Import UniMath.Bicategories.Core.Bicat.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
 Require Import UniMath.Bicategories.Colimits.Initial.
 Require Import UniMath.Bicategories.PseudoFunctors.Biadjunction.
+Require Import UniMath.Bicategories.PseudoFunctors.Preservation.BiadjunctionPreservation.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
@@ -42,12 +43,10 @@ Definition hit_existence
 Proof.
   eexists.
   apply initial_algebra_is_HIT.
-  apply (biadj_preserves_unique_maps
+  exact (left_biadj_preserves_biinitial
            (hit_algebra_biadjunction Σ)
-           (pr2 (is_univalent_2_hit_algebra_one_types Σ))
            (initial_groupoid_algebra Σ)
-           (initial_groupoid_algebra_is_initial Σ)
-        ).
+           (initial_groupoid_algebra_is_initial Σ)).
 Defined.
 
 (** Note: this evaluates to

@@ -1,4 +1,14 @@
-(** Here we define the signature for the torus *)
+(**
+Here we define the signature for the torus
+
+It is defined as the following HIT
+
+HIT torus :=
+| base : torus
+| l, r : base = base
+| surf : l @ r = r @ l
+We look at its 1-truncation.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
 
@@ -13,6 +23,7 @@ Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
 Require Import displayed_algebras.displayed_algebra.
+Require Import existence.hit_existence.
 
 Local Open Scope cat.
 
@@ -105,8 +116,8 @@ Section TorusInduction.
   Context {X : hit_algebra_one_types torus_signature}
           (Y : alg_carrier X → one_type)
           (Ybase : Y (torus_base X))
-          (Yleft : @PathOver _ _ _ Y Ybase Ybase (torus_path_left X))
-          (Yright : @PathOver _ _ _ Y Ybase Ybase (torus_path_right X))
+          (Yleft : @PathOver _ _ _ (torus_path_left X) Y Ybase Ybase)
+          (Yright : @PathOver _ _ _ (torus_path_right X) Y Ybase Ybase)
           (Ysurface : globe_over
                         Y
                         (torus_surface X)
@@ -169,3 +180,6 @@ Section TorusInduction.
         torus_ind_base
     := pr22 torus_ind_disp_algebra_map p_right tt.
 End TorusInduction.
+
+Definition torus
+  := pr1 (hit_existence torus_signature).

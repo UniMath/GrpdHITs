@@ -80,10 +80,10 @@ Definition PathOver_poly_pr2
            (p : x = y)
   : @PathOver
       _ _ _
+      (maponpaths (poly_pr1 _) p)
       (poly_dact P Y)
       (poly_pr2 P x)
-      (poly_pr2 P y)
-      (maponpaths (poly_pr1 _) p).
+      (poly_pr2 P y).
 Proof.
   induction P as [T | | P₁ IHP₁ P₂ IHP₂ | P₁ IHP₁ P₂ IHP₂] ; simpl in *.
   - induction p.
@@ -293,10 +293,10 @@ Section TotalAlgebra.
         (x : poly_act P carrier)
     : @PathOver
         _ _ _
+        (pr1_endpoint e _)
         (poly_dact Q (pr1 Y))
         (endpoint_dact _ _ e (disp_alg_constr Y) (poly_pr2 P x))
-        (poly_pr2 Q (sem_endpoint_UU e operation x))
-        (pr1_endpoint e _).
+        (poly_pr2 Q (sem_endpoint_UU e operation x)).
   Proof.
     induction e as [P | P Q R e₁ IHe₁ e₂ IHe₂
                     | P Q | P Q | P Q | P Q | P Q R e₁ IHe₁ e₂ IHe₂ | P T t | Z₁ Z₂ f | ].
@@ -350,7 +350,7 @@ Section TotalAlgebra.
                  _)
               (pr2_endpoint (path_right Σ j) x))).
   Defined.
-  
+
   Local Definition pr1_homot_endpoint
         {Q : poly_code}
         {TR : poly_code}
@@ -385,11 +385,13 @@ Section TotalAlgebra.
        @ pr1_endpoint _ _.
   Proof.
     induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                    | T₁ T₂ e₁ e₂ e₃
                     | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                    | T₁ T₂ e₁ e₂ e₃ e₄ h IHh | T₁ T₂ e₁ e₂ e₃ e₄ h IHh
+                    | P R e₁ e₂ | P R e₁ e₂
                     | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
-                    | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                    | j e | el er | ].
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | W w T e
+                    | j e | ].
     - (* identity *)
       exact (!pathsinv0l _).
     - (* symmetry *)
@@ -422,6 +424,57 @@ Section TotalAlgebra.
         apply pathsinv0r.
       }
       apply idpath.
+    - (* ap on endpoints *)
+      simpl.
+      refine (!_).
+      etrans.
+      {
+        etrans.
+        {
+          apply maponpaths_2.
+          apply pathscomp_inv.
+        }
+        refine (!(path_assoc _ _ _) @ _).
+        apply maponpaths.
+        do 2 refine (path_assoc _ _ _ @ _).
+        apply maponpaths_2.
+        etrans.
+        {
+          apply maponpaths_2.
+          etrans.
+          {
+            apply maponpaths_2.
+            exact (!(maponpathsinv0 _ _)).
+          }
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        etrans.
+        {
+          exact (!(maponpathscomp0 _ _ _)).
+        }
+        apply maponpaths.
+        refine (!(path_assoc _ _ _) @ _).
+        exact (!IHh).
+      }
+      clear IHh.
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply maponpaths_2.
+          apply maponpathscomp.
+        }
+        apply (homotsec_natural' (pr1_endpoint e₃)).
+      }
+      refine (path_assoc _ _ _ @ _).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply pathsinv0l.
+      }
+      refine (!_).
+      apply maponpathscomp.
     - (* associativity *)
       simpl.
       refine (!_).
@@ -484,71 +537,35 @@ Section TotalAlgebra.
       }
       apply pathsinv0l.
     - (* first projection *)
-      simpl ; simpl in IHh.
-      refine (_ @ maponpaths (maponpaths pr1) IHh @ _).
-      + refine (_ @ !(maponpathscomp (dirprodf (poly_pr1 T₁) (poly_pr1 T₂)) pr1 _)).
-        exact (maponpathscomp
-                 pr1
-                 (poly_pr1 T₁)
-                 (sem_homot_endpoint_UU
-                    h
-                    (∑ z, pr1 Y z)
-                    operation paths
-                    x p)).
-      + etrans.
-        {
-          etrans.
-          {
-            apply maponpathscomp0.
-          }
-          apply maponpaths.
-          apply maponpathscomp0.
-        }
+      simpl.
+      cbn.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths.
         etrans.
         {
-          apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            apply pathsdirprod_inv.
-          }
-          apply maponpaths_pr1_pathsdirprod.
+          apply pathscomp0rid.
         }
-        do 2 apply maponpaths.
         apply maponpaths_pr1_pathsdirprod.
-    - (* second projection *)
-      simpl ; simpl in IHh.
-      refine (_ @ maponpaths (maponpaths dirprod_pr2) IHh @ _).
-      + refine (_ @ !(maponpathscomp (dirprodf (poly_pr1 T₁) (poly_pr1 T₂)) pr2 _)).
-        exact (maponpathscomp
-                 dirprod_pr2
-                 (poly_pr1 T₂)
-                 (sem_homot_endpoint_UU
-                    h
-                    (∑ z, pr1 Y z)
-                    operation paths
-                    x p)).
-      + etrans.
-        {
-          etrans.
-          {
-            apply maponpathscomp0.
-          }
-          apply maponpaths.
-          apply maponpathscomp0.
-        }
+      }
+      apply pathsinv0l.
+    - (* first projection *)
+      simpl.
+      cbn.
+      refine (!_).
+      etrans.
+      {
+        apply maponpaths_2.
+        apply maponpaths.
         etrans.
         {
-          apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            apply pathsdirprod_inv.
-          }
-          apply maponpaths_pr2_pathsdirprod.
+          apply pathscomp0rid.
         }
-        do 2 apply maponpaths.
         apply maponpaths_pr2_pathsdirprod.
+      }
+      apply pathsinv0l.
     - (* pair of endpoints *)
       simpl.
       etrans.
@@ -573,72 +590,46 @@ Section TotalAlgebra.
       }
       refine (!_).
       exact (paths_pathsdirprod IHh₁ IHh₂).
-    - (* left inclusion *)
+    - (* composition with pair *)
       simpl.
-      refine (coprodf_path_maponpaths_inl _ _ _ @ _).
       refine (!_).
       etrans.
       {
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            apply pathscomp0rid.
-          }
-          refine (!_).
-          apply maponpathscomp0.
-        }
         etrans.
         {
           apply maponpaths_2.
           etrans.
           {
             apply maponpaths.
-            apply pathscomp0rid.
+            etrans.
+            {
+              apply maponpaths_2.
+              apply maponpaths_prod_path.
+            }
+            apply pathsdirprod_concat.
           }
-          refine (!_).
-          apply maponpathsinv0.
+          apply pathsdirprod_inv.
         }
-        refine (!_).
-        apply (maponpathscomp0 inl).
+        apply pathsdirprod_concat.
       }
-      apply maponpaths.
-      exact (!IHh).
-    - (* right inclusion *)
+      exact (paths_pathsdirprod (pathsinv0l _) (pathsinv0l _)).
+    - (* composition with constant *)
       simpl.
-      refine (coprodf_path_maponpaths_inr _ _ _ @ _).
       refine (!_).
       etrans.
       {
-        etrans.
-        {
-          apply maponpaths.
-          etrans.
-          {
-            apply maponpaths.
-            apply pathscomp0rid.
-          }
-          refine (!_).
-          apply maponpathscomp0.
-        }
-        etrans.
-        {
-          apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            apply pathscomp0rid.
-          }
-          refine (!_).
-          apply maponpathsinv0.
-        }
-        refine (!_).
-        apply (maponpathscomp0 inr).
+        apply pathscomp0rid.
       }
-      apply maponpaths.
-      exact (!IHh).
+      etrans.
+      {
+        apply maponpaths.
+        etrans.
+        {
+          apply pathscomp0rid.
+        }
+        apply maponpaths_for_constant_function.
+      }
+      apply idpath.
     - (* path constructor *)
       simpl.
       etrans.
@@ -672,46 +663,6 @@ Section TotalAlgebra.
                @ _).
       apply maponpaths_2.
       apply maponpathsinv0.
-    - (* point constructor *)
-      simpl.
-      refine (!_).
-      etrans.
-      {
-        etrans.
-        {
-          apply maponpaths_2.
-          etrans.
-          {
-            apply maponpaths.
-            apply pathscomp0rid.
-          }
-          refine (!_).
-          apply maponpathsinv0.
-        }
-        etrans.
-        {
-          do 2 apply maponpaths.
-          apply pathscomp0rid.
-        }
-        etrans.
-        {
-          apply maponpaths.
-          refine (!_).
-          apply maponpathscomp0.
-        }
-        refine (!_).
-        apply maponpathscomp0.
-      }
-      refine (!_).
-      etrans.
-      {
-        apply (maponpathscomp operation pr1).
-      }
-      etrans.
-      {
-        exact (!(maponpathscomp (poly_pr1 _) (alg_constr X) _)).
-      }
-      exact (maponpaths (maponpaths (alg_constr X)) IHh).
     - (* path argument *)
       simpl.
       refine (!_).
@@ -733,34 +684,58 @@ Section TotalAlgebra.
       apply pathscomp0rid.
   Qed.
 
-  Local Definition PathOver_poly_pr2_operation
-        {x₁ x₂ : poly_act (point_constr Σ) carrier}
-        (q : x₁ = x₂)
-    : globe_over
-        Y
-        (maponpathscomp operation pr1 _
-         @ !(maponpathscomp (poly_pr1 _) (alg_constr X) _))
-        (PathOver_poly_pr2 I (maponpaths operation q))
-        (@apd_2
-           _ _
-           (poly_dact (point_constr Σ) (pr1 Y))
-           (poly_dact I (pr1 Y))
-           (alg_constr X)
-           (disp_alg_constr Y)
-           _ _ _ _ _
-           (PathOver_poly_pr2 (point_constr Σ) q)).
+  Local Definition PathOver_poly_pr2_endpoint_path
+        {P Q : poly_code}
+        (e : endpoint (point_constr Σ) P Q)
+        {x₁ x₂ : poly_act P carrier}
+        (p : x₁ = x₂)
+    : !(pr1_endpoint e x₁)
+      @ maponpaths (sem_endpoint_one_types e (pr11 X)) (maponpaths (poly_pr1 P) p)
+      @ pr1_endpoint e x₂
+      =
+      maponpaths (poly_pr1 Q) (maponpaths (sem_endpoint_UU e operation) p).
   Proof.
-    induction q.
-    unfold globe_over.
-    cbn.
-    refine (!_).
-    etrans.
-    {
-      apply maponpaths.
-      apply PathOver_poly_pr2_is_idpath.
-    }
-    apply idpath.
-  Qed.    
+    induction p.
+    apply pathsinv0l.
+  Defined.
+
+  Local Definition PathOver_poly_pr2_endpoint
+        {P Q : poly_code}
+        (e : endpoint (point_constr Σ) P Q)
+        {x₁ x₂ : poly_act P carrier}
+        (p : x₁ = x₂)
+    : globe_over
+        (poly_dact Q (pr1 Y))
+        (PathOver_poly_pr2_endpoint_path e p)
+        (composePathOver
+           (inversePathOver (pr2_endpoint e x₁))
+           (composePathOver
+              (@apd_2
+                 _ _
+                 (poly_dact P (pr1 Y))
+                 (poly_dact Q (pr1 Y))
+                 _
+                 (@endpoint_dact _ _ (pr1 Y) _ _ e (disp_alg_constr Y))
+                 _ _
+                 (maponpaths (poly_pr1 P) p)
+                 _ _
+                 (PathOver_poly_pr2 P p))
+              (pr2_endpoint e x₂)))
+        (PathOver_poly_pr2
+           Q
+           (maponpaths (sem_endpoint_UU e operation) p)).
+  Proof.
+    induction p.
+    rewrite !PathOver_poly_pr2_is_idpath.
+    refine (globe_over_move_globe_one_type _ _).
+    { apply poly_act_hlevel. }
+    exact
+    (concat_globe_over
+       (globe_over_compose_left'
+          _
+          (globe_over_id_left _))
+       (globe_over_inv_left _)).
+  Qed.
 
   Local Definition pr2_homot_endpoint
         {Q : poly_code}
@@ -800,11 +775,13 @@ Section TotalAlgebra.
               (pr2_endpoint _ _))).
   Proof.
     induction h as [T e | T e₁ e₂ h IHh | T e₁ e₂ e₃ h₁ IHh₁ h₂ IHh₂
+                    | T₁ T₂ e₁ e₂ e₃
                     | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                    | T₁ T₂ e₁ e₂ e₃ e₄ h IHh | T₁ T₂ e₁ e₂ e₃ e₄ h IHh
+                    | P R e₁ e₂ | P R e₁ e₂
                     | T₁ T₂ e₁ e₂ e₃ e₄ h₁ IHh₁ h₂ IHh₂
-                    | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                    | j e | el er | ].
+                    | P₁ P₂ P₃ e₁ e₂ e₃
+                    | W w T e
+                    | j e | ].
     - (* identity *)
       use globe_over_move_globe_one_type.
       { apply poly_act_hlevel. }
@@ -812,19 +789,20 @@ Section TotalAlgebra.
       use inv_globe_over.
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
-      simple refine (concat_globe_over
-                       (globe_over_compose_left'
-                          (inversePathOver (pr2_endpoint e x))
-                          (globe_over_id_left (pr2_endpoint e x)))
-                       (concat_globe_over
-                          (globe_over_inv_left _)
-                          _)).
+      simple refine 
+      (concat_globe_over
+         (globe_over_compose_left'
+            (inversePathOver (pr2_endpoint e x))
+            (globe_over_id_left (pr2_endpoint e x)))
+         (concat_globe_over
+            (globe_over_inv_left _)
+            _)).
       { apply idpath. }
       exact (!(PathOver_poly_pr2_is_idpath _ _)).
     - (* symmetry *)
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
-      simple refine
+      exact
       (concat_globe_over
          (PathOver_pr1_PathOver_poly_inv _)
          (concat_globe_over
@@ -844,7 +822,7 @@ Section TotalAlgebra.
     - (* transitivity *)
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
-      simple refine
+      exact
       (concat_globe_over
          (PathOver_pr1_PathOver_poly_concat _ _)
          (concat_globe_over
@@ -870,11 +848,54 @@ Section TotalAlgebra.
                                           _
                                           (globe_over_inv_right _))
                                        (globe_over_id_right _)))))))))))).
+    - (* ap endpoint *)
+      simpl.
+      refine (globe_over_move_globe_one_type _ _).
+      { apply poly_act_hlevel. }
+      exact
+      (inv_globe_over
+         (concat_globe_over
+            (globe_over_compose_left'
+               _
+               (concat_globe_over
+                  (globe_over_assocl _ _ _)
+                  (globe_over_compose_right
+                     _
+                     (inv_globe_over
+                        (apd2_concat _ _ _)))))
+            (concat_globe_over
+               (globe_over_compose_right
+                  _
+                  (globe_over_comp_inv _ _))
+               (concat_globe_over
+                  (concat_globe_over
+                     (globe_over_assocr _ _ _)
+                     (globe_over_compose_left'
+                        _
+                        (concat_globe_over
+                           (globe_over_assocl _ _ _)
+                           (globe_over_compose_right
+                              _
+                              (concat_globe_over
+                                 (globe_over_compose_right
+                                    _
+                                    (apd2_inv _ _))
+                                 (inv_globe_over
+                                    (apd2_concat _ _ _)))))))
+                  (concat_globe_over
+                     (globe_over_compose_left'
+                        _
+                        (globe_over_compose_right
+                           _
+                           (apd2_globe_over
+                              _
+                              (inv_globe_over IHh))))
+                     (PathOver_poly_pr2_endpoint e₃ _)))))).
     - (* associativity *)
       simpl.
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
-      simple refine
+      exact
       (concat_globe_over
          (PathOver_poly_pr2_is_idpath_globe _ _)
          (inv_globe_over
@@ -898,7 +919,7 @@ Section TotalAlgebra.
     - (* left identity *)
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
-      simple refine
+      exact
       (concat_globe_over
          (PathOver_poly_pr2_is_idpath_globe _ _)
          (inv_globe_over
@@ -915,7 +936,7 @@ Section TotalAlgebra.
     - (* right identity *)
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
-      simple refine
+      exact
       (concat_globe_over
          (PathOver_poly_pr2_is_idpath_globe _ _)
          (inv_globe_over
@@ -932,67 +953,47 @@ Section TotalAlgebra.
                            (apd2_idfun _))))
                   (globe_over_inv_left _))))).
     - (* first projection *)
-      simple refine
-      (globe_over_move_globe_one_type
-         _
-         (concat_globe_over
-            (PathOver_pr1_PathOver_poly_pr2
-               (sem_homot_endpoint_UU
-                  h
-                  (∑ x0, pr1 Y x0)
-                  operation paths
-                  x p))
+      refine (globe_over_move_globe_one_type _ _).
+      { apply poly_act_hlevel. }
+      exact
+      (concat_globe_over
+         (PathOver_pr1_PathOver_poly_pr2 (idpath _))
+         (inv_globe_over
             (concat_globe_over
-               (globe_over_pr1 IHh)
+               (globe_over_compose_left'
+                  _
+                  (globe_over_id_left _))
                (concat_globe_over
-                  (PathOver_pr1_concat _ _)
-                  (concat_globe_over
-                     (globe_over_compose_right
-                        _
+                  (globe_over_compose_right
+                     _
+                     (globe_over_on_inv
                         (concat_globe_over
-                           (PathOver_pr1_inv _)
-                           (globe_over_on_inv (PathOver_pr1_pair _ _))))
-                     (globe_over_compose_left'
-                        _
-                        (concat_globe_over
-                           (PathOver_pr1_concat _ _)
-                           (globe_over_compose_left'
-                              _
-                              (PathOver_pr1_pair _ _)))))))))
-      ; try apply poly_act_hlevel.
+                           (globe_over_id_right _)
+                           (PathOver_pr1_pair _ _))))
+                  (globe_over_inv_left _))))).
     - (* second projection *)
-      simple refine
-      (globe_over_move_globe_one_type
-         _
-         (concat_globe_over
-            (PathOver_pr2_PathOver_poly_pr2
-               (sem_homot_endpoint_UU
-                  h
-                  (∑ x0, pr1 Y x0)
-                  operation paths
-                  x p))
+      refine (globe_over_move_globe_one_type _ _).
+      { apply poly_act_hlevel. }
+      exact
+      (concat_globe_over
+         (PathOver_pr2_PathOver_poly_pr2 (idpath _))
+         (inv_globe_over
             (concat_globe_over
-               (globe_over_pr2 IHh)
+               (globe_over_compose_left'
+                  _
+                  (globe_over_id_left _))
                (concat_globe_over
-                  (PathOver_pr2_concat _ _)
-                  (concat_globe_over
-                     (globe_over_compose_right
-                        _
+                  (globe_over_compose_right
+                     _
+                     (globe_over_on_inv
                         (concat_globe_over
-                           (PathOver_pr2_inv _)
-                           (globe_over_on_inv (PathOver_pr2_pair _ _))))
-                     (globe_over_compose_left'
-                        _
-                        (concat_globe_over
-                           (PathOver_pr2_concat _ _)
-                           (globe_over_compose_left'
-                              _
-                              (PathOver_pr2_pair _ _)))))))))
-      ; try apply poly_act_hlevel.
+                           (globe_over_id_right _)
+                           (PathOver_pr2_pair _ _))))
+                  (globe_over_inv_left _))))).
     - (* pair of endpoints *)
       refine (globe_over_move_globe_one_type _ _).
       { apply (poly_act_hlevel (T₁ * T₂)). }
-      simple refine
+      exact
       (concat_globe_over
          (PathOver_pr2_PathOver_pair _ _)
          (concat_globe_over
@@ -1006,87 +1007,51 @@ Section TotalAlgebra.
                   (globe_over_compose_left'
                      _
                      (PathOver_pair_concat _ _ _ _)))))).
-    - (* left inclusion *)
+    - (* composition of pair *)
       refine (globe_over_move_globe_one_type _ _).
-      { apply (poly_act_hlevel (_ + _)). }
-      simple refine
-      (concat_globe_over
-         (PathOver_pr1_PathOver_poly_inl
-            (sem_homot_endpoint_UU
-               h
-               (∑ x0, pr1 Y x0)
-               operation paths
-               x p))
+      { apply poly_act_hlevel. }
+      exact
+      (inv_globe_over
          (concat_globe_over
-            (globe_over_inl IHh)
+            (globe_over_compose_left'
+               _
+               (globe_over_id_left _))
             (concat_globe_over
-               (PathOver_inl_concat _ _)
-               (concat_globe_over
-                  (globe_over_compose_left'
-                     _
-                     (PathOver_inl_concat _ _))
-                  (concat_globe_over
-                     (globe_over_compose_right
-                        _
-                        (PathOver_inl_inv _))
-                     (inv_globe_over
-                        (concat_globe_over
-                           (globe_over_compose_right
-                              _
-                              (globe_over_on_inv
-                                 (concat_globe_over
-                                    (globe_over_id_right _)
-                                    (apd2_inl _))))
-                           (globe_over_compose_left'
-                              _
-                              (globe_over_compose_left'
-                                 _
-                                 (concat_globe_over
-                                    (globe_over_id_right _)
-                                    (apd2_inl _))))))))))).
-    - (* right inclusion *)
+               (globe_over_compose_right
+                  _
+                  (globe_over_on_inv
+                     (concat_globe_over
+                        (globe_over_compose_right
+                           _
+                           (apd2_dep_pair_fun _ _ _))
+                        (inv_globe_over
+                           (PathOver_pair_concat _ _ _ _)))))
+               (globe_over_inv_left _)))).
+    - (* composition of constant *)
       refine (globe_over_move_globe_one_type _ _).
-      { apply (poly_act_hlevel (_ + _)). }
-      simple refine
-      (concat_globe_over
-         (PathOver_pr1_PathOver_poly_inr
-            (sem_homot_endpoint_UU
-               h
-               (∑ x0, pr1 Y x0)
-               operation paths
-               x p))
+      { apply one_type_isofhlevel. }
+      simpl.
+      refine
+      (inv_globe_over
          (concat_globe_over
-            (globe_over_inr IHh)
+            (globe_over_compose_left'
+               _
+               (globe_over_id_left _))
             (concat_globe_over
-               (PathOver_inr_concat _ _)
+               (globe_over_id_right _)
                (concat_globe_over
-                  (globe_over_compose_left'
-                     _
-                     (PathOver_inr_concat _ _))
-                  (concat_globe_over
-                     (globe_over_compose_right
-                        _
-                        (PathOver_inr_inv _))
-                     (inv_globe_over
-                        (concat_globe_over
-                           (globe_over_compose_right
-                              _
-                              (globe_over_on_inv
-                                 (concat_globe_over
-                                    (globe_over_id_right _)
-                                    (apd2_inr _))))
-                           (globe_over_compose_left'
-                              _
-                              (globe_over_compose_left'
-                                 _
-                                 (concat_globe_over
-                                    (globe_over_id_right _)
-                                    (apd2_inr _))))))))))).
+                  (globe_over_on_inv
+                     (concat_globe_over
+                        (globe_over_id_right _)
+                        _))
+                  _)))).
+      + exact (apd_2_dep_const_fun _ _ _ _).
+      + apply globe_over_identity.
     - (* path constructor *)
       simpl.
       refine (globe_over_move_globe_one_type _ _).
       { apply one_type_isofhlevel. }
-      simple refine
+      refine
       (concat_globe_over
          (TotalPathToPathOver_PathOverToTotalPath' _ _)
          (inv_globe_over
@@ -1109,37 +1074,10 @@ Section TotalAlgebra.
                                  (disp_alg_path Y j)
                                  (pr2_endpoint e x)))))))))).
       apply one_type_isofhlevel.
-    - (* point constructor *)
-      refine (globe_over_move_globe_one_type _ _).
-      { apply one_type_isofhlevel. }
-      simple refine
-      (concat_globe_over
-         (PathOver_poly_pr2_operation _)
-         (concat_globe_over
-            (apd2_globe_over _ IHh)
-            (concat_globe_over
-               (apd2_concat _ _ _)
-               (concat_globe_over
-                  (globe_over_compose_left'
-                     _
-                     (apd2_concat _ _ _))
-                  (inv_globe_over
-                     (concat_globe_over
-                        (globe_over_compose_left'
-                           _
-                           (globe_over_compose_left'
-                              _
-                              (globe_over_id_right _)))
-                        (globe_over_compose_right
-                           _
-                           (concat_globe_over
-                              (globe_over_on_inv
-                                 (globe_over_id_right  _))
-                              (apd2_inv _ _))))))))).      
     - (* path argument *)
       refine (globe_over_move_globe_one_type _ _).
       { apply poly_act_hlevel. }
-      simple refine
+      exact
       (inv_globe_over
          (concat_globe_over
             (globe_over_compose_left'

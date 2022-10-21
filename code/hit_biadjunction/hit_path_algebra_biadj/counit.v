@@ -13,7 +13,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
 Require Import UniMath.Bicategories.Core.Bicat. Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
-Require Import UniMath.Bicategories.Core.Adjunctions.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.Core.Univalence.
 Require Import UniMath.Bicategories.Core.BicategoryLaws.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
@@ -1617,11 +1617,6 @@ Section LiftAdd2CellUnit.
       }
       cbn.
       apply maponpaths.
-      etrans.
-      {
-        apply maponpaths.
-        apply pathscomp0rid.
-      }
       pose (q := maponpaths
                    (poly_map S (gquot_counit_map (pr1 X)))
                    (gquot_poly_gcl S a)

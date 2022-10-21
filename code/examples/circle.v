@@ -1,14 +1,33 @@
-(** Here we define the signature for the circle *)
+(**
+Here we define the signature for the circle
+The circle is the following HIT:
+HIT circle :=
+| base : circle
+| loop : base = base
+We look at the 1-truncation.
+ *)
 Require Import UniMath.Foundations.All.
 Require Import UniMath.MoreFoundations.All.
+Require Import UniMath.NumberSystems.Integers.
 
 Require Import UniMath.CategoryTheory.Core.Categories.
+Require Import UniMath.CategoryTheory.Core.Functors.
+Require Import UniMath.CategoryTheory.Core.NaturalTransformations.
 Require Import UniMath.CategoryTheory.Groupoids.
+Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.Bicategories.Core.Bicat.
+Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Examples.OneTypes.
+Require Import UniMath.Bicategories.Colimits.Initial.
 
-Require Import UniMath.Algebra.Monoids.
-Require Import UniMath.Algebra.Groups.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Base.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map1Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Map2Cells.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Identitor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.Compositor.
+Require Import UniMath.Bicategories.PseudoFunctors.Display.PseudoFunctorBicat.
+Require Import UniMath.Bicategories.PseudoFunctors.PseudoFunctor.
+Require Import UniMath.Bicategories.Transformations.PseudoTransformation.
 
 Require Import prelude.all.
 Require Import signature.hit_signature.
@@ -16,9 +35,13 @@ Require Import signature.hit.
 Require Import algebra.one_types_polynomials.
 Require Import algebra.one_types_endpoints.
 Require Import algebra.one_types_homotopies.
+Require Import algebra.groupoid_polynomials.
+Require Import algebra.groupoid_endpoints.
+Require Import algebra.groupoid_homotopies.
 Require Import displayed_algebras.displayed_algebra.
 Require Import initial_grpd_alg.W_poly.
 Require Import initial_grpd_alg.initial_groupoid_algebra.
+Require Import initial_grpd_alg.is_initial.
 Require Import existence.hit_existence.
 
 Local Open Scope cat.
@@ -27,10 +50,8 @@ Definition circle_point_constr
   : poly_code
   := C unit_one_type.
 
-Inductive circle_paths : Type :=
+Inductive circle_paths : UU :=
 | loop : circle_paths.
-
-Inductive circle_homots : Type := .
 
 Definition circle_signature
   : hit_signature.
@@ -41,7 +62,7 @@ Proof.
   - exact (λ _, C unit_one_type).
   - exact (λ _, constr).
   - exact (λ _, constr).
-  - exact circle_homots.
+  - exact empty.
   - intro x ; induction x.
   - intro x ; induction x.
   - intro x ; induction x.
@@ -67,7 +88,7 @@ Section CircleInduction.
   Context {X : hit_algebra_one_types circle_signature}
           (Y : alg_carrier X → one_type)
           (Ybase : Y (circle_base X))
-          (Yloop : @PathOver _ _ _ Y Ybase Ybase (circle_loop X)).
+          (Yloop : @PathOver _ _ _ (circle_loop X) Y Ybase Ybase).
   
   Definition make_circle_disp_algebra
     : disp_algebra X.
@@ -113,18 +134,3 @@ End CircleInduction.
 
 Definition circle
   := pr1 (hit_existence circle_signature).
-
-Definition circle_path_space_base
-  : UU
-  := ((pr111 (initial_groupoid_algebra circle_signature) : groupoid)
-        ⟦ poly_initial_alg circle_point_constr tt
-        , poly_initial_alg circle_point_constr tt ⟧).
-
-Definition circle_is_path_space
-  : circle_base circle = circle_base circle
-    ≃
-    circle_path_space_base
-  := hit_path_space
-       circle_signature
-       (poly_initial_alg circle_point_constr tt)
-       (poly_initial_alg circle_point_constr tt).

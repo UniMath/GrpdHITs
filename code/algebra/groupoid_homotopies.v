@@ -9,13 +9,18 @@ Require Import UniMath.CategoryTheory.Core.Isos.
 Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.whiskering.
 Require Import UniMath.CategoryTheory.DisplayedCats.Core.
+Require Import UniMath.CategoryTheory.Adjunctions.Core.
+Require Import UniMath.CategoryTheory.Equivalences.Core.
+Require Import UniMath.CategoryTheory.Equivalences.FullyFaithful.
 
 Require Import UniMath.Bicategories.Core.Bicat.
 Import Bicat.Notations.
 Require Import UniMath.Bicategories.Core.Invertible_2cells.
 Require Import UniMath.Bicategories.Core.Unitors.
+Require Import UniMath.Bicategories.Morphisms.Adjunctions.
 Require Import UniMath.Bicategories.DisplayedBicats.DispBicat.
 Require Import UniMath.Bicategories.DisplayedBicats.DispInvertibles.
+Require Import UniMath.Bicategories.DisplayedBicats.DispAdjunctions.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Algebras.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.Add2Cell.
 Require Import UniMath.Bicategories.DisplayedBicats.Examples.DispDepProd.
@@ -66,17 +71,20 @@ Definition sem_homot_endpoint_grpd
   : pr1 (sem_endpoint_grpd sl X) z --> pr1 (sem_endpoint_grpd sr X) z.
 Proof.
   induction p as [T e | T e₁ e₂ p IHp | T e₁ e₂ e₃ p₁ IHP₁ p₂ IHP₂
+                  | T₁ T₂ e₁ e₂ e₃ h IHh
                   | R₁ R₂ T e₁ e₂ e₃ | T e | T e
-                  | T₁ T₂ e₁ e₂ e₃ e₄ p IHp | T₁ T₂ e₁ e₂ e₃ e₄ p IHp
+                  | P R e₁ e₂ | P R e₁ e₂
                   | T₁ T₂ e₁ e₂ e₃ e₄ p₁ IHp₁ p₂ IHp₂
-                  | T₁ T₂ e₁ e₂ | T₁ T₂ e₁ e₂
-                  | j e | el er | ].
+                  | P₁ P₂ P₃ e₁ e₂ e₃
+                  | Z x T e | j e | ].
   - (* identity *)
     apply poly_act_identity.
   - (* symmetry *)
     exact (poly_act_inverse IHp).
   - (* transitivity *)
     exact (poly_act_compose IHP₁ IHP₂).
+  - (* ap with endpoint *)
+    exact (#(sem_endpoint_grpd e₃ X : _ ⟶ _) IHh).
   - (* associativity *)
     apply poly_act_identity.
   - (* left identity *)
@@ -84,19 +92,17 @@ Proof.
   - (* right identity *)
     apply poly_act_identity.
   - (* first projection *)
-    exact (pr1 IHp).
+    apply poly_act_identity.
   - (* second projection *)
-    exact (pr2 IHp).
+    apply poly_act_identity.
   - (* pair of endpoints *)
     exact (IHp₁ ,, IHp₂).
-  - (* left inclusion *)
-    exact IHp.
-  - (* right inclusion *)
-    exact IHp.
+  - (* composition before pair *)
+    apply poly_act_identity.
+  - (* composition with constant *)
+    apply poly_act_identity.
   - (* path constructor *)
     exact (pX j _).
-  - (* point constructor *)
-    exact (#(pr2 X : _ ⟶ _) IHp).
   - (* path argument *)
     exact p_arg.
 Defined.
@@ -372,3 +378,85 @@ Proof.
   apply bicat_is_invertible_2cell_to_fullsub_is_invertible_2cell.
   apply hit_path_alg_is_invertible_2cell.
 Defined.
+
+(** Adjoint equivalence of grpd algebra gives fully faithful functors of carriers *)
+Definition left_adjoint_equivalence_grpd
+           {G₁ G₂ : grpd_bicat}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : adj_equivalence_of_cats F.
+Proof.
+  use make_adj_equivalence_of_cats.
+  - exact (left_adjoint_right_adjoint Hf).
+  - exact (left_adjoint_unit Hf).
+  - exact (left_adjoint_counit Hf).
+  - split ; intro x ; cbn.
+    + abstract
+        (pose (nat_trans_eq_pointwise (pr1 (axioms_of_left_adjoint Hf)) x) as p ;
+         cbn in p ;
+         rewrite !id_left, !id_right in p ;
+         exact p).
+    + abstract
+        (pose (nat_trans_eq_pointwise (pr2 (axioms_of_left_adjoint Hf)) x) as p ;
+         cbn in p ;
+         rewrite !id_left, !id_right in p ;
+         exact p).
+  - split ; intro x ; cbn.
+    + apply G₁.
+    + apply G₂.
+Defined.
+
+Definition left_adjoint_equivalence_is_fully_faithful
+           {G₁ G₂ : grpd_bicat}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : fully_faithful F.
+Proof.
+  apply fully_faithful_from_equivalence.
+  apply left_adjoint_equivalence_grpd.
+  exact Hf.
+Defined.
+
+Definition left_adjoint_equivalence_grpd_prealgebra
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_prealgebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : left_adjoint_equivalence (pr1 F).
+Proof.
+  exact (pr21 (adjoint_equivalence_total_disp_weq _ _ (_ ,, Hf))).
+Defined.
+
+Definition left_adjoint_equivalence_grpd_path_algebra
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_path_algebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : left_adjoint_equivalence (pr1 F).
+Proof.
+  exact (pr21 (adjoint_equivalence_total_disp_weq _ _ (_ ,, Hf))).
+Defined.
+
+Definition left_adjoint_equivalence_grpd_algebra_help
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_algebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : left_adjoint_equivalence (pr1 F).
+Proof.
+  exact (pr21 (adjoint_equivalence_total_disp_weq _ _ (_ ,, Hf))).
+Defined.
+
+Definition left_adjoint_equivalence_grpd_algebra_is_fully_faithful
+           {Σ : hit_signature}
+           {G₁ G₂ : hit_algebra_grpd Σ}
+           {F : G₁ --> G₂}
+           (Hf : left_adjoint_equivalence F)
+  : fully_faithful (pr111 F).
+Proof.
+  pose (Hf₁ := left_adjoint_equivalence_grpd_algebra_help Hf).
+  pose (Hf₂ := left_adjoint_equivalence_grpd_path_algebra Hf₁).
+  pose (Hf₃ := left_adjoint_equivalence_grpd_prealgebra Hf₂).
+  exact (left_adjoint_equivalence_is_fully_faithful Hf₃).
+Defined.
+

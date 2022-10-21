@@ -1,0 +1,253 @@
+The algebra structure only represents the introduction rule
+and the next step is to define the elimination and computation rules for higher inductive types.
+Furthermore, we show that biinitial algebras satisfy the induction principle.
+
+Before we can formulate these principles, we need to define dependent actions of polynomials, path endpoints, and homotopy endpoints.
+All of these constructions are done by induction and details can be found in the literature \cite{DBLP:journals/entcs/DybjerM18,hermida1998structural,van2019construction}.
+
+\begin{problem}
+\label{prob:poly_dact}
+Given a type $X$, a type family $Y$ on $X$, and a polynomial $P$,
+to construct a type family $\polyDact{P}{Y}$ on $\polyAct{P}{X}$.
+\end{problem}
+
+\begin{problem}
+\label{prob:poly_dmap}
+Given a type $X$, a type family $Y$ on $X$, a polynomial $P$, and a map $f : \depprod{(x : X)}{Y(x)}$,
+to construct a map
+$
+\polyDmap{P}{f} : \depprod{(x : \polyAct{P}{X})}{\polyDact{P}{Y}(x)}.
+$
+\end{problem}
+
+\begin{problem}
+\label{prob:poly_pr}
+Given a type $X$, a type family $Y$ on $X$, and a polynomial $P$, to construct a map\footnote{This operation is called $\constfont{oplax}$ since, when the type family $Y$ does not depend on $X$, it corresponds to oplax monoidality of the pseudofunctor associated to the polynomial $P$ wrt. the cartesian product $\times$.}
+$
+\polyoplax P : \polyAct{P}{\Sum (x : X). Y(x)} \rightarrow \Sum (x : \polyAct{P}{X}). \polyDact{P}{Y}(x)
+$
+such that for all $z :  \polyAct{P}{\Sum (x : X). Y(x)}$, we have $\projl(\polyoplax{P}(z)) = \polyAct{P}{\projl}(z)$.
+\end{problem}
+The map $\polyoplax P$ actually defines an equivalence, but we do not employ its inverse in our development.
+\begin{problem}
+\label{prob:endpoint_dact}
+Given a type $X$, a type family $Y$ on $X$, an endpoint $e : \pathendpoint{A}{P}{Q}$, and a map $c : \polyAct{A}{X} \rightarrow X$,
+to construct for each $x : \polyAct{P}{X}$ and $y : \polyDact{P}{Y}(x)$ an inhabitant $\pathendpointDact{e}{y} : \polyDact{Q}{Y}(\pathendpointAct{e}{x})$.
+\end{problem}
+
+\begin{problem}
+\label{prob:endpoint_dact_natural}
+Suppose, that we have polynomials $A, P, Q$, a type $X$ with a map $c_X : \polyAct{A}{X} \rightarrow X$,
+and a type family $Y$ on $X$ with a map $c_Y : \depprod{(x : X)}{\polyDact{A}{Y}(x) \rightarrow Y(c_X(x))}$
+and a map $f : \depprod{(x : X)}{Y(x)}$.
+Given an endpoint $e : \pathendpoint{A}{P}{Q}$,
+to construct an equality
+\[
+\pathendpointDnat{e}{f} : \polyDmap{Q}{f}(\semE{e}(x)) = \pathendpointDact{e}{\polyDmap{P}{f}(x)}.
+\]
+\end{problem}
+
+\begin{problem}
+\label{prob:homot_dact}
+Let $\sign$ be a signature.
+Let $X$ be a type with a function $c_X : \polyAct{\pointconstr[\sign]}{X} \rightarrow X$
+and for each $j : \pathlabel[\sign]$ and $x : \polyAct{\patharg[\sign]_j}{X}$ a path $p_X(j, x) : \semE{\pathleft[\sign]_j}(x) = \semE{\pathright[\sign]_j}(x)$.
+In addition, suppose that $Y$ is a type family on $X$,
+that we have a function $c_Y : \depprod{(x : \polyAct{\pointconstr[\sign]}{X})}{\polyDact{\pointconstr[\sign]}{Y}(x) \rightarrow Y(c_X(x))}$,
+and that for all $j  : \pathlabel[\sign]$ and points $x : \polyAct{\patharg[\sign]_j}{X}$ and $\xx : \polyDact{\patharg[\sign]_j}{Y}(x)$,
+we have a path $p_Y : \pathover{p_X(j, x)}{\pathendpointDact{\pathleft[\sign]_j}{\xx}}{\pathendpointDact{\pathright[\sign]_j}{\xx}}$.
+Furthermore, let $j : \homotlabel[\sign]$, let $x : \homotpointarg[\sign]_j(X)$ and $\xx : \polyDact{\homotpointarg[\sign]_j}{Y}(x)$ be points
+and let $w : \semE{\pathargleft[\sign]_j}(x) = \semE{\pathargright[\sign]_j}(x)$
+and $\disp{w} : \pathover{p}{\pathendpointDact{\pathargleft[\sign]_j}{\xx}}{\pathendpointDact{\pathargright[\sign]_j}{\xx}}$
+be paths.
+Then for each homotopy endpoint $h : \homotendpoint{\pathleft[\sign]}{\pathright[\sign]}{\pathargleft[\sign]_j}{\pathargright[\sign]_j}{\homotpathleft[\sign]_j}{\homotpathright[\sign]_j}$, 
+to construct a path
+\[
+\homotendpointDact{h}{\xx, \disp{w}} : \pathover{\homotendpointAct{h}{x, w}}{\pathendpointDact{\homotpathleft[\sign]_j}{\xx}}{\pathendpointDact{\homotpathright[\sign]_j}{\xx}}.
+\]
+\end{problem}
+
+With these notions in place, we define \emph{displayed algebras}.
+A displayed algebra represents the input of the elimination rule.
+Furthermore, we show that each displayed algebra gives rise to a total algebra and a projection.
+
+\begin{definition}\label{def:disp_alg}
+Given a signature $\sign$ and an algebra $X$ for $\sign$,
+a \fat{displayed algebra} $Y$ over $X$ consists of
+\begin{itemize}
+	\item A family $Y$ of 1-types over $X$;
+	\item For each $x : \polyAct{\pointconstr}{X}$ a map $\DispAlgPoint{Y} : \polyDact{\pointconstr}{Y}(x) \rightarrow Y(\AlgPoint{X}(x))$;
+	\item For each $j : \pathlabel$, $x : \polyAct{\patharg_j}{X}$, and $\pover{x} : \polyDact{\patharg_j}{Y}(x)$, a path
+	$
+	\DispAlgPath{Y}{j} : \pathover{\AlgPath{X}{j}{x}}{\pathendpointDact{\pathleft_j}{\pover{x}}}{\pathendpointDact{\pathright_j}{\pover{x}}}
+	$;
+	\item For each $j : \homotlabel$, points $x : \polyAct{\homotpointarg_j}{X}$ and $\pover{x} : \polyDact{\homotpointarg_j}{Y}(x)$,
+	and paths $w : \pathargleft_j(x) = \pathargright_j(x)$ and $\pover{w} : \pathover{w}{\pathendpointDact{\pathargleft_j}{\pover{x}}}{\pathendpointDact{\pathargright_j}{\pover{x}}}$,
+	a globe
+	$
+	\DispAlgHomot{Y}{j} : \globeover{\AlgHomot{X}{j}{(x, w)}}{\homotendpointDact{\homotleft_j}{\xx}}{\homotendpointDact{\homotright_j}{\xx}}
+	$
+	over $\AlgHomot{X}{j}{(x, w)}$.
+\end{itemize}
+\end{definition}
+
+\begin{remark}
+The type family of a displayed algebra is required to be 1-truncated.
+This means that the HITs we construct, can only be eliminated into
+1-types, and as a consequence, these HITs only have the right
+elimination principle with respect to 1-types.
+\end{remark}
+
+\begin{problem}
+\label{prob:total_alg}
+Given an algebra $X$ for a signature $\sign$ and a displayed algebra $Y$ over $X$,
+to construct an algebra $\TotalAlg{Y}$ for $\sign$ and a morphism of algebras $\pi_1 : \TotalAlg{Y} \onecell X$.
+\end{problem}
+
+\begin{construction}{prob:total_alg}
+\label{constr:total_alg}
+We only discuss the carrier and the point constructor of $\TotalAlg{Y}$.
+The carrier of $\TotalAlg{Y}$ is defined to be $\sum (x : X), Y(x)$
+and the function $\AlgPoint{\TotalAlg Y}$ acts on elements $z : \polyAct{\pointconstr}{\sum (x : X), Y(x)}$ as follows:
+\[
+\AlgPoint{\TotalAlg Y}(z) \eqdef
+(\AlgPoint{X}(\projl(\polyoplax{\pointconstr}(z)))
+,
+\DispAlgPoint{Y}(\projr(\polyoplax{\pointconstr}(z)))).
+\]
+The underlying map of the morphism $\pi_1 : \TotalAlg{Y} \onecell X$ takes the first projection of a pair.
+\end{construction}
+
+We call $\TotalAlg{Y}$ the \emph{total algebra} of $Y$ and the morphism $\pi_1$ is called the \emph{first projection}.
+The output of the elimination rule and the computation rules are given by a \emph{section} to be defined in Definition \ref{def:section} below.
+One might expect that, just like for the groupoid quotient, the computation rules for the paths
+are given as globes over some 2-path in the base (Definition \ref{def:globe_over}).
+However, this is not the case.
+
+This is because there is a slight discrepancy between the rules for the groupoid quotient and the HITs we discuss,
+namely for the former the computation rules for the points are definitional equalities
+while for the latter, these rules only hold propositionally.
+This affects how we need to formulate the computation rules for the paths.
+
+Let us illustrate this via the torus (Example \ref{ex:torus}).
+The input for the elimination rule consists, among others, of a type family $Y$, a point $b : Y(\base)$,
+and a path $p_l : \pathover{\leftLoop}{b}{b}$.
+The elimination rule gives a map $f : \depprod{(x : \torus)}{Y(x)}$.
+By the point computation rule, we have a propositional equality between $f(\base)$ and $b$.
+Now the computation rule for $\leftLoop$ ought to equate $\apd{f}{\leftLoop}$ and $p_l$.
+However, such an equation does not type check since $\apd{f}{\leftLoop}$ has type $\pathover{\leftLoop}{f(b)}{f(b)}$ while $p_l$ has type $\pathover{\leftLoop}{b}{b}$.
+In conclusion, we cannot formulate the computation rules the same way as we did for the groupoid quotient.
+
+Our solution to this problem is to define a type of \emph{squares} over a given 2-path similarly to Definition \ref{def:globe_over} \cite{licata2015cubical}.
+
+\begin{definition}
+Let $X$ be a type and let $Y$ be a type family on $X$.
+Suppose that we are given points $x_1, x_2 : X$ and $\overline{x_1}, \overline{x_1}' : Y(x_1)$ and $\overline{x_2}, \overline{x_2}' : Y(x_2)$, paths $p, q : x_1 = x_2$ together with paths $\pover{p} : \pathover{p}{\overline{x_1}}{\overline{x_2}}$ and $\pover{q} : \pathover{q}{\overline{x_1}'}{\overline{x_2}'}$ over $p$ and $q$ respectively.
+If we also have two paths $h_1 : \overline{x_1} = \overline{x_1}'$ and $h_2 : \overline{x_2} = \overline{x_2}'$ and a 2-path $g : p = q$,
+then we define the type of \fat{squares} over $g$ from $\pover{p}$ to $\pover{q}$ with sides $h_1$ and $h_2$ by path induction on $g$.
+\end{definition}
+
+\begin{definition}
+\label{def:section}
+Let $X$ be an algebra for a given signature $\sign$ and let $Y$ be a displayed algebra over $X$.
+Then a \fat{section} of $Y$ consists of
+\begin{itemize}
+	\item A map $f : \depprod{(x : X)}{Y(x)}$;
+	\item For all $x : \polyAct{\pointconstr}{X}$, an equality $f(\AlgPoint{X}(x)) = \DispAlgPoint{Y}(\polyDmap{\pointconstr}{f}(x))$;
+	\item For all $j : \pathlabel$ and $x : \polyAct{\patharg}{X}$, a square from
+	$\apd{f}{(\AlgPath{X}{j}(x))}$
+	to
+	$\DispAlgPath{Y}{j}(\polyDmap{\patharg}{f}(x))$
+	with sides
+	$\pathendpointDnat{\pathleft_j}{f}(x)$
+	and
+	$\pathendpointDnat{\pathright_j}{f}(x)$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+Let $\sign$ be a signature.
+Then a \fat{1-truncated higher inductive type} for $\sign$ consists of an algebra $X$ be an algebra for $\sign$ and a proof that each displayed algebra $Y$ over $X$ has a section.
+\end{definition}
+
+Often we just say that $X$ is a HIT for $\sign$ instead of saying that $X$ is 1-truncated HIT.
+With this in place, we can check whether our rules for higher inductive types
+agree for the usual examples with the rules given in the literature \cite{hottbook}.
+We illustrate this with the torus (Example \ref{ex:torus}) and the set truncation (Example \ref{ex:settrunc}).
+In the next example, we write $p \vcomp q$ for the concatenation of dependent paths.
+
+\begin{example}[Example \ref{ex:torus} cont'd]
+Recall the signature $\torus$ for the torus.
+Let $X$ be a HIT for $\torus$.
+Since $X$ is an algebra, we have a point $\base : X$, two paths $\leftLoop, \rightLoop : \base = \base$,
+and a 2-path $\surface : \concat{\leftLoop}{\rightLoop} = \concat{\rightLoop}{\leftLoop}$.
+This corresponds precisely to the usual introduction rules of the torus.
+
+A family $Y$ of 1-types on $X$ together with a point $b : Y(\base)$,
+two paths $l : \pathover{\leftLoop}{b}{b}$ and $r : \pathover{\rightLoop}{b}{b}$
+and a globe $h : \globeover{\surface}{l \vcomp r}{r \vcomp l}$
+over $\surface$ gives rise to a displayed algebra over $X$.
+This corresponds to the usual input of the elimination rule of the torus.
+If we have a section $s$ of $Y$, then in particular, we get a map $f_s : \depprod{(x : X)}{Y(x)}$.
+We also get a path $p_s : f(\base) = b$, a square from $\apd{f}{\leftLoop}$ to $l$ and one from $\apd{f}{\rightLoop}$ to $r$.
+Both squares have sides $p_s$ and $p_s$.
+These are the computation rules for the points and paths of the torus.
+Note that since we are looking at $1$-truncated HITs, this only gives the 1-truncation of the torus.
+\end{example}
+
+\begin{example}[Example \ref{ex:settrunc} cont'd]
+Let $A$ be a 1-type and recall the signature $\ST{A}$.
+Now let $X$ be a HIT on $\ST{A}$.
+Note that an algebra for $\ST{A}$ consists of a type $Z$ together with a map $A \rightarrow Z$
+and a proof that $Z$ is a set.
+This means in particular, that we have a map $\SC : A \rightarrow X$ and a proof $\Strunc$
+that $X$ is a set.
+
+A family $Y$ of sets on $X$ together with a map $i : \depprod{(a  : A)}{Y(\SC(A))}$
+give rise to a displayed algebra over $X$.
+A section $s$ of that displayed algebra consists of a map $f_s : \depprod{(x : X)}{Y(x)}$
+such that $f_s(\SC(a)) = i(a)$ for all $a : A$.
+This corresponds to the usual elimination and computation rules for the
+set truncation.
+\end{example}
+
+To verify that an algebra satisfies the elimination rule, we use \emph{initial algebra semantics} \cite{hermida1998structural}.
+However, this technique is usually applied in a categorical setting and it uses initial objects in categories.
+Since we work in a bicategorical setting, we need to use the corresponding notion in bicategory theory: \emph{biinitiality}.
+
+\begin{definition}
+Let $\B$ be a bicategory and let $x$ be an object in $\B$.
+Then we say $x$ is \fat{biinitial} if
+\begin{itemize}
+	\item For each object $y$ there is a 1-cell $x \onecell y$;
+	\item Given 1-cells $f, g : x \onecell y$, there is a 2-cell $f \twocell g$;
+	\item Given 2-cells $\tc, \tc' : f \twocell g$, there is an equality $\tc = \tc'$.
+\end{itemize}
+\end{definition}
+
+Briefly, an object $x$ is biinitial if for each $y$ there is a 1-cell from $x$ to $y$, which is unique up to a unique 2-cell.
+One can show that this definition is equivalent to the category $x \onecell y$ being contractible for all $y$.
+Now we can formulate initial algebra semantics for our signatures.
+
+\begin{proposition}
+\label{thm:initial_alg_sem}
+Let $\sign$ be a signature and let $X$ be an algebra for $\sign$.
+Then $X$ is a 1-truncated HIT for $\sign$ if and only if $X$ is biinitial in $\algM(\sign)$.
+\end{proposition}
+
+One consequence of initial algebra semantics, is that HITs are unique up to path equality if the univalence axiom holds.
+This result is a consequence of the fact that the bicategory of algebras is \emph{univalent}.
+Recall that a bicategory is univalent if
+equality between objects $X$ and $Y$ is equivalent to adjoint equivalences between $X$ and $Y$
+and equality of 1-cells $f$ and $g$ is equivalent to invertible 2-cells between $f$ and $g$
+\cite{bicatjournal}.
+Using the methods employed by Ahrens \etal \ \cite{bicatjournal} one can show that the bicategory of algebras
+is univalent.
+Since biinitial objects are unique up to adjoint equivalence, one can conclude that HITs are unique up
+to path equality.
+
+\begin{proposition}
+Let $\sign$ be a signature and let $H_1$ and $H_2$ be HITs for $\sign$.
+Denote the underlying algebras of $H_1$ and $H_2$ by $X_1$ and $X_2$.
+Then $X_1 = X_2$.
+\end{proposition}

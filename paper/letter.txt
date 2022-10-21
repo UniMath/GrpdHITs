@@ -1,0 +1,133 @@
+Dear Martin,
+
+Thanks for accepting our paper. We would also like to express our
+gratitude to the reviewers that read our paper and provided us with
+very useful feedback.
+
+We have revised the paper following the suggestions of the
+reviewers. Please find the detailed comments to the reviewers below.
+
+Best wishes,
+Niccolò Veltri and Niels van der Weide
+
+=====================================================================
+
+Reviewer 1:
+
+> The main objects of the paper are various (2,1)-categories: ...
+> The authors use bicategories to formalize these, and use bicategory
+> language and that's of course perfectly fine, but I'd like to see
+> just a bit of discussion, maybe in the introduction, about this
+> choice. This could be a simple as: There is a ready formalization of
+> (displayed) bicategory theory in UniMath, and we wish to reuse this,
+> and/or, we wish to be prepared for an extension to directed 2-HITs
+> (this is something mentioned in sec. 12).
+
+Indeed the use of bicategories in place of (2,1)-categories is
+motivated by the existence of the bicategory theory library in
+UniMath. We added a remark on this after Example 2.6.
+
+> in the main construction (con. 6.2) of the initial algebra in
+> groupoids, the morphisms must be a set quotient, because we need a
+> groupoid, and this has sets of isomorphisms. This doesn't seem to
+> generalize easily to 3-HITs in 2-groupoids, or higher.
+
+This is correct. We added a comment on this in the final paragraph of
+section 12, where we already discuss generalizations of our tecnhiques
+to untruncated HITs.
+
+> Another reason to emphasize that all bicategories here are
+> (2,1)-categories is for the benefit of readers whose
+> “category-number” is 1 in the non-invertible direction. They can all
+> relax: they don't have to worry about lax/oplax stuff, etc.
+> Concretely, this manifests itself for instance in Def. 4.16
+> (biinitiality).
+
+The choice of pseudo/lax/oplax matters in the choice of 'triangles' in
+the definition of cones and cocones. But since initial objects are
+colimits over empty diagrams, in this case the choice of
+pseudo/lax/oplax does not matter. We proved in UniMath that the
+definition of initiality we gave in the paper (Definition 4.16) is
+equivalent to the contractibility of the collection of maps x -> y
+(https://github.com/UniMath/UniMath/blob/master/UniMath/Bicategories/Colimits/Initial.v).
+We added a comment after Definition 4.16 which says that the two
+definitions or biinitiality are equivalent.
+
+The choice of pseudo/lax/oplax matters in Section 8.2 where we
+consider inserters. In that definition, there is a choice for the
+direction of the 2-cell \epsilon. We added a comment on this after
+Definition 8.4.
+
+> In the abstract we meet the term “PIE-limit”, which I believe is not
+> well-known to (homotopy) type theorists, although of course it's
+> more familiar among 2-category theorists. Since here we are dealing
+> with (2,1)-categories, we might as well say finite homotopy limits
+
+We added a sentence on this in the end of the first paragraph at page 3.
+
+> You should point out (when first introduced) that the torus (and the
+> circle) are only accidentally captured by your framework
+
+True. We added comments on this after Example 3.5 (on the torus) and
+in the beginning of Subsection 11.1 (on the circle).
+
+> I think it's a bit of a shame that the central construction of the
+> paper (con. 6.2) is not spelled out. I'm perfectly happy that most
+> proofs and other constructions are elided (since the formalization
+> is there), but this is the main point!  Please put the constructors
+> in the paper.
+
+All the constructors are now in the paper, see Figures 5 and 6. The
+text in Construction 6.2 has been modified to include references to
+and discussion of the constructors in the figures.
+
+> I found the discussion of the 1st isomorphism theorem (thm. 10.9) a
+> bit too short: The word “kernel” doesn't appear, for instance.  A
+> more complete treatment would define the kernel of an algebra
+> morphism as a congruence relation (the R in 10.9), provide an
+> algebra morphism from X to X/R, whose kernel is again R (showing
+> that every congruence relation is a kernel), and show that any
+> algebra morphism factors _uniquely_ through the quotient, inducing
+> an equivalence onto the image.
+
+We improved our presentation including these suggestions. In
+particular, the kernel is explicitly defined in Definition 10.9 and
+the statement of Theorem 10.10 and its proof have been rephrased. The
+improved Theorem 10.10 has also been formalized in UniMath.
+
+> Finally, a related construct, which I think ought to be mentioned,
+> is that Floris van Doorn reduced groupoid quotients (and other
+> non-recursive 2-HITs) to pushouts/coequalizers [1].
+
+We added a comment on this in the second paragraph of page 4.
+
+> (BTW: I thought UniMath eshewed inductive families other than Nat?
+> I suppose you could in principle reduce the finitary ones to Nat.)
+
+It is true that UniMath forbids the use of general inductive
+families. We state that we deviate from the UniMath philosophy on this
+front in the beginning of page 5 after the link to the Coq code.
+
+All minor comments of Reviewer 1 have been taken into account and
+implemented as suggested.
+
+=====================================================================
+
+Reviewer 2:
+
+1) We added a more thorough discussion regarding the relation between
+our work and Sojakova's in the first paragraph of the Related Work
+section at page 3.
+
+2) Thank you for providing this more precise reference. We added the
+citation to Lumsdaine–Warren.
+
+3) The biadjunctions in Figure 4 turn into biequivalences when
+considering univalent groupoids instead of (plain) groupoids. We added
+a comment on this after Construction 5.10.
+
+4) We agree with this comment. The main changes on this side occurred
+in Section 6, which we deemed particularly lacking in this regard. The
+description of Construction 6.2, which has a central spot in our
+development, has been expanded and all the constructors of types \sim
+and \approx have been added in Figures 5 and 6.
