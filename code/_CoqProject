@@ -1,6 +1,6 @@
-COQC = ~/Code/altUniMath/UniMath/sub/coq/bin/coqc
-COQDEP = ~/Code/altUniMath/UniMath/sub/coq/bin/coqdep
--R . "sem"
+COQC = coqc
+COQDEP = coqdep
+-R . "GrpdHITs"
 
 -arg "-type-in-type"
 
