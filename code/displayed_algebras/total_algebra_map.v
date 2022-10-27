@@ -3033,38 +3033,40 @@ Section SectionToDispAlgMap.
                          (IHe₁ x)))
                    (pathscomp0rid _))
                 (!path_assoc _ _ _ @ _)).
-      apply PathOver_square_idpath_r.
-      refine
-        (PathOver_square_concat
-           (PathOver_square_concat
-              (composePathOver_assocr _ _ _)
-              (PathOver_square_comp_l
-                 _
-                 _))
-           (PathOver_square_id_right _)).
-      refine
-        (PathOver_square_concat
-           (composePathOver_assocr _ _ _)
-           _).
-      refine
-        (PathOver_square_concat
-           (PathOver_square_comp_l
-              _
-              (PathOver_square_comp_l
-                 _
-                 (IHe₂ _)))
-           _).
-      refine
-        (PathOver_square_concat
-           (PathOver_square_comp_l
-              _
-              (PathOver_square_inverse
-                 (PathOver_square_inv_left _)))
-           _).
-      refine
-        (PathOver_square_concat
-           (PathOver_square_id_right _)
-           (inv_apd_section_endpoint_spec_comp_help _ _)).
+      {
+        apply PathOver_square_idpath_r.
+        refine
+          (PathOver_square_concat
+             (PathOver_square_concat
+                (composePathOver_assocr _ _ _)
+                (PathOver_square_comp_l
+                   _
+                   _))
+             (PathOver_square_id_right _)).
+        refine
+          (PathOver_square_concat
+             (composePathOver_assocr _ _ _)
+             _).
+        refine
+          (PathOver_square_concat
+             (PathOver_square_comp_l
+                _
+                (PathOver_square_comp_l
+                   _
+                   (IHe₂ _)))
+             _).
+        refine
+          (PathOver_square_concat
+             (PathOver_square_comp_l
+                _
+                (PathOver_square_inverse
+                   (PathOver_square_inv_left _)))
+             _).
+        refine
+          (PathOver_square_concat
+             (PathOver_square_id_right _)
+             (inv_apd_section_endpoint_spec_comp_help _ _)).
+      }
       simpl ; clear IHe₁ IHe₂.
       do 2 refine (!(path_assoc _ _ _) @ _).
       apply maponpaths.

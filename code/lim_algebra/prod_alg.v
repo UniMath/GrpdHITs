@@ -1499,7 +1499,7 @@ Section ProductAlg.
           apply pathscomp0rid.
         }
         apply (homotsec_natural' (alg_path Y i)).
-    Time Qed.
+    Qed.
 
     Definition prod_alg_ump_1
       : Z --> prod_alg.
