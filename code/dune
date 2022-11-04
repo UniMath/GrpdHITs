@@ -1,0 +1,9 @@
+
+(include_subdirs qualified)
+
+(coq.theory
+ (name GrpdHITs)
+ (flags -type-in-type
+        -w -notation-overridden)
+ (theories UniMath))
+
