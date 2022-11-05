@@ -3,6 +3,7 @@ COQDEP = coqdep
 -R . "GrpdHITs"
 
 -arg "-type-in-type"
+-arg "-w -notation-overridden"
 
 prelude/basics.v
 prelude/grpd_bicat.v
