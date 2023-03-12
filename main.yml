@@ -1,0 +1,85 @@
+name: Build GrpdHITs
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  schedule:
+    # Based on https://github.com/marketplace/actions/set-up-ocaml
+    # Prime the caches every Monday
+    - cron: '0 10 * * MON'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DUNE_CACHE_STORAGE_MODE: copy
+
+jobs:
+  build-grpdhits:
+    strategy:
+      matrix:
+        coq-version: [latest, 8.16]
+        ocaml-version: [4.14-flambda]
+    name: Build with ${{ matrix.coq-version }}
+    runs-on: ubuntu-22.04
+
+    steps:
+      # Checkout UniMath in the current directory.
+      - name: Checkout UniMath
+        uses: actions/checkout@v3
+        with:
+          repository: UniMath/UniMath
+          path: .
+          clean: false
+
+      # Checkout current branch in GrpdHITs/
+      - name: Checkout GrpdHITs
+        uses: actions/checkout@v3
+        with:
+          path: GrpdHITs
+
+      # Grab the cache if available. We tell dune to use $(pwd)/dune-cache/ in
+      # the custom_script below.
+      - uses: actions/cache/restore@v3
+        with:
+          path: dune-cache
+          key: GrpdHITs-coq-${{ matrix.coq-version }}-${{ github.run_id }}-${{ github.run_number }}
+          restore-keys: |
+            GrpdHITs-coq-${{ matrix.coq-version }}-${{ github.run_id }}
+            GrpdHITs-coq-${{ matrix.coq-version }}
+
+      - name: Build GrpdHITs
+        uses: coq-community/docker-coq-action@v1
+        with:
+          coq_version: ${{ matrix.coq-version }}
+          ocaml_version: ${{ matrix.ocaml-version }}
+          custom_script: |
+            startGroup "Workaround permission issue"
+            sudo chown -R coq:coq .
+            endGroup
+
+            startGroup "Print versions"
+            opam --version
+            opam exec -- dune --version
+            opam exec -- coqc --version
+            endGroup
+
+            startGroup "Build GrpdHITs""
+            export DUNE_CACHE_ROOT=$(pwd)/dune-cache/
+            opam exec -- dune build GrpdHITs --display=short \
+                         --cache=enabled --error-reporting=twice
+            endGroup
+      - name: Revert permissions
+        if: always ()
+        run: sudo chown -R 1001:116 .
+
+      - uses: actions/cache/save@v3
+        if: always ()
+        with:
+          path: dune-cache
+          key: GrpdHITs-coq-${{ matrix.coq-version }}-${{ github.run_id }}-${{ github.run_number }}
