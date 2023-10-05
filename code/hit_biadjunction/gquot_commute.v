@@ -601,7 +601,7 @@ Definition poly_gquot_isweq
            (X : groupoid)
   : isweq (poly_gquot P X).
 Proof.
-  use gradth.
+  use isweq_iso.
   - exact (@gquot_poly P X).
   - exact (gquot_poly_poly_gquot_eq P).
   - exact (poly_gquot_gquot_poly_eq P).
