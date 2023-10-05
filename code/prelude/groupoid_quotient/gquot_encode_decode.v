@@ -41,7 +41,7 @@ Section encode_decode.
              (g : b₁ --> b₂)
     : isweq (right_action a g).
   Proof.
-    use gradth.
+    use isweq_iso.
     - exact (right_action_inv a g).
     - abstract
         (intros h ; cbn ;
@@ -74,7 +74,7 @@ Section encode_decode.
              (g : b₁ --> b₂)
     : isweq (left_action a g).
   Proof.
-    use gradth.
+    use isweq_iso.
     - exact (left_action_inv a g).
     - abstract
         (intros h ; cbn ;
@@ -313,7 +313,7 @@ Section encode_decode.
     : ∏ {x y : gquot G}, isweq (encode_gquot x y).
   Proof.
     intros x y.
-    use gradth.
+    use isweq_iso.
     - exact (decode_gquot x y).
     - intros z.
       apply decode_gquot_encode_gquot.

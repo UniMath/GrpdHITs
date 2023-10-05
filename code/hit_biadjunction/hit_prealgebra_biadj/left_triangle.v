@@ -79,14 +79,15 @@ Proof.
                    (!(maponpaths
                         (maponpaths _)
                         (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
-                      @ gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
-                    @ maponpathscomp
-                        (gquot_functor_map (gquot_unit G))
-                        (gquot_counit_map _)
-                        (gcleq G g))
+                      @ _)
+                      @ maponpathscomp
+                          (gquot_functor_map (gquot_unit G))
+                          (gquot_counit_map _)
+                          (gcleq G g))
                    (!(maponpathsidfun _))
                    (idpath _)
-                   (vrefl _))).
+                   (vrefl _)) ;
+         apply gquot_rec_beta_gcleq).
     + exact (λ _, gtrunc _ _ _).
   - induction z as [z | z].
     + exact (maponpaths inl (IHP₁ z)).
@@ -643,34 +644,35 @@ Proof.
     + intro.
       apply idpath.
     + abstract
-     (intros a₁ a₂ g ;
-      apply map_PathOver ;
-      refine (whisker_square
-                (idpath _)
-                (!(maponpaths
-                     (maponpaths _)
-                     _
-                   @ _)
-                 @ maponpathscomp _ _ _)
-                (!(maponpaths
-                     (maponpaths _)
-                     (_ @ _))
-                 @ maponpathscomp _ _ _)
-                (idpath _)
-                _) ;
-      [ exact (gquot_rec_beta_gcleq G _ _ _ _ _ _ _ _ g)
-      | exact (gquot_rec_beta_gcleq
-                 (poly_act_groupoid I G)
-                 _ _ _ _ _ _ _ _ g)
-      | exact (!(maponpathscomp (gquot_functor_map _) (gquot_counit_map _) _))
-      | exact (maponpaths
-                 (maponpaths _)
-                 (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
-               @ gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
-      | refine (pathscomp0rid _ @ _) ;
-        simpl ;
-        induction (gcleq G g) ;
-        exact (ge _ _) ]).
+        (intros a₁ a₂ g ;
+         apply map_PathOver ;
+         refine (whisker_square
+                   (idpath _)
+                   (!(maponpaths
+                        (maponpaths _)
+                        _
+                        @ _)
+                      @ maponpathscomp _ _ _)
+                   (!(maponpaths
+                        (maponpaths _)
+                        (_ @ _))
+                      @ maponpathscomp _ _ _)
+                   (idpath _)
+                   _) ;
+         [ exact (gquot_rec_beta_gcleq G _ _ _ _ _ _ _ _ g)
+         | exact (gquot_rec_beta_gcleq
+                    (poly_act_groupoid I G)
+                    _ _ _ _ _ _ _ _ g)
+         | exact (!(maponpathscomp (gquot_functor_map _) (gquot_counit_map _) _))
+         | refine (maponpaths
+                  (maponpaths _)
+                  (gquot_rec_beta_gcleq _ _ _ _ _ _ _ _ _ _)
+                @ _) ;
+           apply gquot_rec_beta_gcleq
+         | refine (pathscomp0rid _ @ _) ;
+           simpl ;
+           induction (gcleq G g) ;
+           exact (ge _ _) ]).
     + exact (λ _, gtrunc _ _ _).
   - induction z as [z | z].
     + refine (_ @ maponpaths gquot_inl_grpd (IHP₁ z)).

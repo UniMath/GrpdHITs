@@ -255,7 +255,7 @@ Definition interpret_constant_weq
 Proof.
   use make_weq.
   - exact (interpret_constant A X).
-  - use gradth.
+  - use isweq_iso.
     + exact (to_interpret_constant A X).
     + intros x.
       use total2_paths_f.
@@ -283,7 +283,7 @@ Definition interpret_identity_weq
 Proof.
   use make_weq.
   - exact (interpret_identity X).
-  - use gradth.
+  - use isweq_iso.
     + exact (to_interpret_identity X).
     + intros x.
       induction x as [sx px].
@@ -334,7 +334,7 @@ Definition interpret_sum_weq
 Proof.
   use make_weq.
   - exact (interpret_sum C₁ C₂ X).
-  - use gradth.
+  - use isweq_iso.
     + exact (to_interpret_sum C₁ C₂ X).
     + intro z.
       induction z as [sz pz].
@@ -378,7 +378,7 @@ Definition interpret_prod_weq
 Proof.
   use make_weq.
   - exact (interpret_prod C₁ C₂ X).
-  - use gradth.
+  - use isweq_iso.
     + exact (to_interpret_prod C₁ C₂ X).
     + intro z.
       use total2_paths_f.
@@ -534,7 +534,7 @@ Definition interpret_poly_weq
 Proof.
   use make_weq.
   - exact (interpret_poly P X).
-  - use gradth.
+  - use isweq_iso.
     + exact (to_interpret_poly P X).
     + exact (to_interpret_poly_interpret_poly' P X).
     + exact (interpret_poly_to_interpret_poly P X).
