@@ -7,7 +7,7 @@ Require Import UniMath.CategoryTheory.Groupoids.
 Require Import UniMath.CategoryTheory.whiskering.
 Require Import UniMath.CategoryTheory.Core.Univalence.
 Require Import UniMath.CategoryTheory.Core.Isos.
-Require Import UniMath.CategoryTheory.categories.StandardCategories.
+Require Import UniMath.CategoryTheory.Categories.StandardCategories.
 Require Import UniMath.CategoryTheory.Equivalences.Core.
 Require Import UniMath.CategoryTheory.Equivalences.CompositesAndInverses.
 Require Import UniMath.CategoryTheory.Equivalences.FullyFaithful.
@@ -137,7 +137,7 @@ Proof.
     ; try induction f.
     + apply IHP₁.
     + apply IHP₂.
-  - exact (pathsdirprod (IHP₁ _ _ _) (IHP₂ _ _ _)).  
+  - exact (pathsdirprod (IHP₁ _ _ _) (IHP₂ _ _ _)).
 Qed.
 
 Definition grpd_inv
@@ -205,7 +205,7 @@ Definition move_grpd_inv_left
            {f : x --> y} {g : y --> z} {h : x --> z}
   : h = f · g → f = h · grpd_inv g.
 Proof.
-  intro p.  
+  intro p.
   apply z_iso_inv_on_left.
   exact p.
 Qed.
@@ -503,7 +503,7 @@ Section GrpdAlgUMP.
         + apply IHP₂.
       - exact (pathsdirprod (IHP₁ _) (IHP₂ _)).
     Qed.
-    
+
     Definition univ1_functor_data_help_eq_inv
                {P : poly_code}
                {x y : poly_act
@@ -522,7 +522,7 @@ Section GrpdAlgUMP.
                 P
                 _
                 (@initial_alg_inv
-                   (point_constr Σ) (path_label Σ) (path_source Σ) 
+                   (point_constr Σ) (path_label Σ) (path_source Σ)
                    (path_left Σ) (path_right Σ) I)
                 (initial_groupoid_algebra_mor_el_poly_to_poly_act_rel
                    (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
@@ -546,7 +546,7 @@ Section GrpdAlgUMP.
       - induction x as [x | x], y as [y | y].
         + apply IHP₁.
         + induction f.
-        + induction f.          
+        + induction f.
         + apply IHP₂.
       - exact (pathsdirprod (IHP₁ _ _ _) (IHP₂ _ _ _)).
     Qed.
@@ -576,7 +576,7 @@ Section GrpdAlgUMP.
                 P
                 _
                 (@initial_alg_comp
-                   (point_constr Σ) (path_label Σ) (path_source Σ) 
+                   (point_constr Σ) (path_label Σ) (path_source Σ)
                    (path_left Σ) (path_right Σ) I)
                 (initial_groupoid_algebra_mor_el_poly_to_poly_act_rel
                    (poly_act_rel_to_initial_groupoid_algebra_mor_el_poly
@@ -774,7 +774,7 @@ Section GrpdAlgUMP.
         {
           apply maponpaths.
           apply poly_act_inverse_identity.
-        }        
+        }
         apply poly_act_id_right.
       - simpl.
         refine (_ @ IHe₂ _ _ _) ; clear IHe₂.
@@ -821,7 +821,7 @@ Section GrpdAlgUMP.
         {
           apply maponpaths.
           apply poly_act_inverse_identity.
-        }        
+        }
         apply poly_act_id_right.
       - simpl.
         etrans.
@@ -832,7 +832,7 @@ Section GrpdAlgUMP.
         {
           apply maponpaths.
           apply poly_act_inverse_identity.
-        }        
+        }
         apply poly_act_id_right.
       - simpl.
         etrans.
@@ -843,7 +843,7 @@ Section GrpdAlgUMP.
         {
           apply maponpaths.
           apply poly_act_inverse_identity.
-        }        
+        }
         apply poly_act_id_right.
       - simpl.
         etrans.
@@ -854,7 +854,7 @@ Section GrpdAlgUMP.
         {
           apply maponpaths.
           apply poly_act_inverse_identity.
-        }        
+        }
         apply poly_act_id_right.
       - simpl.
         apply pathsdirprod.
@@ -870,7 +870,7 @@ Section GrpdAlgUMP.
         { intro ; apply isaprop_is_z_isomorphism. }
         apply idpath.
     Qed.
-      
+
     Definition univ1_functor_data_help_homot_endpoint
                {Q : poly_code}
                {TR : poly_code}
@@ -1101,7 +1101,7 @@ Section GrpdAlgUMP.
         {
           apply poly_act_inv_right.
         }
-        exact (!(univ1_functor_data_help_eq_id _)).        
+        exact (!(univ1_functor_data_help_eq_id _)).
       - simpl.
         refine (!_).
         etrans.
@@ -1118,7 +1118,7 @@ Section GrpdAlgUMP.
         {
           apply poly_act_inv_right.
         }
-        exact (!(univ1_functor_data_help_eq_id _)).        
+        exact (!(univ1_functor_data_help_eq_id _)).
       - simpl.
         refine (!_).
         etrans.
@@ -1135,7 +1135,7 @@ Section GrpdAlgUMP.
         {
           apply poly_act_inv_right.
         }
-        exact (!(univ1_functor_data_help_eq_id _)).        
+        exact (!(univ1_functor_data_help_eq_id _)).
       - exact (pathsdirprod IHh₁ IHh₂).
       - simpl.
         apply pathsdirprod.
@@ -1149,7 +1149,7 @@ Section GrpdAlgUMP.
           {
             apply poly_act_inv_right.
           }
-          exact (!(univ1_functor_data_help_eq_id _)).        
+          exact (!(univ1_functor_data_help_eq_id _)).
         + refine (!_).
           etrans.
           {
@@ -1160,7 +1160,7 @@ Section GrpdAlgUMP.
           {
             apply poly_act_inv_right.
           }
-          exact (!(univ1_functor_data_help_eq_id _)).        
+          exact (!(univ1_functor_data_help_eq_id _)).
       - apply idpath.
       - simpl.
         refine (_ @ assoc _ _ _).
@@ -1232,9 +1232,9 @@ Section GrpdAlgUMP.
                        | P Q x y f g r IHr
                        |
                        |
-                       | 
+                       |
                        | P Q x₁ y₁ x₂ y₂ f₁ f₂ g₁ g₂ r₁ IHr₁ r₂ IHr₂
-                       | 
+                       |
                        | x y f₁ f₂ r IHr | P x y f₁ f₂ r IHr
                        | P x y z f₁ f₂ g r IHr
                        | P x y z f g₁ g₂ r IHr
@@ -1292,7 +1292,7 @@ Section GrpdAlgUMP.
       - exact (pathsdirprod IHr₁ IHr₂).
       - apply idpath.
       - exact (maponpaths (λ z, (_ · # (pr211 Y : _ ⟶ _) z) · _) IHr).
-      - exact (maponpaths poly_act_inverse IHr). 
+      - exact (maponpaths poly_act_inverse IHr).
       - exact (maponpaths (λ z, poly_act_compose z _) IHr).
       - exact (maponpaths (poly_act_compose _) IHr).
       - apply poly_act_id_right.
@@ -1370,7 +1370,7 @@ Section GrpdAlgUMP.
         intro g.
         apply idpath.
     Qed.
-        
+
     Definition univ1_functor
       : alg_carrier_grpd (initial_groupoid_algebra Σ) ⟶ alg_carrier_grpd Y.
     Proof.
@@ -1590,7 +1590,7 @@ Section GrpdAlgUMP.
       - exact univ1_commute_data.
       - exact univ1_is_nat_trans.
     Defined.
-      
+
     Definition initial_groupoid_algebra_univ_1_eq
                (i : path_label Σ)
       : nat_trans_comp
@@ -1674,7 +1674,7 @@ Section GrpdAlgUMP.
     apply hinhpr.
     apply initial_alg_left_inv.
   Qed.
-  
+
   Section Univ2.
     Variable (Y : hit_algebra_grpd Σ)
              (f g : initial_groupoid_algebra Σ --> Y).
@@ -1743,7 +1743,7 @@ Section GrpdAlgUMP.
         refine (_ @ poly_act_assoc _ _ _).
         apply maponpaths.
         refine (_ @ !(poly_act_assoc _ _ _)).
-        refine (!_).        
+        refine (!_).
         etrans.
         {
           apply maponpaths.
@@ -1854,7 +1854,7 @@ Section GrpdAlgUMP.
         apply maponpaths.
         apply initial_groupoid_algebra_univ_2_nat_trans_data_help_poly_dmap.
     Qed.
-    
+
     Definition initial_groupoid_algebra_univ_2_is_nat_trans_help_arg
                {P : poly_code}
                {x y : poly_act
@@ -1976,7 +1976,7 @@ Section GrpdAlgUMP.
     Proof.
       apply quot_rel_poly_act_comp.
     Qed.
-      
+
     Definition initial_groupoid_algebra_univ_2_is_nat_trans_help
                {P : poly_code}
                {x y : poly_act P (initial_groupoid_algebra_ob Σ)}
@@ -2203,7 +2203,7 @@ Section GrpdAlgUMP.
         {
           apply maponpaths_2.
           exact (!(functor_comp (pr211 Y) _ _)).
-        }                  
+        }
         refine (!_).
         refine (assoc' _ _ _ @ _).
         etrans.
@@ -2233,7 +2233,7 @@ Section GrpdAlgUMP.
           refine (!_).
           apply initial_groupoid_algebra_univ_2_nat_trans_data_help_poly_dmap.
     Qed.
-    
+
     Definition initial_groupoid_algebra_univ_2_is_nat_trans
       : is_nat_trans _ _ initial_groupoid_algebra_univ_2_nat_trans_data.
     Proof.
@@ -2273,7 +2273,7 @@ Section GrpdAlgUMP.
         }
         apply setquotpr_eq.
     Qed.
-   
+
     Definition initial_groupoid_algebra_univ_2_nat_trans
       : pr111 (pr1 f) ⟹ pr111 (pr1 g).
     Proof.
@@ -2359,7 +2359,7 @@ Section GrpdAlgUMP.
     refine (maponpaths (λ z, _ · # (pr121 (pr1 Y)) z) _) ; simpl.
     exact (initial_groupoid_algebra_univ_eq_help (point_constr Σ) Hx).
   Qed.
-  
+
   Definition initial_groupoid_algebra_is_initial
     : is_biinitial (initial_groupoid_algebra Σ).
   Proof.
