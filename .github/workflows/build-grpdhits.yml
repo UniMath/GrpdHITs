@@ -31,7 +31,7 @@ jobs:
     steps:
       # Checkout UniMath in the current directory.
       - name: Checkout UniMath
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: UniMath/UniMath
           path: .
@@ -39,13 +39,13 @@ jobs:
 
       # Checkout current branch in GrpdHITs/
       - name: Checkout GrpdHITs
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: GrpdHITs
 
       # Grab the cache if available. We tell dune to use $(pwd)/dune-cache/ in
       # the custom_script below.
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         with:
           path: dune-cache
           key: GrpdHITs-coq-${{ matrix.coq-version }}-${{ github.run_id }}-${{ github.run_number }}
@@ -78,7 +78,7 @@ jobs:
         if: always ()
         run: sudo chown -R 1001:116 .
 
-      - uses: actions/cache/save@v3
+      - uses: actions/cache/save@v4
         if: always ()
         with:
           path: dune-cache
