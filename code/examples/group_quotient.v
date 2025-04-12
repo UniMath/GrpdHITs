@@ -90,7 +90,7 @@ Section GroupQuotient.
   Definition group_quot_homot_path_arg_poly
     : group_quot_homots → poly_code
     := λ _, C unit_one_type.
- 
+
   Definition group_quot_homot_path_arg_lr
              (j : group_quot_homots)
     : endpoint
@@ -146,7 +146,7 @@ Section GroupQuotient.
   (*
   Local Notation "p ~ q" := (homot_endpoint _ _ _ _ p q).
    *)
-  
+
   Definition group_quot_homot_left
              (j : group_quot_homots)
     : homot_endpoint
@@ -181,7 +181,7 @@ Section GroupQuotient.
       + exact pr1.
       + exact pr2.
   Defined.
-  
+
   Definition group_quot_signature
     : hit_signature.
   Proof.
@@ -205,7 +205,7 @@ Section GroupQuotient.
   (** Projections of circle algebra *)
   Section AlgebraProjections.
     Variable (X : hit_algebra_one_types group_quot_signature).
-    
+
     Definition group_quot_base
       : alg_carrier X
       := alg_constr X tt.
@@ -267,8 +267,8 @@ Section GroupQuotient.
 
     Local Definition make_group_quot_disp_algebra_path
       : ∏ (j : path_label group_quot_signature)
-          (x : pr1 G),
-        pr1 G
+          (x : G),
+        G
         →
         @PathOver _ _ _ (alg_path X j x) Y Ybase Ybase.
     Proof.
@@ -276,7 +276,7 @@ Section GroupQuotient.
       induction j.
       exact (Yloop x).
     Defined.
-    
+
     Local Definition make_group_quot_disp_algebra_unit
           (z : unit)
           (p : tt = tt)
@@ -291,7 +291,7 @@ Section GroupQuotient.
                 (Yloop 1%multmonoid)
                 (composePathOver
                    (identityPathOver _)
-                   (identityPathOver _)))) 
+                   (identityPathOver _))))
           (identityPathOver _).
     Proof.
       refine (globe_over_move_globe_one_type _ _).
@@ -414,7 +414,7 @@ Section GroupQuotient.
         + apply make_group_quot_disp_algebra_unit.
         + apply make_group_quot_disp_algebra_comp.
     Defined.
-    
+
     Variable (HX : is_HIT group_quot_signature X).
 
     (** Induction principle *)
