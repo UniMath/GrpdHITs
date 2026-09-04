@@ -1,9 +1,9 @@
 
 (include_subdirs qualified)
 
-(coq.theory
+(rocq.theory
  (name GrpdHITs)
- (flags -type-in-type
+ (flags :standard
+  ;;       -type-in-type
         -w -notation-overridden)
  (theories UniMath))
-
