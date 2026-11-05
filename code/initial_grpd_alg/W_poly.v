@@ -157,7 +157,7 @@ Proof.
   - exact P.
 Defined.
 
-Notation "S ◅ P" := (make_container S P) (at level 60) : container_scope.
+Notation "S ◅ P" := (make_container S P) (at level 59, left associativity) : container_scope.
 
 Local Open Scope container_scope.
 
